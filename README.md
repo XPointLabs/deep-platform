@@ -34,6 +34,24 @@ Optional profiles:
 - `multi-node`: starts three additional XNode instances
 - `e2e`: enables the test runner container
 
+## Production Contract Addresses
+
+The XPNT staking stack is deployed on Arbitrum One and the committed deployment
+record lives in
+[`xpoint-staking-contracts/docs/ARBITRUM_STAKING_PRODUCTION_DEPLOYMENT.md`](xpoint-staking-contracts/docs/ARBITRUM_STAKING_PRODUCTION_DEPLOYMENT.md).
+Use these canonical values in production backend, registry, staking portal, and
+node-host configuration:
+
+| Item | Address / Value |
+| --- | --- |
+| Network | Arbitrum One (`42161`) |
+| XPNT token | `0x63B2cdb8B0d8774F1Fdca91D24803698582a079F` |
+| ServiceNodeRewards proxy | `0xc52284b7aBAebbEF7BdE0E1ca8251B44AeA12F5f` |
+| ServiceNodeContributionFactory proxy | `0x289d88A8C06881634Fb619Ec528361C7b88521f1` |
+| RewardRatePool proxy | `0xEd894fb5f0BA3b141A562190D4c9941FEd348356` |
+| Staking requirement | `25,000 XPNT` (`25000000000000` atomic) |
+| Reward pool deposit | `40,000,000 XPNT` |
+
 ## Common Commands
 
 Start only shared local dependencies:
