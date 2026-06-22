@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+*.local
+artifacts/
+bin/
+obj/
+node_modules/
+.vs/
+.idea/
+*.log
+*.tmp

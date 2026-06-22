@@ -1,0 +1,30 @@
+[submodule "deep-client-maui"]
+	path = deep-client-maui
+	url = https://github.com/XPointLabs/deep-client-maui.git
+[submodule "deep-client-shared"]
+	path = deep-client-shared
+	url = https://github.com/XPointLabs/deep-client-shared.git
+[submodule "deep-devops"]
+	path = deep-devops
+	url = https://github.com/XPointLabs/deep-devops.git
+[submodule "xnode"]
+	path = xnode
+	url = https://github.com/XPointLabs/xnode.git
+[submodule "deep-protocol"]
+	path = deep-protocol
+	url = https://github.com/XPointLabs/deep-protocol.git
+[submodule "deep-registry-api"]
+	path = deep-registry-api
+	url = https://github.com/XPointLabs/deep-registry-api.git
+[submodule "xpoint-staking-backend"]
+	path = xpoint-staking-backend
+	url = https://github.com/XPointLabs/xpoint-staking-backend.git
+[submodule "xpoint-staking-contracts"]
+	path = xpoint-staking-contracts
+	url = https://github.com/XPointLabs/xpoint-staking-contracts.git
+[submodule "xpoint-staking-portal"]
+	path = xpoint-staking-portal
+	url = https://github.com/XPointLabs/xpoint-staking-portal.git
+[submodule "deep-tests-e2e"]
+	path = deep-tests-e2e
+	url = https://github.com/XPointLabs/deep-tests-e2e.git
