@@ -31,3 +31,6 @@
 [submodule "xpoint-docs"]
 	path = xpoint-docs
 	url = https://github.com/XPointLabs/xpoint-docs.git
+[submodule "xpoint-node-installer"]
+	path = xpoint-node-installer
+	url = https://github.com/XPointLabs/xpoint-node-installer.git
