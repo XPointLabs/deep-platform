@@ -28,3 +28,6 @@
 [submodule "deep-tests-e2e"]
 	path = deep-tests-e2e
 	url = https://github.com/XPointLabs/deep-tests-e2e.git
+[submodule "xpoint-docs"]
+	path = xpoint-docs
+	url = https://github.com/XPointLabs/xpoint-docs.git
