@@ -34,3 +34,6 @@
 [submodule "xpoint-node-installer"]
 	path = xpoint-node-installer
 	url = https://github.com/XPointLabs/xpoint-node-installer.git
+[submodule "deep-push-notification-server"]
+	path = deep-push-notification-server
+	url = https://github.com/XPointLabs/deep-push-notification-server.git
