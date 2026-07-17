@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schemas/program-manifest.schema.json",
+  "schemaVersion": "1.0.0",
+  "programId": "deep-survival",
+  "release": "2.0.0",
+  "status": "approved-local-execution",
+  "approvedAt": "2026-07-17",
+  "accountableOwner": "Mr. X",
+  "canonicalProgram": "REVISED-PROGRAM-RU.md",
+  "decisionRecord": "../../decisions/DR-0001-local-execution-approval.md",
+  "documentSet": {
+    "algorithm": "SHA-256",
+    "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>",
+    "documentCount": 75,
+    "sha256": "ca5ad9f0c9d4dfb509dedcbf8133524c15867fce5534816da21ff86a07057383"
+  },
+  "workPackageIdPattern": "^DSP2-P(?:0[0-9]|1[0-9])(?:[A-D])?(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?$",
+  "dependencyManifestSchema": "deep-devops/schemas/survival/dependency-manifest.schema.json",
+  "dependencyManifestPathTemplate": "deep-devops/manifests/survival/<wave>/<work-package-id>.json",
+  "packagePolicy": "../../PACKAGE-POLICY.md",
+  "executionPolicy": {
+    "localOnly": true,
+    "localDockerAllowed": true,
+    "pushAllowed": false,
+    "externalPublishAllowed": false,
+    "externalDeployAllowed": false
+  }
+}
