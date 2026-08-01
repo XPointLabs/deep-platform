@@ -1,0 +1,3 @@
+# Keep the immutable program package byte-stable across Windows and Linux.
+docs/survival-program/** text eol=lf
+artifacts/survival/** text eol=lf

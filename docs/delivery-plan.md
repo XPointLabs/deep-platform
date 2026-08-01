@@ -1,6 +1,10 @@
 ﻿# Deep Delivery Plan (обновлено: 2026-06-03)
 
-## Цель
+> **Статус с 2026-07-17:** документ сохраняется как подробное evidence выполненной parity-работы и известных release gates. Активный delivery plan — [`Deep Survival Program v2.0.0`](survival-program/README.md), accountable owner Mr. X. Указанные ниже сроки, проценты и GA-порядок не переопределяют Survival Beta horizons, dependencies или stop gates.
+>
+> Broad legacy prompts — backlog only. Реализация идёт атомарными work packages активной программы, в изолированных worktree, с локальными коммитами и без push/deploy/external publish.
+
+## Историческая цель
 
 Довести Deep до GA-уровня паритета с Session по launch-critical функциональности и эксплуатации.
 

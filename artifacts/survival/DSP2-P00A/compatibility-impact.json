@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "0.1.0",
+  "workPackageId": "DSP2-P00A",
+  "runtimeImpact": "none",
+  "wireImpact": "none",
+  "childRepositoryImpact": "none",
+  "documentationImpact": "The previous parity roadmap and broad prompt pack are retained as historical evidence/backlog and no longer define execution precedence.",
+  "consumerRequirement": "Consumers must pin program revision sha256:ca5ad9f0c9d4dfb509dedcbf8133524c15867fce5534816da21ff86a07057383."
+}

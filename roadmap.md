@@ -1,6 +1,10 @@
 ﻿# Roadmap Deep -> Session Parity (новый спринт, обновлено: 2026-06-19)
 
-## 1. Цель нового спринта
+> **Статус с 2026-07-17:** этот roadmap сохраняется как historical implementation evidence. Он не является активным scope, schedule или GA-обещанием. Активный источник истины — [`docs/survival-program/README.md`](docs/survival-program/README.md), release `v2.0.0`, accountable owner Mr. X. Старые проценты готовности не переносятся в Survival Beta.
+>
+> Следующие активные пакеты: P00B, P01/P01B и P02/P02B/P02C после принятия P00A. Работа ведётся локально; push/deploy/publication запрещены без отдельного решения Mr. X.
+
+## 1. Историческая цель спринта
 
 Цель спринта: закрыть релиз-блокеры, перевести текущую готовность из pre-release в production-ready и подготовить формальный GA пакет.
 

@@ -1,8 +1,10 @@
 ﻿# Prompt Pack: Deep Parity Program (Sprint Refresh 2026-06-19)
 
-Этот набор синхронизирован с текущим [roadmap.md](..\roadmap.md) и стартует с текущего baseline, а не с исторических фаз.
+Статус: **superseded for execution on 2026-07-17**. Этот набор сохраняется только как historical evidence/backlog и не должен передаваться implementation agent напрямую.
 
-## Активный порядок выполнения (текущий спринт)
+Активная программа: [`docs/survival-program/README.md`](../docs/survival-program/README.md). Исполняемые атомарные prompts: [`docs/survival-program/releases/v2.0.0/agent-prompts/README.md`](../docs/survival-program/releases/v2.0.0/agent-prompts/README.md). Accountable owner: Mr. X.
+
+## Предыдущий порядок выполнения (неактивен)
 
 1. `00_Agent_Entry_Point.md`
 2. `06_Security_and_Compliance_Gates.md`
@@ -27,9 +29,10 @@
 
 Если в архивной фазе найден регресс, заводится delta-задача в рамках текущего спринта с обновлением `roadmap.md` и `docs/delivery-plan.md`.
 
-## Обязательные правила
+## Правила сохранённого backlog
 
-- После каждого шага обновлять `roadmap.md` и релевантные `docs/*` по фактическому состоянию.
+- Не запускать эти broad prompts без нового атомарного work package активной программы.
+- После каждого принятого атомарного package обновлять активные governance/evidence документы по фактическому состоянию.
 - Любой blocker фиксировать с owner, ETA, mitigation.
 - Нельзя закрывать шаг без test/CI evidence и ссылок на артефакты.
 - Нельзя создавать отдельный клиентный трек вне MAUI-стека.

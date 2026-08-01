@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "0.1.0",
+  "workPackageId": "DSP2-P00A",
+  "status": "completed",
+  "repository": "XPointLabs",
+  "branch": "survival/w00-governance",
+  "baseSha": "db1e2132aea6872a50e788d154c8e68323713bb4",
+  "resultShaMode": "containing-commit",
+  "programRevision": "sha256:ca5ad9f0c9d4dfb509dedcbf8133524c15867fce5534816da21ff86a07057383",
+  "accountableOwner": "Mr. X",
+  "summary": "Activated the versioned Deep Survival Program source of truth, local-only execution policy, package policy and governance validation.",
+  "childRepositoryGitlinksChanged": false,
+  "nextWorkPackages": ["DSP2-P00B", "DSP2-P01", "DSP2-P01B", "DSP2-P02", "DSP2-P02B", "DSP2-P02C"]
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xpointlabs:deep-survival:program-manifest:1",
+  "title": "Deep Survival Program Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "programId",
+    "release",
+    "status",
+    "approvedAt",
+    "accountableOwner",
+    "canonicalProgram",
+    "documentSet",
+    "workPackageIdPattern",
+    "packagePolicy"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "programId": { "const": "deep-survival" },
+    "release": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "status": {
+      "enum": [
+        "draft",
+        "approved-local-execution",
+        "paused",
+        "superseded"
+      ]
+    },
+    "approvedAt": { "type": "string", "format": "date" },
+    "accountableOwner": { "const": "Mr. X" },
+    "canonicalProgram": { "type": "string", "minLength": 1 },
+    "decisionRecord": { "type": "string", "minLength": 1 },
+    "documentSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "entryFormat", "documentCount", "sha256"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "entryFormat": { "const": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>" },
+        "documentCount": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "workPackageIdPattern": { "type": "string", "minLength": 1 },
+    "dependencyManifestSchema": { "type": "string", "minLength": 1 },
+    "dependencyManifestPathTemplate": { "type": "string", "minLength": 1 },
+    "packagePolicy": { "type": "string", "minLength": 1 },
+    "executionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "localOnly": { "const": true },
+        "localDockerAllowed": { "const": true },
+        "pushAllowed": { "const": false },
+        "externalPublishAllowed": { "const": false },
+        "externalDeployAllowed": { "const": false }
+      }
+    }
+  }
+}
