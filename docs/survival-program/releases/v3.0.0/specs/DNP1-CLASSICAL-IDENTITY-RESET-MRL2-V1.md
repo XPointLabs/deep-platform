@@ -25,7 +25,7 @@ are not accepted by any grammar in this specification.
   suite. Every other suite, including `0x0101` and `0x0102`, is rejected before
   allocation or a cryptographic callback.
 - Existing reviewed D--G route-continuity artifacts, `MNG1`, `MDG1`, `MRV1`,
-  `MMC1`, `MSM1`, `PRQ2`, `MRR2`, PMA and PMR retain their exact bytes, domains
+  `MMC1`, `MSM1`, outer `MIP1`, `PRQ2`, `MRR2`, PMA and PMR retain their exact bytes, domains
   and public APIs. They are referenced externally; they are not versioned or
   extended here.
 - Session identities, onion contacts, storage IDs, compatibility branches and
@@ -54,6 +54,39 @@ Flags are zero. Unknown, missing, duplicate or out-of-order tags, nonzero
 reserved bytes, inconsistent lengths and trailing bytes are rejected before a
 value copy. All additions use checked arithmetic and validate scalar/count
 limits before allocation.
+Every field named `reserved` is all zero. Every opaque hash, ID, nonce, key,
+reference and transcript value has exactly its declared width and is not
+text-decoded or normalized. Zero is accepted only for a predecessor or time
+field explicitly named as a genesis/sentinel in this specification. Unknown
+enum values, unknown bit-mask bits and noncanonical boolean bytes reject before
+cryptographic, storage or network callbacks. Every boolean byte is exactly
+`0x00` or `0x01`.
+
+Every suite-`0x8001` protected record uses one exact HMAC construction. For a
+stored record with `N` fields whose field `N` is `HMAC32`, form
+`unsignedCanonical` from the same magic/version/suite header but with
+`fieldCount=N-1`, followed by canonical fields 1 through `N-1` with their
+original tags, zero flags, lengths and values. The HMAC field/tag is absent.
+Let `unsignedLength` be the checked byte length of that complete unsigned
+record, including its 12-byte header. Then:
+
+```text
+HMAC-SHA-256(protectedStateKey32,
+  U16BE(len(domain)) || ASCII(domain) || U16BE(0x8001) ||
+  U32BE(unsignedLength) || unsignedCanonical)
+```
+
+The non-DB deployment protected-state key is exactly 32 bytes and is selected
+by the component's pinned protected-state key ID; missing/wrong keys fail
+closed. The record/domain mapping is closed: DPL1 uses
+`Deep/ProtectedState/V1/DPL1`, DBG1 uses `Deep/ProtectedState/V1/DDBG1`, RIB1
+uses `Deep/ProtectedState/V1/DRIB1`, XIB1 uses
+`Deep/ProtectedState/V1/DXIB1`, DWL1 uses `Deep/ProtectedState/V1/DWL1`, MRLC
+uses `Deep/ProtectedState/V1/MRLC1`, DPJ1 uses
+`Deep/ProtectedState/V1/DPJ1`, and RRL1 uses
+`Deep/ProtectedState/V1/RRL1`. A cross-record domain, stored header count `N`
+in the unsigned form, omitted suite/length prefix, or included/zeroed final
+HMAC field rejects.
 
 `ArtifactRef38` is:
 
@@ -92,10 +125,10 @@ verified locally with Sodium and used only from that owned copy.
 
 The header suite is closed by record class. `0x0001` authenticates DPA, DPD,
 DPM, DRS, KRT, KRF, DCM, DRA, DWD, DCP, DCS, DCT, DCN, DCQ, DHL, DCL, DNR,
-DPC, DPR and DPS (including receipt-authenticated composites). `0x0000` is not
-an authentication suite and is accepted only for the committed unsigned DRT
-and MRL2 records. `0x8001` is HMAC-SHA-256 and is accepted only for DPL, DBG,
-RIB, XIB, DWL, MRLC and DPJ. `0x8002` is accepted only for the AEAD-protected
+DPC, DPR, DPS, RRM and DWT (including receipt-authenticated composites). `0x0000` is not
+an authentication suite and is accepted only for the committed unsigned DRT,
+MRL2 and RIP2 records. `0x8001` is HMAC-SHA-256 and is accepted only for DPL, DBG,
+RIB, XIB, DWL, MRLC, DPJ and RRL. `0x8002` is accepted only for the AEAD-protected
 DRC; its canonical metadata is authenticated as associated data and the final
 16 bytes are the XChaCha20-Poly1305 tag. DXP is the sole fixed transcript and
 has no 12-byte TLV header. Every record/suite cross-feed rejects before a
@@ -113,6 +146,7 @@ Deep/IdentityAuth/V1/revocation-snapshot
 Deep/IdentityAuth/V1/revocation-entry-head
 Deep/IdentityAuth/V1/key-rotation
 Deep/IdentityAuth/V1/key-revocation
+Deep/IdentityAuth/V1/key-hash
 Deep/IdentityAuth/V1/x25519-pop-salt
 Deep/IdentityAuth/V1/x25519-pop-key/device
 Deep/IdentityAuth/V1/x25519-pop-key/router
@@ -143,6 +177,10 @@ Deep/Artifact/V1/RIB1
 Deep/Artifact/V1/XIB1
 Deep/Artifact/V1/DNR1
 Deep/Artifact/V1/MRL2
+Deep/Artifact/V1/RIP2
+Deep/Artifact/V1/RRM1
+Deep/Artifact/V1/RRL1
+Deep/Artifact/V1/DWT1
 Deep/Artifact/V1/DPC1
 Deep/Artifact/V1/DPR1
 Deep/Artifact/V1/DPS1
@@ -159,7 +197,16 @@ Deep/Cutover/V1/head-lease
 Deep/Cutover/V1/quorum-lease
 Deep/Cutover/V1/deployment-subject
 Deep/Cutover/V1/component-subject
+Deep/Cutover/V1/release-root-genesis
+Deep/Cutover/V1/release-root-manifest
+Deep/Cutover/V1/release-manifest-key-id
+Deep/Cutover/V1/release-root-chain
+Deep/Cutover/V1/release-root-authority-head
+Deep/Cutover/V1/witness-terminal-receipt
+Deep/Cutover/V1/witness-terminal-quorum
 Deep/Cutover/V1/witness-set-root
+Deep/Cutover/V1/witness-set-successor
+Deep/Cutover/V1/subject-policy
 Deep/Cutover/V1/witness-heads
 Deep/Cutover/V1/witness-log-leaf
 Deep/Cutover/V1/witness-log-node
@@ -196,6 +243,7 @@ Deep/ProtectedState/V1/DXIB1
 Deep/ProtectedState/V1/DWL1
 Deep/ProtectedState/V1/MRLC1
 Deep/ProtectedState/V1/DPJ1
+Deep/ProtectedState/V1/RRL1
 ```
 
 The exact type numbers, magics, domains, field order and arithmetic are in the
@@ -211,17 +259,19 @@ machine registry. The required headline lengths are:
 | `KRT1` / `KRF1` | 412 / 300 |
 | `DCM1` / `DRA1` | 812 / 788 |
 | `DWD1` / `DCP1` / `DCS1` / `DCT1` | 1,217 / 706 / 839 / 414 |
-| `DCN1` | `555 + 32*(P+Q)`, `P,Q <= 32`, maximum 2,603 |
-| `DCQ1` | `375 + receiptBlob`, exactly three receipts, maximum 8,196 |
-| `DHL1` / `DCL1` | `507 + 32*Q`, maximum 1,531 / maximum 4,974 |
+| `DCN1` | `758 + 32*(P+Q)`, `P,Q <= 32`, maximum 2,806 |
+| `DCQ1` | `375 + receiptBlob`, exactly three receipts, maximum 8,805 |
+| `DHL1` / `DCL1` | `710 + 32*Q`, maximum 1,734 / maximum 5,623 |
 | `DWL1` / `DRC1` / `DPL1` | 708 / `482 + ciphertext` / 576 |
 | `DBG1` / `RIB1` / `XIB1` | 296 / 772 / 452 |
 | `DNR1` / `MRL2` | 756 / 326 |
+| `RIP2` | `573 + 32*N`, `0 <= N <= 12`, maximum 957 |
 | `DPC1` | `427 + addressLength`; IPv4 431, IPv6 443, DNS 430..680 |
 | `DXP1` | fixed transcript 168 |
 | `DPR1` / `DPS1` | 408 / 444; successful response frame 748 |
 | `MRLC1` | `898 + catalogBytes`, maximum 16,778,114 |
 | `DPJ1` | 609 |
+| `RRM1` / `RRL1` / `DWT1` | 332 / 502 / 714 |
 
 ## 3. Identity and key authority
 
@@ -230,17 +280,183 @@ device-certificate-issuer, revocation and reset-control Ed25519 keys. The
 account key self-signs and the other three keys prove possession over the same
 unsigned bytes. `DeepAccountId` is a domain-separated hash of network,
 generation and account key.
+`DPA1.minimumSuite` is exactly `0x0001`; `DPD1.suite` is exactly `0x0001`.
+No other value is a fallback or negotiation signal.
 
 `KRT1` rotates a release-root, device-issuer, revocation or reset-control key.
 The old key signs and the new key proves possession. `KRF1` terminally revokes
 one role. Generations advance exactly by one and bind the predecessor. A
 same-generation byte change or ancestry conflict sets a permanent fork latch.
+The shared key-scope byte is closed as `ReleaseRoot=0x01`,
+`DeviceCertificateIssuer=0x02`, `AccountRevocation=0x03`, and
+`ResetControl=0x04`; zero and all other scopes reject. The shared action byte
+is `Rotate=0x01` and `Revoke=0x02`: KRT requires Rotate and KRF requires
+Revoke. A record/action mismatch rejects before signature verification.
+
+The initial ReleaseRoot is never caller supplied and is not inferred from an
+account artifact. It is carried by the signed 332-byte `RRM1` release-root
+manifest. Its exact ten fields are:
+
+```text
+network16, manifestGeneration8, environmentResetId32,
+releaseRootGeneration8, releaseRootEd25519Public32, activationAt8,
+componentMask8, schemaFingerprint32, manifestSignerKeyId32,
+manifestSignature64
+```
+
+Wave 1 requires manifest generation zero, ReleaseRoot generation zero,
+component mask `0x0f`, nonzero reset ID/root key/schema fingerprint/key ID, and
+`txNow >= activationAt`. The unsigned form is fields 1..9 and the signature
+domain is `Deep/Cutover/V1/release-root-manifest`. `manifestSignerKeyId32` is
+`SHA256-D(Deep/Cutover/V1/release-manifest-key-id,
+manifestSignerEd25519Public32)`.
+
+Each component receives an immutable `ReleaseRootManifestPinV1` from the
+signed application-release/cutover deployment input through a read-only path
+outside every resettable store. Its exact canonical tuple is
+`network16||manifestSignerKeyId32||manifestSignerEd25519Public32||
+minimumManifestGeneration:u64be=0||expectedRRM1Ref38`. The source is verified
+by the component's existing offline software-release trust root before process
+startup and contains exactly one row for the configured network. Network,
+key-ID derivation, generation, exact RRM1 reference and RRM1 signature must all
+match; unknown, duplicate, zero, missing, caller-provided or DB-only values
+fail before signature/network callbacks. The exact source fingerprint is:
+
+```text
+SHA256-D(Deep/Cutover/V1/release-root-genesis,
+  network16||manifestSignerKeyId32||manifestSignerEd25519Public32||
+  minimumManifestGeneration:u64be=0||expectedRRM1Ref38)
+```
+
+Only an internal factory that consumes that verified read-only pin and exact
+RRM1 returns a sealed ReleaseRoot genesis capability. No public API accepts a
+root public key, fingerprint, manifest policy or an `alreadyVerified` flag.
+
+The current ReleaseRoot LKG is the protected 502-byte `RRL1`. Its exact 16
+fields are:
+
+```text
+network16, genesisRRM1Ref38, currentGeneration8, currentPublic32,
+currentTransitionRef38, terminalKRF1Ref38, terminalState1, forkLatch1,
+latestDWDGeneration8, latestDWDRef38, latestWitnessEpoch8,
+chainEntryCount2, chainCheckpointHash32, terminalDWT1Ref38,
+protectedStateKeyId32, HMAC32
+```
+
+Its HMAC uses the generic protected-record construction and
+`Deep/ProtectedState/V1/RRL1`; the 32-byte non-DB protected-state key and key
+ID come only from the component's read-only protected-state configuration.
+Genesis stores generation zero, the RRM1 root key, and `currentTransitionRef`
+equal to the exact RRM1 reference. RRL is not created before its first DWD:
+one initialization transaction stores first DWD generation zero with
+witnessEpoch one and zero DWD predecessor plus the genesis RRL whose
+latest-DWD fields reference that exact DWD. A crash before commit leaves no
+RRL/DWD; retry stores the same pair. A production RRL never has a zero latest
+DWD reference or zero witness epoch. Terminal and fork latches are canonical
+boolean bytes and permanent once one. `terminalKRF1Ref` and `terminalDWT1Ref`
+are both zero iff terminal is zero and both exact nonzero refs iff terminal is
+one. `chainEntryCount` is 0..64. Its checkpoint is:
+
+```text
+SHA256-D(Deep/Cutover/V1/release-root-chain,
+  genesisRRM1Ref38||entryCount:u16be||orderedExactKRT1OrKRF1Refs||
+  latestDWDRef38)
+```
+
+Every RRL read verifies HMAC before scalar use. Its public authority-head hash
+is independent of the local HMAC key:
+
+```text
+SHA256-D(Deep/Cutover/V1/release-root-authority-head,
+  genesisRRM1Ref38||currentGeneration8||currentPublic32||
+  currentTransitionRef38||terminalKRF1Ref38||terminalState1||forkLatch1||
+  latestDWDGeneration8||latestDWDRef38||latestWitnessEpoch8||
+  chainEntryCount2||chainCheckpointHash32||terminalDWT1Ref38)
+```
+
+Mutation takes a network-scoped
+lock and CASes the exact old RRM/current generation/ref/terminal/fork/chain/DWD
+tuple; it stores canonical KRT/KRF/DWD bytes and the recomputed RRL HMAC in one
+transaction. Exact replay returns the same LKG. Same-generation changed bytes,
+different ancestry, or two candidates permanently sets the fork latch.
+
+`oldKeyHash32` is nonzero and exactly
+`SHA256-D(Deep/IdentityAuth/V1/key-hash,
+network16||scope1||accountHash32||accountGeneration:u64be||currentPublic32)`.
+The candidate public key is nonzero and differs from current. A ReleaseRoot
+KRT1 has scope one, zero account hash/generation, transition generation
+`current+1`, and predecessor equal to the exact current RRM1 (first rotation)
+or KRT1 reference. Non-genesis predecessor bytes are re-decoded as exact KRT1,
+with type, scope, network, zero account tuple, generation, public key and
+signatures reverified. Old-root signature and new-root PoP are both required.
+
+A root rotation prepares one KRT1 and one successor DWD1. Every DWD successor,
+including a byte-identical witness set reauthorization, advances both DWD
+delegation generation and the network-global witness epoch exactly by one;
+witness epoch zero is forbidden and no two DWD refs share an epoch. The DWD advances
+exactly from the current DWD, references the candidate KRT1, is signed by the
+new root, has `validFrom >= KRT1.effectiveAt`, and satisfies configured clock
+skew. Activation also requires `txNow >= KRT1.effectiveAt` and
+`txNow >= DWD1.validFrom`. Neither becomes current alone: one CAS/transaction commits exact KRT,
+DWD and RRL; crash recovery exact-replays or leaves the old pair current.
+Ordinary DWD rotation uses the unchanged current root/reference. At genesis a
+DWD references the exact RRM1, never a zero authority reference.
+
+A ReleaseRoot KRF1 has the same exact ancestry, action two and old signature,
+but does not terminally update RRL until terminal state is quorum durable. The
+fixed 714-byte `DWT1` contains ten fields:
+
+```text
+network16, priorDWD1Ref38, witnessEpoch8, releaseRootGeneration8,
+releaseRootTransitionRef38, KRF1Ref38, effectiveAt8, receiptCount1=3,
+threeSortedReceiptRows435, quorumDigest32
+```
+
+Each 145-byte row is
+`witnessId32||treeSize8||treeRoot32||durabilityClass1||issuedAt8||signature64`
+and comes from a distinct witness in the exact prior DWD. The row signature is
+the standard signature wrapper under
+`Deep/Cutover/V1/witness-terminal-receipt` over the 235-byte payload formed by
+DWT fields 1..7 followed by that row's witness ID, tree size/root, durability
+and issuedAt. Durability class is one and witnesses sign only after fsyncing
+the KRF terminal leaf/checkpoint. The quorum digest is:
+
+```text
+SHA256-D(Deep/Cutover/V1/witness-terminal-quorum,
+  fields1Through7CanonicalValues||receiptCount1||threeSortedReceiptRows435)
+```
+
+Exactly three valid sorted distinct receipts are required. Only after DWT
+verification does one RRL CAS keep generation/current public/current
+transition/latest-DWD fields unchanged, set terminal KRF/DWT refs and state,
+increment chain count by one, and recompute chain checkpoint/HMAC. Crash after
+external durability but before local commit replays the same DWT and completes
+that exact CAS. At `effectiveAt`, DWDs authorized by that root and all leases
+referencing them are unusable; witnesses issue no successor receipt or lease.
+Sensitive use reloads the current nonterminal RRL and a fresh 3-of-4 DCL whose
+inner DHL signatures bind exact DWD ref, root generation/transition,
+terminal KRF ref/state and exact RRL authority-head hash. A restored or empty store must
+recover exact RRM1, at most 64 ordered KRT/KRF records, current DWD and a fresh
+externally witnessed DCL from the authenticated recovery capsule; it verifies
+the full chain/checkpoint and DCL before creating a new local RRL HMAC. Missing,
+expired, terminal, forked, inconsistent or externally newer evidence fails
+closed. Thus a rolled-back DB cannot reactivate an old root or DWD.
+
+Entry 65 is terminal `ReleaseRootChainExhausted`; Wave 1 has no compaction or
+online checkpoint rollover. Continuing requires a separately reviewed offline
+signed manifest and destructive clean break, never automatic import.
 
 `DPD1` binds independent device Ed25519 and X25519 keys, a random device ID and
 random 32-byte revocation handle. `DPM1` binds a mailbox role key and its own
 random revocation handle to an exact `DPD1`; the device authorizes and the role
 key proves possession. Their observed DRS revision/reference/count/head must be
 the exact current snapshot at issuance.
+DPD capabilities are a u64 mask containing only
+`MailboxRoleIssuer=0x0000000000000001`; the mask is nonzero and therefore
+exactly one in Wave 1. DPM capabilities are `RouteOwnerControl=0x01` and
+`RouterCertificateIssuer=0x02`, with allowed mask `0x03` and at least one bit
+set. Owner-control authorization requires the first bit; DNR issuance requires
+the second. Unknown bits reject before signature verification.
 
 `mailboxOwnerId32` is nonzero and equals
 `SHA256-D(Deep/IdentityAuth/V1/mailbox-owner-id,
@@ -261,12 +477,33 @@ subjectUnsignedCanonicalHash[32] || holderX25519Public[32] ||
 issuerEphemeralPublic[32] || nonce[32] || issuedAt:u64be || expiresAt:u64be
 ```
 
-It is 168 bytes. The window is at most 300 seconds. The holder derives an
-X25519 shared secret, an HKDF-SHA-256 key under the registry domain and returns
-HMAC-SHA-256 over `U32BE(168)||DXP1`. The issuer independently verifies it,
-stores the domain hash of transcript plus proof, and erases the ephemeral
+It is 168 bytes. The window is at most 300 seconds. After rejecting all-zero
+and low-order X25519 results, let `Z32` be the exact 32-byte X25519 shared
+secret. Freeze the complete 168-byte transcript once. Compute:
+
+```text
+salt32 = SHA256(U16BE(len("Deep/IdentityAuth/V1/x25519-pop-salt")) ||
+                ASCII("Deep/IdentityAuth/V1/x25519-pop-salt") ||
+                network16 || role1 || subjectUnsignedCanonicalHash32 ||
+                nonce32 || issuerEphemeralPublic32 || holderX25519Public32)
+prk32 = HKDF-SHA-256-Extract(salt32, Z32)
+info = U16BE(len(roleDomain)) || ASCII(roleDomain) || U32BE(168) || DXP1
+key32 = HKDF-SHA-256-Expand(prk32, info, 32)
+proof32 = HMAC-SHA-256(key32, U32BE(168) || DXP1)
+transcriptHash32 = SHA256-D(Deep/IdentityAuth/V1/x25519-pop-transcript-hash,
+                            U32BE(168)||DXP1||U32BE(32)||proof32)
+```
+
+`roleDomain` is exactly `Deep/IdentityAuth/V1/x25519-pop-key/device` for
+role one and `Deep/IdentityAuth/V1/x25519-pop-key/router` for role two. No
+other info, salt field, length or output size is accepted. The issuer
+independently verifies the exact proof, stores only `transcriptHash32`, and
+erases the ephemeral
 private key, shared secret, HKDF key and proof. All-zero/low-order results,
 role/network/subject changes and nonce reuse reject.
+The role byte is closed as `Device=0x01` and `Router=0x02`; zero and every
+other value reject before agreement. Device proof is accepted only for an
+exact DPD subject and router proof only for an exact DNR subject.
 
 ## 4. Revocation and account reset
 
@@ -277,6 +514,17 @@ hash. A DRS entry is exactly 62 bytes:
 targetKind:1 || DRT1Ref:38 || targetGeneration:u64be ||
 revokedAt:u64be || reason:u16be || reserved[5]
 ```
+
+The target-kind byte is closed as `DeviceCertificate=0x01`,
+`MailboxRoleCertificate=0x02`, and `AccountTerminal=0x03`; zero, `0xff` and
+all other values reject before a catalog lookup. Device and mailbox targets
+bind exact DPD and DPM references respectively. AccountTerminal binds the
+exact DPA as described below and is the only target kind permitted to use the
+zero `targetNotAfter` sentinel.
+The DRS reason u16 registry is `KeyCompromise=0x0001`,
+`DeviceLost=0x0002`, `RoleRetired=0x0003`, and
+`AccountShutdown=0x0004`. AccountTerminal requires AccountShutdown;
+nonterminal targets reject AccountShutdown. Zero and all other reasons reject.
 
 The chained head is
 `SHA256-D(Deep/IdentityAuth/V1/revocation-entry-head,
@@ -309,6 +557,9 @@ DPAC/DCM/DRS tuple to `newAccountGeneration=old+1`, a new DPAC, new DCM, cutoff
 and nonce. Old reset-control authorizes it; new account and reset keys prove
 possession. The new external DCP exact-references the DRA. No state migration
 or implicit fork-latch clearing exists.
+Its reason u16 registry is `UserInitiatedRecovery=0x0001`,
+`KeyCompromise=0x0002`, and `AdministrativeReset=0x0003`; zero and every other
+value reject before the old-control signature callback.
 
 ## 5. External monotonic witness
 
@@ -320,12 +571,32 @@ requires 3-of-4 receipts.
 
 Each descriptor is exactly 116 bytes:
 `witnessId32||Ed25519Public32||endpointKind1||reservedZero1||address16||port2||TLS-SPKI32`.
-IPv4 occupies the first four address bytes and requires a zero tail. A DWD
-rotation advances exactly by one from the signed predecessor. Retained witness
-heads copy byte-exact; a newly added witness starts only from a DWD-authorized
-genesis head and cannot vote until its inclusion/consistency bootstrap is
-verified; a removed witness remains in historical LKG evidence but cannot vote
-in the successor epoch.
+`endpointKind` is closed as `IPv4=0x01` and `IPv6=0x02`; zero and every other
+value reject before address or network work. IPv4 occupies the first four
+address bytes and requires a zero tail; IPv6 occupies all 16 bytes. Port is
+nonzero and the TLS SPKI hash is nonzero. A DWD rotation advances exactly by
+one from the signed predecessor. A Wave 1 successor retains exactly four
+witnesses or replaces exactly one: at least three successor descriptors MUST
+retain the predecessor witness ID and Ed25519 public key byte-exact. Replacing
+two, three or four witnesses, including an all-new epoch, rejects and
+permanently latches the deployment fork before any successor activation.
+Retained witness heads copy byte-exact; a newly added witness starts only from
+a DWD-authorized genesis head and cannot vote until its inclusion/consistency
+bootstrap is verified; a removed witness remains in historical LKG evidence
+but cannot vote in the successor epoch.
+
+The unsigned DWD core is the canonical 857-byte record containing fields 1
+through 16 with `fieldCount=16` and no signature fields. The ReleaseRoot signs
+`SIGINPUT(Deep/Cutover/V1/witness-delegation,0x0001,857,unsignedDWDCore857)`.
+Each successor descriptor, in descriptor order, signs
+`SIGINPUT(Deep/Cutover/V1/witness-set-successor,0x0001,889,
+unsignedDWDCore857||signerWitnessId32)`. For every retained descriptor this is
+also the predecessor-set authorization and MUST verify under the same
+predecessor key. Therefore a replacement successor carries an exact old
+3-of-4 authorization from the three retained witnesses plus the replacement's
+new-key proof of possession; an unchanged successor carries all four retained
+authorizations. No caller-supplied bootstrap approval, key alias or detached
+replacement record is accepted.
 
 `DWD1.maximumTreeSize` is nonzero, at most `2^32`, never decreases for a
 retained witness and fences every receipt, proof and lease before signature
@@ -355,6 +626,33 @@ network||accountHash||resetId)
 The exact component subject is
 `SHA256-D(Deep/Cutover/V1/component-subject,
 network16||accountHash32||componentKind:u16be||accountRevocationHandle32)`.
+The component-kind registry is closed: `Registry=0x0001`, `XNode=0x0002`,
+`Shared=0x0003`, and `MAUI=0x0004`. Zero and every other value reject before
+signature verification. Every DCM component table and DCS component table has
+exactly those four rows in increasing numeric order; DCP and DPL use exactly
+the row kind for their component. The DWD component mask is exactly `0x0f` for
+this Wave 1 set. No repository name, deployment alias or caller-supplied value
+is converted into a component kind at runtime.
+`DWD1.subjectPolicyHash` is nonzero and is recomputed before signature or
+network callbacks from the closed 63-byte Wave 1 policy:
+
+```text
+SHA256-D(Deep/Cutover/V1/subject-policy,
+ network16 || policyVersion:u16be=1 || subjectAclKind:u8=1 ||
+ componentMask:u64be=0x0f || componentCount:u8=4 ||
+ sortedComponentKinds:u16be[4]=1,2,3,4 ||
+ maximumComponentRows:u8=4 || maximumDCPsPerSet:u8=4 ||
+ maximumActiveDCSPerSubject:u8=1 || maximumCheckpointTTL:u64be ||
+ maximumLeaseTTL:u64be || maximumTreeSize:u64be)
+```
+
+`subjectAclKind=1` means only a deployment subject derived by the exact
+`deployment-subject` formula and its exact four component subjects may enter
+the witness tree. All scalar inputs come from the signed DWD and the closed
+component registry; the immutable normative registry is the trusted policy
+source. Zero, a caller-selected hash, a different network/mask/limit, or an
+unknown ACL kind rejects before witness, signature, allocation or network
+work.
 Witness tree and quorum transcripts are exact:
 
 ```text
@@ -403,6 +701,24 @@ contains exactly three ordered distinct receipts. A fresh `DHL1` also binds the
 caller's prior tree size/root and a consistency proof; `DCL1` requires three
 matching current subject sequence/DCS heads. Sensitive issue/use requires a
 fresh lease. Offline operation stops when the lease expires.
+
+Every signed DCN1 and DHL1 additionally carries and signs the exact
+`DWD1Ref38`, ReleaseRoot generation, ReleaseRoot transition ref, terminal KRF
+ref/state, and ReleaseRoot authority-head hash defined in section 3. The
+terminal KRF ref is zero exactly when terminal state is zero. DCQ verifies all
+three DCN authority tuples equal; DCL repeats the common authority-head hash
+and verifies all three inner DHL tuples equal it before returning a lease.
+Receipt/lease creation re-decodes the exact RRM/KRT/KRF/DWD chain; a stale
+authority tuple, terminal state or fork latch rejects before signing. Thus a
+fresh DCL proves the current witness set and current ReleaseRoot authority head,
+not merely a set-manifest root/epoch.
+
+The `DCN1.durabilityClass` byte is exactly
+`FsyncReplicated=0x01`; zero and all other values reject. `DWD1.componentMask`
+is exactly `0x0000000f`, denoting all four closed component kinds; subsets,
+unknown bits and zero reject. The one-byte `forkLatch` fields in `DPL1` and
+`DWL1` accept only zero or one, are HMAC-covered, and once one can never return
+to zero.
 
 `DWL1` retains all four 72-byte heads
 `witnessId32||treeSize8||treeRoot32`. A 3-of-4 DCL updates exactly its three
@@ -557,10 +873,90 @@ root = SHA256-D(Deep/NativeRouting/V2/mrl-root,
   paddedLeafCount:u32be||nodeRoot32)
 ```
 
+The unchanged outer `MIP1` is the sole MRL2 membership-proof carrier. Its
+opaque inclusion-proof bytes are exactly one canonical `RIP2` record; its
+magic is `RIP2`, version is 2, header suite is `0x0000`, and its ArtifactRef
+type is 41 under `Deep/Artifact/V1/RIP2`. The exact 14-field table is:
+
+Here “outer MIP1” means only
+`Deep.Protocol.DeepExtension.MailboxCapabilities.MailboxReplicaMembershipProof`
+encoded by `MailboxPeerReplicationCodec.EncodeMembershipProof` and decoded by
+`DecodeMembershipProof`. It is `120 + innerLength` bytes: magic at 0, version
+at 4, reserved-zero bytes 5..7, `ReplicaId32` at 8,
+`SigningPublicKey32` at 40, epoch u64be at 72, membership commitment32 at 80,
+inner length u16be at 112, reserved-zero bytes 114..119, and opaque inner bytes
+at 120. The field is exactly `SigningPublicKey`, not an authority alias. Wave
+1 narrows its prior 4096-byte opaque allowance to canonical RIP2 573..957
+bytes at every DNP entry point.
+
+The unrelated P04
+`Deep.Protocol.DeepExtension.Membership.MembershipInclusionProof` also has
+magic MIP1 but is a different `72 + 32*N` record with network, sequence,
+commitment, leaf index, depth and siblings and has no opaque inner carrier.
+That P04 model/API and its unchanged RIP1 never enter this verifier. Dispatch
+selects the exact mailbox class/API before magic inspection; a P04 MIP1, RIP1,
+MRL1, or a caller-decoded generic MIP1 rejects before allocation.
+
+```text
+network16, resetId32, MSMSequence8, epoch8, protocolVersion2,
+descriptorGeneration8, memberCount4, paddedLeafCount4, leafIndex4,
+MRLRoot32, MRL2Length4, canonicalMRL2_326, siblingCount1,
+siblingHashes32N
+```
+
+The two-byte `protocolVersion` field is exactly `0x0002`; zero, one and every
+other value reject before copying the embedded descriptor or siblings.
+
+The fixed values total 449 bytes, so the canonical length is
+`12 + 14*8 + 449 + 32*N = 573 + 32*N`. `memberCount` is `1..4096`;
+`paddedLeafCount` is the least power of two greater than or equal to
+`memberCount`; `leafIndex < memberCount`; `siblingCount` is exactly
+`log2(paddedLeafCount)` and therefore `0..12`; and total RIP2 length is
+`573..957`. `MRL2Length` is exactly 326 and the embedded bytes must re-encode
+byte-for-byte as canonical MRL2. Every scalar, count, multiplication and exact
+outer MIP1 proof length is preflighted before copying the MRL2 or a sibling.
+
+Sibling hashes are ordered only from the leaf level toward the root; no
+direction byte exists. For sibling level `L=0..N-1`, the verifier uses bit `L`
+of `leafIndex` to place the running hash left or right, uses the supplied hash
+for the opposite child, and hashes with the existing MRL node formula using
+`level=L` and `nodeIndex=leafIndex>>(L+1)`. The initial real leaf uses the exact
+embedded MRL2 and `leafIndex`; the final node is wrapped by the exact MRL root
+formula above. Empty padded leaves use the existing empty-leaf formula and
+cannot be supplied as alternate real descriptors.
+
+One high-level sealed verifier accepts canonical MIP1 bytes plus a sealed MRLC
+composite LKG. Before allocation or callbacks it requires the inner header to
+be exact RIP2/version2/suite0/fieldCount14, rejects `RIP1`, MRL1 and every other
+inner magic, and enforces the bounds above. It then requires RIP2 network,
+reset ID, MSM sequence, epoch, member count and root to equal the sealed MRLC;
+descriptor generation to equal embedded MRL2; leaf index to equal the router-ID
+sorted MRC tuple position; outer MIP1 replica ID/epoch/root to equal the
+embedded router/epoch/root; and the outer MIP1 signing key to equal the router
+Ed25519 key in the exact verified DNR1 tuple. Only after the root recomputes
+does it return a defensively owned sealed MRL2 membership capability. Decoded
+RIP2/MIP1 models, raw sibling lists and caller assertions are not authorization
+APIs. Existing RIP1 remains valid only in its unchanged legacy verifier and is
+unconditionally rejected at every DNP entry point.
+
 `DNR1` binds exact DPMC, PMA and PMR provenance, independent router Ed25519 and
 X25519 keys, a random revocation handle, roles and capabilities. `DPC1` is
 signed by that router and advances exactly by one from the exact MRL2 anchor
 DPC hash, never from an MRL hash.
+
+DNR/MRL roles are one u64 bitmask: `PeerIngress=0x0000000000000001`,
+`PeerCore=0x0000000000000002`, and
+`MailboxReplica=0x0000000000000004`; the allowed mask is `0x7` and at least
+one bit is required. Capabilities are a separate u64 bitmask:
+`NativePeerMailboxV2=0x01`, `ClientMailboxIngressV2=0x02`,
+`ProductionMailboxCacheV2=0x04`, `ProductionMailboxCapacityV1=0x08`, and
+`MembershipCatalogV2=0x10`; the allowed mask is `0x1f` and at least one bit is
+required. DNR, its exact MRL2 row, and every DPC in that descriptor's contact
+chain must carry identical capability masks; DPC has no independent capability
+namespace. Client ingress, cache or capacity requires `MailboxReplica`; membership-catalog service
+requires `PeerIngress` or `PeerCore`; and native peer mailbox requires at least
+one router role. Unknown bits and invalid combinations reject before contact
+or network callbacks.
 
 DNS DPC addresses are 3..253 lower-case ASCII bytes with at least two labels.
 Labels are 1..63 LDH bytes and start/end alphanumeric. Empty labels, trailing
@@ -568,13 +964,24 @@ dots, wildcards, underscores and Unicode reject. Each connection resolves once
 to at most 16 A/AAAA results; every address must be public unicast. The exact
 set is frozen through the socket callback, remote endpoint check, SNI and TLS
 SPKI verification. A second DNS resolution is forbidden.
+The DPC endpoint-kind byte is closed as `IPv4=0x01`, `IPv6=0x02`, and
+`DNS=0x03`; zero and all other values reject before address allocation. The
+address length is exactly 4 for IPv4, exactly 16 for IPv6, and 3..253 for DNS.
+The DPC flags u64 mask permits only `NoNextPin=0x01`. The current TLS SPKI hash
+is always nonzero. When NoNextPin is set the next hash is exactly zero; when it
+is clear the next hash is nonzero and differs from current. Unknown flag bits
+or a flag/pin-shape mismatch reject before DNS or socket callbacks.
 
 ## 7. Native peer request and endpoint
 
 `DPR1` binds both sender and recipient DPC references, the exact reviewed PRQ2
 hash/length, identities, operation and identical time window. Its request ID is
-exactly the PRQ2 replay nonce. Only reviewed MailboxPeerV2 Store/Tombstone
-operation `1` is accepted; storage/privacy IDs remain reserved and reject.
+exactly the PRQ2 replay nonce. The outer DPR1/DPJ1 `operation` is a u16 and the
+only accepted value is `MailboxPeerV2=0x0001`; it selects the already reviewed
+inner mailbox protocol and is not a Store/Tombstone discriminator. The retained
+inner PRQ2 operation byte remains `Store=0x01` or `Tombstone=0x02`. Zero,
+unknown outer values, and interpreting inner value two as an outer operation
+reject before inner parsing; storage/privacy outer IDs remain reserved and reject.
 `DPS1` repeats both DPC references and binds the exact DPR and exact 296-byte
 MRR2. It never wraps the client-side 776-byte MQR3.
 
@@ -661,7 +1068,8 @@ Destructive reset must not be started merely because wire packages exist.
 The machine vector skeleton is normative for test names and outcomes. It
 requires arithmetic/truncation/tag/suite tests, key-role and PoP substitution,
 all DRS boundaries and forks, DRA/reset rollback, independent membership/PMA
-substitution, MRL root cross-feed, DPC DNS/rebinding, sender/recipient swaps,
+substitution, MRL root cross-feed, exact MIP1/RIP2 proof verification and
+legacy RIP1/MRL1 rejection, closed component kinds, DPC DNS/rebinding, sender/recipient swaps,
 PRQ/MRR type confusion, every PREPARE/CAS/COMMIT crash point, witness quorum
 split/equivocation/consistency/freeze, lease expiry, capsule loss/corruption,
 whole-store rollback, exact replay and package inventory checks.

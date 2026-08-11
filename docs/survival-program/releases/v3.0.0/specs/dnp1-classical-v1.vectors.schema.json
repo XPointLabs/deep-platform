@@ -4,16 +4,17 @@
   "title": "DNP1 classical identity/reset/native-routing vector skeleton",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "status", "decision", "workPackage", "cases"],
+  "required": ["$schema", "schemaVersion", "status", "decision", "workPackage", "cases"],
   "properties": {
+    "$schema": { "const": "dnp1-classical-v1.vectors.schema.json" },
     "schemaVersion": { "const": "1.0.0" },
     "status": { "const": "required-before-code" },
     "decision": { "const": "DR-0003" },
     "workPackage": { "const": "DNP1-PROTO-classical-identity-reset-routing" },
     "cases": {
       "type": "array",
-      "minItems": 60,
-      "maxItems": 60,
+      "minItems": 89,
+      "maxItems": 89,
       "uniqueItems": true,
       "items": { "$ref": "#/$defs/case" }
     }
