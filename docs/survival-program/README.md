@@ -27,6 +27,13 @@ An `AGENTS.md` may narrow execution mechanics but may not silently change the ac
 
 [`DR-0001`](decisions/DR-0001-local-execution-approval.md) records Mr. X's approval to execute iteratively in isolated local worktrees and create local commits. It does **not** authorize push, pull, fetch, PR creation, merge, external package publication, UAT/production contract deployment or public rollout.
 
+[`DR-0003`](decisions/DR-0003-deep-native-session-clean-break.md) records
+Mr. X's accepted strategic decision to replace Session compatibility with one
+Deep-native protocol through a staged pre-production clean break. The decision
+freezes new compatibility work and defines the boundary for the next sprint;
+implementation still requires a new SemVer program release and revision, so
+the immutable `v2.0.0` manifest is not silently changed.
+
 Mr. X fills every internal human role named in the program. Independent crypto/security review and specialized legal advice remain external gates where independence or professional qualification is required; they cannot be self-approved by an implementation agent.
 
 ## Work-package identity
