@@ -13,8 +13,8 @@
     "workPackage": { "const": "DNP1-PROTO-classical-identity-reset-routing" },
     "cases": {
       "type": "array",
-      "minItems": 89,
-      "maxItems": 89,
+      "minItems": 105,
+      "maxItems": 105,
       "uniqueItems": true,
       "items": { "$ref": "#/$defs/case" }
     }
@@ -29,7 +29,7 @@
         "area": {
           "enum": [
             "grammar", "identity", "revocation", "reset", "witness",
-            "membership", "routing", "peer", "recovery", "package"
+            "membership", "routing", "peer", "recovery", "api", "package"
           ]
         },
         "outcome": {

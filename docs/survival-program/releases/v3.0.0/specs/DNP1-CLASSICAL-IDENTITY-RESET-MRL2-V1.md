@@ -328,9 +328,14 @@ SHA256-D(Deep/Cutover/V1/release-root-genesis,
   minimumManifestGeneration:u64be=0||expectedRRM1Ref38)
 ```
 
-Only an internal factory that consumes that verified read-only pin and exact
-RRM1 returns a sealed ReleaseRoot genesis capability. No public API accepts a
-root public key, fingerprint, manifest policy or an `alreadyVerified` flag.
+The consumer-internal deployment-source verifier emits the complete immutable
+pin value, not authority. The public Protocol relative verifier accepts only
+that complete value, exact RRM1 and `txNow`; it returns a sealed
+signature-relative fact. No public API accepts a standalone root public key,
+fingerprint, manifest policy or an `alreadyVerified` flag, and no public
+factory converts the pin or relative fact into a ReleaseRoot genesis
+capability. Consumer-local authority exists only after its internal source
+verifier joins the same immutable source to the relative result.
 
 The current ReleaseRoot LKG is the protected 502-byte `RRL1`. Its exact 16
 fields are:
@@ -355,7 +360,9 @@ RRL/DWD; retry stores the same pair. A production RRL never has a zero latest
 DWD reference or zero witness epoch. Terminal and fork latches are canonical
 boolean bytes and permanent once one. `terminalKRF1Ref` and `terminalDWT1Ref`
 are both zero iff terminal is zero and both exact nonzero refs iff terminal is
-one. `chainEntryCount` is 0..64. Its checkpoint is:
+one. `chainEntryCount` is the ReleaseRoot transition count only: the number of
+ordered KRT/KRF records, `0..64`. It is not the DWD ancestry count. Its
+checkpoint is:
 
 ```text
 SHA256-D(Deep/Cutover/V1/release-root-chain,
@@ -401,6 +408,11 @@ skew. Activation also requires `txNow >= KRT1.effectiveAt` and
 DWD and RRL; crash recovery exact-replays or leaves the old pair current.
 Ordinary DWD rotation uses the unchanged current root/reference. At genesis a
 DWD references the exact RRM1, never a zero authority reference.
+The ReleaseRoot transition chain contains at most 64 KRT/KRF records. The
+independent complete DWD ancestry contains genesis plus at most 64 successors,
+therefore `1..65` exact DWD records. Every KRT has exactly one paired successor
+DWD that references it; an ordinary DWD successor has no KRT. A KRF never
+fabricates a DWD successor and instead terminates through exact DWT.
 
 A ReleaseRoot KRF1 has the same exact ancestry, action two and old signature,
 but does not terminally update RRL until terminal state is quorum durable. The
@@ -436,15 +448,21 @@ referencing them are unusable; witnesses issue no successor receipt or lease.
 Sensitive use reloads the current nonterminal RRL and a fresh 3-of-4 DCL whose
 inner DHL signatures bind exact DWD ref, root generation/transition,
 terminal KRF ref/state and exact RRL authority-head hash. A restored or empty store must
-recover exact RRM1, at most 64 ordered KRT/KRF records, current DWD and a fresh
-externally witnessed DCL from the authenticated recovery capsule; it verifies
-the full chain/checkpoint and DCL before creating a new local RRL HMAC. Missing,
-expired, terminal, forked, inconsistent or externally newer evidence fails
-closed. Thus a rolled-back DB cannot reactivate an old root or DWD.
+recover exact RRM1, `0..64` ordered KRT/KRF records, and every one of the
+`1..65` DWD ancestry records. Each KRT/DWD pair and every independent DWD
+successor is reverified. A nonterminal restore additionally requires one fresh
+exact externally witnessed DCL from the authenticated recovery capsule and
+verifies it before creating a new local RRL HMAC. A terminal restore requires
+the exact durable DWT, returns a sealed terminal/no-use result, and neither
+requires nor accepts DCL. DWT is present if and only if RRL is terminal;
+otherwise DCL is present and DWT is absent. Missing, expired, forked,
+inconsistent or externally newer evidence fails closed. Thus a rolled-back DB
+cannot reactivate an old root or DWD.
 
-Entry 65 is terminal `ReleaseRootChainExhausted`; Wave 1 has no compaction or
-online checkpoint rollover. Continuing requires a separately reviewed offline
-signed manifest and destructive clean break, never automatic import.
+ReleaseRoot transition 65 or DWD ancestry record 66 is terminal
+`ReleaseRootChainExhausted`; Wave 1 has no compaction or online checkpoint
+rollover. Continuing requires a separately reviewed offline signed manifest
+and destructive clean break, never automatic import.
 
 `DPD1` binds independent device Ed25519 and X25519 keys, a random device ID and
 random 32-byte revocation handle. `DPM1` binds a mailbox role key and its own
@@ -460,7 +478,12 @@ the second. Unknown bits reject before signature verification.
 
 `mailboxOwnerId32` is nonzero and equals
 `SHA256-D(Deep/IdentityAuth/V1/mailbox-owner-id,
-network16||accountHash32||DPMCRef38||mailboxEd25519Public32)`. `routerId32` is
+network16||accountHash32||mailboxEd25519Public32)`. This preimage deliberately
+excludes `DPMCRef38`: `DPM1` contains `mailboxOwnerId32`, so including its own
+reference would be circular. The DPM verifier recomputes the owner ID first,
+then independently verifies the exact DPDC/account binding, device
+authorization signature and mailbox-role proof of possession. Rotating the
+mailbox-role Ed25519 key therefore creates a new owner ID. `routerId32` is
 nonzero and equals `SHA256-D(Deep/NativeRouting/V1/router-id,
 network16||mailboxOwnerId32||routerGeneration:u64be||routerEd25519Public32)`.
 The canonical certificate preimage is retained with the ID. Within one network
@@ -468,6 +491,12 @@ and account, the same owner ID with a different preimage latches the account;
 within one network, the same router ID with a different preimage latches the
 routing domain. Zero IDs, caller-selected IDs and silently regenerated IDs are
 invalid.
+
+The router-ID preimage likewise excludes `DNRCRef38`, and the component-subject
+preimage is exactly `network16||accountHash32||componentKind:u16be||
+accountRevocationHandle32`; it excludes `DCPRef38` and every hash derived from
+the component subject. Thus none of the three stable identifiers hashes the
+artifact that contains it or a target hash derived from itself.
 
 The exact `DXP1` possession transcript is:
 
@@ -771,16 +800,103 @@ AD = U32BE(metadataLength) ||
 ```
 
 `DRM1` plaintext is `"DRM1"||version:u8=1||reserved:u8=0||
-artifactCount:u16be`, followed by sorted unique rows
-`artifactType:u16be||length:u32be||canonicalHash32||exactBytes`; count is
-`0..64` and plaintext/ciphertext are bounded by the registry before
-allocation. `DRMHash`, `shadowStateHash`, and `nextPinCoreHash` use exactly
+artifactCount:u16be`, followed by canonical rows. A row key is the exact
+38-byte `ArtifactRef`:
+`artifactType:u16be||canonicalLength:u32be||canonicalHash32`; the row is
+`rowKey38||exactBytes`. Because these rows are ciphertext, the AEAD provider is
+invoked exactly once first. All following checks operate only on the resulting
+owned plaintext. Row keys are then required to be strictly increasing under
+unsigned bytewise lexicographic comparison of all 38 bytes. Equality, reversal
+or any duplicate, including an equal key paired with different bytes, rejects
+before per-row byte copy, artifact decode, reference hash, signature, network,
+storage or mutation callback. A direct plaintext-parser unit test may exercise
+the same ordering preflight with zero provider callbacks; it is not an
+encrypted integration claim.
+
+After bounds and ordering, every exact row is independently decoded and
+canonically recomposed. New DNP artifact types recompute their reference only
+with the exact `artifactHashDomains` entry. Retained `MSM1`, `PRQ2`, `MRR2`,
+`PMA1`, `PMR1`, D--G source, `MNG1`, `MDG1`, `MRV1` and `MMC1` use only their
+unchanged `retainedArtifactHashRules`. A type missing from both closed maps, in
+both maps, or cross-fed between map classes rejects. Canonical length and hash
+must reproduce the same `ArtifactRef38`. Authority ancestry follows decoded
+predecessor references, never physical row order. The exact
+maximum is 195 rows: one RRM, up to 64 KRT/KRF root transitions, all `1..65`
+DWD ancestry rows, exactly one terminal DWT or nonterminal DCL, and up to 64
+component-required rows. With the four-byte DRM header and 38-byte row
+overhead, the conservative authority closure is
+`4+(38+332)+64*(38+412)+65*(38+1217)+(38+5623)=116410` bytes. Component rows
+are bounded to 33,438,022 encoded bytes, so plaintext and ciphertext remain at
+most 33,554,432 bytes. Counts and total bytes are checked before allocation.
+`DRMHash`, `shadowStateHash`, and `nextPinCoreHash` use exactly
 the three recovery hash transcripts in the registry. Reusing a derived nonce
-for different metadata/ciphertext latches the recovery key. Decryption order
+is keyed only by `protectorKeyId32||derivedNonce24`. The stored value is
+`SHA256-D(Deep/Cutover/V1/recovery-aead,
+transactionId32||U32BE(ADLength)||AD||U64BE(ciphertextLength)||ciphertext||
+aeadTag16)`. The same key/value is exact replay; the same key with a different
+value permanently latches before AEAD. Decryption order
 is fixed: metadata preflight; checked lengths/counts; derive and compare nonce;
-freeze AD; bounded AEAD open; zero PRK/key; DRM preflight; every canonical row
-hash; required-artifact and Protocol restore; shadow/pin-core compare; only
+freeze AD; one bounded AEAD open; zero PRK/key; owned DRM plaintext
+metadata/order/uniqueness preflight; closed per-type reference verification;
+required-artifact and Protocol restore; shadow/pin-core compare; only
 then authorize COMMIT. No parser or callback runs before its bound is known.
+
+Recovery callback ownership is stricter than the wire grammar. Before any
+callback or `await`, the implementation validates every scalar and length
+bound and freezes the complete DRC metadata, ciphertext and provider input
+into defensively owned storage. The public surface accepts no raw recovery
+seed, key or nonce override. A typed internal provider performs the frozen
+HKDF; Protocol fixed-time compares its derived nonce with the stored nonce
+before AEAD open. The reuse-latch key is exactly
+`protectorKeyId32||derivedNonce24`; its stored hash value binds transaction ID,
+AD/metadata, ciphertext and tag as defined above. Exact key/value replay is
+allowed; the same key with a changed value permanently latches that protector.
+Successful plaintext is a one-shot owned value: it can be consumed
+once and is zeroed in `finally` on success, failure or cancellation.
+Cancellation at every signature, HMAC, agreement, AEAD and provider boundary
+yields no commit authority and retains no caller-owned buffer.
+
+### 5.1 Public API authority boundary
+
+The ReleaseRoot manifest API first freezes one canonical 332-byte `RRM1` and
+the complete immutable pin tuple `network16||manifestSignerKeyId32||
+manifestSignerEd25519Public32||minimumManifestGeneration:u64be=0||
+expectedRRM1Ref38`. It recomputes the artifact reference and fixed-time
+compares every pin byte and scalar before invoking Ed25519. Verification
+accepts one authoritative caller-supplied `txNow:u64`, copied once before any
+callback; it requires `manifestGeneration == minimumManifestGeneration == 0` and
+`txNow >= activationAt`. It has no clock callback. Its sealed, defensively
+owned, nonserializable result is only a signature-relative fact.
+
+No public constructor, factory, conversion or method can turn a raw key,
+fingerprint, policy, pin or relative result into genesis or durable authority.
+Only a consumer-internal verifier of the immutable deployment source can join
+that source to the relative fact and mint consumer-local authority. Relative
+types expose no authority conversion or factory.
+
+ReleaseRoot restore preflights the entire bounded input before callbacks. It
+starts from exact RRM genesis, consumes `0..64` ordered KRT/KRF root
+transitions and separately consumes the complete `1..65` DWD ancestry through
+the current RRL. Every KRT is paired with its exact successor DWD. Terminal
+state consumes exact DWT and returns terminal/no-use without DCL; nonterminal
+state consumes a fresh exact DCL and rejects DWT. Skips, tails, duplicates,
+same-generation forks and unconsumed bytes reject. The complete authority
+tuple is `genesisRRM1Ref38||currentGeneration:u64be||currentPublic32||
+currentTransitionRef38||terminalKRF1Ref38||terminalState:u8||forkLatch:u8||
+latestDWDGeneration:u64be||latestDWDRef38||latestWitnessEpoch:u64be||
+chainEntryCount:u16be||chainCheckpointHash32||terminalDWT1Ref38`.
+Transition plans defensively own the exact old and new tuples; storage performs
+only an exact old-to-new tuple CAS. There is no independently trusted PlanHash,
+generation-only CAS, boolean authorization or caller-supplied authority.
+
+For protected records Protocol returns only the exact unsigned transcript,
+domain, suite and key ID. It never accepts or returns the HMAC key and never
+claims durable authority. The nonzero 32-byte key ID is fixed and preflighted
+before the HMAC callback; the returned tag is frozen once, locally verified,
+and only the owned copy is used. Relative and recovery results never authorize
+a durable commit. The consumer's final durable transaction must recheck exact
+current DPL, RRL, DWL and DRS state, `txNow`, the witness lease, key health and
+kill switch, and the exact old authority tuple immediately before CAS.
 
 ## 6. Independent membership and mailbox authority
 
@@ -1072,7 +1188,19 @@ substitution, MRL root cross-feed, exact MIP1/RIP2 proof verification and
 legacy RIP1/MRL1 rejection, closed component kinds, DPC DNS/rebinding, sender/recipient swaps,
 PRQ/MRR type confusion, every PREPARE/CAS/COMMIT crash point, witness quorum
 split/equivocation/consistency/freeze, lease expiry, capsule loss/corruption,
-whole-store rollback, exact replay and package inventory checks.
+whole-store rollback, exact replay and package inventory checks. It also
+requires the non-circular owner/router/component identifiers; reflection that
+finds no public authority-minting surface; full RRM pin mismatch before the
+signature callback; bounded complete DWD ancestry; exact old/new authority
+tuple CAS with no ad-hoc PlanHash; HMAC key-ID and returned-buffer TOCTOU;
+recovery input mutation, nonce reuse, callback cancellation, one-shot plaintext
+zeroing, absence of commit authority and the final consumer recheck. DRM
+coverage includes reversed keys, an equal duplicate and an equal-reference
+collision-shaped different-byte row. Each encrypted integration invokes one
+AEAD/provider callback and zero downstream callbacks; the explicitly direct
+owned-plaintext parser unit invokes zero callbacks. A separate encrypted case
+rejects missing and DNP-versus-retained reference-rule cross-feed after its one
+AEAD callback and before any per-row downstream callback.
 
 No production implementation, package publication, consumer reset or security
 claim is authorized until its own exact source scope passes independent review

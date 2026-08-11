@@ -227,7 +227,7 @@
     "receiptRow": { "prefixBytes": 4, "layout": "canonical-length-u32be|exact-receipt" },
     "mrlCatalogRowMaximum": { "bytes": 1768, "layout": "three-u16-lengths6|MRL2-326|DNR1-756|DPC1-up-to-680" },
     "mrlCatalog": { "headerBytes": 10, "rowOverheadBytes": 38, "baseAuthorityEntries": 5, "minimumArtifactEntries": 8, "maximumArtifactEntries": 16389, "maximumTransitionEntries": 4096, "minimumMembers": 1, "maximumMembers": 4096, "memberArtifactEntries": 3, "maximumBytes": 16777216, "header": "MRC1|version1|reserved-zero1|artifact-entry-count-u32be", "row": "artifact-type-u16be|canonical-length-u32be|canonical-hash32|exact-canonical-bytes", "order": "MNG1; ordered MDG1/MRV1 succession; MMC1; MSM1; PMA1; PMR1; router-id-sorted DNR1/MRL2/anchor-DPC1 tuples" },
-    "recoveryArtifactRow": { "overheadBytes": 38, "maximumCount": 64, "layout": "artifact-type2|length4|canonical-hash32|exact-bytes" }
+    "recoveryArtifactRow": { "overheadBytes": 38, "maximumCount": 195, "authorityGenesisRows": 1, "maximumRootTransitionRows": 64, "maximumDwdAncestryRows": 65, "terminalOrLeaseRows": 1, "maximumComponentRows": 64, "maximumAuthorityEncodedBytes": 116410, "maximumComponentEncodedBytes": 33438022, "maximumPlaintextBytes": 33554432, "layout": "artifact-type2|length4|canonical-hash32|exact-bytes" }
   },
   "componentKinds": [
     { "id": 1, "name": "Registry" },
@@ -242,7 +242,7 @@
     "fingerprint": "sha256-d(Deep/Cutover/V1/release-root-genesis,network16|manifest-signer-key-id32|manifest-signer-ed25519-public32|minimum-manifest-generation-u64be-zero|expected-RRM1-ref38)",
     "manifestSignerProvenance": "existing-offline-software-release-trust-root-verifies-signed-application-release-input-before-startup",
     "pinCardinality": "exactly-one-row-for-configured-network-nonzero-and-fixed-match-before-callback",
-    "sealedFactory": "internal-only-exact-pin-plus-canonical-RRM1-no-caller-public-key-fingerprint-or-policy",
+    "sealedFactory": "public-Protocol-verifier-accepts-only-complete-immutable-pin-exact-canonical-RRM1-and-txNow-and-returns-sealed-signature-relative-fact; no-public-authority-conversion-or-standalone-key-fingerprint-policy",
     "genesisGeneration": 0,
     "genesisPredecessorRef": "exact-RRM1-ArtifactRef38",
     "firstTransitionGeneration": 1,
@@ -250,7 +250,8 @@
     "dwdRule": "DWD1-releaseRootTransitionRef-is-exact-current-RRM1-or-KRT1-ref-never-zero",
     "lkg": "RRL1-HMAC-CAS-terminal-KRF-fork-latch-chain-checkpoint-current-DWD",
     "lkgHmac": "generic-protected-HMAC-with-read-only-non-DB-key-id-and-Deep/ProtectedState/V1/RRL1",
-    "maximumChainEntries": 64,
+    "maximumRootTransitionCount": 64,
+    "maximumDwdAncestryCount": 65,
     "oldKeyHash": "sha256-d(Deep/IdentityAuth/V1/key-hash,network16|scope1|account-hash32|account-generation8|current-public32)",
     "rotationCommit": "one-locked-CAS-transaction-stores-exact-KRT1-successor-DWD1-and-RRL1-or-keeps-old-pair",
     "genesisInitialization": "one-transaction-first-DWD-generation-zero-witnessEpoch-one-plus-genesis-RRL-no-zero-latest-DWD",
@@ -260,9 +261,9 @@
     "terminalMutation": "keep-generation-current-public-transition-and-latest-DWD;set-KRF-DWT-terminal;increment-count-and-checkpoint",
     "terminalEffect": "KRF-effectiveAt-invalidates-root-DWD-and-referencing-leases-and-blocks-witness-issuance",
     "forkRule": "same-generation-change-ancestry-conflict-or-two-candidates-permanently-latches",
-    "recovery": "bounded-64-exact-KRT-KRF-chain-plus-current-DWD-plus-fresh-three-of-four-DCL-before-RRL-rebuild",
-    "chainExhaustion": "entry-65-terminal-fail-closed-requires-separately-reviewed-offline-manifest-and-destructive-clean-break",
-    "consumerBinding": "exact-pin-fingerprint-and-RRM1-signature-before-internal-sealed-factory-no-caller-authority-input",
+    "recovery": "exact-RRM1-plus-root-transition-count-zero-through-64-plus-complete-DWD-ancestry-one-through-65; each-KRT-has-exact-successor-DWD; DWT1-iff-terminal-and-returns-terminal-no-use-without-DCL; nonterminal-requires-fresh-exact-three-of-four-DCL",
+    "chainExhaustion": "root-transition-65-or-DWD-ancestry-record-66-terminal-fail-closed-requires-separately-reviewed-offline-manifest-and-destructive-clean-break",
+    "consumerBinding": "consumer-internal-verified-deployment-source-joins-exact-pin-with-relative-RRM1-fact; no-public-Protocol-caller-authority-input",
     "unknownOrMissing": "fail-closed-before-signature-or-network"
   },
   "wireEnums": {
@@ -420,8 +421,12 @@
     "outerJournalKey": "hmac-sha256(journal-index-key, u16-domain-length|Deep/NativeRouting/V1/outer-journal-key|network16|sender32|recipient32|request-id32)"
   },
   "identifiers": {
-    "mailboxOwnerId": "sha256-d(Deep/IdentityAuth/V1/mailbox-owner-id, network16|account-hash32|DPMC-ref38|mailbox-ed25519-public32)",
+    "mailboxOwnerId": "sha256-d(Deep/IdentityAuth/V1/mailbox-owner-id, network16|account-hash32|mailbox-ed25519-public32)",
+    "mailboxRoleBinding": "DPMC-verifier-recomputes-owner-id-then-verifies-exact-DPDC-account-device-authorization-and-mailbox-role-PoP",
+    "mailboxRoleRotation": "changed-mailbox-ed25519-public-key-produces-new-owner-id",
     "routerId": "sha256-d(Deep/NativeRouting/V1/router-id, network16|mailbox-owner-id32|router-generation8|router-ed25519-public32)",
+    "componentSubject": "sha256-d(Deep/Cutover/V1/component-subject, network16|account-hash32|component-kind2|account-revocation-handle32)",
+    "selfReferenceAudit": "mailbox-owner-router-and-component-subject-preimages-exclude-the-containing-artifact-ref-and-derived-target-hash",
     "nonzero": true,
     "mailboxCollisionScope": "same-network-and-account-different-preimage-latches-account",
     "routerCollisionScope": "same-network-different-preimage-latches-routing-domain"
@@ -436,12 +441,35 @@
     "nonce": "hkdf-sha512-expand(prk,u16-domain-length|Deep/Cutover/V1/recovery-aead-nonce|protector-key-id32,24)",
     "associatedData": "u32be-metadata-length|canonical-DRC1-fields-1-through-15-with-field-count-15",
     "drmHeader": "DRM1|version1|reserved1=0|artifact-count-u16be",
-    "drmRow": "artifact-type-u16be|length-u32be|canonical-hash32|exact-bytes",
+    "drmRow": "artifact-ref38|exact-bytes; artifact-ref38=artifact-type-u16be|canonical-length-u32be|canonical-hash32",
+    "drmRowOrder": "after-one-AEAD-open-on-owned-plaintext-strict-unsigned-bytewise-lexicographic-increasing-on-exact-artifact-ref38-before-per-row-copy-artifact-decode-ref-hash-signature-network-storage-or-mutation-callback; ancestry-follows-predecessor-refs-not-physical-row-order",
+    "drmRowUniqueness": "after-one-AEAD-open-equal-artifact-ref38-rejects-before-per-row-copy-or-downstream-callback-even-if-exact-bytes-differ; every-row-exact-bytes-redecode-recompose-and-recompute-the-same-artifact-ref38",
+    "drmReferenceRules": "artifact-type-must-exist-in-exactly-one-closed-map; new-DNP-types-use-artifactHashDomains; retained-MSM1-PRQ2-MRR2-PMA1-PMR1-D-G-SOURCE-MNG1-MDG1-MRV1-MMC1-use-retainedArtifactHashRules; missing-or-cross-class-type-rejects-before-per-row-callback",
     "drmHash": "sha256-d(Deep/Cutover/V1/recovery-drm-hash, exact-DRM1)",
     "shadowStateHash": "sha256-d(Deep/Cutover/V1/recovery-shadow-state, exact-shadow-manifest)",
     "pinCoreHash": "sha256-d(Deep/Cutover/V1/recovery-pin-core, canonical-DPL1-fields-excluding-DCP-DCS-DCQ-HMAC)",
-    "nonceReuse": "reject-and-latch",
-    "decryptOrder": ["fixed-metadata-preflight", "length-count-cap-check", "derive-key-and-nonce-compare", "freeze-associated-data", "bounded-aead-open", "zero-prk-and-key", "DRM-metadata-preflight", "canonical-row-hash-verify", "required-artifact-and-protocol-restore", "shadow-and-pin-core-compare", "commit-authorize"]
+    "nonceLatchKey": "protector-key-id32|derived-nonce24",
+    "nonceLatchValue": "sha256-d(Deep/Cutover/V1/recovery-aead, transaction-id32|u32be-associated-data-length|exact-associated-data|u64be-ciphertext-length|ciphertext|aead-tag16)",
+    "nonceReuse": "same-key-and-same-value-is-exact-replay; same-key-and-different-value-permanently-latches-before-AEAD",
+    "decryptOrder": ["fixed-metadata-preflight", "length-count-cap-check", "derive-key-and-nonce-compare", "freeze-associated-data", "bounded-single-aead-open", "zero-prk-and-key", "owned-DRM-plaintext-preflight-order-uniqueness", "closed-per-type-artifact-ref-verify", "required-artifact-and-protocol-restore", "shadow-and-pin-core-compare", "commit-authorize"]
+  },
+  "apiInvariants": {
+    "rrmPreflight": "freeze-exact-canonical-RRM1-332-and-full-pin-tuple-network16-manifest-signer-key-id32-manifest-signer-ed25519-public32-minimum-generation-u64be-zero-expected-RRM1-ref38; recompute-reference-and-fixed-time-compare-every-pin-field-before-Ed25519-callback",
+    "rrmTime": "caller-supplies-one-authoritative-txNow-u64; copy-once-before-callback; require-manifest-generation-equals-minimum-manifest-generation-equals-zero-and-txNow-at-least-activationAt; verifier-has-no-clock-callback",
+    "relativeResult": "public-results-are-sealed-defensively-owned-nonserializable-signature-relative-facts-with-no-durable-authority",
+    "authorityConversion": "no-public-constructor-factory-conversion-or-method-mints-genesis-or-durable-authority-from-raw-key-fingerprint-policy-pin-or-relative-result; consumer-internal-verified-deployment-source-alone-combines-relative-fact",
+    "dwdRestore": "preflight-complete-bounded-closure-before-callbacks; exact-RRM1; zero-through-64-ordered-KRT1-or-KRF1-root-transitions; complete-one-through-65-DWD1-ancestry; each-KRT1-paired-with-exact-successor-DWD1; DWT1-iff-terminal-else-fresh-exact-DCL1; reject-skip-tail-duplicate-same-generation-fork-or-unconsumed-entry",
+    "authorityTuple": "genesis-RRM1-ref38|current-generation8|current-public32|current-transition-ref38|terminal-KRF1-ref38|terminal-state1|fork-latch1|latest-DWD-generation8|latest-DWD-ref38|latest-witness-epoch8|chain-entry-count2|chain-checkpoint-hash32|terminal-DWT1-ref38",
+    "authorityCas": "transition-plan-defensively-owns-exact-old-authority-tuple-and-exact-new-authority-tuple; store-CAS-is-old-to-new-full-tuple-only; no-ad-hoc-PlanHash-generation-only-bool-or-caller-authority",
+    "hmacTranscript": "Protocol-returns-only-exact-unsigned-protected-transcript-domain-suite-and-key-id; never-accepts-or-returns-HMAC-key-and-never-claims-durable-authority",
+    "hmacKeyId": "key-id32-is-nonzero-fixed-preflighted-before-HMAC-callback; callback-output-is-frozen-once-then-locally-verified-and-only-owned-tag-is-used",
+    "recoveryFreeze": "preflight-bounds-and-defensively-copy-all-DRC1-metadata-ciphertext-and-provider-input-before-callback-or-await; no-public-seed-key-or-nonce-override",
+    "recoveryProvider": "typed-internal-recovery-provider-derives-HKDF-key-and-nonce; Protocol-fixed-time-compares-derived-nonce-with-stored-nonce-before-AEAD-open",
+    "recoveryNonce": "latch-key-is-protector-key-id32|derived-nonce24; stored-value-hashes-transaction-id32-associated-data-metadata-ciphertext-and-tag; exact-key-value-replays; changed-value-permanently-latches-before-AEAD",
+    "recoveryPlaintext": "successful-open-yields-one-shot-owned-plaintext-consumed-once-and-zeroed-in-finally-on-success-failure-or-cancellation",
+    "cancellation": "cancellation-before-or-after-every-signature-HMAC-agreement-AEAD-or-provider-callback-yields-no-commit-authority-and-no-retained-caller-buffer",
+    "commitAuthority": "Protocol-recovery-and-relative-results-never-authorize-durable-commit",
+    "consumerFinalRecheck": "consumer-final-durable-transaction-rechecks-current-DPL1-RRL1-DWL1-DRS1-txNow-lease-key-health-kill-switch-and-exact-old-authority-tuple-before-CAS"
   },
   "outerJournal": {
     "record": "DPJ1",

@@ -93,7 +93,7 @@ if ($registrySchema.'$schema' -ne 'https://json-schema.org/draft/2020-12/schema'
     $registry.'$schema' -ne 'dnp1-classical-v1.registry.schema.json') {
     Fail 'registry schema identity or binding drifted'
 }
-$topLevel = @('$schema','schemaVersion','status','decision','workPackage','suite','grammar','recordClasses','artifactTypes','artifactHashDomains','retainedArtifactHashRules','domains','substructures','componentKinds','releaseRootTrust','wireEnums','records','membershipAuthority','membershipProof','witness','hashTranscripts','identifiers','recovery','outerJournal','http','packages','activationOrder','forbidden')
+$topLevel = @('$schema','schemaVersion','status','decision','workPackage','suite','grammar','recordClasses','artifactTypes','artifactHashDomains','retainedArtifactHashRules','domains','substructures','componentKinds','releaseRootTrust','wireEnums','records','membershipAuthority','membershipProof','witness','hashTranscripts','identifiers','recovery','apiInvariants','outerJournal','http','packages','activationOrder','forbidden')
 Assert-ExactProperties -Object $registry -Required $topLevel -Allowed $topLevel -Name 'registry'
 $schemaRequired = @($registrySchema.required | ForEach-Object { [string]$_ })
 if (($schemaRequired -join '|') -ne ($topLevel -join '|') -or $registrySchema.additionalProperties -ne $false) {
@@ -428,7 +428,16 @@ foreach ($name in $expectedTranscriptNames) {
     }
 }
 
-$expectedDecryptOrder = @('fixed-metadata-preflight','length-count-cap-check','derive-key-and-nonce-compare','freeze-associated-data','bounded-aead-open','zero-prk-and-key','DRM-metadata-preflight','canonical-row-hash-verify','required-artifact-and-protocol-restore','shadow-and-pin-core-compare','commit-authorize')
+$expectedDecryptOrder = @('fixed-metadata-preflight','length-count-cap-check','derive-key-and-nonce-compare','freeze-associated-data','bounded-single-aead-open','zero-prk-and-key','owned-DRM-plaintext-preflight-order-uniqueness','closed-per-type-artifact-ref-verify','required-artifact-and-protocol-restore','shadow-and-pin-core-compare','commit-authorize')
+$recoveryNames = @('suiteId','suite','inputKeyMaterial','transactionId','extractSalt','aeadKey','nonce','associatedData','drmHeader','drmRow','drmRowOrder','drmRowUniqueness','drmReferenceRules','drmHash','shadowStateHash','pinCoreHash','nonceLatchKey','nonceLatchValue','nonceReuse','decryptOrder')
+Assert-ExactProperties -Object $registry.recovery -Required $recoveryNames -Allowed $recoveryNames -Name 'recovery contract'
+$recoverySchemaNames = @($registrySchema.properties.recovery.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
+$recoverySchemaRequired = @($registrySchema.properties.recovery.required | ForEach-Object { [string]$_ })
+if ($registrySchema.properties.recovery.additionalProperties -ne $false -or
+    ($recoverySchemaNames -join '|') -ne ($recoveryNames -join '|') -or
+    ($recoverySchemaRequired -join '|') -ne ($recoveryNames -join '|')) {
+    Fail 'recovery schema closure drifted'
+}
 if ([int]$registry.recovery.suiteId -ne 1 -or
     $registry.recovery.suite -ne 'XChaCha20-Poly1305-IETF+HKDF-SHA-512' -or
     $registry.recovery.inputKeyMaterial -ne 'DeepRecoveryV1 backupWrappingSeed32' -or
@@ -438,11 +447,16 @@ if ([int]$registry.recovery.suiteId -ne 1 -or
     $registry.recovery.nonce -ne 'hkdf-sha512-expand(prk,u16-domain-length|Deep/Cutover/V1/recovery-aead-nonce|protector-key-id32,24)' -or
     $registry.recovery.associatedData -ne 'u32be-metadata-length|canonical-DRC1-fields-1-through-15-with-field-count-15' -or
     $registry.recovery.drmHeader -ne 'DRM1|version1|reserved1=0|artifact-count-u16be' -or
-    $registry.recovery.drmRow -ne 'artifact-type-u16be|length-u32be|canonical-hash32|exact-bytes' -or
+    $registry.recovery.drmRow -ne 'artifact-ref38|exact-bytes; artifact-ref38=artifact-type-u16be|canonical-length-u32be|canonical-hash32' -or
+    $registry.recovery.drmRowOrder -ne 'after-one-AEAD-open-on-owned-plaintext-strict-unsigned-bytewise-lexicographic-increasing-on-exact-artifact-ref38-before-per-row-copy-artifact-decode-ref-hash-signature-network-storage-or-mutation-callback; ancestry-follows-predecessor-refs-not-physical-row-order' -or
+    $registry.recovery.drmRowUniqueness -ne 'after-one-AEAD-open-equal-artifact-ref38-rejects-before-per-row-copy-or-downstream-callback-even-if-exact-bytes-differ; every-row-exact-bytes-redecode-recompose-and-recompute-the-same-artifact-ref38' -or
+    $registry.recovery.drmReferenceRules -ne 'artifact-type-must-exist-in-exactly-one-closed-map; new-DNP-types-use-artifactHashDomains; retained-MSM1-PRQ2-MRR2-PMA1-PMR1-D-G-SOURCE-MNG1-MDG1-MRV1-MMC1-use-retainedArtifactHashRules; missing-or-cross-class-type-rejects-before-per-row-callback' -or
     $registry.recovery.drmHash -ne 'sha256-d(Deep/Cutover/V1/recovery-drm-hash, exact-DRM1)' -or
     $registry.recovery.shadowStateHash -ne 'sha256-d(Deep/Cutover/V1/recovery-shadow-state, exact-shadow-manifest)' -or
     $registry.recovery.pinCoreHash -ne 'sha256-d(Deep/Cutover/V1/recovery-pin-core, canonical-DPL1-fields-excluding-DCP-DCS-DCQ-HMAC)' -or
-    $registry.recovery.nonceReuse -ne 'reject-and-latch' -or
+    $registry.recovery.nonceLatchKey -ne 'protector-key-id32|derived-nonce24' -or
+    $registry.recovery.nonceLatchValue -ne 'sha256-d(Deep/Cutover/V1/recovery-aead, transaction-id32|u32be-associated-data-length|exact-associated-data|u64be-ciphertext-length|ciphertext|aead-tag16)' -or
+    $registry.recovery.nonceReuse -ne 'same-key-and-same-value-is-exact-replay; same-key-and-different-value-permanently-latches-before-AEAD' -or
     (@($registry.recovery.decryptOrder) -join '|') -ne ($expectedDecryptOrder -join '|')) {
     Fail 'recovery AEAD/KDF/decrypt ordering drifted'
 }
@@ -485,9 +499,23 @@ if ([int]$registry.substructures.dcmComponentRow.bytes -ne 42 -or
     [int]$registry.substructures.mrlCatalog.maximumMembers -ne 4096 -or
     [int]$registry.substructures.mrlCatalog.memberArtifactEntries -ne 3 -or
     [int]$registry.substructures.mrlCatalog.maximumBytes -ne 16777216 -or
-    [int]$registry.substructures.recoveryArtifactRow.maximumCount -ne 64) {
+    [int]$registry.substructures.recoveryArtifactRow.overheadBytes -ne 38 -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumCount -ne 195 -or
+    [int]$registry.substructures.recoveryArtifactRow.authorityGenesisRows -ne 1 -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumRootTransitionRows -ne 64 -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumDwdAncestryRows -ne 65 -or
+    [int]$registry.substructures.recoveryArtifactRow.terminalOrLeaseRows -ne 1 -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumComponentRows -ne 64 -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumAuthorityEncodedBytes -ne 116410 -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumComponentEncodedBytes -ne 33438022 -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumPlaintextBytes -ne 33554432 -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumAuthorityEncodedBytes -ne (4 + (38 + 332) + 64 * (38 + 412) + 65 * (38 + 1217) + (38 + 5623)) -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumComponentEncodedBytes -ne ([int]$registry.substructures.recoveryArtifactRow.maximumPlaintextBytes - [int]$registry.substructures.recoveryArtifactRow.maximumAuthorityEncodedBytes) -or
+    [int]$registry.substructures.recoveryArtifactRow.maximumCount -ne ([int]$registry.substructures.recoveryArtifactRow.authorityGenesisRows + [int]$registry.substructures.recoveryArtifactRow.maximumRootTransitionRows + [int]$registry.substructures.recoveryArtifactRow.maximumDwdAncestryRows + [int]$registry.substructures.recoveryArtifactRow.terminalOrLeaseRows + [int]$registry.substructures.recoveryArtifactRow.maximumComponentRows)) {
     Fail 'fixed substructure arithmetic drifted'
 }
+$recoveryArtifactNames = @('overheadBytes','maximumCount','authorityGenesisRows','maximumRootTransitionRows','maximumDwdAncestryRows','terminalOrLeaseRows','maximumComponentRows','maximumAuthorityEncodedBytes','maximumComponentEncodedBytes','maximumPlaintextBytes','layout')
+Assert-ExactProperties -Object $registry.substructures.recoveryArtifactRow -Required $recoveryArtifactNames -Allowed $recoveryArtifactNames -Name 'recovery artifact closure'
 $expectedComponentKinds = @('1:Registry','2:XNode','3:Shared','4:MAUI')
 $actualComponentKinds = @($registry.componentKinds | ForEach-Object { "$([int]$_.id):$([string]$_.name)" })
 if (($actualComponentKinds -join '|') -ne ($expectedComponentKinds -join '|')) {
@@ -502,7 +530,7 @@ for ($i = 0; $i -lt 4; $i++) {
         Fail "component-kind schema mapping drifted at index $i"
     }
 }
-$releaseRootTrustNames = @('carrier','source','pinFields','fingerprint','manifestSignerProvenance','pinCardinality','sealedFactory','genesisGeneration','genesisPredecessorRef','firstTransitionGeneration','transitionRule','dwdRule','lkg','lkgHmac','maximumChainEntries','oldKeyHash','rotationCommit','genesisInitialization','witnessEpoch','effectiveTime','terminalReceipt','terminalMutation','terminalEffect','forkRule','recovery','chainExhaustion','consumerBinding','unknownOrMissing')
+$releaseRootTrustNames = @('carrier','source','pinFields','fingerprint','manifestSignerProvenance','pinCardinality','sealedFactory','genesisGeneration','genesisPredecessorRef','firstTransitionGeneration','transitionRule','dwdRule','lkg','lkgHmac','maximumRootTransitionCount','maximumDwdAncestryCount','oldKeyHash','rotationCommit','genesisInitialization','witnessEpoch','effectiveTime','terminalReceipt','terminalMutation','terminalEffect','forkRule','recovery','chainExhaustion','consumerBinding','unknownOrMissing')
 Assert-ExactProperties -Object $registry.releaseRootTrust -Required $releaseRootTrustNames -Allowed $releaseRootTrustNames -Name 'release-root trust input'
 $releaseRootSchemaNames = @($registrySchema.properties.releaseRootTrust.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
 $releaseRootSchemaRequired = @($registrySchema.properties.releaseRootTrust.required | ForEach-Object { [string]$_ })
@@ -517,7 +545,8 @@ if ($registry.releaseRootTrust.carrier -ne 'RRM1-signed-release-root-manifest' -
     $registry.releaseRootTrust.fingerprint -ne 'sha256-d(Deep/Cutover/V1/release-root-genesis,network16|manifest-signer-key-id32|manifest-signer-ed25519-public32|minimum-manifest-generation-u64be-zero|expected-RRM1-ref38)' -or
     $registry.releaseRootTrust.manifestSignerProvenance -notmatch 'offline-software-release-trust-root' -or
     $registry.releaseRootTrust.pinCardinality -notmatch 'exactly-one-row' -or
-    $registry.releaseRootTrust.sealedFactory -notmatch 'internal-only' -or
+    $registry.releaseRootTrust.sealedFactory -notmatch 'returns-sealed-signature-relative-fact' -or
+    $registry.releaseRootTrust.sealedFactory -notmatch 'no-public-authority-conversion' -or
     [uint64]$registry.releaseRootTrust.genesisGeneration -ne 0 -or
     $registry.releaseRootTrust.genesisPredecessorRef -ne 'exact-RRM1-ArtifactRef38' -or
     [uint64]$registry.releaseRootTrust.firstTransitionGeneration -ne 1 -or
@@ -525,7 +554,8 @@ if ($registry.releaseRootTrust.carrier -ne 'RRM1-signed-release-root-manifest' -
     $registry.releaseRootTrust.dwdRule -notmatch 'never-zero' -or
     $registry.releaseRootTrust.lkg -notmatch 'RRL1-HMAC-CAS' -or
     $registry.releaseRootTrust.lkgHmac -notmatch 'non-DB-key-id' -or
-    [int]$registry.releaseRootTrust.maximumChainEntries -ne 64 -or
+    [int]$registry.releaseRootTrust.maximumRootTransitionCount -ne 64 -or
+    [int]$registry.releaseRootTrust.maximumDwdAncestryCount -ne 65 -or
     $registry.releaseRootTrust.oldKeyHash -ne $registry.hashTranscripts.releaseRootKeyHash -or
     $registry.releaseRootTrust.rotationCommit -notmatch 'KRT1-successor-DWD1-and-RRL1' -or
     $registry.releaseRootTrust.genesisInitialization -notmatch 'witnessEpoch-one' -or
@@ -536,9 +566,12 @@ if ($registry.releaseRootTrust.carrier -ne 'RRM1-signed-release-root-manifest' -
     $registry.releaseRootTrust.terminalMutation -notmatch 'keep-generation-current-public-transition-and-latest-DWD' -or
     $registry.releaseRootTrust.terminalEffect -notmatch 'invalidates-root-DWD-and-referencing-leases' -or
     $registry.releaseRootTrust.forkRule -notmatch 'permanently-latches' -or
-    $registry.releaseRootTrust.recovery -notmatch 'fresh-three-of-four-DCL' -or
-    $registry.releaseRootTrust.chainExhaustion -notmatch 'entry-65-terminal-fail-closed' -or
-    $registry.releaseRootTrust.consumerBinding -notmatch 'no-caller-authority-input' -or
+    $registry.releaseRootTrust.recovery -notmatch 'complete-DWD-ancestry-one-through-65' -or
+    $registry.releaseRootTrust.recovery -notmatch 'DWT1-iff-terminal' -or
+    $registry.releaseRootTrust.recovery -notmatch 'nonterminal-requires-fresh-exact-three-of-four-DCL' -or
+    $registry.releaseRootTrust.chainExhaustion -notmatch 'root-transition-65-or-DWD-ancestry-record-66-terminal-fail-closed' -or
+    $registry.releaseRootTrust.consumerBinding -notmatch 'consumer-internal-verified-deployment-source' -or
+    $registry.releaseRootTrust.consumerBinding -notmatch 'no-public-Protocol-caller-authority-input' -or
     $registry.releaseRootTrust.unknownOrMissing -ne 'fail-closed-before-signature-or-network' -or
     $registry.hashTranscripts.releaseRootGenesis -ne $registry.releaseRootTrust.fingerprint) {
     Fail 'external ReleaseRoot genesis trust, transition or sealed consumer binding drifted'
@@ -628,12 +661,52 @@ if ($membershipProof.outerCarrier -ne 'MIP1-byte-and-api-identical' -or
     $membershipProof.sealedVerifier -notmatch 'sealed-MRLC') {
     Fail 'MIP1/RIP2 sealed membership-proof contract drifted'
 }
-if ($registry.identifiers.mailboxOwnerId -ne 'sha256-d(Deep/IdentityAuth/V1/mailbox-owner-id, network16|account-hash32|DPMC-ref38|mailbox-ed25519-public32)' -or
+$identifierNames = @('mailboxOwnerId','mailboxRoleBinding','mailboxRoleRotation','routerId','componentSubject','selfReferenceAudit','nonzero','mailboxCollisionScope','routerCollisionScope')
+Assert-ExactProperties -Object $registry.identifiers -Required $identifierNames -Allowed $identifierNames -Name 'identifier provenance'
+$identifierSchemaNames = @($registrySchema.properties.identifiers.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
+$identifierSchemaRequired = @($registrySchema.properties.identifiers.required | ForEach-Object { [string]$_ })
+if ($registrySchema.properties.identifiers.additionalProperties -ne $false -or
+    ($identifierSchemaNames -join '|') -ne ($identifierNames -join '|') -or
+    ($identifierSchemaRequired -join '|') -ne ($identifierNames -join '|')) {
+    Fail 'identifier provenance schema closure drifted'
+}
+if ($registry.identifiers.mailboxOwnerId -ne 'sha256-d(Deep/IdentityAuth/V1/mailbox-owner-id, network16|account-hash32|mailbox-ed25519-public32)' -or
+    $registry.identifiers.mailboxRoleBinding -ne 'DPMC-verifier-recomputes-owner-id-then-verifies-exact-DPDC-account-device-authorization-and-mailbox-role-PoP' -or
+    $registry.identifiers.mailboxRoleRotation -ne 'changed-mailbox-ed25519-public-key-produces-new-owner-id' -or
     $registry.identifiers.routerId -ne 'sha256-d(Deep/NativeRouting/V1/router-id, network16|mailbox-owner-id32|router-generation8|router-ed25519-public32)' -or
+    $registry.identifiers.componentSubject -ne 'sha256-d(Deep/Cutover/V1/component-subject, network16|account-hash32|component-kind2|account-revocation-handle32)' -or
+    $registry.identifiers.selfReferenceAudit -ne 'mailbox-owner-router-and-component-subject-preimages-exclude-the-containing-artifact-ref-and-derived-target-hash' -or
     $registry.identifiers.nonzero -ne $true -or
     $registry.identifiers.mailboxCollisionScope -ne 'same-network-and-account-different-preimage-latches-account' -or
     $registry.identifiers.routerCollisionScope -ne 'same-network-different-preimage-latches-routing-domain') {
     Fail 'mailbox owner/router identifier provenance or collision policy drifted'
+}
+$apiInvariantNames = @('rrmPreflight','rrmTime','relativeResult','authorityConversion','dwdRestore','authorityTuple','authorityCas','hmacTranscript','hmacKeyId','recoveryFreeze','recoveryProvider','recoveryNonce','recoveryPlaintext','cancellation','commitAuthority','consumerFinalRecheck')
+Assert-ExactProperties -Object $registry.apiInvariants -Required $apiInvariantNames -Allowed $apiInvariantNames -Name 'API invariants'
+$apiSchemaNames = @($registrySchema.properties.apiInvariants.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
+$apiSchemaRequired = @($registrySchema.properties.apiInvariants.required | ForEach-Object { [string]$_ })
+if ($registrySchema.properties.apiInvariants.additionalProperties -ne $false -or
+    ($apiSchemaNames -join '|') -ne ($apiInvariantNames -join '|') -or
+    ($apiSchemaRequired -join '|') -ne ($apiInvariantNames -join '|')) {
+    Fail 'API invariant schema closure drifted'
+}
+if ($registry.apiInvariants.rrmPreflight -ne 'freeze-exact-canonical-RRM1-332-and-full-pin-tuple-network16-manifest-signer-key-id32-manifest-signer-ed25519-public32-minimum-generation-u64be-zero-expected-RRM1-ref38; recompute-reference-and-fixed-time-compare-every-pin-field-before-Ed25519-callback' -or
+    $registry.apiInvariants.rrmTime -ne 'caller-supplies-one-authoritative-txNow-u64; copy-once-before-callback; require-manifest-generation-equals-minimum-manifest-generation-equals-zero-and-txNow-at-least-activationAt; verifier-has-no-clock-callback' -or
+    $registry.apiInvariants.relativeResult -ne 'public-results-are-sealed-defensively-owned-nonserializable-signature-relative-facts-with-no-durable-authority' -or
+    $registry.apiInvariants.authorityConversion -ne 'no-public-constructor-factory-conversion-or-method-mints-genesis-or-durable-authority-from-raw-key-fingerprint-policy-pin-or-relative-result; consumer-internal-verified-deployment-source-alone-combines-relative-fact' -or
+    $registry.apiInvariants.dwdRestore -ne 'preflight-complete-bounded-closure-before-callbacks; exact-RRM1; zero-through-64-ordered-KRT1-or-KRF1-root-transitions; complete-one-through-65-DWD1-ancestry; each-KRT1-paired-with-exact-successor-DWD1; DWT1-iff-terminal-else-fresh-exact-DCL1; reject-skip-tail-duplicate-same-generation-fork-or-unconsumed-entry' -or
+    $registry.apiInvariants.authorityTuple -ne 'genesis-RRM1-ref38|current-generation8|current-public32|current-transition-ref38|terminal-KRF1-ref38|terminal-state1|fork-latch1|latest-DWD-generation8|latest-DWD-ref38|latest-witness-epoch8|chain-entry-count2|chain-checkpoint-hash32|terminal-DWT1-ref38' -or
+    $registry.apiInvariants.authorityCas -ne 'transition-plan-defensively-owns-exact-old-authority-tuple-and-exact-new-authority-tuple; store-CAS-is-old-to-new-full-tuple-only; no-ad-hoc-PlanHash-generation-only-bool-or-caller-authority' -or
+    $registry.apiInvariants.hmacTranscript -ne 'Protocol-returns-only-exact-unsigned-protected-transcript-domain-suite-and-key-id; never-accepts-or-returns-HMAC-key-and-never-claims-durable-authority' -or
+    $registry.apiInvariants.hmacKeyId -ne 'key-id32-is-nonzero-fixed-preflighted-before-HMAC-callback; callback-output-is-frozen-once-then-locally-verified-and-only-owned-tag-is-used' -or
+    $registry.apiInvariants.recoveryFreeze -ne 'preflight-bounds-and-defensively-copy-all-DRC1-metadata-ciphertext-and-provider-input-before-callback-or-await; no-public-seed-key-or-nonce-override' -or
+    $registry.apiInvariants.recoveryProvider -ne 'typed-internal-recovery-provider-derives-HKDF-key-and-nonce; Protocol-fixed-time-compares-derived-nonce-with-stored-nonce-before-AEAD-open' -or
+    $registry.apiInvariants.recoveryNonce -ne 'latch-key-is-protector-key-id32|derived-nonce24; stored-value-hashes-transaction-id32-associated-data-metadata-ciphertext-and-tag; exact-key-value-replays; changed-value-permanently-latches-before-AEAD' -or
+    $registry.apiInvariants.recoveryPlaintext -ne 'successful-open-yields-one-shot-owned-plaintext-consumed-once-and-zeroed-in-finally-on-success-failure-or-cancellation' -or
+    $registry.apiInvariants.cancellation -ne 'cancellation-before-or-after-every-signature-HMAC-agreement-AEAD-or-provider-callback-yields-no-commit-authority-and-no-retained-caller-buffer' -or
+    $registry.apiInvariants.commitAuthority -ne 'Protocol-recovery-and-relative-results-never-authorize-durable-commit' -or
+    $registry.apiInvariants.consumerFinalRecheck -ne 'consumer-final-durable-transaction-rechecks-current-DPL1-RRL1-DWL1-DRS1-txNow-lease-key-health-kill-switch-and-exact-old-authority-tuple-before-CAS') {
+    Fail 'B0/B1 public API authority/callback/recovery invariants drifted'
 }
 if ((@($registry.witness.canonicalOrder) -join '|') -ne 'DCP1[4]|DCS1|DCT1|DCN1/DCQ1|DPL1') {
     Fail 'witness dependency order must remain acyclic'
@@ -698,7 +771,7 @@ if ($vectors.schemaVersion -ne '1.0.0' -or $vectors.status -ne 'required-before-
     Fail 'vector skeleton governance binding changed'
 }
 Assert-ExactProperties $vectors $vectorTop $vectorTop 'vectors'
-if ([int]$vectorSchema.properties.cases.minItems -ne 89 -or [int]$vectorSchema.properties.cases.maxItems -ne 89 -or
+if ([int]$vectorSchema.properties.cases.minItems -ne 105 -or [int]$vectorSchema.properties.cases.maxItems -ne 105 -or
     $vectorSchema.properties.cases.uniqueItems -ne $true -or
     $vectorSchema.'$defs'.case.additionalProperties -ne $false) {
     Fail 'vector schema bounds/closed case grammar drifted'
@@ -764,7 +837,7 @@ foreach ($invalid in @(
         Fail "vector schema negative self-test accepted $($invalid.label) callbacks"
     }
 }
-$allowedAreas = @('grammar','identity','revocation','reset','witness','membership','routing','peer','recovery','package')
+$allowedAreas = @('grammar','identity','revocation','reset','witness','membership','routing','peer','recovery','api','package')
 $allowedOutcomes = @('valid','invalid-before-allocation','invalid-before-crypto','fork-latched','fail-closed','exact-replay')
 $caseIds = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
 foreach ($case in @($vectors.cases)) {
@@ -806,6 +879,9 @@ $requiredCases = @(
     'witness-maximum-tree-fence','witness-rotation-bootstrap-and-removal',
     'membership-mrlc-cold-restore','membership-mrlc-hmac-catalog-corrupt',
     'recovery-kdf-nonce-ad-vectors','recovery-nonce-reuse-latch','recovery-drm-order-row-corrupt',
+    'recovery-drm-row-reversed','recovery-drm-row-equal-duplicate','recovery-drm-row-ref-collision-shaped',
+    'recovery-drm-direct-plaintext-parser',
+    'recovery-drm-ref-rule-missing-cross-class',
     'peer-outer-journal-phase-crashes','peer-outer-journal-fork-stale','peer-outer-journal-cap-hmac-gc',
     'reset-witness-tooling-gate','grammar-machine-artifact-set-digest',
     'membership-mrlc-canonical-container','witness-empty-tree-root','peer-outer-journal-terminal-shape',
@@ -824,6 +900,11 @@ $requiredCases = @(
     'identity-release-chain-entry-65','identity-release-effective-at',
     'witness-rotation-cross-epoch-key-substitution','witness-rotation-all-four-replacement',
     'witness-subject-policy-closed','grammar-vector-schema-additional-property',
+    'identity-mailbox-owner-id-noncircular','identity-router-component-id-self-reference',
+    'api-rrm-pin-time-callback-order','api-relative-authority-reflection','api-dwd-full-ancestry-bounds',
+    'api-authority-full-tuple-cas','api-hmac-keyid-return-buffer-toctou',
+    'api-recovery-freeze-provider-nonce','api-recovery-nonce-reuse-latch',
+    'api-recovery-cancel-plaintext-zero','api-recovery-no-commit-final-recheck',
     'package-exact-three-session-free'
 )
 if (-not $caseIds.SetEquals([string[]]$requiredCases)) { Fail 'vector case inventory drifted' }
@@ -838,11 +919,46 @@ $authorityVectorOutcomes = [ordered]@{
     'witness-rotation-all-four-replacement' = 'fork-latched'
     'witness-subject-policy-closed' = 'invalid-before-crypto'
     'grammar-vector-schema-additional-property' = 'invalid-before-allocation'
+    'identity-mailbox-owner-id-noncircular' = 'valid'
+    'identity-router-component-id-self-reference' = 'invalid-before-crypto'
+    'api-rrm-pin-time-callback-order' = 'invalid-before-crypto'
+    'api-relative-authority-reflection' = 'fail-closed'
+    'api-dwd-full-ancestry-bounds' = 'invalid-before-allocation'
+    'api-authority-full-tuple-cas' = 'exact-replay'
+    'api-hmac-keyid-return-buffer-toctou' = 'fail-closed'
+    'api-recovery-freeze-provider-nonce' = 'invalid-before-crypto'
+    'api-recovery-nonce-reuse-latch' = 'fork-latched'
+    'api-recovery-cancel-plaintext-zero' = 'fail-closed'
+    'api-recovery-no-commit-final-recheck' = 'fail-closed'
+    'recovery-drm-row-reversed' = 'fail-closed'
+    'recovery-drm-row-equal-duplicate' = 'fail-closed'
+    'recovery-drm-row-ref-collision-shaped' = 'fail-closed'
+    'recovery-drm-direct-plaintext-parser' = 'invalid-before-crypto'
+    'recovery-drm-ref-rule-missing-cross-class' = 'fail-closed'
 }
 foreach ($id in $authorityVectorOutcomes.Keys) {
     $match = @($vectors.cases | Where-Object { $_.id -eq $id })
     if ($match.Count -ne 1 -or [string]$match[0].outcome -ne [string]$authorityVectorOutcomes[$id]) {
         Fail "authority vector outcome drifted: $id"
+    }
+}
+$apiClosureVectors = [ordered]@{
+    'api-rrm-pin-time-callback-order' = 'generation-one RRM|0'
+    'api-dwd-full-ancestry-bounds' = 'sixty-five complete DWD ancestry|0'
+    'recovery-drm-order-row-corrupt' = '195-row and 32-MiB DRM closure|1'
+    'api-recovery-nonce-reuse-latch' = 'protector plus derived nonce|0'
+    'recovery-drm-row-reversed' = 'Encrypted integration opens AEAD once|1'
+    'recovery-drm-row-equal-duplicate' = 'Encrypted integration opens AEAD once|1'
+    'recovery-drm-row-ref-collision-shaped' = 'Encrypted integration opens AEAD once|1'
+    'recovery-drm-direct-plaintext-parser' = 'explicitly direct owned-plaintext parser unit|0'
+    'recovery-drm-ref-rule-missing-cross-class' = 'After one AEAD open|1'
+}
+foreach ($id in $apiClosureVectors.Keys) {
+    $parts = ([string]$apiClosureVectors[$id]).Split('|')
+    $match = @($vectors.cases | Where-Object { $_.id -eq $id })
+    if ($match.Count -ne 1 -or [string]$match[0].purpose -notmatch [regex]::Escape($parts[0]) -or
+        ([int]$match[0].callbacks.signature + [int]$match[0].callbacks.agreement + [int]$match[0].callbacks.network + [int]$match[0].callbacks.mutation) -ne [int]$parts[1]) {
+        Fail "API/recovery closure vector callback or purpose drifted: $id"
     }
 }
 
