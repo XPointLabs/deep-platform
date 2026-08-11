@@ -26,7 +26,7 @@
     {
       "name": "deep-protocol",
       "path": "deep-protocol",
-      "expectedHead": "bb4cd70d6166b36c6a46d362c25cbc0f90583882",
+      "expectedHead": "586054ae9787a0df620c1da30b588edb89e7f7da",
       "productionRoots": ["src"],
       "evidenceRoots": ["tests", "docs"],
       "generatedOrVendorRoots": ["artifacts", "vendor", "**/bin", "**/obj"]
@@ -34,7 +34,7 @@
     {
       "name": "deep-client-shared",
       "path": "deep-client-shared",
-      "expectedHead": "7ffe13838bc4597bec459f268c014d229076a25e",
+      "expectedHead": "1c18cac265cf0124504ece6e5ed4756812ac0c5b",
       "productionRoots": ["src"],
       "evidenceRoots": ["tests", "docs"],
       "generatedOrVendorRoots": ["artifacts", "vendor", "**/bin", "**/obj"]
@@ -50,7 +50,7 @@
     {
       "name": "xnode",
       "path": "xnode",
-      "expectedHead": "a68a4cb64d2030beb8afbd9c9d73aa31dd21bd64",
+      "expectedHead": "4d05fe7dd2dadd3f094c172a382ad675d2ff545a",
       "productionRoots": ["src", "deploy"],
       "evidenceRoots": ["tests", "docs", "examples"],
       "generatedOrVendorRoots": ["artifacts", "vendor", ".scratch", "**/bin", "**/obj"]
@@ -58,7 +58,7 @@
     {
       "name": "deep-registry-api",
       "path": "deep-registry-api",
-      "expectedHead": "157de80b2c98cb5bec1628465f9bcb52159acb90",
+      "expectedHead": "1a04c5b0a3b45734864d8d2bcb6ad82f34423f23",
       "productionRoots": ["src"],
       "evidenceRoots": ["tests", "docs"],
       "generatedOrVendorRoots": ["vendor", "**/bin", "**/obj"]
@@ -371,7 +371,7 @@
   ],
   "expectedProductionHits": {
     "count": 1763,
-    "sha256": "28ebaaf9e02ebf8fb13f1d3bdfc997c76cecd6da864019974e6d625d663f7b8c",
+    "sha256": "57a6c59ac682f81ca2d8ee4e61e9598b86a6264aa9d5ad7fca7591e3e9d3941c",
     "classificationCounts": {
       "retain": 0,
       "remove": 571,
