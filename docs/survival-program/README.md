@@ -2,10 +2,14 @@
 
 Status: **approved for local execution** on 2026-07-17. Accountable owner and human decision maker: **Mr. X**.
 
-The active immutable program release is [`v2.0.0`](releases/v2.0.0/README.md). Its machine-readable identity is [`program-manifest.json`](releases/v2.0.0/program-manifest.json), with program revision:
+The active immutable program release is [`v3.0.0`](releases/v3.0.0/README.md).
+It supersedes `v2.0.0` for new implementation scope while retaining that
+release as immutable evidence. Its machine-readable identity is
+[`program-manifest.json`](releases/v3.0.0/program-manifest.json), with program
+revision:
 
 ```text
-sha256:ca5ad9f0c9d4dfb509dedcbf8133524c15867fce5534816da21ff86a07057383
+sha256:78a23f791fcaa785c62902b3a32a3e33f9199827ec9ca1aa9e71676244593936
 ```
 
 Run `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-survival-program.ps1` from the superproject root before accepting governance changes.
@@ -38,19 +42,23 @@ Mr. X fills every internal human role named in the program. Independent crypto/s
 
 ## Work-package identity
 
-Atomic work packages use `DSP2-<PromptId>`, for example `DSP2-P00A`, `DSP2-P03B` and `DSP2-P19`. Optional implementation splits append `-<lowercase-slug>`. The exact pattern is:
+Active clean-break work packages use a bounded `DNP1` owner prefix and an
+optional lowercase split. The exact pattern is:
 
 ```regex
-^DSP2-P(?:0[0-9]|1[0-9])(?:[A-D])?(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?$
+^DNP1-(?:GOV|INV|SPEC|PROTO|CLIENT|NODE|OPS|SEC)(?:-[a-z0-9]+)*$
 ```
 
-`P00`, `P09`, `P11` and `P18` are umbrella/backlog identifiers and must not be assigned directly when their atomic child prompts exist. The old top-level `prompts/01..13` parity pack is also backlog-only.
+The `DSP2-*` work packages and top-level `prompts/01..13` pack are retained
+`v2.0.0` evidence/backlog only and must not be assigned for new implementation.
 
 ## Manifests and packages
 
 - Program manifest schema: [`schemas/program-manifest.schema.json`](schemas/program-manifest.schema.json).
-- P00B-owned dependency manifest schema location: `deep-devops/schemas/survival/dependency-manifest.schema.json`.
-- P00B-owned pinned manifest location: `deep-devops/manifests/survival/<wave>/<work-package-id>.json`.
+- Dependency manifest schema location: `deep-devops/schemas/survival/dependency-manifest.schema.json`.
+- Active pinned manifest location: `deep-devops/manifests/deep-native/<wave>/<work-package-id>.json`.
 - Package and immutable local artifact rules: [`PACKAGE-POLICY.md`](PACKAGE-POLICY.md).
 
-P00B, P01 and P02 may start only from this exact program revision and an assigned clean worktree. Consumer work starts only after its producer SHA/package hash is pinned.
+`DNP1-GOV` and then `DNP1-INV` are the only initially executable work
+packages. Consumer implementation starts only after the inventory verdict is
+GO and its producer SHA/package hash is pinned.

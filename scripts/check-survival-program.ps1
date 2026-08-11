@@ -5,7 +5,8 @@ $ErrorActionPreference = 'Stop'
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $governanceRoot = Join-Path $repoRoot 'docs\survival-program'
-$releaseRoot = Join-Path $governanceRoot 'releases\v2.0.0'
+$activeRelease = '3.0.0'
+$releaseRoot = Join-Path $governanceRoot "releases\v$activeRelease"
 $manifestPath = Join-Path $releaseRoot 'program-manifest.json'
 
 function Fail([string]$Message) {
@@ -14,9 +15,10 @@ function Fail([string]$Message) {
 
 foreach ($required in @(
     $manifestPath,
-    (Join-Path $releaseRoot 'REVISED-PROGRAM-RU.md'),
+    (Join-Path $releaseRoot 'DEEP-NATIVE-CLEAN-BREAK-RU.md'),
     (Join-Path $releaseRoot 'agent-prompts\README.md'),
     (Join-Path $governanceRoot 'decisions\DR-0001-local-execution-approval.md'),
+    (Join-Path $governanceRoot 'decisions\DR-0003-deep-native-session-clean-break.md'),
     (Join-Path $governanceRoot 'schemas\program-manifest.schema.json'),
     (Join-Path $governanceRoot 'PACKAGE-POLICY.md')
 )) {
@@ -28,7 +30,7 @@ foreach ($required in @(
 $manifest = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
 if ($manifest.schemaVersion -ne '1.0.0') { Fail 'unexpected manifest schemaVersion' }
 if ($manifest.programId -ne 'deep-survival') { Fail 'unexpected programId' }
-if ($manifest.release -ne '2.0.0') { Fail 'unexpected active release' }
+if ($manifest.release -ne $activeRelease) { Fail 'unexpected active release' }
 if ($manifest.status -ne 'approved-local-execution') { Fail 'program is not approved for local execution' }
 if ($manifest.accountableOwner -ne 'Mr. X') { Fail 'accountableOwner must be Mr. X' }
 if (-not $manifest.executionPolicy.localOnly -or -not $manifest.executionPolicy.localDockerAllowed -or
