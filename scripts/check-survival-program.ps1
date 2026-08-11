@@ -119,3 +119,12 @@ if (-not (Test-Path -LiteralPath $inventoryCheck -PathType Leaf)) {
 if ($LASTEXITCODE -ne 0) {
     Fail "Deep-native inventory checker failed with exit code $LASTEXITCODE"
 }
+
+$cryptoSpecCheck = Join-Path $repoRoot 'scripts\check-deep-crypto-spec.ps1'
+if (-not (Test-Path -LiteralPath $cryptoSpecCheck -PathType Leaf)) {
+    Fail "Deep crypto specification checker is missing: $cryptoSpecCheck"
+}
+& $cryptoSpecCheck
+if ($LASTEXITCODE -ne 0) {
+    Fail "Deep crypto specification checker failed with exit code $LASTEXITCODE"
+}

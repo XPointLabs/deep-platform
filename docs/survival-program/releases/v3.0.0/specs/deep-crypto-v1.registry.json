@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "design-draft-dark-path-only",
+  "decision": "DR-0003",
+  "workPackage": "DNP1-SPEC-crypto",
+  "recovery": {
+    "profile": "DeepRecoveryV1",
+    "entropyBytes": 32,
+    "wordList": "bip39-en-v1",
+    "wordCount": 24,
+    "checksumBits": 8,
+    "normalization": "UTF-8-NFKD",
+    "passphraseMode": "empty-only",
+    "bip39SeedBytes": 64,
+    "deepKdf": "HKDF-SHA-512",
+    "derivedRoleSeedBytes": 32,
+    "directMnemonicDeviceKeyDerivation": false
+  },
+  "primitives": {
+    "identitySignature": "Ed25519",
+    "classicalAgreement": "X25519",
+    "pqKem": "ML-KEM-768",
+    "pqLongLivedSignatureCandidate": "ML-DSA-65",
+    "aead": "XChaCha20-Poly1305-IETF",
+    "transcriptHash": "SHA-512",
+    "identifierHash": "SHA-256",
+    "kdf": "HKDF-SHA-512"
+  },
+  "sizes": {
+    "ed25519PublicKey": 32,
+    "ed25519Signature": 64,
+    "x25519PublicKey": 32,
+    "x25519SharedSecret": 32,
+    "mlKem768EncapsulationKey": 1184,
+    "mlKem768DecapsulationKey": 2400,
+    "mlKem768Ciphertext": 1088,
+    "mlKem768SharedSecret": 32,
+    "mlDsa65PublicKey": 1952,
+    "mlDsa65PrivateKey": 4032,
+    "mlDsa65Signature": 3309,
+    "xchacha20Nonce": 24,
+    "aeadTag": 16,
+    "recordMaximum": 65535
+  },
+  "suites": [
+    {
+      "id": 257,
+      "hex": "0x0101",
+      "name": "DHM1-X25519-MLKEM768-ED25519",
+      "confidentiality": "hybrid-classical-pq",
+      "authentication": "classical",
+      "bothKemComponentsRequired": true,
+      "productionEligible": false,
+      "claim": "dark-path passive post-quantum confidentiality evaluation only"
+    },
+    {
+      "id": 258,
+      "hex": "0x0102",
+      "name": "DHM1-X25519-MLKEM768-ED25519-MLDSA65",
+      "confidentiality": "hybrid-classical-pq",
+      "authentication": "hybrid-classical-pq-long-lived-certificates",
+      "bothKemComponentsRequired": true,
+      "bothCertificateSignaturesRequired": true,
+      "productionEligible": false,
+      "claim": "release-target candidate after provider, resource and independent review gates"
+    }
+  ],
+  "domains": [
+    "Deep/Recovery/V1/extract",
+    "Deep/Recovery/V1/account-signing-seed",
+    "Deep/Recovery/V1/account-pq-signing-seed",
+    "Deep/Recovery/V1/recovery-authorization-seed",
+    "Deep/Recovery/V1/backup-wrapping-seed",
+    "Deep/Identity/V1/account-certificate",
+    "Deep/Identity/V1/device-certificate",
+    "Deep/Identity/V1/account-id",
+    "Deep/Handshake/V1/prekey-bundle",
+    "Deep/Handshake/V1/transcript",
+    "Deep/Handshake/V1/ec-root",
+    "Deep/Handshake/V1/pq-root",
+    "Deep/Handshake/V1/initial-aead"
+  ],
+  "records": [
+    { "magic": "DPAC", "version": 1, "purpose": "account genesis certificate" },
+    { "magic": "DPDC", "version": 1, "purpose": "account-authorized device certificate" },
+    { "magic": "DPKB", "version": 1, "purpose": "asynchronous prekey bundle" },
+    { "magic": "DPHI", "version": 1, "purpose": "initial hybrid handshake" }
+  ],
+  "forbidden": [
+    "Ed25519-to-X25519 key conversion",
+    "classical-only KEM fallback",
+    "PQ-only KEM fallback",
+    "automatic suite downgrade",
+    "direct use of the BIP-39 seed as a role key",
+    "production activation before independent P0/P1-zero review",
+    "custom implementation of ML-KEM or ML-DSA"
+  ],
+  "provider": {
+    "selected": false,
+    "requirements": [
+      "maintained reviewed implementation",
+      "FIPS 203/204 exact parameter and errata tracking",
+      "NIST known-answer self-tests",
+      "Android Windows and server resource evidence",
+      "reproducible dependency provenance",
+      "independent vector agreement"
+    ]
+  }
+}

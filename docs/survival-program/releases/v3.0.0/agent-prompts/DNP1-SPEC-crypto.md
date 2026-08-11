@@ -1,6 +1,7 @@
 # DNP1-SPEC-crypto — recovery and hybrid-PQ specification
 
-Status: **blocked until DNP1-INV GO**
+Status: **active design draft after DNP1-INV machine-gate GO; production
+activation remains blocked**
 
 ## Objective
 
@@ -49,3 +50,13 @@ messaging profile before implementation.
 - measured wire/resource impact by transport;
 - focused independent crypto/privacy verdict P0=0/P1=0.
 
+## Canonical draft artifacts
+
+- byte-level design draft:
+  [`../specs/DEEP-CRYPTO-V1-DRAFT.md`](../specs/DEEP-CRYPTO-V1-DRAFT.md);
+- suite/domain/size registry:
+  [`../specs/deep-crypto-v1.registry.json`](../specs/deep-crypto-v1.registry.json).
+
+The draft is implementation input, not production authority. Provider
+selection, vectors, cross-platform measurements and independent review remain
+open gates.

@@ -21,6 +21,8 @@ decision is [`DR-0003`](../../decisions/DR-0003-deep-native-session-clean-break.
   package/repin requirement.
 - Registry 4B2B and all further feature work wait for the dependency inventory
   and Deep-native specification gates in this release.
+- The Session dependency inventory is frozen and machine-checked; the recovery
+  and hybrid-PQ profile is now an active dark-path specification draft.
 - No new Session compatibility, fallback or migration path may be added.
 - No push, external package publication, deployment or public release is
   authorized.
@@ -30,4 +32,3 @@ decision is [`DR-0003`](../../decisions/DR-0003-deep-native-session-clean-break.
 [`01-clean-break-foundation`](sprints/01-clean-break-foundation/TASKS.md)
 establishes the dependency boundary, forbidden-reference gates, identity/key
 roles and new wire/version rules before production code deletion begins.
-

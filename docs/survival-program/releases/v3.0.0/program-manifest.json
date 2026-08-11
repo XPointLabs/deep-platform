@@ -11,8 +11,8 @@
   "documentSet": {
     "algorithm": "SHA-256",
     "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>",
-    "documentCount": 8,
-    "sha256": "c69d4cf2f57e37eaef97aff16028807e314b36737a4667aabc6a4da15aa6df8e"
+    "documentCount": 9,
+    "sha256": "627090ed0991e41635824db5d6a9aed9f5acc0ea0a928bf48cd59133a1f6694d"
   },
   "workPackageIdPattern": "^DNP1-(?:GOV|INV|SPEC|PROTO|CLIENT|NODE|OPS|SEC)(?:-[a-z0-9]+)*$",
   "dependencyManifestSchema": "deep-devops/schemas/survival/dependency-manifest.schema.json",
