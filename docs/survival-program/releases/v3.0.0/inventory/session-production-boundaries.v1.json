@@ -26,7 +26,7 @@
     {
       "name": "deep-protocol",
       "path": "deep-protocol",
-      "expectedHead": "a1bd9f3c2c15df12454f9c4db4ff0ddcf23ace41",
+      "expectedHead": "bb4cd70d6166b36c6a46d362c25cbc0f90583882",
       "productionRoots": ["src"],
       "evidenceRoots": ["tests", "docs"],
       "generatedOrVendorRoots": ["artifacts", "vendor", "**/bin", "**/obj"]
@@ -371,7 +371,7 @@
   ],
   "expectedProductionHits": {
     "count": 1763,
-    "sha256": "66252356e72064426cbf957862dea0f6e66a39738d4c2d8d6b9ff0b99d47a337",
+    "sha256": "28ebaaf9e02ebf8fb13f1d3bdfc997c76cecd6da864019974e6d625d663f7b8c",
     "classificationCounts": {
       "retain": 0,
       "remove": 571,
