@@ -23,6 +23,12 @@ decision is [`DR-0003`](../../decisions/DR-0003-deep-native-session-clean-break.
   and Deep-native specification gates in this release.
 - The Session dependency inventory is frozen and machine-checked; the recovery
   and hybrid-PQ profile is now an active dark-path specification draft.
+- The reviewed Wave 1 classical identity, reset, external-witness and native
+  route baseline is frozen in
+  [`DNP1-CLASSICAL-IDENTITY-RESET-MRL2-V1.md`](specs/DNP1-CLASSICAL-IDENTITY-RESET-MRL2-V1.md),
+  with a machine registry and mandatory negative-vector inventory. It remains
+  docs-only until each implementation slice passes an independent frozen
+  review.
 - No new Session compatibility, fallback or migration path may be added.
 - No push, external package publication, deployment or public release is
   authorized.

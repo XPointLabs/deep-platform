@@ -11,8 +11,21 @@
   "documentSet": {
     "algorithm": "SHA-256",
     "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>",
-    "documentCount": 10,
-    "sha256": "6536bdedb4001edab2a01e991a011b9f927350062926d93c64b719af334849e1"
+    "documentCount": 11,
+    "sha256": "f5bd014f31ce1195cdfd9840e48c11a27f4241e5e78d84717d6a7af9a99598ae"
+  },
+  "machineSpecificationSet": {
+    "algorithm": "SHA-256",
+    "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-repo-relative-path><LF>",
+    "artifactCount": 5,
+    "sha256": "3903e01784711e0de1b918479ca4b7558a50cf10b51f407784dc789e3779b0d0",
+    "paths": [
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.json",
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.schema.json",
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.schema.json",
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.skeleton.json",
+      "scripts/check-dnp1-classical-spec.ps1"
+    ]
   },
   "inventoryBaseline": {
     "algorithm": "SHA-256",

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:dnp1:classical:v1:registry",
+  "title": "DNP1 classical normative registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "status", "decision", "workPackage", "suite", "grammar", "recordClasses", "artifactTypes", "artifactHashDomains", "retainedArtifactHashRules", "domains", "substructures", "records", "membershipAuthority", "witness", "hashTranscripts", "identifiers", "recovery", "outerJournal", "http", "packages", "activationOrder", "forbidden"],
+  "properties": {
+    "$schema": { "const": "dnp1-classical-v1.registry.schema.json" },
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "const": "normative-clean-break-not-implemented" },
+    "decision": { "const": "DR-0003" },
+    "workPackage": { "const": "DNP1-PROTO-classical-identity-reset-routing" },
+    "suite": { "type": "object", "required": ["id", "hex", "name", "authentication", "messageConfidentiality", "unknownSuitePolicy", "pqWireSurface"] },
+    "grammar": { "type": "object", "required": ["headerBytes", "fieldOverheadBytes", "artifactRefBytes", "protectedIntegritySuite", "signatureInput", "sha256DomainFunction", "artifactHashDomainPrefix"] },
+    "recordClasses": { "type": "object", "additionalProperties": false, "required": ["publicAuthenticated", "publicCommittedUnsigned", "protectedHmac", "protectedAead", "fixedTranscript"], "properties": { "publicAuthenticated": { "$ref": "#/$defs/recordClass" }, "publicCommittedUnsigned": { "$ref": "#/$defs/recordClass" }, "protectedHmac": { "$ref": "#/$defs/recordClass" }, "protectedAead": { "$ref": "#/$defs/recordClass" }, "fixedTranscript": { "$ref": "#/$defs/recordClass" } } },
+    "artifactTypes": { "type": "array", "minItems": 40, "maxItems": 40, "items": { "$ref": "#/$defs/artifactType" } },
+    "artifactHashDomains": { "type": "object", "minProperties": 30, "maxProperties": 30, "additionalProperties": { "type": "string", "pattern": "^Deep/Artifact/V1/[A-Z0-9]+$" } },
+    "retainedArtifactHashRules": { "type": "object", "minProperties": 10, "maxProperties": 10, "additionalProperties": { "enum": ["unchanged-reviewed-canonical-hash", "unchanged-reviewed-source-hash"] } },
+    "domains": { "type": "array", "minItems": 63, "maxItems": 63, "uniqueItems": true, "items": { "type": "string", "pattern": "^Deep/[A-Za-z0-9/-]+$" } },
+    "substructures": { "type": "object" },
+    "records": { "type": "array", "minItems": 31, "maxItems": 31, "items": { "$ref": "#/$defs/record" } },
+    "membershipAuthority": { "type": "object", "required": ["membershipChain", "mailboxAuthorityChain", "join", "crossAuthorityInference", "maximumMembers", "maximumArtifactEntries", "maximumTransitionEntries", "maximumCatalogBytes"] },
+    "witness": { "type": "object", "required": ["count", "quorum", "byzantineFaults", "maximumTreeSize", "oneGlobalDeploymentSetCas", "componentCount", "freshLeaseRequiredForSensitiveUse", "canonicalOrder"] },
+    "hashTranscripts": { "type": "object", "minProperties": 18, "additionalProperties": { "type": "string", "minLength": 8 } },
+    "identifiers": { "type": "object", "additionalProperties": false, "required": ["mailboxOwnerId", "routerId", "nonzero", "mailboxCollisionScope", "routerCollisionScope"] },
+    "recovery": { "type": "object", "required": ["suiteId", "suite", "inputKeyMaterial", "transactionId", "extractSalt", "aeadKey", "nonce", "associatedData", "drmHeader", "drmRow", "drmHash", "shadowStateHash", "pinCoreHash", "nonceReuse", "decryptOrder"] },
+    "outerJournal": { "type": "object", "required": ["record", "scope", "phases", "forkRule", "staleRule", "retention", "caps", "garbageCollection", "exactReplay"] },
+    "http": { "type": "object", "required": ["path", "requestMediaType", "responseMediaType", "requestPrefixBytes", "storeMinimumBytes", "storeMaximumBytes", "tombstoneMinimumBytes", "tombstoneMaximumBytes", "responseBytes", "compression", "cacheControl"] },
+    "packages": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "object", "required": ["id"] } },
+    "activationOrder": { "type": "array", "minItems": 9, "uniqueItems": true, "items": { "type": "string", "minLength": 4 } },
+    "forbidden": { "type": "array", "minItems": 10, "uniqueItems": true, "items": { "type": "string", "minLength": 4 } }
+  },
+  "$defs": {
+    "recordClass": { "type": "object", "additionalProperties": false, "required": ["headerSuite", "records"], "properties": { "headerSuite": { "type": ["integer", "null"], "minimum": 0, "maximum": 65535 }, "records": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z0-9]{4}$" } } } },
+    "artifactType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "magic"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "magic": { "type": "string", "pattern": "^[A-Z0-9-]{4,10}$" },
+        "retained": { "type": "boolean" }
+      }
+    },
+    "record": {
+      "type": "object",
+      "required": ["magic", "version", "fields"],
+      "properties": {
+        "magic": { "type": "string", "pattern": "^[A-Z0-9]{4}$" },
+        "version": { "type": "integer", "minimum": 1 },
+        "framing": { "type": "string" },
+        "fieldCount": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "valueBytes": { "type": "integer", "minimum": 0 },
+        "fixedLength": { "type": "integer", "minimum": 1 },
+        "baseValueBytes": { "type": "integer", "minimum": 0 },
+        "baseLength": { "type": "integer", "minimum": 1 },
+        "unitBytes": { "type": "integer", "minimum": 1 },
+        "maximumCount": { "type": "integer", "minimum": 0 },
+        "maximumLength": { "type": "integer", "minimum": 1 },
+        "proofHashBytes": { "type": "integer", "minimum": 1 },
+        "maximumInclusionProofCount": { "type": "integer", "minimum": 0 },
+        "maximumConsistencyProofCount": { "type": "integer", "minimum": 0 },
+        "receiptCount": { "type": "integer", "minimum": 1 },
+        "receiptLengthPrefixBytes": { "type": "integer", "minimum": 1 },
+        "maximumReceiptLength": { "type": "integer", "minimum": 1 },
+        "maximumCiphertextLength": { "type": "integer", "minimum": 1 },
+        "addressMinimumLength": { "type": "integer", "minimum": 0 },
+        "addressMaximumLength": { "type": "integer", "minimum": 0 },
+        "maximumCatalogBytes": { "type": "integer", "minimum": 1 },
+        "fields": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

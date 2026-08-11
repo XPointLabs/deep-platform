@@ -13,6 +13,7 @@
     "accountableOwner",
     "canonicalProgram",
     "documentSet",
+    "machineSpecificationSet",
     "inventoryBaseline",
     "workPackageIdPattern",
     "packagePolicy"
@@ -42,6 +43,24 @@
         "entryFormat": { "const": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>" },
         "documentCount": { "type": "integer", "minimum": 1 },
         "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "machineSpecificationSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "entryFormat", "artifactCount", "sha256", "paths"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "entryFormat": { "const": "<lowercase-file-sha256><two-spaces><forward-slash-repo-relative-path><LF>" },
+        "artifactCount": { "const": 5 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "paths": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^(?:docs|scripts)/[A-Za-z0-9._/-]+$" }
+        }
       }
     },
     "inventoryBaseline": {

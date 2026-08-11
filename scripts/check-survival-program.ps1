@@ -44,6 +44,36 @@ if (-not $manifest.executionPolicy.localOnly -or -not $manifest.executionPolicy.
     Fail 'execution policy must remain local-only, allow local Docker, and prohibit push, external publish and external deploy'
 }
 
+$expectedMachinePaths = @(
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.json',
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.schema.json',
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.schema.json',
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.skeleton.json',
+    'scripts/check-dnp1-classical-spec.ps1'
+)
+if ($manifest.machineSpecificationSet.algorithm -ne 'SHA-256' -or
+    $manifest.machineSpecificationSet.entryFormat -ne '<lowercase-file-sha256><two-spaces><forward-slash-repo-relative-path><LF>' -or
+    [int]$manifest.machineSpecificationSet.artifactCount -ne 5 -or
+    (@($manifest.machineSpecificationSet.paths) -join '|') -ne ($expectedMachinePaths -join '|')) {
+    Fail 'machine specification artifact-set policy drifted'
+}
+$machineEntries = foreach ($relativePath in $expectedMachinePaths) {
+    $machinePath = Join-Path $repoRoot $relativePath.Replace('/', '\')
+    if (-not (Test-Path -LiteralPath $machinePath -PathType Leaf)) { Fail "machine specification artifact is missing: $relativePath" }
+    $fileHash = (Get-FileHash -LiteralPath $machinePath -Algorithm SHA256).Hash.ToLowerInvariant()
+    "$fileHash  $relativePath"
+}
+$machineDigestInput = ($machineEntries -join "`n") + "`n"
+$machineSha = [System.Security.Cryptography.SHA256]::Create()
+try {
+    $machineDigestBytes = $machineSha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($machineDigestInput))
+    $actualMachineDigest = ([System.BitConverter]::ToString($machineDigestBytes)).Replace('-', '').ToLowerInvariant()
+}
+finally { $machineSha.Dispose() }
+if ($actualMachineDigest -ne [string]$manifest.machineSpecificationSet.sha256) {
+    Fail "machine specification set mismatch: expected $($manifest.machineSpecificationSet.sha256), actual $actualMachineDigest"
+}
+
 $documents = @(
     Get-ChildItem -LiteralPath $releaseRoot -Recurse -File -Filter '*.md' |
         Where-Object { $_.Name -ne 'MIRROR-NOTES.md' } |
@@ -161,4 +191,13 @@ if (-not (Test-Path -LiteralPath $cryptoSpecCheck -PathType Leaf)) {
 & $cryptoSpecCheck
 if ($LASTEXITCODE -ne 0) {
     Fail "Deep crypto specification checker failed with exit code $LASTEXITCODE"
+}
+
+$classicalSpecCheck = Join-Path $repoRoot 'scripts\check-dnp1-classical-spec.ps1'
+if (-not (Test-Path -LiteralPath $classicalSpecCheck -PathType Leaf)) {
+    Fail "DNP1 classical specification checker is missing: $classicalSpecCheck"
+}
+& $classicalSpecCheck
+if ($LASTEXITCODE -ne 0) {
+    Fail "DNP1 classical specification checker failed with exit code $LASTEXITCODE"
 }

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:dnp1:classical:v1:vectors",
+  "title": "DNP1 classical identity/reset/native-routing vector skeleton",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "decision", "workPackage", "cases"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "const": "required-before-code" },
+    "decision": { "const": "DR-0003" },
+    "workPackage": { "const": "DNP1-PROTO-classical-identity-reset-routing" },
+    "cases": {
+      "type": "array",
+      "minItems": 60,
+      "maxItems": 60,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/case" }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "area", "outcome", "callbacks", "purpose"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "area": {
+          "enum": [
+            "grammar", "identity", "revocation", "reset", "witness",
+            "membership", "routing", "peer", "recovery", "package"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "valid", "invalid-before-allocation", "invalid-before-crypto",
+            "fork-latched", "fail-closed", "exact-replay"
+          ]
+        },
+        "callbacks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["signature", "agreement", "network", "mutation"],
+          "properties": {
+            "signature": { "type": "integer", "minimum": 0 },
+            "agreement": { "type": "integer", "minimum": 0 },
+            "network": { "type": "integer", "minimum": 0 },
+            "mutation": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "purpose": { "type": "string", "minLength": 8, "maxLength": 256 }
+      }
+    }
+  }
+}
