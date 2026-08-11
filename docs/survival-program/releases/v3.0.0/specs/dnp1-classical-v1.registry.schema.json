@@ -46,7 +46,7 @@
     },
     "artifactHashDomains": { "type": "object", "minProperties": 34, "maxProperties": 34, "additionalProperties": { "type": "string", "pattern": "^Deep/Artifact/V1/[A-Z0-9]+$" } },
     "retainedArtifactHashRules": { "type": "object", "minProperties": 10, "maxProperties": 10, "additionalProperties": { "enum": ["unchanged-reviewed-canonical-hash", "unchanged-reviewed-source-hash"] } },
-    "domains": { "type": "array", "minItems": 77, "maxItems": 77, "uniqueItems": true, "items": { "type": "string", "pattern": "^Deep/[A-Za-z0-9/-]+$" } },
+    "domains": { "type": "array", "minItems": 89, "maxItems": 89, "uniqueItems": true, "items": { "type": "string", "pattern": "^Deep/[A-Za-z0-9/-]+$" } },
     "substructures": { "type": "object" },
     "componentKinds": {
       "type": "array",
@@ -100,7 +100,7 @@
     "wireEnums": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["dpaMinimumSuite", "dpdSuite", "dpdCapabilities", "dpmCapabilities", "drtTargetKind", "drsReason", "draReason", "keyScope", "keyAction", "dxpRole", "routerRoles", "routerCapabilities", "dpcEndpointKind", "dpcFlags", "witnessEndpointKind", "dcnDurabilityClass", "componentMask", "outerPeerOperation", "innerPrq2Operation", "dpjPhase", "booleanByte", "rip2ProtocolVersion", "unknownPolicy", "drtTargetPolicy", "keyPolicy", "dxpPolicy", "routerPolicy", "dpcPolicy", "reasonPolicy", "phasePolicy", "reservedPolicy"],
+      "required": ["dpaMinimumSuite", "dpdSuite", "dpdCapabilities", "dpmCapabilities", "drtTargetKind", "drsReason", "draReason", "keyScope", "keyAction", "dxpRole", "routerRoles", "routerCapabilities", "dpcEndpointKind", "dpcFlags", "witnessEndpointKind", "dcnDurabilityClass", "componentMask", "outerPeerOperation", "innerPrq2Operation", "dpjPhase", "dxrPhase", "booleanByte", "rip2ProtocolVersion", "unknownPolicy", "drtTargetPolicy", "keyPolicy", "dxpPolicy", "routerPolicy", "dpcPolicy", "reasonPolicy", "phasePolicy", "reservedPolicy"],
       "properties": {
         "dpaMinimumSuite": { "const": 1 },
         "dpdSuite": { "const": 1 },
@@ -122,6 +122,7 @@
         "outerPeerOperation": { "const": ["MailboxPeerV2=1"] },
         "innerPrq2Operation": { "const": ["Store=1", "Tombstone=2"] },
         "dpjPhase": { "const": ["Prepared=0", "InnerPending=1", "Completed=2"] },
+        "dxrPhase": { "const": ["Pending=0", "Verified=1", "Aborted=2"] },
         "booleanByte": { "const": [0, 1] },
         "rip2ProtocolVersion": { "const": 2 },
         "unknownPolicy": { "type": "string", "minLength": 8 },
@@ -135,11 +136,11 @@
         "reservedPolicy": { "type": "string", "minLength": 8 }
       }
     },
-    "records": { "type": "array", "minItems": 35, "maxItems": 35, "items": { "$ref": "#/$defs/record" } },
+    "records": { "type": "array", "minItems": 36, "maxItems": 36, "items": { "$ref": "#/$defs/record" } },
     "membershipAuthority": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["membershipChain", "mailboxAuthorityChain", "join", "crossAuthorityInference", "mrlProjection", "mrlProjectionSource", "fullMrlRule", "predecessorRule", "authorOrder", "compositeMemberTuple", "finalPlan", "cacheIdentity", "maximumMembers", "maximumArtifactEntries", "maximumTransitionEntries", "maximumCatalogBytes"],
+      "required": ["membershipChain", "mailboxAuthorityChain", "join", "crossAuthorityInference", "mrlProjection", "mrlProjectionSource", "fullMrlRule", "predecessorRule", "authorOrder", "compositeMemberTuple", "finalPlan", "cacheIdentity", "maximumMembers", "maximumArtifactEntries", "maximumTransitionEntries", "maximumCatalogBytes", "currentCutoverInput", "currentMailboxInput", "currentDnrcInput", "membershipHead", "mailboxAuthorityHead"],
       "properties": {
         "membershipChain": { "const": ["MNG1", "MDG1", "MRV1", "MMC1", "MSM1"] },
         "mailboxAuthorityChain": { "const": ["PMA1", "PMR1", "DNR1"] },
@@ -156,7 +157,12 @@
         "maximumMembers": { "const": 4096 },
         "maximumArtifactEntries": { "const": 16389 },
         "maximumTransitionEntries": { "const": 4096 },
-        "maximumCatalogBytes": { "const": 16777216 }
+        "maximumCatalogBytes": { "const": 16777216 },
+        "currentCutoverInput": { "type": "string", "minLength": 192 },
+        "currentMailboxInput": { "type": "string", "minLength": 128 },
+        "currentDnrcInput": { "type": "string", "minLength": 128 },
+        "membershipHead": { "type": "string", "minLength": 192 },
+        "mailboxAuthorityHead": { "type": "string", "minLength": 192 }
       }
     },
     "membershipProof": {
@@ -229,7 +235,7 @@
     "apiInvariants": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["rrmPreflight", "rrmTime", "relativeResult", "authorityConversion", "dwdRestore", "authorityTuple", "authorityCas", "hmacTranscript", "hmacKeyId", "recoveryFreeze", "recoveryProvider", "recoveryNonce", "recoveryPlaintext", "cancellation", "commitAuthority", "consumerFinalRecheck", "mrlProjectionBoundary", "mrlCompositeCas", "mrlCacheIdentity"],
+      "required": ["rrmPreflight", "rrmTime", "relativeResult", "authorityConversion", "dwdRestore", "authorityTuple", "authorityCas", "hmacTranscript", "hmacKeyId", "recoveryFreeze", "recoveryProvider", "recoveryNonce", "recoveryPlaintext", "cancellation", "commitAuthority", "consumerFinalRecheck", "mrlProjectionBoundary", "mrlCompositeCas", "mrlCacheIdentity", "dxpProjection", "dxpReceipt", "dxpNonce", "dxpFinalCas", "mrlCurrentInputs", "mrlContinuity", "mrlSourceCas", "callbackOrder"],
       "properties": {
         "rrmPreflight": { "type": "string", "minLength": 128 },
         "rrmTime": { "type": "string", "minLength": 96 },
@@ -249,11 +255,19 @@
         "consumerFinalRecheck": { "type": "string", "minLength": 128 },
         "mrlProjectionBoundary": { "type": "string", "minLength": 128 },
         "mrlCompositeCas": { "type": "string", "minLength": 192 },
-        "mrlCacheIdentity": { "type": "string", "minLength": 128 }
+        "mrlCacheIdentity": { "type": "string", "minLength": 128 },
+        "dxpProjection": { "type": "string", "minLength": 192 },
+        "dxpReceipt": { "type": "string", "minLength": 192 },
+        "dxpNonce": { "type": "string", "minLength": 192 },
+        "dxpFinalCas": { "type": "string", "minLength": 192 },
+        "mrlCurrentInputs": { "type": "string", "minLength": 192 },
+        "mrlContinuity": { "type": "string", "minLength": 192 },
+        "mrlSourceCas": { "type": "string", "minLength": 192 },
+        "callbackOrder": { "type": "string", "minLength": 192 }
       }
     },
-    "outerJournal": { "type": "object", "required": ["record", "scope", "phases", "forkRule", "staleRule", "retention", "caps", "garbageCollection", "exactReplay"] },
-    "http": { "type": "object", "required": ["path", "requestMediaType", "responseMediaType", "requestPrefixBytes", "storeMinimumBytes", "storeMaximumBytes", "tombstoneMinimumBytes", "tombstoneMaximumBytes", "responseBytes", "compression", "cacheControl"] },
+    "outerJournal": { "type": "object", "required": ["record", "scope", "phases", "latches", "phaseShape", "forkRule", "staleRule", "retention", "caps", "garbageCollection", "exactReplay", "requestHash", "outcomeHash", "transitionOrder"] },
+    "http": { "type": "object", "required": ["path", "requestMediaType", "responseMediaType", "requestPrefixBytes", "storeMinimumBytes", "storeMaximumBytes", "tombstoneMinimumBytes", "tombstoneMaximumBytes", "responseBytes", "compression", "cacheControl", "publicAddressPolicy", "resolutionContract", "connectOrder", "transportIsolation"] },
     "packages": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "object", "required": ["id"] } },
     "activationOrder": { "type": "array", "minItems": 9, "uniqueItems": true, "items": { "type": "string", "minLength": 4 } },
     "forbidden": { "type": "array", "minItems": 10, "uniqueItems": true, "items": { "type": "string", "minLength": 4 } }

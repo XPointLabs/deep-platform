@@ -534,6 +534,109 @@ The role byte is closed as `Device=0x01` and `Router=0x02`; zero and every
 other value reject before agreement. Device proof is accepted only for an
 exact DPD subject and router proof only for an exact DNR subject.
 
+The DXP subject is not the final unsigned certificate because that certificate
+contains the DXP transcript hash. Its sole canonical input is an internal,
+non-artifact projection. For DPD1, recompose the final 632-byte unsigned form,
+omit signature/PoP tags 22 and 23, retain tag 21 at length 32, and replace only
+its value by 32 zero bytes. For DNR1, recompose the final 612-byte unsigned
+form, omit tags 20 and 21, retain tag 19 at length 32, and replace only its
+value by 32 zero bytes. Then:
+
+```text
+subjectUnsignedCanonicalHash32 =
+  SHA256-D(Deep/IdentityAuth/V1/x25519-pop-subject,
+           role1 || U32BE(projectionLength) || projectionBytes)
+```
+
+The projection comes only from a sealed pre-PoP intent or a fully decoded
+canonical certificate; it has no public parser, model, ArtifactRef or authority
+conversion. Authoring order is projection and subject hash, DXP1 and proof,
+transcript-hash insertion, then final Ed25519 PoP and issuer signatures. A
+full unsigned certificate, caller projection, nonzero projected transcript
+field, or projection with either signature tag present rejects before
+agreement. This is the only DPD/DNR self-reference exception.
+
+### 3.1 Durable DXP reservation and receipt
+
+The protected, non-artifact `DXR1` row has magic `DXR1`, version 1, suite
+`0x8001`, 19 fields, 409 value bytes and fixed length 573:
+
+```text
+phase1, role1, network16, operationId32, subjectProjectionHash32,
+holderX25519Public32, issuerEphemeralPublic32, nonce32, nonceLedgerKey32,
+issuedAt8, expiresAt8, verifiedAt8, transcriptHash32, subjectArtifactRef38,
+currentSourceFingerprint32, protectedStateKeyId32, forkLatch1,
+retainedUntil8, HMAC32
+```
+
+Its HMAC uses the generic protected-record transcript and
+`Deep/ProtectedState/V1/DXP1-verified-receipt`. Its exact receipt core is 239
+bytes: `role1||network16||subjectProjectionHash32||holderX25519Public32||
+transcriptHash32||nonceLedgerKey32||issuedAt8||expiresAt8||verifiedAt8||
+subjectArtifactRef38||currentSourceFingerprint32`. The full row additionally
+binds phase, operation, challenge material, protected key, latch and retention;
+it is deliberately not an ArtifactRef type.
+
+Phases are `Pending=0`, `Verified=1`, `Aborted=2`. An authenticated Pending CAS
+with unique `(network, role, nonceLedgerKey)` and `operationId` occurs before
+challenge bytes or issuer ephemeral public key leave the process. Pending has
+zero verifiedAt, transcriptHash and subject ref. The issuer ephemeral private
+key is never persisted. Loss cannot regenerate a challenge: cleanup moves the
+same authenticated row to Aborted and the nonce remains consumed. Pending and
+Aborted survive through the later of DXP expiry and rollback/nonce horizon;
+Verified survives through certificate NotAfter plus reset/DRS horizon.
+Bounded max-plus-one, byte/count caps and HMAC-first GC apply; corrupt or
+referenced rows quarantine.
+
+Verification freezes proof and callback outputs once, rechecks the exact
+Pending identity/source, then fills only verifiedAt, transcriptHash and subject
+ref. The same atomic CAS installs the subject head and, for router DXP, the
+MRLC/head plan. Changed same-operation bytes permanently latch. HMAC is
+authored last and verified before trust. Cancellation/crash at any boundary
+creates no authority and never makes the nonce reusable.
+
+`operationId32` is a consumer-internal nonzero CSPRNG issuance identifier,
+created once before Pending and stable across retries. It is authority only for
+correlating that one issuance operation, never a transport request ID or a
+caller-selected authorization field. Its exact replay uses the same ID and
+bytes; same ID with changed bytes latches. The ledger key is not caller data:
+
+```text
+nonceLedgerKey32 = HMAC-SHA-256(dxpNonceIndexKey32,
+  U16BE(len("Deep/ProtectedState/V1/DXP1-nonce-ledger-key")) ||
+  ASCII("Deep/ProtectedState/V1/DXP1-nonce-ledger-key") ||
+  network16 || resetId32 || role1 || nonce32)
+nonceIndexKeyId32 = SHA256-D(Deep/ProtectedState/V1/DXP1-nonce-index-key-id,
+  network16 || resetId32 || dxpNonceIndexKey32)
+```
+
+The non-DB index key is selected by protected configuration and never appears
+in the row. The unique ledger constraint therefore cannot be bypassed by
+supplying another key for the same network/reset/role/nonce. The key and its
+nonzero ID are immutable for that network/reset ID until every authenticated
+DXR and compact nonce tombstone has passed retainedUntil and bounded HMAC-first
+GC proves zero remaining rows. Restart with a missing/wrong key, or attempted
+early rotation, disables issuance and replay. A new reset ID is a clean key
+scope; ordinary software/key-store rotation is not.
+
+Pending and Verified use distinct noncircular source fingerprints:
+
+```text
+SHA256-D(Deep/IdentityAuth/V1/dxp-operation-source,
+  role1 || stage1 || cutoverSource32 || DRSRevision8 || DRSCount8 ||
+  DRSHead32 || DRSRef38 || subjectProjectionHash32 || priorSubjectLKGRef38 ||
+  transcriptHash32 || subjectArtifactRef38 || identityCatalogKeyId32 ||
+  DXRKeyId32 || nonceIndexKeyId32)
+```
+
+Stage is exactly 0 for Pending, with zero transcript hash and subject ref, and
+exactly 1 for Verified, with both exact final values. Device prior LKG is the
+exact predecessor DPDC ref; Router prior LKG is the exact predecessor DNRC
+ref; only their reviewed genesis rule permits zero. Final CAS recomputes both
+fingerprints, fixed-time compares stage 0 and every raw source value, then
+writes stage 1. DRS, cutover, prior LKG or key-ID movement makes the operation
+stale before final subject/MRLC mutation.
+
 ## 4. Revocation and account reset
 
 `DRT1` is private catalog data. Public `DRS1` entries contain only its typed
@@ -917,6 +1020,32 @@ Protected state retains both LKGs and one atomic composite-selection record
 binding network, exact MSM sequence/hash/member count/root, PMA hash/generation
 and epoch, PMR generation/head/snapshot hash, and DNRC hash/role/capabilities.
 
+MRLC authoring/restoration additionally requires three sealed current inputs.
+The cutover input binds exact network, reset, component, account/DCM generation,
+DCP/DCS/DCQ/DWL/DCL/DPL refs, ReleaseRoot authority head, DRS revision/count/
+head/ref, lease expiry and every protected key ID; its values corresponding to
+MRLC fields 1..8 are fixed-time compared before callbacks. A mailbox-role fact
+is minted only by bounded HMAC/crypto restore of exact DPA, current DRS/DRT,
+DPD, DPM, RIB and DCP state, keyed by exact DPMC ref, and proves current
+nonrevoked owner/account/device/mailbox key and capabilities. One sealed DNRC
+fact per exact DNR ref additionally consumes exact PMA/PMR provenance and the
+Verified Router-role DXR1 transcript bound by DNR field 19. Its count equals
+member count; duplicate, unused, missing or mixed-source facts reject. DPMC
+bytes remain in the protected identity catalog and are never reconstructed
+from MRLC rows.
+
+Membership and mailbox-authority continuity are separate. The sealed
+membership head is `network16||MNG1Ref38||transitionContainerHash32||
+MSMSequence8||MSMCanonicalHash32||MSMRef38`. `RestoreCurrent` accepts only the
+exact committed tuple. `VerifyNext` requires candidate sequence prior+1 and
+PreviousHash equal the prior MSM hash. First use consumes an externally sealed
+genesis baseline; no verifier synthesizes a predecessor from candidate fields.
+The sealed mailbox-authority head is `network16||PMARef38||PMAGeneration8||
+PMACanonicalHash32||PMRRef38||PMRGeneration8||PMRHead32||PMRSnapshotHash32`.
+Its Restore path is exact; its Next path requires PMA generation prior+1 with
+exact previous-authority hash, and PMR either exact current or prior+1 with
+exact previous head. Candidate-derived PMA/PMR LKG is forbidden.
+
 `MRL2` remains an unsigned full row. The unchanged `MMC1/MSM1` commits its
 internal membership projection, never its full bytes. The projection is the
 exact canonical 326-byte MRL2 encoding with field 5 (`DNR1Ref38`) and field 9
@@ -950,6 +1079,23 @@ old/new source fingerprints. No publication or cache activation may occur
 before that entire tuple CAS succeeds. Cache and index identity always retains
 all three of projected leaf, projected root and full MRL2 ArtifactRef; none is
 authority alone.
+
+The final defensive plan owns raw old/new membership and PMA/PMR heads, the
+current cutover/DRS tuple, every current mailbox/DNRC/DXR fact, all protected
+key IDs and their domain-separated source fingerprints. One locked CAS
+rechecks and installs Verified DXR1, MRLC and both new heads before publication.
+Every scalar, length, count, reference, HMAC and current-head comparison
+precedes signature, agreement, network, storage or mutation callbacks; inputs
+and returned buffers are copied once and locally reverified.
+
+The five source fingerprints use `SHA256-D` with, respectively,
+`Deep/NativeRouting/V2/current-cutover-source`,
+`Deep/NativeRouting/V2/dnrc-source`,
+`Deep/NativeRouting/V2/membership-head-source`,
+`Deep/NativeRouting/V2/mailbox-authority-head-source`, and
+`Deep/NativeRouting/V2/mrlc-source`, over the exact fixed-width tuples in the
+machine registry. They include protected key IDs. Hash equality never replaces
+the final raw tuple comparison.
 
 The protected `MRLC1` wire magic is `MRLC`, version 1. Its base is 898 bytes
 and its maximum is 16,778,114 bytes. Its exact 27-field table is:
@@ -1124,6 +1270,38 @@ dots, wildcards, underscores and Unicode reject. Each connection resolves once
 to at most 16 A/AAAA results; every address must be public unicast. The exact
 set is frozen through the socket callback, remote endpoint check, SNI and TLS
 SPKI verification. A second DNS resolution is forbidden.
+IPv4-mapped IPv6 is normalized to canonical IPv4 before equality or policy
+checks. IPv4 rejects exactly `0/8`, `10/8`, `100.64/10`, `127/8`,
+`169.254/16`, `172.16/12`, `192.0.0/24`, `192.0.2/24`, `192.88.99/24`,
+`192.168/16`, `198.18/15`, `198.51.100/24`, `203.0.113/24`, `224/4` and
+`240/4`. IPv6 must be inside `2000::/3` and outside `2001::/23`,
+`2001:db8::/32` and `3fff::/20`; all other classes reject. Direct addresses
+use the same policy.
+
+The typed resolver returns 1..16 unique canonical addresses, sorted by family
+then unsigned bytes. Every result passes the table before connect. The
+connector receives that owned set once and returns actual connected canonical
+IP plus TLS SPKI32; IP must be in the set and SPKI fixed-time matches DPC.
+Current DPC/DNR/MRLC/DRS/witness-lease/time is checked before resolution and
+again after resolution before connect. Resolution, connect and TLS share one
+bounded cancellation deadline. Platform heuristics, a second resolution,
+caller strings as trusted addresses, or mixed valid/invalid answers are
+forbidden.
+System and user proxies, redirects and Alt-Svc are disabled; an Alt-Svc header
+is ignored. HTTP/2 origin coalescing, connection pooling and connection reuse
+are forbidden at the DNP boundary. Each request owns one fresh typed
+resolve/connect/TLS transport, so it cannot inherit another origin's DNS or
+pin decision. DNS SNI is exactly the canonical DPC name; direct-IP SNI is
+empty. Callers cannot inject handlers, connectors, pools, proxy configuration
+or redirect policy. A redirect is returned as a coarse failure without a
+second request. These controls are checked before network callbacks.
+
+Successful TLS and SPKI verification do not authorize the write. Immediately
+before the first HTTP request byte, an authoritative final read rechecks exact
+current DPC, DNR, MRLC, DRS, witness lease, txNow and key health. Movement,
+expiry, cancellation or failure closes the fresh transport and sends zero HTTP
+headers or data. The same bounded deadline covers resolve, connect, TLS, final
+recheck and write. Slow connect/TLS therefore cannot outlive authority.
 The DPC endpoint-kind byte is closed as `IPv4=0x01`, `IPv6=0x02`, and
 `DNS=0x03`; zero and all other values reject before address allocation. The
 address length is exactly 4 for IPv4, exactly 16 for IPv6, and 3..253 for DNS.
@@ -1181,6 +1359,21 @@ phase, delivery-authorized and terminal-stale latches, request/outcome hashes, D
 retention, fork latch, reserved zeros and HMAC, in the machine-registry order.
 Its row HMAC uses
 `Deep/ProtectedState/V1/DPJ1`.
+
+The request and outcome hashes are not implementation choices:
+
+```text
+canonicalRequestHash32 = SHA256-D(Deep/NativeRouting/V1/outer-request-hash,
+  U32BE(408)||exactDPR1_408||U32BE(prq2Length)||exactPRQ2)
+innerOutcomeHash32 = SHA256-D(Deep/NativeRouting/V1/outer-outcome-hash,
+  U32BE(296)||exactMRR2_296||U32BE(444)||exactDPS1_444)
+```
+
+Request hash is nonzero in every phase. Outcome hash and both result refs are
+zero in Prepared/InnerPending and exact nonzero only in Completed. Persist
+HMAC-Prepared before the inner call, HMAC-InnerPending before inner exact
+replay, then exact MRR2/DPS1 refs and outcome hash in Completed. A fresh HMAC
+and both signatures are verified before delivery authorization.
 
 Phase values are `Prepared=0`, `InnerPending=1`, and `Completed=2`.
 `deliveryAuthorized` and `terminalStale` are separate one-byte HMAC-covered

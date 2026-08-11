@@ -122,7 +122,7 @@ if ([int]$registry.grammar.headerBytes -ne 12 -or
 $expectedHmacDomains = [ordered]@{
     DPL1='Deep/ProtectedState/V1/DPL1'; DBG1='Deep/ProtectedState/V1/DDBG1'; RIB1='Deep/ProtectedState/V1/DRIB1';
     XIB1='Deep/ProtectedState/V1/DXIB1'; DWL1='Deep/ProtectedState/V1/DWL1'; MRLC='Deep/ProtectedState/V1/MRLC1';
-    DPJ1='Deep/ProtectedState/V1/DPJ1'; RRL1='Deep/ProtectedState/V1/RRL1'
+    DPJ1='Deep/ProtectedState/V1/DPJ1'; RRL1='Deep/ProtectedState/V1/RRL1'; DXR1='Deep/ProtectedState/V1/DXP1-verified-receipt'
 }
 $actualHmacDomainNames = @($registry.grammar.protectedHmacDomains.PSObject.Properties | ForEach-Object { [string]$_.Name })
 if (($actualHmacDomainNames -join '|') -ne (($expectedHmacDomains.Keys) -join '|')) { Fail 'protected HMAC domain map inventory drifted' }
@@ -201,7 +201,7 @@ $expectedFixed = [ordered]@{
     DCM1 = 812; DRA1 = 788; DWD1 = 1217; DCP1 = 706; DCS1 = 839; DCT1 = 414
     DWL1 = 708; DPL1 = 576; DBG1 = 296; RIB1 = 772; XIB1 = 452
     DNR1 = 756; MRL2 = 326; DXP1 = 168; DPR1 = 408; DPS1 = 444; DPJ1 = 609
-    RRM1 = 332; RRL1 = 502; DWT1 = 714
+    RRM1 = 332; RRL1 = 502; DWT1 = 714; DXR1 = 573
 }
 $recordMagics = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
 foreach ($record in @($registry.records)) {
@@ -240,8 +240,8 @@ foreach ($record in @($registry.records)) {
         Fail "fieldCount mismatch for $magic"
     }
 }
-if ($recordMagics.Count -ne 35) { Fail "record count must be 35, actual $($recordMagics.Count)" }
-if ([int]$registrySchema.properties.records.minItems -ne 35 -or [int]$registrySchema.properties.records.maxItems -ne 35) {
+if ($recordMagics.Count -ne 36) { Fail "record count must be 36, actual $($recordMagics.Count)" }
+if ([int]$registrySchema.properties.records.minItems -ne 36 -or [int]$registrySchema.properties.records.maxItems -ne 36) {
     Fail 'record schema bounds must equal the exact registry inventory'
 }
 
@@ -353,11 +353,16 @@ if ([int]$dwt.fixedLength -ne 714 -or [int]$dwt.fieldCount -ne 10 -or
     (@($dwt.fields) -join '|') -ne 'network16|priorDWD1Ref38|witnessEpoch8|releaseRootGeneration8|releaseRootTransitionRef38|KRF1Ref38|effectiveAt8|receiptCount1|threeSortedReceiptRows435|quorumDigest32') {
     Fail 'ReleaseRoot terminal witness quorum layout drifted'
 }
+$dxr = Record 'DXR1'
+if ([int]$dxr.fixedLength -ne 573 -or [int]$dxr.fieldCount -ne 19 -or
+    (@($dxr.fields) -join '|') -ne 'phase1|role1|network16|operationId32|subjectProjectionHash32|holderX25519Public32|issuerEphemeralPublic32|nonce32|nonceLedgerKey32|issuedAt8|expiresAt8|verifiedAt8|transcriptHash32|subjectArtifactRef38|currentSourceFingerprint32|protectedStateKeyId32|forkLatch1|retainedUntil8|HMAC32') {
+    Fail 'DXR1 protected possession receipt layout drifted'
+}
 
 $expectedRecordClasses = [ordered]@{
     publicAuthenticated = @{ suite = 1; records = 'DPA1|DPD1|DPM1|DRS1|KRT1|KRF1|DCM1|DRA1|DWD1|DCP1|DCS1|DCT1|DCN1|DCQ1|DHL1|DCL1|DNR1|DPC1|DPR1|DPS1|RRM1|DWT1' }
     publicCommittedUnsigned = @{ suite = 0; records = 'DRT1|MRL2|RIP2' }
-    protectedHmac = @{ suite = 32769; records = 'DPL1|DBG1|RIB1|XIB1|DWL1|MRLC|DPJ1|RRL1' }
+    protectedHmac = @{ suite = 32769; records = 'DPL1|DBG1|RIB1|XIB1|DWL1|MRLC|DPJ1|RRL1|DXR1' }
     protectedAead = @{ suite = 32770; records = 'DRC1' }
     fixedTranscript = @{ suite = $null; records = 'DXP1' }
 }
@@ -377,7 +382,7 @@ foreach ($className in $expectedRecordClasses.Keys) {
 }
 if (-not $classifiedRecords.SetEquals([string[]]@($recordMagics))) { Fail 'record class table is not a complete exact partition' }
 
-$expectedTranscriptNames = @('artifactRef','releaseRootGenesis','releaseManifestKeyId','releaseRootKeyHash','releaseRootChain','releaseRootAuthorityHead','witnessTerminalQuorum','witnessTerminalReceiptSigningInput','dxpSalt','dxpKeyDevice','dxpKeyRouter','dxpTranscriptHash','deepAccountId','componentSubject','deploymentSubject','witnessSetRoot','witnessDelegationSigningInput','witnessSetSuccessorSigningInput','subjectPolicy','witnessFinalHeads','witnessLeaf','witnessNode','witnessHead','witnessEmptyRoot','quorumDigest','leaseDigest','mrlRealLeaf','mrlEmptyLeaf','mrlNode','mrlRoot','membershipClosure','membershipTransitionContainer','compositeSelection','catalogHash','outerJournalKey')
+$expectedTranscriptNames = @('artifactRef','releaseRootGenesis','releaseManifestKeyId','releaseRootKeyHash','releaseRootChain','releaseRootAuthorityHead','witnessTerminalQuorum','witnessTerminalReceiptSigningInput','dxpSalt','dxpKeyDevice','dxpKeyRouter','dxpTranscriptHash','deepAccountId','componentSubject','deploymentSubject','witnessSetRoot','witnessDelegationSigningInput','witnessSetSuccessorSigningInput','subjectPolicy','witnessFinalHeads','witnessLeaf','witnessNode','witnessHead','witnessEmptyRoot','quorumDigest','leaseDigest','mrlRealLeaf','mrlEmptyLeaf','mrlNode','mrlRoot','membershipClosure','membershipTransitionContainer','compositeSelection','catalogHash','outerJournalKey','dxpSubjectProjection','dxpNonceIndexKeyId','dxpNonceLedgerKey','dxpOperationSource','outerRequestHash','outerOutcomeHash','currentCutoverSource','dnrcSource','membershipHeadSource','mailboxAuthorityHeadSource','mrlcSource')
 $transcriptNames = @($registry.hashTranscripts.PSObject.Properties | ForEach-Object { [string]$_.Name })
 if (($transcriptNames -join '|') -ne ($expectedTranscriptNames -join '|')) { Fail 'hash transcript inventory drifted' }
 $expectedTranscripts = [ordered]@{
@@ -416,6 +421,17 @@ $expectedTranscripts = [ordered]@{
     compositeSelection = 'sha256-d(Deep/NativeRouting/V2/composite-selection, network16|MSM-ref38|MSM-sequence8|member-count4|MRL-root32|PMA-ref38|PMA-generation8|PMA-epoch8|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32|ordered-router-id32-DNR1-ref38-full-MRL2-ref38-anchor-DPC1-ref38-tuples)'
     catalogHash = 'sha256-d(Deep/NativeRouting/V2/catalog-hash, artifact-entry-count4|catalog-length8|catalog-bytes)'
     outerJournalKey = 'hmac-sha256(journal-index-key, u16-domain-length|Deep/NativeRouting/V1/outer-journal-key|network16|sender32|recipient32|request-id32)'
+    dxpSubjectProjection = 'sha256-d(Deep/IdentityAuth/V1/x25519-pop-subject,role1|u32be-projection-length|canonical-DPD1-or-DNR1-unsigned-projection-with-signature-and-PoP-signature-TLVs-omitted-and-x25519PoPTranscriptHash-value-zero32)'
+    dxpNonceIndexKeyId = 'sha256-d(Deep/ProtectedState/V1/DXP1-nonce-index-key-id,network16|reset-id32|dxp-nonce-index-key32)'
+    dxpNonceLedgerKey = 'hmac-sha256(dxp-nonce-index-key32,u16be-domain-length|Deep/ProtectedState/V1/DXP1-nonce-ledger-key|network16|reset-id32|role1|nonce32)'
+    dxpOperationSource = 'sha256-d(Deep/IdentityAuth/V1/dxp-operation-source,role1|stage1|cutover-source32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|subject-projection-hash32|prior-subject-LKG-ref38|transcript-hash32|subject-artifact-ref38|identity-catalog-key-id32|DXR-key-id32|nonce-index-key-id32)'
+    outerRequestHash = 'sha256-d(Deep/NativeRouting/V1/outer-request-hash,u32be-408|exact-DPR1-408|u32be-PRQ2-length|exact-PRQ2)'
+    outerOutcomeHash = 'sha256-d(Deep/NativeRouting/V1/outer-outcome-hash,u32be-296|exact-MRR2-296|u32be-444|exact-DPS1-444)'
+    currentCutoverSource = 'sha256-d(Deep/NativeRouting/V2/current-cutover-source,network16|reset-id32|component-kind2|account-hash32|account-generation8|DCM-generation8|DCM-ref38|DCP-ref38|DCS-ref38|DCQ-ref38|DWL-ref38|DCL-ref38|DPL-ref38|release-root-authority-head32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|lease-expires8|DPL-key-id32|DWL-key-id32|RRL-key-id32|RIB-key-id32|MRLC-key-id32|DXR-key-id32)'
+    dnrcSource = 'sha256-d(Deep/NativeRouting/V2/dnrc-source,cutover-source32|owner-id32|DPMC-ref38|PMA-ref38|PMA-generation8|PMA-epoch8|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32|DNR-ref38|router-DXP-transcript-hash32|DXR1-key-id32)'
+    membershipHeadSource = 'sha256-d(Deep/NativeRouting/V2/membership-head-source,network16|MNG1-ref38|transition-container-hash32|MSM-sequence8|MSM-canonical-hash32|MSM-ref38)'
+    mailboxAuthorityHeadSource = 'sha256-d(Deep/NativeRouting/V2/mailbox-authority-head-source,network16|PMA-ref38|PMA-generation8|PMA-canonical-hash32|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32)'
+    mrlcSource = 'sha256-d(Deep/NativeRouting/V2/mrlc-source,cutover-source32|old-membership-head-source32|new-membership-head-source32|old-mailbox-authority-head-source32|new-mailbox-authority-head-source32|MRLC-ref38|MRLC-protected-key-id32|composite-selection32|member-count4|ordered-router-id32-DNRC-source32-tuples)'
 }
 foreach ($name in $expectedTranscriptNames) {
     $formula = [string]$registry.hashTranscripts.$name
@@ -466,7 +482,10 @@ if ($registry.outerJournal.record -ne 'DPJ1' -or
     $registry.outerJournal.latches -notmatch 'cannot both be set' -or
     $registry.outerJournal.phaseShape -notmatch 'terminal-stale preserves phase and all fields' -or
     $registry.outerJournal.staleRule -notmatch 'zero-inner-callback' -or
-    $registry.outerJournal.garbageCollection -notmatch 'verify-row-HMAC-first') {
+    $registry.outerJournal.garbageCollection -notmatch 'verify-row-HMAC-first' -or
+    $registry.outerJournal.requestHash -notmatch 'outerRequestHash' -or
+    $registry.outerJournal.outcomeHash -notmatch 'outerOutcomeHash' -or
+    $registry.outerJournal.transitionOrder -notmatch 'persist-HMAC-Prepared') {
     Fail 'outer journal phases, stale rule or authenticated GC drifted'
 }
 $expectedActivation = @('normative-docs-and-machine-gates','exact-three-protocol-packages-and-independent-review','external-witness-service-tooling-and-four-witness-rehearsal','recovery-capsule-loss-and-whole-store-rollback-rehearsal','registry-destructive-reset','xnode-destructive-reset','shared-and-maui-destructive-reset','devops-clean-rebuild','registry-4C-only-after-every-prior-gate-is-GO')
@@ -581,7 +600,7 @@ $expectedWireEnumNames = @(
     'dpaMinimumSuite','dpdSuite','dpdCapabilities','dpmCapabilities','drtTargetKind','drsReason','draReason',
     'keyScope','keyAction','dxpRole','routerRoles','routerCapabilities','dpcEndpointKind','dpcFlags',
     'witnessEndpointKind','dcnDurabilityClass','componentMask','outerPeerOperation','innerPrq2Operation',
-    'dpjPhase','booleanByte','rip2ProtocolVersion','unknownPolicy','drtTargetPolicy','keyPolicy','dxpPolicy',
+    'dpjPhase','dxrPhase','booleanByte','rip2ProtocolVersion','unknownPolicy','drtTargetPolicy','keyPolicy','dxpPolicy',
     'routerPolicy','dpcPolicy','reasonPolicy','phasePolicy','reservedPolicy'
 )
 $schemaWireEnumNames = @($registrySchema.properties.wireEnums.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
@@ -591,7 +610,7 @@ if ($registrySchema.properties.wireEnums.additionalProperties -ne $false -or
     ($schemaWireRequired -join '|') -ne ($expectedWireEnumNames -join '|')) {
     Fail 'wire enum schema property set/order is not exact and closed'
 }
-$constWireEnumNames = @('dpaMinimumSuite','dpdSuite','dpdCapabilities','dpmCapabilities','drtTargetKind','drsReason','draReason','keyScope','keyAction','dxpRole','routerRoles','routerCapabilities','dpcEndpointKind','dpcFlags','witnessEndpointKind','dcnDurabilityClass','componentMask','outerPeerOperation','innerPrq2Operation','dpjPhase','booleanByte','rip2ProtocolVersion')
+$constWireEnumNames = @('dpaMinimumSuite','dpdSuite','dpdCapabilities','dpmCapabilities','drtTargetKind','drsReason','draReason','keyScope','keyAction','dxpRole','routerRoles','routerCapabilities','dpcEndpointKind','dpcFlags','witnessEndpointKind','dcnDurabilityClass','componentMask','outerPeerOperation','innerPrq2Operation','dpjPhase','dxrPhase','booleanByte','rip2ProtocolVersion')
 foreach ($name in $constWireEnumNames) {
     if (($registry.wireEnums.$name | ConvertTo-Json -Compress) -ne ($registrySchema.properties.wireEnums.properties.$name.const | ConvertTo-Json -Compress)) {
         Fail "wire enum schema const drifted: $name"
@@ -634,6 +653,7 @@ if (($wireEnumNames -join '|') -ne ($expectedWireEnumNames -join '|') -or
     (@($registry.wireEnums.outerPeerOperation) -join '|') -ne 'MailboxPeerV2=1' -or
     (@($registry.wireEnums.innerPrq2Operation) -join '|') -ne 'Store=1|Tombstone=2' -or
     (@($registry.wireEnums.dpjPhase) -join '|') -ne 'Prepared=0|InnerPending=1|Completed=2' -or
+    (@($registry.wireEnums.dxrPhase) -join '|') -ne 'Pending=0|Verified=1|Aborted=2' -or
     (@($registry.wireEnums.booleanByte) -join '|') -ne '0|1' -or
     [uint16]$registry.wireEnums.rip2ProtocolVersion -ne 2 -or
     $registry.wireEnums.routerPolicy -notmatch 'DPC1-capabilities-equal' -or
@@ -683,7 +703,7 @@ if ($registry.identifiers.mailboxOwnerId -ne 'sha256-d(Deep/IdentityAuth/V1/mail
     $registry.identifiers.routerCollisionScope -ne 'same-network-different-preimage-latches-routing-domain') {
     Fail 'mailbox owner/router identifier provenance or collision policy drifted'
 }
-$apiInvariantNames = @('rrmPreflight','rrmTime','relativeResult','authorityConversion','dwdRestore','authorityTuple','authorityCas','hmacTranscript','hmacKeyId','recoveryFreeze','recoveryProvider','recoveryNonce','recoveryPlaintext','cancellation','commitAuthority','consumerFinalRecheck','mrlProjectionBoundary','mrlCompositeCas','mrlCacheIdentity')
+$apiInvariantNames = @('rrmPreflight','rrmTime','relativeResult','authorityConversion','dwdRestore','authorityTuple','authorityCas','hmacTranscript','hmacKeyId','recoveryFreeze','recoveryProvider','recoveryNonce','recoveryPlaintext','cancellation','commitAuthority','consumerFinalRecheck','mrlProjectionBoundary','mrlCompositeCas','mrlCacheIdentity','dxpProjection','dxpReceipt','dxpNonce','dxpFinalCas','mrlCurrentInputs','mrlContinuity','mrlSourceCas','callbackOrder')
 Assert-ExactProperties -Object $registry.apiInvariants -Required $apiInvariantNames -Allowed $apiInvariantNames -Name 'API invariants'
 $apiSchemaNames = @($registrySchema.properties.apiInvariants.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
 $apiSchemaRequired = @($registrySchema.properties.apiInvariants.required | ForEach-Object { [string]$_ })
@@ -710,13 +730,30 @@ if ($registry.apiInvariants.rrmPreflight -ne 'freeze-exact-canonical-RRM1-332-an
     $registry.apiInvariants.consumerFinalRecheck -ne 'consumer-final-durable-transaction-rechecks-current-DPL1-RRL1-DWL1-DRS1-txNow-lease-key-health-kill-switch-and-exact-old-authority-tuple-before-CAS' -or
     $registry.apiInvariants.mrlProjectionBoundary -ne 'projection-is-internal-non-artifact-and-derived-only-from-sealed-pre-root-intent-or-validated-full-MRL2; no-public-parser-model-caller-bytes-ArtifactRef-or-authority-conversion' -or
     $registry.apiInvariants.mrlCompositeCas -ne 'final-plan-defensively-owns-projected-root-MMC1-MSM1-PMA1-PMR1-DNR1-DPC1-full-MRL2-composite-selection-and-exact-old-new-source-fingerprints; atomic-full-tuple-CAS-precedes-publication' -or
-    $registry.apiInvariants.mrlCacheIdentity -ne 'every-cache-and-index-key-retains-projected-leaf32-projected-root32-and-full-MRL2-ref38-and-exact-prior-full-MRL2-LKG') {
+    $registry.apiInvariants.mrlCacheIdentity -ne 'every-cache-and-index-key-retains-projected-leaf32-projected-root32-and-full-MRL2-ref38-and-exact-prior-full-MRL2-LKG' -or
+    $registry.apiInvariants.dxpProjection -notmatch 'internal-non-artifact-only' -or
+    $registry.apiInvariants.dxpProjection -notmatch 'tag21 value zero32' -or
+    $registry.apiInvariants.dxpProjection -notmatch 'tag19 value zero32' -or
+    $registry.apiInvariants.dxpReceipt -notmatch 'core239' -or
+    $registry.apiInvariants.dxpReceipt -notmatch 'fixed573' -or
+    $registry.apiInvariants.dxpNonce -notmatch 'operationId32 is consumer-internal CSPRNG nonzero' -or
+    $registry.apiInvariants.dxpNonce -notmatch 'nonceLedgerKey is derived only by dxpNonceLedgerKey' -or
+    $registry.apiInvariants.dxpNonce -notmatch 'immutable and nonrotating for network-resetId' -or
+    $registry.apiInvariants.dxpNonce -notmatch 'missing-wrong-retired-early key fails closed' -or
+    $registry.apiInvariants.dxpNonce -notmatch 'Pending CAS precedes challenge' -or
+    $registry.apiInvariants.dxpFinalCas -notmatch 'stage0 dxpOperationSource' -or
+    $registry.apiInvariants.dxpFinalCas -notmatch 'stage1 dxpOperationSource' -or
+    $registry.apiInvariants.dxpFinalCas -notmatch 'same atomic CAS installs subject head' -or
+    $registry.apiInvariants.mrlCurrentInputs -notmatch 'fields3-through8' -or
+    $registry.apiInvariants.mrlContinuity -notmatch 'separate RestoreCurrentCompositeLkg and VerifyNextCompositeLkg' -or
+    $registry.apiInvariants.mrlSourceCas -notmatch 'raw old-new membership-PMA-PMR-cutover-DRS tuples' -or
+    $registry.apiInvariants.callbackOrder -notmatch 'HMAC-and-current-head checks precede') {
     Fail 'B0/B1 public API authority/callback/recovery invariants drifted'
 }
 if ((@($registry.witness.canonicalOrder) -join '|') -ne 'DCP1[4]|DCS1|DCT1|DCN1/DCQ1|DPL1') {
     Fail 'witness dependency order must remain acyclic'
 }
-$membershipAuthorityNames = @('membershipChain','mailboxAuthorityChain','join','crossAuthorityInference','mrlProjection','mrlProjectionSource','fullMrlRule','predecessorRule','authorOrder','compositeMemberTuple','finalPlan','cacheIdentity','maximumMembers','maximumArtifactEntries','maximumTransitionEntries','maximumCatalogBytes')
+$membershipAuthorityNames = @('membershipChain','mailboxAuthorityChain','join','crossAuthorityInference','mrlProjection','mrlProjectionSource','fullMrlRule','predecessorRule','authorOrder','compositeMemberTuple','finalPlan','cacheIdentity','maximumMembers','maximumArtifactEntries','maximumTransitionEntries','maximumCatalogBytes','currentCutoverInput','currentMailboxInput','currentDnrcInput','membershipHead','mailboxAuthorityHead')
 Assert-ExactProperties -Object $registry.membershipAuthority -Required $membershipAuthorityNames -Allowed $membershipAuthorityNames -Name 'membership authority'
 $membershipAuthoritySchemaNames = @($registrySchema.properties.membershipAuthority.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
 $membershipAuthoritySchemaRequired = @($registrySchema.properties.membershipAuthority.required | ForEach-Object { [string]$_ })
@@ -738,7 +775,12 @@ if ((@($registry.membershipAuthority.membershipChain) -join '|') -ne 'MNG1|MDG1|
     $registry.membershipAuthority.authorOrder -ne 'sealed-projection-intent-and-root|MMC1-MSM1|PMA1|PMR1|DNR1|DPC1|full-MRL2|MRLC-final-defensive-plan-and-atomic-CAS' -or
     $registry.membershipAuthority.compositeMemberTuple -ne 'router-id32|DNR1-ref38|full-MRL2-ref38|anchor-DPC1-ref38' -or
     $registry.membershipAuthority.finalPlan -notmatch 'one-atomic-CAS-before-publication' -or
-    $registry.membershipAuthority.cacheIdentity -notmatch 'projected-leaf32\|projected-root32\|full-MRL2-ref38') {
+    $registry.membershipAuthority.cacheIdentity -notmatch 'projected-leaf32\|projected-root32\|full-MRL2-ref38' -or
+    $registry.membershipAuthority.currentCutoverInput -notmatch 'fields1-through8 compare before callbacks' -or
+    $registry.membershipAuthority.currentMailboxInput -notmatch 'exact DPMCRef38' -or
+    $registry.membershipAuthority.currentDnrcInput -notmatch 'Router-role DXR1 transcript' -or
+    $registry.membershipAuthority.membershipHead -notmatch 'candidate-derived LKG is forbidden' -or
+    $registry.membershipAuthority.mailboxAuthorityHead -notmatch 'candidate-derived LKG forbidden') {
     Fail 'independent membership/mailbox authority policy drifted'
 }
 if ([int]$registry.membershipAuthority.maximumMembers -ne 4096 -or
@@ -753,7 +795,13 @@ if ($registry.http.path -ne '/api/peer/native/v1/mailbox' -or
     [int]$registry.http.storeMaximumBytes -ne 91128 -or
     [int]$registry.http.tombstoneMinimumBytes -ne 1050 -or
     [int]$registry.http.tombstoneMaximumBytes -ne 9240 -or
-    $registry.http.compression -ne 'reject') { Fail 'native peer HTTP contract drifted' }
+    $registry.http.compression -ne 'reject' -or
+    $registry.http.publicAddressPolicy -ne 'normalize-IPv4-mapped-IPv6-to-IPv4;deny-IPv4=0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,127.0.0.0/8,169.254.0.0/16,172.16.0.0/12,192.0.0.0/24,192.0.2.0/24,192.88.99.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,224.0.0.0/4,240.0.0.0/4;allow-IPv6-only-2000::/3-minus=2001::/23,2001:db8::/32,3fff::/20;deny-everything-else' -or
+    $registry.http.resolutionContract -ne 'DNS ASCII-LDH labels 1-through-63 total 3-through-253 at-least-two-labels no-empty-leading-trailing-hyphen; DNS one typed resolve callback returns 1-through-16 canonical unique addresses sorted family-then-unsigned-bytes; direct address produces one-element owned set without resolver callback; every address passes exact public policy; connector receives owned set once and returns actual connected canonical IP plus TLS-SPKI32; no second resolution; connected IP membership and SPKI fixed-time compare' -or
+    $registry.http.connectOrder -notmatch 'repeat txNow-current-head-lease after resolve' -or
+    $registry.http.connectOrder -notmatch 'immediately before first HTTP request byte' -or
+    $registry.http.connectOrder -notmatch 'zero HTTP headers-or-data' -or
+    $registry.http.transportIsolation -ne 'system-and-user-proxy-disabled; redirects-disabled; Alt-Svc-disabled-and-ignored; HTTP2-origin-coalescing-disabled; connection-pooling-and-reuse-disabled; one-fresh-typed-resolve-connect-TLS-transport-per-request; DNS-SNI-is-exact-canonical-DPC-name-and-direct-IP-SNI-is-empty; no-caller-handler-connector-or-pool-substitution') { Fail 'native peer HTTP contract drifted' }
 
 $packageIds = @($registry.packages | ForEach-Object { [string]$_.id })
 if (($packageIds -join '|') -ne 'Deep.Protocol|Deep.Protocol.MembershipRoutes|Deep.Protocol.ProfileCarrier') {
@@ -796,7 +844,7 @@ if ($vectors.schemaVersion -ne '1.0.0' -or $vectors.status -ne 'required-before-
     Fail 'vector skeleton governance binding changed'
 }
 Assert-ExactProperties $vectors $vectorTop $vectorTop 'vectors'
-if ([int]$vectorSchema.properties.cases.minItems -ne 114 -or [int]$vectorSchema.properties.cases.maxItems -ne 114 -or
+if ([int]$vectorSchema.properties.cases.minItems -ne 146 -or [int]$vectorSchema.properties.cases.maxItems -ne 146 -or
     $vectorSchema.properties.cases.uniqueItems -ne $true -or
     $vectorSchema.'$defs'.case.additionalProperties -ne $false) {
     Fail 'vector schema bounds/closed case grammar drifted'
@@ -935,6 +983,22 @@ $requiredCases = @(
     'membership-mrl2-prior-full-lkg','membership-rip2-sealed-full-tuple',
     'membership-composite-selection-full-tuples','membership-final-full-set-cas',
     'membership-cache-dual-identity',
+    'identity-dxp-subject-projection-cycle-break','identity-dxp-subject-projection-substitution',
+    'identity-dxp-pending-before-challenge','identity-dxp-pending-crash-ephemeral-loss',
+    'identity-dxp-nonce-operation-fork','identity-dxp-receipt-hmac-retention-gc',
+    'identity-dxp-final-source-cas-race','membership-current-cutover-fields-source',
+    'membership-current-mailbox-revoked','membership-router-dxp-receipt-required',
+    'membership-dnrc-fact-set-bounds','membership-msm-prior-head-successor',
+    'membership-msm-candidate-derived-lkg','membership-pma-pmr-prior-head-successor',
+    'membership-pma-pmr-candidate-derived-lkg','membership-composite-old-new-source-cas',
+    'peer-outer-request-hash-transcript','peer-outer-outcome-hash-transcript',
+    'peer-outer-hash-phase-crash-replay','routing-public-address-closed-table',
+    'routing-resolve-owned-set-mapped-order','routing-resolve-cancel-recheck-race',
+    'identity-dxp-nonce-ledger-derived-unique','identity-dxp-operation-id-authority-correlation',
+    'identity-dxp-operation-source-stages','identity-dxp-operation-source-race',
+    'routing-transport-proxy-redirect-altsvc','routing-transport-coalescing-pool-disabled',
+    'identity-dxp-index-key-restart-stable','identity-dxp-index-key-rotation-retention',
+    'routing-final-post-tls-source-race','routing-final-post-tls-lease-expiry',
     'package-exact-three-session-free'
 )
 if (-not $caseIds.SetEquals([string[]]$requiredCases)) { Fail 'vector case inventory drifted' }
@@ -1000,6 +1064,38 @@ $apiClosureVectors = [ordered]@{
     'membership-composite-selection-full-tuples' = 'router ID, DNR ref, full MRL2 ref and anchor DPC ref|0'
     'membership-final-full-set-cas' = 'exact source fingerprints before publication|1'
     'membership-cache-dual-identity' = 'projected leaf, projected root, full MRL2 ArtifactRef and prior full LKG|0'
+    'identity-dxp-subject-projection-cycle-break' = 'Internal DPD and DNR projections zero only the retained transcript-hash value|4'
+    'identity-dxp-subject-projection-substitution' = 'Caller projection bytes|0'
+    'identity-dxp-pending-before-challenge' = 'before challenge or issuer ephemeral public bytes|1'
+    'identity-dxp-pending-crash-ephemeral-loss' = 'nonpersisted ephemeral private key|1'
+    'identity-dxp-nonce-operation-fork' = 'permanently latch before challenge|0'
+    'identity-dxp-receipt-hmac-retention-gc' = 'core239|0'
+    'identity-dxp-final-source-cas-race' = 'one exact source-fingerprint CAS|4'
+    'membership-current-cutover-fields-source' = 'MRLC fields 1 through 8|0'
+    'membership-current-mailbox-revoked' = 'cannot mint a current mailbox-role fact|0'
+    'membership-router-dxp-receipt-required' = 'Verified Router-role DXR transcript|0'
+    'membership-dnrc-fact-set-bounds' = 'bounded to member count|0'
+    'membership-msm-prior-head-successor' = 'exact sealed prior membership head|3'
+    'membership-msm-candidate-derived-lkg' = 'Synthesizing membership LKG from candidate|0'
+    'membership-pma-pmr-prior-head-successor' = 'sealed prior authority hash|3'
+    'membership-pma-pmr-candidate-derived-lkg' = 'Candidate-derived PMA or PMR|0'
+    'membership-composite-old-new-source-cas' = 'raw old and new membership, PMA/PMR, cutover and DRS tuples|1'
+    'peer-outer-request-hash-transcript' = 'length-framed exact DPR1 then PRQ2|0'
+    'peer-outer-outcome-hash-transcript' = 'length-framed exact MRR2 then DPS1|0'
+    'peer-outer-hash-phase-crash-replay' = 'without inner mutation|1'
+    'routing-public-address-closed-table' = 'exact closed public-unicast exclusion table|0'
+    'routing-resolve-owned-set-mapped-order' = 'connector returns a member IP and exact SPKI|3'
+    'routing-resolve-cancel-recheck-race' = 'prevents connect|2'
+    'identity-dxp-nonce-ledger-derived-unique' = 'Protected-index HMAC derives one ledger key|0'
+    'identity-dxp-operation-id-authority-correlation' = 'Nonzero consumer CSPRNG operation ID|0'
+    'identity-dxp-operation-source-stages' = 'Stage zero source binds zero final fields|4'
+    'identity-dxp-operation-source-race' = 'makes final DXR and subject CAS stale|3'
+    'routing-transport-proxy-redirect-altsvc' = 'cannot create a second network request|2'
+    'routing-transport-coalescing-pool-disabled' = 'no HTTP2 origin coalescing|3'
+    'identity-dxp-index-key-restart-stable' = 'same reset-bound nonce index key ID|0'
+    'identity-dxp-index-key-rotation-retention' = 'before every retained DXR and tombstone is gone|0'
+    'routing-final-post-tls-source-race' = 'zero HTTP request bytes|3'
+    'routing-final-post-tls-lease-expiry' = 'immediately before write|3'
 }
 foreach ($id in $apiClosureVectors.Keys) {
     $parts = ([string]$apiClosureVectors[$id]).Split('|')

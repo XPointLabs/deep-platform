@@ -22,7 +22,7 @@
     "tags": "strict-contiguous-one-based",
     "artifactRefBytes": 38,
     "artifactRef": "type-u16be|canonical-length-u32be|canonical-sha256-32",
-    "unsignedForm": "omit-signature-and-pop-fields",
+    "unsignedForm": "omit-final-signature-and-pop-signature-fields; DPD1/DNR1 subject projections additionally retain the x25519PoPTranscriptHash field at length32 with an all-zero value",
     "signatureInput": "u16-domain-length|ascii-domain|u16-suite|u32-unsigned-length|unsigned-canonical",
     "protectedHmacInput": "hmac-sha256(protected-state-key32,u16-domain-length|ascii-domain|u16be-0x8001|u32be-unsigned-length|canonical-record-omitting-final-HMAC-and-using-field-count-N-minus-1)",
     "protectedHmacDomains": {
@@ -33,7 +33,8 @@
       "DWL1": "Deep/ProtectedState/V1/DWL1",
       "MRLC": "Deep/ProtectedState/V1/MRLC1",
       "DPJ1": "Deep/ProtectedState/V1/DPJ1",
-      "RRL1": "Deep/ProtectedState/V1/RRL1"
+      "RRL1": "Deep/ProtectedState/V1/RRL1",
+      "DXR1": "Deep/ProtectedState/V1/DXP1-verified-receipt"
     },
     "sha256DomainFunction": "sha256(u16be-domain-length|ascii-domain|u32be-payload-length|payload)",
     "artifactHashDomainPrefix": "Deep/Artifact/V1/"
@@ -41,7 +42,7 @@
   "recordClasses": {
     "publicAuthenticated": { "headerSuite": 1, "records": ["DPA1","DPD1","DPM1","DRS1","KRT1","KRF1","DCM1","DRA1","DWD1","DCP1","DCS1","DCT1","DCN1","DCQ1","DHL1","DCL1","DNR1","DPC1","DPR1","DPS1","RRM1","DWT1"] },
     "publicCommittedUnsigned": { "headerSuite": 0, "records": ["DRT1","MRL2","RIP2"] },
-    "protectedHmac": { "headerSuite": 32769, "records": ["DPL1","DBG1","RIB1","XIB1","DWL1","MRLC","DPJ1","RRL1"] },
+    "protectedHmac": { "headerSuite": 32769, "records": ["DPL1","DBG1","RIB1","XIB1","DWL1","MRLC","DPJ1","RRL1","DXR1"] },
     "protectedAead": { "headerSuite": 32770, "records": ["DRC1"] },
     "fixedTranscript": { "headerSuite": null, "records": ["DXP1"] }
   },
@@ -154,6 +155,8 @@
     "Deep/IdentityAuth/V1/x25519-pop-key/device",
     "Deep/IdentityAuth/V1/x25519-pop-key/router",
     "Deep/IdentityAuth/V1/x25519-pop-transcript-hash",
+    "Deep/IdentityAuth/V1/x25519-pop-subject",
+    "Deep/IdentityAuth/V1/dxp-operation-source",
     "Deep/IdentityAuth/V1/mailbox-owner-id",
     "Deep/Artifact/V1/RRM1",
     "Deep/Artifact/V1/RRL1",
@@ -209,6 +212,13 @@
     "Deep/NativeRouting/V2/composite-selection",
     "Deep/NativeRouting/V2/catalog-hash",
     "Deep/NativeRouting/V1/outer-journal-key",
+    "Deep/NativeRouting/V1/outer-request-hash",
+    "Deep/NativeRouting/V1/outer-outcome-hash",
+    "Deep/NativeRouting/V2/current-cutover-source",
+    "Deep/NativeRouting/V2/dnrc-source",
+    "Deep/NativeRouting/V2/membership-head-source",
+    "Deep/NativeRouting/V2/mailbox-authority-head-source",
+    "Deep/NativeRouting/V2/mrlc-source",
     "Deep/ProtectedState/V1/DPL1",
     "Deep/ProtectedState/V1/DDBG1",
     "Deep/ProtectedState/V1/DRIB1",
@@ -217,6 +227,9 @@
     "Deep/ProtectedState/V1/MRLC1",
     "Deep/ProtectedState/V1/DPJ1"
     ,"Deep/ProtectedState/V1/RRL1"
+    ,"Deep/ProtectedState/V1/DXP1-verified-receipt"
+    ,"Deep/ProtectedState/V1/DXP1-nonce-ledger-key"
+    ,"Deep/ProtectedState/V1/DXP1-nonce-index-key-id"
   ],
   "substructures": {
     "dcmComponentRow": { "bytes": 42, "count": 4, "layout": "component-kind2|schema-generation8|schema-fingerprint32" },
@@ -287,6 +300,7 @@
     "outerPeerOperation": ["MailboxPeerV2=1"],
     "innerPrq2Operation": ["Store=1", "Tombstone=2"],
     "dpjPhase": ["Prepared=0", "InnerPending=1", "Completed=2"],
+    "dxrPhase": ["Pending=0", "Verified=1", "Aborted=2"],
     "booleanByte": [0, 1],
     "rip2ProtocolVersion": 2,
     "unknownPolicy": "zero-unlisted-bits-and-reserved-values-reject-before-crypto-or-network",
@@ -335,6 +349,7 @@
     ,{ "magic": "RRM1", "version": 1, "fieldCount": 10, "valueBytes": 240, "fixedLength": 332, "fields": ["network16","manifestGeneration8","environmentResetId32","releaseRootGeneration8","releaseRootEd25519Public32","activationAt8","componentMask8","schemaFingerprint32","manifestSignerKeyId32","manifestSignature64"] }
     ,{ "magic": "RRL1", "version": 1, "fieldCount": 16, "valueBytes": 362, "fixedLength": 502, "fields": ["network16","genesisRRM1Ref38","currentGeneration8","currentPublic32","currentTransitionRef38","terminalKRF1Ref38","terminalState1","forkLatch1","latestDWDGeneration8","latestDWDRef38","latestWitnessEpoch8","chainEntryCount2","chainCheckpointHash32","terminalDWT1Ref38","protectedStateKeyId32","HMAC32"] }
     ,{ "magic": "DWT1", "version": 1, "fieldCount": 10, "valueBytes": 622, "fixedLength": 714, "fields": ["network16","priorDWD1Ref38","witnessEpoch8","releaseRootGeneration8","releaseRootTransitionRef38","KRF1Ref38","effectiveAt8","receiptCount1","threeSortedReceiptRows435","quorumDigest32"] }
+    ,{ "magic": "DXR1", "version": 1, "fieldCount": 19, "valueBytes": 409, "fixedLength": 573, "fields": ["phase1","role1","network16","operationId32","subjectProjectionHash32","holderX25519Public32","issuerEphemeralPublic32","nonce32","nonceLedgerKey32","issuedAt8","expiresAt8","verifiedAt8","transcriptHash32","subjectArtifactRef38","currentSourceFingerprint32","protectedStateKeyId32","forkLatch1","retainedUntil8","HMAC32"] }
   ],
   "membershipAuthority": {
     "membershipChain": ["MNG1", "MDG1", "MRV1", "MMC1", "MSM1"],
@@ -347,12 +362,17 @@
     "predecessorRule": "predecessor-MRL2-ref38 is zero only at descriptor genesis; every successor exact-matches the sealed prior full-MRL2 LKG and advances descriptor-generation by one",
     "authorOrder": "sealed-projection-intent-and-root|MMC1-MSM1|PMA1|PMR1|DNR1|DPC1|full-MRL2|MRLC-final-defensive-plan-and-atomic-CAS",
     "compositeMemberTuple": "router-id32|DNR1-ref38|full-MRL2-ref38|anchor-DPC1-ref38",
-    "finalPlan": "one-sealed-defensively-owned-plan-binds-projected-root-MMC1-MSM1-PMA1-PMR1-DNR1-DPC1-full-MRL2-composite-selection-and-exact-old-new-source-fingerprints; one-atomic-CAS-before-publication",
+    "finalPlan": "one-sealed-defensively-owned-plan-binds-current-cutover-and-DRS-current-mailbox-role-per-DNR-router-DXP-projected-root-MMC1-MSM1-PMA1-PMR1-DNR1-DPC1-full-MRL2-composite-selection-and-exact-old-new-membership-PMA-PMR-cutover-source-fingerprints-and-key-ids; one-atomic-CAS-before-publication",
     "cacheIdentity": "projected-leaf32|projected-root32|full-MRL2-ref38; no-single-element-cache-or-index-authority",
     "maximumMembers": 4096,
     "maximumArtifactEntries": 16389,
     "maximumTransitionEntries": 4096,
-    "maximumCatalogBytes": 16777216
+    "maximumCatalogBytes": 16777216,
+    "currentCutoverInput": "sealed-current network16|resetId32|componentKind2|accountHash32|accountGeneration8|DCMGeneration8|DCMRef38|DCPRef38|DCSRef38|DCQRef38|DWLRef38|DCLRef38|DPLRef38|releaseRootAuthorityHead32|DRSRevision8|DRSCount8|DRSHead32|DRSRef38|leaseExpiresAt8|DPLKeyId32|DWLKeyId32|RRLKeyId32|RIBKeyId32|MRLCKeyId32|DXRKeyId32; exact MRLC fields1-through8 compare before callbacks",
+    "currentMailboxInput": "sealed-current mailbox-role fact from bounded exact DPA1-current-DRS1-DRT1-DPD1-DPM1-RIB1-DCP1 restore; keyed by exact DPMCRef38 and binds owner-account-device-mailbox-key-capabilities-current-DRS-nonrevoked",
+    "currentDnrcInput": "one sealed fact per exact DNR1Ref38 from current mailbox fact plus exact PMA1-PMR1 issuer provenance plus verified Router-role DXR1 transcript; bounded count equals memberCount with no duplicate-unused-missing-or-mixed-source fact",
+    "membershipHead": "sealed network16|MNG1Ref38|membershipTransitionContainerHash32|MSMSequence8|MSMCanonicalHash32|MSMRef38; RestoreCurrent requires exact committed tuple; VerifyNext requires candidate-sequence-prior-plus-one and PreviousHash exact prior MSM hash; genesis baseline is sealed and candidate-derived LKG is forbidden",
+    "mailboxAuthorityHead": "sealed network16|PMARef38|PMAGeneration8|PMACanonicalHash32|PMRRef38|PMRGeneration8|PMRHead32|PMRSnapshotHash32; RestoreCurrent exact; VerifyNext requires PMA prior-plus-one and exact previous authority hash while PMR is exact current or prior-plus-one with exact previous head; candidate-derived LKG forbidden"
   },
   "membershipProof": {
     "outerCarrier": "MIP1-byte-and-api-identical",
@@ -426,7 +446,18 @@
     "membershipTransitionContainer": "sha256-d(Deep/NativeRouting/V2/membership-transition-container, entry-count-u16be|ordered-rows-of-artifact-type2-length4-hash32-exact-bytes)",
     "compositeSelection": "sha256-d(Deep/NativeRouting/V2/composite-selection, network16|MSM-ref38|MSM-sequence8|member-count4|MRL-root32|PMA-ref38|PMA-generation8|PMA-epoch8|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32|ordered-router-id32-DNR1-ref38-full-MRL2-ref38-anchor-DPC1-ref38-tuples)",
     "catalogHash": "sha256-d(Deep/NativeRouting/V2/catalog-hash, artifact-entry-count4|catalog-length8|catalog-bytes)",
-    "outerJournalKey": "hmac-sha256(journal-index-key, u16-domain-length|Deep/NativeRouting/V1/outer-journal-key|network16|sender32|recipient32|request-id32)"
+    "outerJournalKey": "hmac-sha256(journal-index-key, u16-domain-length|Deep/NativeRouting/V1/outer-journal-key|network16|sender32|recipient32|request-id32)",
+    "dxpSubjectProjection": "sha256-d(Deep/IdentityAuth/V1/x25519-pop-subject,role1|u32be-projection-length|canonical-DPD1-or-DNR1-unsigned-projection-with-signature-and-PoP-signature-TLVs-omitted-and-x25519PoPTranscriptHash-value-zero32)",
+    "dxpNonceIndexKeyId": "sha256-d(Deep/ProtectedState/V1/DXP1-nonce-index-key-id,network16|reset-id32|dxp-nonce-index-key32)",
+    "dxpNonceLedgerKey": "hmac-sha256(dxp-nonce-index-key32,u16be-domain-length|Deep/ProtectedState/V1/DXP1-nonce-ledger-key|network16|reset-id32|role1|nonce32)",
+    "dxpOperationSource": "sha256-d(Deep/IdentityAuth/V1/dxp-operation-source,role1|stage1|cutover-source32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|subject-projection-hash32|prior-subject-LKG-ref38|transcript-hash32|subject-artifact-ref38|identity-catalog-key-id32|DXR-key-id32|nonce-index-key-id32)",
+    "outerRequestHash": "sha256-d(Deep/NativeRouting/V1/outer-request-hash,u32be-408|exact-DPR1-408|u32be-PRQ2-length|exact-PRQ2)",
+    "outerOutcomeHash": "sha256-d(Deep/NativeRouting/V1/outer-outcome-hash,u32be-296|exact-MRR2-296|u32be-444|exact-DPS1-444)",
+    "currentCutoverSource": "sha256-d(Deep/NativeRouting/V2/current-cutover-source,network16|reset-id32|component-kind2|account-hash32|account-generation8|DCM-generation8|DCM-ref38|DCP-ref38|DCS-ref38|DCQ-ref38|DWL-ref38|DCL-ref38|DPL-ref38|release-root-authority-head32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|lease-expires8|DPL-key-id32|DWL-key-id32|RRL-key-id32|RIB-key-id32|MRLC-key-id32|DXR-key-id32)",
+    "dnrcSource": "sha256-d(Deep/NativeRouting/V2/dnrc-source,cutover-source32|owner-id32|DPMC-ref38|PMA-ref38|PMA-generation8|PMA-epoch8|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32|DNR-ref38|router-DXP-transcript-hash32|DXR1-key-id32)",
+    "membershipHeadSource": "sha256-d(Deep/NativeRouting/V2/membership-head-source,network16|MNG1-ref38|transition-container-hash32|MSM-sequence8|MSM-canonical-hash32|MSM-ref38)",
+    "mailboxAuthorityHeadSource": "sha256-d(Deep/NativeRouting/V2/mailbox-authority-head-source,network16|PMA-ref38|PMA-generation8|PMA-canonical-hash32|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32)",
+    "mrlcSource": "sha256-d(Deep/NativeRouting/V2/mrlc-source,cutover-source32|old-membership-head-source32|new-membership-head-source32|old-mailbox-authority-head-source32|new-mailbox-authority-head-source32|MRLC-ref38|MRLC-protected-key-id32|composite-selection32|member-count4|ordered-router-id32-DNRC-source32-tuples)"
   },
   "identifiers": {
     "mailboxOwnerId": "sha256-d(Deep/IdentityAuth/V1/mailbox-owner-id, network16|account-hash32|mailbox-ed25519-public32)",
@@ -480,7 +511,15 @@
     "consumerFinalRecheck": "consumer-final-durable-transaction-rechecks-current-DPL1-RRL1-DWL1-DRS1-txNow-lease-key-health-kill-switch-and-exact-old-authority-tuple-before-CAS",
     "mrlProjectionBoundary": "projection-is-internal-non-artifact-and-derived-only-from-sealed-pre-root-intent-or-validated-full-MRL2; no-public-parser-model-caller-bytes-ArtifactRef-or-authority-conversion",
     "mrlCompositeCas": "final-plan-defensively-owns-projected-root-MMC1-MSM1-PMA1-PMR1-DNR1-DPC1-full-MRL2-composite-selection-and-exact-old-new-source-fingerprints; atomic-full-tuple-CAS-precedes-publication",
-    "mrlCacheIdentity": "every-cache-and-index-key-retains-projected-leaf32-projected-root32-and-full-MRL2-ref38-and-exact-prior-full-MRL2-LKG"
+    "mrlCacheIdentity": "every-cache-and-index-key-retains-projected-leaf32-projected-root32-and-full-MRL2-ref38-and-exact-prior-full-MRL2-LKG",
+    "dxpProjection": "internal-non-artifact-only; DPD1 projection is final-unsigned-632 with tag21 value zero32 and tags22-23 omitted; DNR1 projection is final-unsigned-612 with tag19 value zero32 and tags20-21 omitted; order projection-hash then DXP1-and-proof then transcript-hash insertion then final Ed25519 PoP-and-issuer signatures; no public projection parser-model-or-authority",
+    "dxpReceipt": "DXR1 protected non-artifact; core239 is role1|network16|subjectProjectionHash32|holderX25519Public32|transcriptHash32|nonceLedgerKey32|issuedAt8|expiresAt8|verifiedAt8|subjectArtifactRef38|currentSourceFingerprint32; full fixed573 row adds exact phase-operation-challenge-key-latch-retention-and-HMAC framing",
+    "dxpNonce": "operationId32 is consumer-internal CSPRNG nonzero unique issuance authority-correlation persisted before challenge and stable across exact replay; nonceLedgerKey is derived only by dxpNonceLedgerKey with resetId-bound non-DB index key; nonce index key and its nonzero dxpNonceIndexKeyId are immutable and nonrotating for network-resetId until every authenticated DXR-and-nonce-tombstone retainedUntil has passed and bounded GC proves zero rows; missing-wrong-retired-early key fails closed and disables issuance-replay; new resetId is a clean key scope; authenticated Pending CAS precedes challenge or issuer-ephemeral-public issuance; private ephemeral is never persisted; crash cannot regenerate or reuse nonce; Pending-or-Aborted retains consumed nonce through max-DXP-expiry-plus-rollback-horizon; orphan cleanup is bounded-HMAC-first and never mints authority",
+    "dxpFinalCas": "Pending stores exact stage0 dxpOperationSource with zero transcript-hash-and-subject-ref; Verified DXR1 writes stage1 dxpOperationSource with exact final transcript-hash-and-subject-ref only while exact Pending identity raw source tuple prior-LKG key-ids and stage0 fingerprint still match; same atomic CAS installs subject head and for router DXP the MRLC-old-new-head plan; fork permanently latches; HMAC authored last and verified first",
+    "mrlCurrentInputs": "MRLC accepts only sealed current cutover-current mailbox-role-and-per-DNR-current-router-possession facts; bounded owned snapshots before await; fields3-through8 full catalog exact DNR-DPC tuple and both signatures are reverified before final plan",
+    "mrlContinuity": "separate RestoreCurrentCompositeLkg and VerifyNextCompositeLkg; sealed prior membership and separate sealed prior PMA-PMR heads are mandatory; first uses sealed genesis baselines; successor exact plus-one-previous-hash rules; no verifier synthesizes prior state from candidate",
+    "mrlSourceCas": "final defensive plan carries raw old-new membership-PMA-PMR-cutover-DRS tuples plus their domain-separated fingerprints and all protected key ids; fixed-time full tuple CAS with Verified DXR1 and MRLC precedes publication",
+    "callbackOrder": "all scalar-length-count-source-reference-HMAC-and-current-head checks precede signature-agreement-network-storage-or-mutation callbacks; callback inputs frozen once; returned buffers frozen once and locally reverified; cancellation yields no authority"
   },
   "outerJournal": {
     "record": "DPJ1",
@@ -493,7 +532,10 @@
     "retention": "through-existing-reviewed-PRQ2-replay-horizon-and-authoritative-epoch-retirement",
     "caps": "existing-reviewed-per-router-pair-per-epoch-record-and-byte-caps",
     "garbageCollection": "bounded-max-plus-one-read; verify-row-HMAC-first; delete-only-terminal-after-retention; corrupt-row-quarantine",
-    "exactReplay": "all-persisted-phases-return-or-resume-with-zero-inner-mutation-callback"
+    "exactReplay": "all-persisted-phases-return-or-resume-with-zero-inner-mutation-callback",
+    "requestHash": "canonicalRequestHash32 equals outerRequestHash over exact owned DPR1 and PRQ2 bytes and is nonzero in every phase",
+    "outcomeHash": "innerOutcomeHash32 equals outerOutcomeHash over exact owned MRR2 then DPS1 bytes; zero in Prepared-InnerPending and exact nonzero only in Completed",
+    "transitionOrder": "persist-HMAC-Prepared-before-inner-call; InnerPending-before-inner-exact-replay; persist exact MRR2 and DPS1 refs plus outcome hash in Completed; reread-HMAC-and-signatures before delivery authorization"
   },
   "http": {
     "path": "/api/peer/native/v1/mailbox",
@@ -506,7 +548,11 @@
     "tombstoneMaximumBytes": 9240,
     "responseBytes": 748,
     "compression": "reject",
-    "cacheControl": "no-store, no-transform"
+    "cacheControl": "no-store, no-transform",
+    "publicAddressPolicy": "normalize-IPv4-mapped-IPv6-to-IPv4;deny-IPv4=0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,127.0.0.0/8,169.254.0.0/16,172.16.0.0/12,192.0.0.0/24,192.0.2.0/24,192.88.99.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,224.0.0.0/4,240.0.0.0/4;allow-IPv6-only-2000::/3-minus=2001::/23,2001:db8::/32,3fff::/20;deny-everything-else",
+    "resolutionContract": "DNS ASCII-LDH labels 1-through-63 total 3-through-253 at-least-two-labels no-empty-leading-trailing-hyphen; DNS one typed resolve callback returns 1-through-16 canonical unique addresses sorted family-then-unsigned-bytes; direct address produces one-element owned set without resolver callback; every address passes exact public policy; connector receives owned set once and returns actual connected canonical IP plus TLS-SPKI32; no second resolution; connected IP membership and SPKI fixed-time compare",
+    "connectOrder": "preflight canonical DPC-current-DNR-MRLC-DRS-witness-lease-and-txNow before resolver; repeat txNow-current-head-lease after resolve and before connect; after fresh TLS and exact SPKI perform final authoritative DPC-DNR-MRLC-DRS-witness-lease-txNow-key-health recheck immediately before first HTTP request byte; any movement-expiry-cancel closes transport with zero HTTP headers-or-data; cancellation-deadline applies to resolve-connect-TLS-final-recheck-write; no address or SPKI is trusted from caller strings"
+    ,"transportIsolation": "system-and-user-proxy-disabled; redirects-disabled; Alt-Svc-disabled-and-ignored; HTTP2-origin-coalescing-disabled; connection-pooling-and-reuse-disabled; one-fresh-typed-resolve-connect-TLS-transport-per-request; DNS-SNI-is-exact-canonical-DPC-name-and-direct-IP-SNI-is-empty; no-caller-handler-connector-or-pool-substitution"
   },
   "packages": [
     { "id": "Deep.Protocol", "sessionFree": true, "retains": ["P03B", "MNG1", "MDG1", "MRV1", "MMC1", "MSM1", "PRQ2", "MRR2"] },

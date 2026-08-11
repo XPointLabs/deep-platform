@@ -13,8 +13,8 @@
     "workPackage": { "const": "DNP1-PROTO-classical-identity-reset-routing" },
     "cases": {
       "type": "array",
-      "minItems": 114,
-      "maxItems": 114,
+      "minItems": 146,
+      "maxItems": 146,
       "uniqueItems": true,
       "items": { "$ref": "#/$defs/case" }
     }

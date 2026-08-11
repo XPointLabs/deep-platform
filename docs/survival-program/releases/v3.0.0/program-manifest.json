@@ -12,13 +12,13 @@
     "algorithm": "SHA-256",
     "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>",
     "documentCount": 11,
-    "sha256": "62c35d4e9dce25749c391a547908ab6285249179ab31a9724e3e1853f20e55ad"
+    "sha256": "c655b2452f2fffaf22a0891bd8098a695391e510023dc8cc17d6e86c45dac8ac"
   },
   "machineSpecificationSet": {
     "algorithm": "SHA-256",
     "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-repo-relative-path><LF>",
     "artifactCount": 5,
-    "sha256": "7f1abdc6c742332b2694d5da36be5e3a3446824d0d6bb069e81b3ffa29fdf078",
+    "sha256": "78accc5bb98606a56e3704866db5f0cdd37b2caada5d92620ae28cfd7d08bc46",
     "paths": [
       "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.json",
       "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.schema.json",
