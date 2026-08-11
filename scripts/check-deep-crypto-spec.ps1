@@ -5,6 +5,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $specRoot = Join-Path $repoRoot 'docs\survival-program\releases\v3.0.0\specs'
 $specPath = Join-Path $specRoot 'DEEP-CRYPTO-V1-DRAFT.md'
+$providerFeasibilityPath = Join-Path $specRoot 'PQ-PROVIDER-FEASIBILITY.md'
 $registryPath = Join-Path $specRoot 'deep-crypto-v1.registry.json'
 $vectorSchemaPath = Join-Path $specRoot 'deep-crypto-v1.vectors.schema.json'
 
@@ -12,11 +13,12 @@ function Fail([string]$Message) {
     throw "Deep crypto specification check failed: $Message"
 }
 
-foreach ($path in @($specPath, $registryPath, $vectorSchemaPath)) {
+foreach ($path in @($specPath, $providerFeasibilityPath, $registryPath, $vectorSchemaPath)) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { Fail "missing artifact: $path" }
 }
 
 $spec = Get-Content -LiteralPath $specPath -Raw -Encoding UTF8
+$providerFeasibility = Get-Content -LiteralPath $providerFeasibilityPath -Raw -Encoding UTF8
 $registry = Get-Content -LiteralPath $registryPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $vectorSchema = Get-Content -LiteralPath $vectorSchemaPath -Raw -Encoding UTF8 | ConvertFrom-Json
 
@@ -104,7 +106,27 @@ foreach ($forbidden in @(
 }
 
 if ($registry.provider.selected) { Fail 'a cryptographic provider has not been reviewed or selected' }
+if ($registry.provider.verdict -ne 'no-go-production-go-dark-path-vectors') {
+    Fail 'provider verdict changed without review'
+}
+if (@($registry.provider.candidates).Count -ne 3) { Fail 'provider candidate set must contain exactly three oracles' }
+foreach ($candidate in @($registry.provider.candidates)) {
+    if ($candidate.productionAccepted) { Fail "provider candidate is not accepted: $($candidate.name)" }
+    if ([string]::IsNullOrWhiteSpace([string]$candidate.blocker)) { Fail "provider blocker missing: $($candidate.name)" }
+}
 if (@($registry.provider.requirements).Count -lt 6) { Fail 'provider gate is incomplete' }
+
+foreach ($reference in @(
+    'https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.mlkem?view=net-10.0',
+    'https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.mldsa?view=net-10.0',
+    'https://learn.microsoft.com/en-us/dotnet/standard/security/cross-platform-cryptography',
+    'https://github.com/bcgit/bc-csharp',
+    'https://github.com/open-quantum-safe/liboqs'
+)) {
+    if ($providerFeasibility.IndexOf($reference, [System.StringComparison]::Ordinal) -lt 0) {
+        Fail "missing provider feasibility reference: $reference"
+    }
+}
 
 foreach ($reference in @(
     'https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki',

@@ -97,6 +97,27 @@
   ],
   "provider": {
     "selected": false,
+    "verdict": "no-go-production-go-dark-path-vectors",
+    "candidates": [
+      {
+        "name": ".NET 10 System.Security.Cryptography",
+        "role": "preferred-api-and-windows-linux-oracle",
+        "productionAccepted": false,
+        "blocker": "official built-in platform matrix lacks Android and Apple support"
+      },
+      {
+        "name": "Bouncy Castle .NET",
+        "role": "managed-independent-vector-and-portability-oracle",
+        "productionAccepted": false,
+        "blocker": "upstream labels post-quantum implementations experimental"
+      },
+      {
+        "name": "Open Quantum Safe liboqs",
+        "role": "native-independent-vector-and-benchmark-oracle",
+        "productionAccepted": false,
+        "blocker": "prototype/experimentation positioning and mobile native ABI lifecycle"
+      }
+    ],
     "requirements": [
       "maintained reviewed implementation",
       "FIPS 203/204 exact parameter and errata tracking",

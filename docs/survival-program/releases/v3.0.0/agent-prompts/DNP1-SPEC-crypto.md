@@ -56,6 +56,8 @@ messaging profile before implementation.
   [`../specs/DEEP-CRYPTO-V1-DRAFT.md`](../specs/DEEP-CRYPTO-V1-DRAFT.md);
 - suite/domain/size registry:
   [`../specs/deep-crypto-v1.registry.json`](../specs/deep-crypto-v1.registry.json).
+- provider feasibility verdict:
+  [`../specs/PQ-PROVIDER-FEASIBILITY.md`](../specs/PQ-PROVIDER-FEASIBILITY.md).
 
 The draft is implementation input, not production authority. Provider
 selection, vectors, cross-platform measurements and independent review remain
