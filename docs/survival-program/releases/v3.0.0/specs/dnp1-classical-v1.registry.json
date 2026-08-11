@@ -339,8 +339,16 @@
   "membershipAuthority": {
     "membershipChain": ["MNG1", "MDG1", "MRV1", "MMC1", "MSM1"],
     "mailboxAuthorityChain": ["PMA1", "PMR1", "DNR1"],
-    "join": "PMA.CurrentEpoch.MembershipCommitment equals verified MSM/MMC MRL2 root",
+    "join": "PMA.CurrentEpoch.MembershipCommitment equals verified MSM/MMC MRL2-projection root",
     "crossAuthorityInference": false,
+    "mrlProjection": "internal-non-artifact canonical-MRL2-326 with field5-DNR1Ref38 and field9-anchorDPC1Ref38 replaced by 38 zero bytes each; every other byte unchanged",
+    "mrlProjectionSource": "derive-only-from-sealed-pre-root-intent-or-validated-full-canonical-MRL2; no-public-caller-bytes-model-ArtifactRef-authority-conversion-or-projection-parser",
+    "fullMrlRule": "full-canonical-MRL2 field5 and field9 are mandatory nonzero exact verified DNR1Ref38 and anchorDPC1Ref38; projection bytes never satisfy full-row validation",
+    "predecessorRule": "predecessor-MRL2-ref38 is zero only at descriptor genesis; every successor exact-matches the sealed prior full-MRL2 LKG and advances descriptor-generation by one",
+    "authorOrder": "sealed-projection-intent-and-root|MMC1-MSM1|PMA1|PMR1|DNR1|DPC1|full-MRL2|MRLC-final-defensive-plan-and-atomic-CAS",
+    "compositeMemberTuple": "router-id32|DNR1-ref38|full-MRL2-ref38|anchor-DPC1-ref38",
+    "finalPlan": "one-sealed-defensively-owned-plan-binds-projected-root-MMC1-MSM1-PMA1-PMR1-DNR1-DPC1-full-MRL2-composite-selection-and-exact-old-new-source-fingerprints; one-atomic-CAS-before-publication",
+    "cacheIdentity": "projected-leaf32|projected-root32|full-MRL2-ref38; no-single-element-cache-or-index-authority",
     "maximumMembers": 4096,
     "maximumArtifactEntries": 16389,
     "maximumTransitionEntries": 4096,
@@ -361,7 +369,7 @@
     "maximumSiblingCount": 12,
     "maximumMembers": 4096,
     "siblingOrder": "leaf-to-root; level-L uses bit-L of leaf-index and node-index leaf-index-shift-right-(L+1); no direction bytes",
-    "sealedVerifier": "canonical-MIP1 plus sealed-MRLC only; exact RIP2/MRLC/MRL2/DNR tuple and recomputed root; returns defensively-owned capability"
+    "sealedVerifier": "canonical-MIP1 plus sealed-MRLC only; exact RIP2/MRLC/full-MRL2/DNR/DPC tuple and recomputed projection root; standalone RIP2 or projection has no ref authority; returns defensively-owned capability"
   },
   "witness": {
     "count": 4,
@@ -410,13 +418,13 @@
     "witnessEmptyRoot": "sha256-d(Deep/Cutover/V1/witness-empty-root, witness-epoch8|witness-id32|maximum-tree-size8|zero-tree-size8)",
     "quorumDigest": "sha256-d(Deep/Cutover/V1/quorum-digest, deployment-subject32|sequence8|DCS-ref38|DCT-ref38|three-ordered-DCN-artifact-refs114)",
     "leaseDigest": "sha256-d(Deep/Cutover/V1/lease-digest, deployment-subject32|sequence8|DCS-ref38|query-nonce32|three-ordered-DHL-artifact-refs114)",
-    "mrlRealLeaf": "sha256-d(Deep/NativeRouting/V2/mrl-leaf, tag00|reset-id32|epoch8|descriptor-generation8|index4|length4=326|MRL2-326)",
+    "mrlRealLeaf": "sha256-d(Deep/NativeRouting/V2/mrl-leaf, tag00|reset-id32|epoch8|descriptor-generation8|index4|length4=326|canonical-MRL2-membership-projection326-with-field5-and-field9-zero38)",
     "mrlEmptyLeaf": "sha256-d(Deep/NativeRouting/V2/mrl-leaf, tag01|reset-id32|epoch8|index4)",
     "mrlNode": "sha256-d(Deep/NativeRouting/V2/mrl-node, level2|node-index4|left32|right32)",
     "mrlRoot": "sha256-d(Deep/NativeRouting/V2/mrl-root, reset-id32|epoch8|protocol-version2=2|member-count4|padded-leaf-count4|node-root32)",
     "membershipClosure": "sha256-d(Deep/NativeRouting/V2/membership-closure, exact-MNG1-ref38|ordered-signed-MDG1-MRV1-container-hash32|MSM1-ref38)",
     "membershipTransitionContainer": "sha256-d(Deep/NativeRouting/V2/membership-transition-container, entry-count-u16be|ordered-rows-of-artifact-type2-length4-hash32-exact-bytes)",
-    "compositeSelection": "sha256-d(Deep/NativeRouting/V2/composite-selection, network16|MSM-ref38|MSM-sequence8|member-count4|MRL-root32|PMA-ref38|PMA-generation8|PMA-epoch8|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32|ordered-selected-DNRC-refs)",
+    "compositeSelection": "sha256-d(Deep/NativeRouting/V2/composite-selection, network16|MSM-ref38|MSM-sequence8|member-count4|MRL-root32|PMA-ref38|PMA-generation8|PMA-epoch8|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32|ordered-router-id32-DNR1-ref38-full-MRL2-ref38-anchor-DPC1-ref38-tuples)",
     "catalogHash": "sha256-d(Deep/NativeRouting/V2/catalog-hash, artifact-entry-count4|catalog-length8|catalog-bytes)",
     "outerJournalKey": "hmac-sha256(journal-index-key, u16-domain-length|Deep/NativeRouting/V1/outer-journal-key|network16|sender32|recipient32|request-id32)"
   },
@@ -469,7 +477,10 @@
     "recoveryPlaintext": "successful-open-yields-one-shot-owned-plaintext-consumed-once-and-zeroed-in-finally-on-success-failure-or-cancellation",
     "cancellation": "cancellation-before-or-after-every-signature-HMAC-agreement-AEAD-or-provider-callback-yields-no-commit-authority-and-no-retained-caller-buffer",
     "commitAuthority": "Protocol-recovery-and-relative-results-never-authorize-durable-commit",
-    "consumerFinalRecheck": "consumer-final-durable-transaction-rechecks-current-DPL1-RRL1-DWL1-DRS1-txNow-lease-key-health-kill-switch-and-exact-old-authority-tuple-before-CAS"
+    "consumerFinalRecheck": "consumer-final-durable-transaction-rechecks-current-DPL1-RRL1-DWL1-DRS1-txNow-lease-key-health-kill-switch-and-exact-old-authority-tuple-before-CAS",
+    "mrlProjectionBoundary": "projection-is-internal-non-artifact-and-derived-only-from-sealed-pre-root-intent-or-validated-full-MRL2; no-public-parser-model-caller-bytes-ArtifactRef-or-authority-conversion",
+    "mrlCompositeCas": "final-plan-defensively-owns-projected-root-MMC1-MSM1-PMA1-PMR1-DNR1-DPC1-full-MRL2-composite-selection-and-exact-old-new-source-fingerprints; atomic-full-tuple-CAS-precedes-publication",
+    "mrlCacheIdentity": "every-cache-and-index-key-retains-projected-leaf32-projected-root32-and-full-MRL2-ref38-and-exact-prior-full-MRL2-LKG"
   },
   "outerJournal": {
     "record": "DPJ1",

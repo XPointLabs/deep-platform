@@ -136,7 +136,29 @@
       }
     },
     "records": { "type": "array", "minItems": 35, "maxItems": 35, "items": { "$ref": "#/$defs/record" } },
-    "membershipAuthority": { "type": "object", "required": ["membershipChain", "mailboxAuthorityChain", "join", "crossAuthorityInference", "maximumMembers", "maximumArtifactEntries", "maximumTransitionEntries", "maximumCatalogBytes"] },
+    "membershipAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["membershipChain", "mailboxAuthorityChain", "join", "crossAuthorityInference", "mrlProjection", "mrlProjectionSource", "fullMrlRule", "predecessorRule", "authorOrder", "compositeMemberTuple", "finalPlan", "cacheIdentity", "maximumMembers", "maximumArtifactEntries", "maximumTransitionEntries", "maximumCatalogBytes"],
+      "properties": {
+        "membershipChain": { "const": ["MNG1", "MDG1", "MRV1", "MMC1", "MSM1"] },
+        "mailboxAuthorityChain": { "const": ["PMA1", "PMR1", "DNR1"] },
+        "join": { "type": "string", "minLength": 64 },
+        "crossAuthorityInference": { "const": false },
+        "mrlProjection": { "type": "string", "minLength": 128 },
+        "mrlProjectionSource": { "type": "string", "minLength": 128 },
+        "fullMrlRule": { "type": "string", "minLength": 128 },
+        "predecessorRule": { "type": "string", "minLength": 128 },
+        "authorOrder": { "type": "string", "minLength": 128 },
+        "compositeMemberTuple": { "const": "router-id32|DNR1-ref38|full-MRL2-ref38|anchor-DPC1-ref38" },
+        "finalPlan": { "type": "string", "minLength": 160 },
+        "cacheIdentity": { "type": "string", "minLength": 96 },
+        "maximumMembers": { "const": 4096 },
+        "maximumArtifactEntries": { "const": 16389 },
+        "maximumTransitionEntries": { "const": 4096 },
+        "maximumCatalogBytes": { "const": 16777216 }
+      }
+    },
     "membershipProof": {
       "type": "object",
       "additionalProperties": false,
@@ -207,7 +229,7 @@
     "apiInvariants": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["rrmPreflight", "rrmTime", "relativeResult", "authorityConversion", "dwdRestore", "authorityTuple", "authorityCas", "hmacTranscript", "hmacKeyId", "recoveryFreeze", "recoveryProvider", "recoveryNonce", "recoveryPlaintext", "cancellation", "commitAuthority", "consumerFinalRecheck"],
+      "required": ["rrmPreflight", "rrmTime", "relativeResult", "authorityConversion", "dwdRestore", "authorityTuple", "authorityCas", "hmacTranscript", "hmacKeyId", "recoveryFreeze", "recoveryProvider", "recoveryNonce", "recoveryPlaintext", "cancellation", "commitAuthority", "consumerFinalRecheck", "mrlProjectionBoundary", "mrlCompositeCas", "mrlCacheIdentity"],
       "properties": {
         "rrmPreflight": { "type": "string", "minLength": 128 },
         "rrmTime": { "type": "string", "minLength": 96 },
@@ -224,7 +246,10 @@
         "recoveryPlaintext": { "type": "string", "minLength": 96 },
         "cancellation": { "type": "string", "minLength": 96 },
         "commitAuthority": { "type": "string", "minLength": 48 },
-        "consumerFinalRecheck": { "type": "string", "minLength": 128 }
+        "consumerFinalRecheck": { "type": "string", "minLength": 128 },
+        "mrlProjectionBoundary": { "type": "string", "minLength": 128 },
+        "mrlCompositeCas": { "type": "string", "minLength": 192 },
+        "mrlCacheIdentity": { "type": "string", "minLength": 128 }
       }
     },
     "outerJournal": { "type": "object", "required": ["record", "scope", "phases", "forkRule", "staleRule", "retention", "caps", "garbageCollection", "exactReplay"] },

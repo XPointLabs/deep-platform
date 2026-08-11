@@ -407,13 +407,13 @@ $expectedTranscripts = [ordered]@{
     witnessEmptyRoot = 'sha256-d(Deep/Cutover/V1/witness-empty-root, witness-epoch8|witness-id32|maximum-tree-size8|zero-tree-size8)'
     quorumDigest = 'sha256-d(Deep/Cutover/V1/quorum-digest, deployment-subject32|sequence8|DCS-ref38|DCT-ref38|three-ordered-DCN-artifact-refs114)'
     leaseDigest = 'sha256-d(Deep/Cutover/V1/lease-digest, deployment-subject32|sequence8|DCS-ref38|query-nonce32|three-ordered-DHL-artifact-refs114)'
-    mrlRealLeaf = 'sha256-d(Deep/NativeRouting/V2/mrl-leaf, tag00|reset-id32|epoch8|descriptor-generation8|index4|length4=326|MRL2-326)'
+    mrlRealLeaf = 'sha256-d(Deep/NativeRouting/V2/mrl-leaf, tag00|reset-id32|epoch8|descriptor-generation8|index4|length4=326|canonical-MRL2-membership-projection326-with-field5-and-field9-zero38)'
     mrlEmptyLeaf = 'sha256-d(Deep/NativeRouting/V2/mrl-leaf, tag01|reset-id32|epoch8|index4)'
     mrlNode = 'sha256-d(Deep/NativeRouting/V2/mrl-node, level2|node-index4|left32|right32)'
     mrlRoot = 'sha256-d(Deep/NativeRouting/V2/mrl-root, reset-id32|epoch8|protocol-version2=2|member-count4|padded-leaf-count4|node-root32)'
     membershipClosure = 'sha256-d(Deep/NativeRouting/V2/membership-closure, exact-MNG1-ref38|ordered-signed-MDG1-MRV1-container-hash32|MSM1-ref38)'
     membershipTransitionContainer = 'sha256-d(Deep/NativeRouting/V2/membership-transition-container, entry-count-u16be|ordered-rows-of-artifact-type2-length4-hash32-exact-bytes)'
-    compositeSelection = 'sha256-d(Deep/NativeRouting/V2/composite-selection, network16|MSM-ref38|MSM-sequence8|member-count4|MRL-root32|PMA-ref38|PMA-generation8|PMA-epoch8|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32|ordered-selected-DNRC-refs)'
+    compositeSelection = 'sha256-d(Deep/NativeRouting/V2/composite-selection, network16|MSM-ref38|MSM-sequence8|member-count4|MRL-root32|PMA-ref38|PMA-generation8|PMA-epoch8|PMR-ref38|PMR-generation8|PMR-head32|PMR-snapshot-hash32|ordered-router-id32-DNR1-ref38-full-MRL2-ref38-anchor-DPC1-ref38-tuples)'
     catalogHash = 'sha256-d(Deep/NativeRouting/V2/catalog-hash, artifact-entry-count4|catalog-length8|catalog-bytes)'
     outerJournalKey = 'hmac-sha256(journal-index-key, u16-domain-length|Deep/NativeRouting/V1/outer-journal-key|network16|sender32|recipient32|request-id32)'
 }
@@ -658,7 +658,9 @@ if ($membershipProof.outerCarrier -ne 'MIP1-byte-and-api-identical' -or
     [int]$membershipProof.maximumSiblingCount -ne 12 -or
     [int]$membershipProof.maximumMembers -ne 4096 -or
     $membershipProof.siblingOrder -notmatch 'leaf-to-root' -or
-    $membershipProof.sealedVerifier -notmatch 'sealed-MRLC') {
+    $membershipProof.sealedVerifier -notmatch 'sealed-MRLC' -or
+    $membershipProof.sealedVerifier -notmatch 'projection root' -or
+    $membershipProof.sealedVerifier -notmatch 'standalone RIP2 or projection has no ref authority') {
     Fail 'MIP1/RIP2 sealed membership-proof contract drifted'
 }
 $identifierNames = @('mailboxOwnerId','mailboxRoleBinding','mailboxRoleRotation','routerId','componentSubject','selfReferenceAudit','nonzero','mailboxCollisionScope','routerCollisionScope')
@@ -681,7 +683,7 @@ if ($registry.identifiers.mailboxOwnerId -ne 'sha256-d(Deep/IdentityAuth/V1/mail
     $registry.identifiers.routerCollisionScope -ne 'same-network-different-preimage-latches-routing-domain') {
     Fail 'mailbox owner/router identifier provenance or collision policy drifted'
 }
-$apiInvariantNames = @('rrmPreflight','rrmTime','relativeResult','authorityConversion','dwdRestore','authorityTuple','authorityCas','hmacTranscript','hmacKeyId','recoveryFreeze','recoveryProvider','recoveryNonce','recoveryPlaintext','cancellation','commitAuthority','consumerFinalRecheck')
+$apiInvariantNames = @('rrmPreflight','rrmTime','relativeResult','authorityConversion','dwdRestore','authorityTuple','authorityCas','hmacTranscript','hmacKeyId','recoveryFreeze','recoveryProvider','recoveryNonce','recoveryPlaintext','cancellation','commitAuthority','consumerFinalRecheck','mrlProjectionBoundary','mrlCompositeCas','mrlCacheIdentity')
 Assert-ExactProperties -Object $registry.apiInvariants -Required $apiInvariantNames -Allowed $apiInvariantNames -Name 'API invariants'
 $apiSchemaNames = @($registrySchema.properties.apiInvariants.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
 $apiSchemaRequired = @($registrySchema.properties.apiInvariants.required | ForEach-Object { [string]$_ })
@@ -705,15 +707,38 @@ if ($registry.apiInvariants.rrmPreflight -ne 'freeze-exact-canonical-RRM1-332-an
     $registry.apiInvariants.recoveryPlaintext -ne 'successful-open-yields-one-shot-owned-plaintext-consumed-once-and-zeroed-in-finally-on-success-failure-or-cancellation' -or
     $registry.apiInvariants.cancellation -ne 'cancellation-before-or-after-every-signature-HMAC-agreement-AEAD-or-provider-callback-yields-no-commit-authority-and-no-retained-caller-buffer' -or
     $registry.apiInvariants.commitAuthority -ne 'Protocol-recovery-and-relative-results-never-authorize-durable-commit' -or
-    $registry.apiInvariants.consumerFinalRecheck -ne 'consumer-final-durable-transaction-rechecks-current-DPL1-RRL1-DWL1-DRS1-txNow-lease-key-health-kill-switch-and-exact-old-authority-tuple-before-CAS') {
+    $registry.apiInvariants.consumerFinalRecheck -ne 'consumer-final-durable-transaction-rechecks-current-DPL1-RRL1-DWL1-DRS1-txNow-lease-key-health-kill-switch-and-exact-old-authority-tuple-before-CAS' -or
+    $registry.apiInvariants.mrlProjectionBoundary -ne 'projection-is-internal-non-artifact-and-derived-only-from-sealed-pre-root-intent-or-validated-full-MRL2; no-public-parser-model-caller-bytes-ArtifactRef-or-authority-conversion' -or
+    $registry.apiInvariants.mrlCompositeCas -ne 'final-plan-defensively-owns-projected-root-MMC1-MSM1-PMA1-PMR1-DNR1-DPC1-full-MRL2-composite-selection-and-exact-old-new-source-fingerprints; atomic-full-tuple-CAS-precedes-publication' -or
+    $registry.apiInvariants.mrlCacheIdentity -ne 'every-cache-and-index-key-retains-projected-leaf32-projected-root32-and-full-MRL2-ref38-and-exact-prior-full-MRL2-LKG') {
     Fail 'B0/B1 public API authority/callback/recovery invariants drifted'
 }
 if ((@($registry.witness.canonicalOrder) -join '|') -ne 'DCP1[4]|DCS1|DCT1|DCN1/DCQ1|DPL1') {
     Fail 'witness dependency order must remain acyclic'
 }
+$membershipAuthorityNames = @('membershipChain','mailboxAuthorityChain','join','crossAuthorityInference','mrlProjection','mrlProjectionSource','fullMrlRule','predecessorRule','authorOrder','compositeMemberTuple','finalPlan','cacheIdentity','maximumMembers','maximumArtifactEntries','maximumTransitionEntries','maximumCatalogBytes')
+Assert-ExactProperties -Object $registry.membershipAuthority -Required $membershipAuthorityNames -Allowed $membershipAuthorityNames -Name 'membership authority'
+$membershipAuthoritySchemaNames = @($registrySchema.properties.membershipAuthority.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
+$membershipAuthoritySchemaRequired = @($registrySchema.properties.membershipAuthority.required | ForEach-Object { [string]$_ })
+if ($registrySchema.properties.membershipAuthority.additionalProperties -ne $false -or
+    ($membershipAuthoritySchemaNames -join '|') -ne ($membershipAuthorityNames -join '|') -or
+    ($membershipAuthoritySchemaRequired -join '|') -ne ($membershipAuthorityNames -join '|')) {
+    Fail 'membership authority schema closure drifted'
+}
 if ((@($registry.membershipAuthority.membershipChain) -join '|') -ne 'MNG1|MDG1|MRV1|MMC1|MSM1' -or
     (@($registry.membershipAuthority.mailboxAuthorityChain) -join '|') -ne 'PMA1|PMR1|DNR1' -or
-    $registry.membershipAuthority.crossAuthorityInference) {
+    $registry.membershipAuthority.join -ne 'PMA.CurrentEpoch.MembershipCommitment equals verified MSM/MMC MRL2-projection root' -or
+    $registry.membershipAuthority.crossAuthorityInference -or
+    $registry.membershipAuthority.mrlProjection -ne 'internal-non-artifact canonical-MRL2-326 with field5-DNR1Ref38 and field9-anchorDPC1Ref38 replaced by 38 zero bytes each; every other byte unchanged' -or
+    $registry.membershipAuthority.mrlProjectionSource -notmatch 'sealed-pre-root-intent-or-validated-full-canonical-MRL2' -or
+    $registry.membershipAuthority.mrlProjectionSource -notmatch 'no-public-caller-bytes-model-ArtifactRef-authority-conversion' -or
+    $registry.membershipAuthority.fullMrlRule -notmatch 'mandatory nonzero exact verified DNR1Ref38 and anchorDPC1Ref38' -or
+    $registry.membershipAuthority.predecessorRule -notmatch 'zero only at descriptor genesis' -or
+    $registry.membershipAuthority.predecessorRule -notmatch 'sealed prior full-MRL2 LKG' -or
+    $registry.membershipAuthority.authorOrder -ne 'sealed-projection-intent-and-root|MMC1-MSM1|PMA1|PMR1|DNR1|DPC1|full-MRL2|MRLC-final-defensive-plan-and-atomic-CAS' -or
+    $registry.membershipAuthority.compositeMemberTuple -ne 'router-id32|DNR1-ref38|full-MRL2-ref38|anchor-DPC1-ref38' -or
+    $registry.membershipAuthority.finalPlan -notmatch 'one-atomic-CAS-before-publication' -or
+    $registry.membershipAuthority.cacheIdentity -notmatch 'projected-leaf32\|projected-root32\|full-MRL2-ref38') {
     Fail 'independent membership/mailbox authority policy drifted'
 }
 if ([int]$registry.membershipAuthority.maximumMembers -ne 4096 -or
@@ -771,7 +796,7 @@ if ($vectors.schemaVersion -ne '1.0.0' -or $vectors.status -ne 'required-before-
     Fail 'vector skeleton governance binding changed'
 }
 Assert-ExactProperties $vectors $vectorTop $vectorTop 'vectors'
-if ([int]$vectorSchema.properties.cases.minItems -ne 105 -or [int]$vectorSchema.properties.cases.maxItems -ne 105 -or
+if ([int]$vectorSchema.properties.cases.minItems -ne 114 -or [int]$vectorSchema.properties.cases.maxItems -ne 114 -or
     $vectorSchema.properties.cases.uniqueItems -ne $true -or
     $vectorSchema.'$defs'.case.additionalProperties -ne $false) {
     Fail 'vector schema bounds/closed case grammar drifted'
@@ -905,6 +930,11 @@ $requiredCases = @(
     'api-authority-full-tuple-cas','api-hmac-keyid-return-buffer-toctou',
     'api-recovery-freeze-provider-nonce','api-recovery-nonce-reuse-latch',
     'api-recovery-cancel-plaintext-zero','api-recovery-no-commit-final-recheck',
+    'membership-mrl2-projection-cycle-break','membership-mrl2-full-leaf-reject',
+    'membership-mrl2-zero-full-refs','membership-mrl2-projection-substitution-cross-feed',
+    'membership-mrl2-prior-full-lkg','membership-rip2-sealed-full-tuple',
+    'membership-composite-selection-full-tuples','membership-final-full-set-cas',
+    'membership-cache-dual-identity',
     'package-exact-three-session-free'
 )
 if (-not $caseIds.SetEquals([string[]]$requiredCases)) { Fail 'vector case inventory drifted' }
@@ -935,6 +965,15 @@ $authorityVectorOutcomes = [ordered]@{
     'recovery-drm-row-ref-collision-shaped' = 'fail-closed'
     'recovery-drm-direct-plaintext-parser' = 'invalid-before-crypto'
     'recovery-drm-ref-rule-missing-cross-class' = 'fail-closed'
+    'membership-mrl2-projection-cycle-break' = 'valid'
+    'membership-mrl2-full-leaf-reject' = 'invalid-before-crypto'
+    'membership-mrl2-zero-full-refs' = 'invalid-before-crypto'
+    'membership-mrl2-projection-substitution-cross-feed' = 'invalid-before-crypto'
+    'membership-mrl2-prior-full-lkg' = 'fork-latched'
+    'membership-rip2-sealed-full-tuple' = 'fail-closed'
+    'membership-composite-selection-full-tuples' = 'invalid-before-crypto'
+    'membership-final-full-set-cas' = 'exact-replay'
+    'membership-cache-dual-identity' = 'fail-closed'
 }
 foreach ($id in $authorityVectorOutcomes.Keys) {
     $match = @($vectors.cases | Where-Object { $_.id -eq $id })
@@ -952,6 +991,15 @@ $apiClosureVectors = [ordered]@{
     'recovery-drm-row-ref-collision-shaped' = 'Encrypted integration opens AEAD once|1'
     'recovery-drm-direct-plaintext-parser' = 'explicitly direct owned-plaintext parser unit|0'
     'recovery-drm-ref-rule-missing-cross-class' = 'After one AEAD open|1'
+    'membership-mrl2-projection-cycle-break' = 'root constructible before PMA without accepting projection bytes as authority|0'
+    'membership-mrl2-full-leaf-reject' = 'full MRL2 bytes instead of the internal|0'
+    'membership-mrl2-zero-full-refs' = 'zero DNR ref, zero anchor DPC ref|0'
+    'membership-mrl2-projection-substitution-cross-feed' = 'V1 or full-leaf cross-feed|0'
+    'membership-mrl2-prior-full-lkg' = 'exact sealed prior full-MRL2 ArtifactRef|0'
+    'membership-rip2-sealed-full-tuple' = 'Standalone RIP2, MIP1, projection, leaf or root cannot authorize refs|0'
+    'membership-composite-selection-full-tuples' = 'router ID, DNR ref, full MRL2 ref and anchor DPC ref|0'
+    'membership-final-full-set-cas' = 'exact source fingerprints before publication|1'
+    'membership-cache-dual-identity' = 'projected leaf, projected root, full MRL2 ArtifactRef and prior full LKG|0'
 }
 foreach ($id in $apiClosureVectors.Keys) {
     $parts = ([string]$apiClosureVectors[$id]).Split('|')

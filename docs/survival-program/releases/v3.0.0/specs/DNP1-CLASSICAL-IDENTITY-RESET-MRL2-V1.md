@@ -909,17 +909,47 @@ The MRLC protected catalog contains two independent verified closures:
    `DNR1`.
 
 No signer authority is inferred across the two chains. The required join is
-`PMA.CurrentEpoch.MembershipCommitment == verified MSM/MMC MRL2 root`.
+`PMA.CurrentEpoch.MembershipCommitment == verified MSM/MMC MRL2-projection
+root`. This projection breaks the otherwise impossible fixed point
+`PMA -> root -> MRL2 -> DNR/DPC -> PMARef` without weakening the independently
+verified full DNR/DPC closure.
 Protected state retains both LKGs and one atomic composite-selection record
 binding network, exact MSM sequence/hash/member count/root, PMA hash/generation
 and epoch, PMR generation/head/snapshot hash, and DNRC hash/role/capabilities.
 
-`MRL2` is an unsigned row committed by unchanged `MMC1/MSM1`. V2 leaf, node and
-root domains include reset ID, epoch, descriptor generation, member count and
-protocol version so V1/V2 roots cannot cross-feed. The MRLC stores exact
+`MRL2` remains an unsigned full row. The unchanged `MMC1/MSM1` commits its
+internal membership projection, never its full bytes. The projection is the
+exact canonical 326-byte MRL2 encoding with field 5 (`DNR1Ref38`) and field 9
+(`anchorDPC1Ref38`) each replaced by 38 zero bytes; every other byte, including
+the predecessor full-MRL2 reference, is unchanged. It is internal,
+non-artifact and has no ArtifactRef, parser or public model. It may be derived
+only from a sealed pre-root intent or a fully validated canonical MRL2, never
+from caller-supplied projection bytes or a relative authority result.
+
+Every authoritative full MRL2 must contain nonzero field-5 and field-9 refs
+that equal the exact verified DNR1 and anchor DPC1 refs. Zero refs and a
+projection passed as a full row reject before signature or authority use.
+`predecessorMRL2Ref` is zero only at descriptor genesis. A successor must
+advance descriptor generation by exactly one and exact-match the sealed prior
+full-MRL2 LKG; a projection, current/future self-ref, skipped generation or
+same-generation different full row rejects and latches the routing fork where
+applicable.
+
+V2 leaf, node and root domains include reset ID, epoch, descriptor generation,
+member count and protocol version so V1/V2 roots cannot cross-feed. The MRLC stores exact
 MNG/MDG/MRV, PMA/PMR, MSM/MMC and every MRL2/DNRC/anchor-DPC byte sequence. It
-preflights at most 4,096 rows and 16,777,216 total bytes before copying, then
+preflights at most 4,096 members, 16,389 artifact entries and 16,777,216 total
+catalog bytes before copying, then
 recomputes the root and signatures before its final HMAC.
+
+Authoring order is closed: sealed projection intent and projected root;
+MMC1/MSM1; PMA1; PMR1; DNR1; DPC1; full MRL2 materialization; then one final
+MRLC defensive plan and atomic durable CAS. The final plan owns the projected
+root, exact MMC/MSM, PMA/PMR, DNR, DPC, full MRL2, composite selection and exact
+old/new source fingerprints. No publication or cache activation may occur
+before that entire tuple CAS succeeds. Cache and index identity always retains
+all three of projected leaf, projected root and full MRL2 ArtifactRef; none is
+authority alone.
 
 The protected `MRLC1` wire magic is `MRLC`, version 1. Its base is 898 bytes
 and its maximum is 16,778,114 bytes. Its exact 27-field table is:
@@ -940,7 +970,10 @@ under `Deep/ProtectedState/V1/MRLC1`. `catalogSha256` is
 artifactEntryCount:u32be||catalogLength:u64be||catalogBytes)`. The membership closure is
 `SHA256-D(Deep/NativeRouting/V2/membership-closure,
 MNG1Ref38||orderedSignedMDG1MRV1ContainerHash32||MSM1Ref38)`; the composite
-selection transcript is exactly the machine-registry formula. The current
+selection transcript is exactly the machine-registry formula. Its ordered
+member payload is, for every router-ID-sorted member,
+`routerId32||DNR1Ref38||fullMRL2Ref38||anchorDPC1Ref38`; an ordered DNR-only
+selection is forbidden. The current
 DRS revision/reference is part of the same HMAC and must equal the restored
 DCM/DPL tuple. Every cold load verifies HMAC, exact catalog row framing,
 membership signatures/root, PMA/PMR closure, DNRC and current revocation before
@@ -979,7 +1012,7 @@ MRL hashes are exact:
 ```text
 realLeaf = SHA256-D(Deep/NativeRouting/V2/mrl-leaf,
   0x00||resetId32||epoch:u64be||descriptorGeneration:u64be||
-  index:u32be||U32BE(326)||MRL2)
+  index:u32be||U32BE(326)||canonicalMRL2MembershipProjection326)
 emptyLeaf = SHA256-D(Deep/NativeRouting/V2/mrl-leaf,
   0x01||resetId32||epoch:u64be||index:u32be)
 node = SHA256-D(Deep/NativeRouting/V2/mrl-node,
@@ -1032,12 +1065,20 @@ The fixed values total 449 bytes, so the canonical length is
 byte-for-byte as canonical MRL2. Every scalar, count, multiplication and exact
 outer MIP1 proof length is preflighted before copying the MRL2 or a sibling.
 
+The projection function is internal and deterministic: decode/recompose the
+full canonical MRL2, assert full fields 5 and 9 nonzero, copy all 326 owned
+bytes, zero exactly those two 38-byte field values, and hash the resulting
+326-byte projection. It never accepts an already projected row. A leaf made
+from full MRL2 bytes, a leaf with only one ref zeroed, or a projection from a
+different epoch, reset, descriptor generation or tuple cannot verify.
+
 Sibling hashes are ordered only from the leaf level toward the root; no
 direction byte exists. For sibling level `L=0..N-1`, the verifier uses bit `L`
 of `leafIndex` to place the running hash left or right, uses the supplied hash
 for the opposite child, and hashes with the existing MRL node formula using
-`level=L` and `nodeIndex=leafIndex>>(L+1)`. The initial real leaf uses the exact
-embedded MRL2 and `leafIndex`; the final node is wrapped by the exact MRL root
+`level=L` and `nodeIndex=leafIndex>>(L+1)`. The initial real leaf uses the
+internally recomputed projection and `leafIndex`; the final node is wrapped by
+the exact MRL root
 formula above. Empty padded leaves use the existing empty-leaf formula and
 cannot be supplied as alternate real descriptors.
 
@@ -1049,7 +1090,10 @@ reset ID, MSM sequence, epoch, member count and root to equal the sealed MRLC;
 descriptor generation to equal embedded MRL2; leaf index to equal the router-ID
 sorted MRC tuple position; outer MIP1 replica ID/epoch/root to equal the
 embedded router/epoch/root; and the outer MIP1 signing key to equal the router
-Ed25519 key in the exact verified DNR1 tuple. Only after the root recomputes
+Ed25519 key in the exact verified DNR1 tuple. It exact-compares the carried full
+MRL2, DNR1 and anchor DPC1 refs with that sealed catalog tuple, verifies the
+prior-full-MRL2 LKG rule, and recomputes the projection itself. A standalone
+RIP2, MIP1, projected leaf or root cannot authorize the full refs. Only after the root recomputes
 does it return a defensively owned sealed MRL2 membership capability. Decoded
 RIP2/MIP1 models, raw sibling lists and caller assertions are not authorization
 APIs. Existing RIP1 remains valid only in its unchanged legacy verifier and is
