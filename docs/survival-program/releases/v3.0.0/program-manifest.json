@@ -14,6 +14,12 @@
     "documentCount": 10,
     "sha256": "6536bdedb4001edab2a01e991a011b9f927350062926d93c64b719af334849e1"
   },
+  "inventoryBaseline": {
+    "algorithm": "SHA-256",
+    "path": "inventory/session-production-boundaries.v1.json",
+    "sha256": "db67e1afd75afb7918fd7465e9b6876fa401df75ff8f8aeeef7c892f8a05132a",
+    "tag": "legacy-session-baseline-v3.0.0"
+  },
   "workPackageIdPattern": "^DNP1-(?:GOV|INV|SPEC|PROTO|CLIENT|NODE|OPS|SEC)(?:-[a-z0-9]+)*$",
   "dependencyManifestSchema": "deep-devops/schemas/survival/dependency-manifest.schema.json",
   "dependencyManifestPathTemplate": "deep-devops/manifests/deep-native/<wave>/<work-package-id>.json",

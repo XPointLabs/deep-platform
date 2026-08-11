@@ -33,6 +33,11 @@ if ($manifest.programId -ne 'deep-survival') { Fail 'unexpected programId' }
 if ($manifest.release -ne $activeRelease) { Fail 'unexpected active release' }
 if ($manifest.status -ne 'approved-local-execution') { Fail 'program is not approved for local execution' }
 if ($manifest.accountableOwner -ne 'Mr. X') { Fail 'accountableOwner must be Mr. X' }
+if ($manifest.inventoryBaseline.algorithm -ne 'SHA-256' -or
+    $manifest.inventoryBaseline.path -ne 'inventory/session-production-boundaries.v1.json' -or
+    $manifest.inventoryBaseline.tag -ne 'legacy-session-baseline-v3.0.0') {
+    Fail 'inventory baseline policy is invalid'
+}
 if (-not $manifest.executionPolicy.localOnly -or -not $manifest.executionPolicy.localDockerAllowed -or
     $manifest.executionPolicy.pushAllowed -or $manifest.executionPolicy.externalPublishAllowed -or
     $manifest.executionPolicy.externalDeployAllowed) {
@@ -110,6 +115,35 @@ Write-Host "Deep Survival program check passed."
 Write-Host "Release: $($manifest.release)"
 Write-Host "Documents: $($documents.Count)"
 Write-Host "Revision: sha256:$actualDigest"
+
+$inventoryPath = Join-Path $releaseRoot ([string]$manifest.inventoryBaseline.path)
+if (-not (Test-Path -LiteralPath $inventoryPath -PathType Leaf)) {
+    Fail "inventory baseline is missing: $inventoryPath"
+}
+$inventorySha = (Get-FileHash -LiteralPath $inventoryPath -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($inventorySha -ne [string]$manifest.inventoryBaseline.sha256) {
+    Fail "inventory baseline SHA mismatch: expected $($manifest.inventoryBaseline.sha256), actual $inventorySha"
+}
+
+$inventory = Get-Content -LiteralPath $inventoryPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$baselineTag = [string]$manifest.inventoryBaseline.tag
+foreach ($repository in @($inventory.repositories)) {
+    $repositoryPath = Join-Path $repoRoot ([string]$repository.path)
+    $tagType = (& git -C $repositoryPath cat-file -t "refs/tags/$baselineTag" 2>$null)
+    if ($LASTEXITCODE -ne 0 -or $tagType.Trim() -ne 'tag') {
+        Fail "annotated baseline tag is missing for $($repository.name): $baselineTag"
+    }
+    $tagTarget = (& git -C $repositoryPath rev-parse "$baselineTag^{}" 2>$null).Trim()
+    if ($LASTEXITCODE -ne 0 -or $tagTarget -ne [string]$repository.expectedHead) {
+        Fail "baseline tag target mismatch for $($repository.name): expected $($repository.expectedHead), actual $tagTarget"
+    }
+    $annotation = (& git -C $repositoryPath for-each-ref "refs/tags/$baselineTag" --format='%(contents)' 2>$null) -join "`n"
+    if ($LASTEXITCODE -ne 0 -or $annotation -notmatch [regex]::Escape("inventory-sha256:$inventorySha") -or
+        $annotation -notmatch [regex]::Escape('decision:DR-0003') -or
+        $annotation -notmatch [regex]::Escape("commit:$($repository.expectedHead)")) {
+        Fail "baseline tag annotation mismatch for $($repository.name)"
+    }
+}
 
 $inventoryCheck = Join-Path $repoRoot 'scripts\check-deep-native-inventory.ps1'
 if (-not (Test-Path -LiteralPath $inventoryCheck -PathType Leaf)) {

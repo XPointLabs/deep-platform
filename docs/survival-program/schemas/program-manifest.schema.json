@@ -13,6 +13,7 @@
     "accountableOwner",
     "canonicalProgram",
     "documentSet",
+    "inventoryBaseline",
     "workPackageIdPattern",
     "packagePolicy"
   ],
@@ -41,6 +42,17 @@
         "entryFormat": { "const": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>" },
         "documentCount": { "type": "integer", "minimum": 1 },
         "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "inventoryBaseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "path", "sha256", "tag"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "path": { "const": "inventory/session-production-boundaries.v1.json" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "tag": { "const": "legacy-session-baseline-v3.0.0" }
       }
     },
     "workPackageIdPattern": { "type": "string", "minLength": 1 },
