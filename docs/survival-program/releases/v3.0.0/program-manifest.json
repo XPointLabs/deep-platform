@@ -12,7 +12,7 @@
     "algorithm": "SHA-256",
     "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>",
     "documentCount": 8,
-    "sha256": "78a23f791fcaa785c62902b3a32a3e33f9199827ec9ca1aa9e71676244593936"
+    "sha256": "c69d4cf2f57e37eaef97aff16028807e314b36737a4667aabc6a4da15aa6df8e"
   },
   "workPackageIdPattern": "^DNP1-(?:GOV|INV|SPEC|PROTO|CLIENT|NODE|OPS|SEC)(?:-[a-z0-9]+)*$",
   "dependencyManifestSchema": "deep-devops/schemas/survival/dependency-manifest.schema.json",

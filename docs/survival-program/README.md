@@ -9,7 +9,7 @@ release as immutable evidence. Its machine-readable identity is
 revision:
 
 ```text
-sha256:78a23f791fcaa785c62902b3a32a3e33f9199827ec9ca1aa9e71676244593936
+sha256:c69d4cf2f57e37eaef97aff16028807e314b36737a4667aabc6a4da15aa6df8e
 ```
 
 Run `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-survival-program.ps1` from the superproject root before accepting governance changes.

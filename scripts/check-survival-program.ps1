@@ -110,3 +110,12 @@ Write-Host "Deep Survival program check passed."
 Write-Host "Release: $($manifest.release)"
 Write-Host "Documents: $($documents.Count)"
 Write-Host "Revision: sha256:$actualDigest"
+
+$inventoryCheck = Join-Path $repoRoot 'scripts\check-deep-native-inventory.ps1'
+if (-not (Test-Path -LiteralPath $inventoryCheck -PathType Leaf)) {
+    Fail "Deep-native inventory checker is missing: $inventoryCheck"
+}
+& $inventoryCheck
+if ($LASTEXITCODE -ne 0) {
+    Fail "Deep-native inventory checker failed with exit code $LASTEXITCODE"
+}

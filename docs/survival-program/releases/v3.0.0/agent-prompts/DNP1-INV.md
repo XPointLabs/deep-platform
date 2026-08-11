@@ -41,3 +41,20 @@ and final owner/work package.
 - deletion order and atomic consumer cutovers are explicit;
 - review reports P0=0/P1=0 before Wave 1 specification begins.
 
+## Canonical inventory artifacts
+
+- machine-readable baseline:
+  [`../inventory/session-production-boundaries.v1.json`](../inventory/session-production-boundaries.v1.json);
+- local gate: `scripts/check-deep-native-inventory.ps1`;
+- the gate scans committed production roots at exact repository revisions,
+  resolves every curated marker hit to exactly one classification rule, and
+  rejects new, missing or multiply classified boundaries;
+- ordinary ASP.NET, operating-system and application lifecycle sessions are
+  intentionally outside the marker vocabulary;
+- evidence roots (`tests`, `docs`, fixtures) are counted separately from the
+  production graph, while generated, vendor and build output remain excluded.
+
+The first baseline records 10 repositories, eight explicit retained
+Deep-native boundaries and the complete Session-coupled production hit digest.
+Changing a repository revision or boundary requires an intentional inventory
+update; it may not silently pass as drift.

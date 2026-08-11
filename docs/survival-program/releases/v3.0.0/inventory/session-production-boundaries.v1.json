@@ -1,0 +1,382 @@
+{
+  "schemaVersion": "1.0.0",
+  "inventoryId": "DNP1-INV-session-production-boundaries",
+  "decision": "DR-0003",
+  "scope": "Committed production graph at the exact repository heads below. Test, docs, generated, vendor and build output are evidence roots, not production runtime.",
+  "classifications": [
+    "retain",
+    "remove",
+    "redesign",
+    "reference-only"
+  ],
+  "markers": [
+    { "name": "SessionId", "regex": "\\bSessionId(?:Prefix)?\\b|SenderSessionIdHex|PeerSessionId|GroupSessionId|MemberSessionIds|session_id|sessionId" },
+    { "name": "SessionProtobuf", "regex": "SessionProtos|WebSocketResources|WebSocketProtos\\.WebSocketMessage|groupSessionId|memberSessionIds" },
+    { "name": "SessionPadding", "regex": "\\bPadMessage\\b|SessionPadding" },
+    { "name": "SessionCrypto", "regex": "ISessionProtocolCrypto|SessionProtocolCodec|SodiumSessionProtocolCrypto|ConvertEd25519PublicKeyToX25519|ConvertEd25519PublicKeyToCurve25519PublicKey|ConvertEd25519SecretKeyToCurve25519SecretKey" },
+    { "name": "SessionEnvelope", "regex": "CompatibilityMetadataEnvelope|CompatibilityEnvelope|DPE1|DMC1|E2eeEnvelopeCodec|PushEnvelopeCrypto" },
+    { "name": "SessionOnion", "regex": "OnionRequestCodec|SodiumOnionRequestCrypto|OnionCrypto|OnionRouting|IOnionPeerClient|HttpOnionPeerClient|deep-onion-v1|/api/peer/onion" },
+    { "name": "SessionStorageRpc", "regex": "SessionRpc|ISessionStorageRpcBackend|HttpSessionStorageRpcBackend|SessionStorage|OpaqueSessionStorage|DEEP_STORAGE_URL|/api/session/rpc" },
+    { "name": "SessionTransport", "regex": "SessionTransport|RoutedSessionTransport" },
+    { "name": "SessionGroupsConfig", "regex": "GroupUpdateParser|SharedConfigParser|SharedConfigNamespaceStateMachine|ProProofService" },
+    { "name": "SessionOpaqueBundle", "regex": "OpaqueBundle" },
+    { "name": "CompatibilityService", "regex": "compat-service|p15-compat|compat_contract" }
+  ],
+  "repositories": [
+    {
+      "name": "deep-protocol",
+      "path": "deep-protocol",
+      "expectedHead": "a1bd9f3c2c15df12454f9c4db4ff0ddcf23ace41",
+      "productionRoots": ["src"],
+      "evidenceRoots": ["tests", "docs"],
+      "generatedOrVendorRoots": ["artifacts", "vendor", "**/bin", "**/obj"]
+    },
+    {
+      "name": "deep-client-shared",
+      "path": "deep-client-shared",
+      "expectedHead": "7ffe13838bc4597bec459f268c014d229076a25e",
+      "productionRoots": ["src"],
+      "evidenceRoots": ["tests", "docs"],
+      "generatedOrVendorRoots": ["artifacts", "vendor", "**/bin", "**/obj"]
+    },
+    {
+      "name": "deep-client-maui",
+      "path": "deep-client-maui",
+      "expectedHead": "9eba1d2b2ed7e693a6b5cd087d669fda6bf0b963",
+      "productionRoots": ["src"],
+      "evidenceRoots": ["tests", "docs"],
+      "generatedOrVendorRoots": ["artifacts", "**/bin", "**/obj"]
+    },
+    {
+      "name": "xnode",
+      "path": "xnode",
+      "expectedHead": "a68a4cb64d2030beb8afbd9c9d73aa31dd21bd64",
+      "productionRoots": ["src", "deploy"],
+      "evidenceRoots": ["tests", "docs", "examples"],
+      "generatedOrVendorRoots": ["artifacts", "vendor", ".scratch", "**/bin", "**/obj"]
+    },
+    {
+      "name": "deep-registry-api",
+      "path": "deep-registry-api",
+      "expectedHead": "157de80b2c98cb5bec1628465f9bcb52159acb90",
+      "productionRoots": ["src"],
+      "evidenceRoots": ["tests", "docs"],
+      "generatedOrVendorRoots": ["vendor", "**/bin", "**/obj"]
+    },
+    {
+      "name": "deep-push-notification-server",
+      "path": "deep-push-notification-server",
+      "expectedHead": "dee31250b6438b9565a70f193235a28ce95f7370",
+      "productionRoots": ["src"],
+      "evidenceRoots": ["tests"],
+      "generatedOrVendorRoots": ["**/bin", "**/obj"]
+    },
+    {
+      "name": "deep-devops",
+      "path": "deep-devops",
+      "expectedHead": "892aee30728063753218322fce304ecd8781ff48",
+      "productionRoots": ["docker", "scripts", "config", "nginx"],
+      "evidenceRoots": ["docs"],
+      "generatedOrVendorRoots": ["artifacts", "packages", ".secrets"]
+    },
+    {
+      "name": "deep-tests-e2e",
+      "path": "deep-tests-e2e",
+      "expectedHead": "939691fcd99be05b8f0eecad0156fd756c3cfeb2",
+      "productionRoots": ["src", "scripts"],
+      "evidenceRoots": ["test", "fixtures", "docs"],
+      "generatedOrVendorRoots": []
+    },
+    {
+      "name": "xpoint-staking-backend",
+      "path": "xpoint-staking-backend",
+      "expectedHead": "126759cba4358b10ee1a000cfd03bfe77e88c965",
+      "productionRoots": ["src"],
+      "evidenceRoots": ["tests", "docs"],
+      "generatedOrVendorRoots": ["**/bin", "**/obj"]
+    },
+    {
+      "name": "xpoint-staking-contracts",
+      "path": "xpoint-staking-contracts",
+      "expectedHead": "e3994d4b20b383240b62cf140e9956f86d307a6c",
+      "productionRoots": ["contracts"],
+      "evidenceRoots": ["test", "docs", "audits"],
+      "generatedOrVendorRoots": ["artifacts", "cache", "node_modules"]
+    }
+  ],
+  "rules": [
+    {
+      "id": "protocol-session-core-remove",
+      "repository": "deep-protocol",
+      "pathRegex": "^src/Deep\\.Protocol\\.Abstractions/(Crypto/ISessionProtocolCrypto\\.cs|SessionId\\.cs)$|^src/Deep\\.Protocol\\.Protobuf/|^src/Deep\\.Protocol/DeepExtension/(?:CompatibilityEnvelopes|OpaqueBundles)/|^src/Deep\\.Protocol/(Crypto/Sodium(?:OnionRequest|SessionProtocol)Crypto\\.cs|GroupUpdateParser\\.cs|Internal/MissingCryptoAdapters\\.cs|OnionRequestCodec\\.cs|ProProofService\\.cs|SessionProtocolCodec\\.cs|SharedConfig(?:NamespaceStateMachine|Parser)\\.cs)$",
+      "classification": "remove",
+      "currentConsumers": "Session-compatible identity, protobuf envelope, padding, onion/storage/group/config compatibility tests and adapters.",
+      "prerequisite": "DeepAccountId, Deep native envelope, reviewed pairwise/group crypto, native storage/RPC and replacement vectors are accepted and all consumers cut over atomically.",
+      "impact": "Signed/wire breaking change; removes Session protobuf, 05/03 identity prefixes, compatibility envelopes, Ed25519-to-X25519 identity coupling and legacy parser domains.",
+      "evidenceToPort": "Preserve adversarial bounds, canonical encoding, sodium vectors and parser fuzz cases as Deep-native negative/reference vectors.",
+      "owner": "DNP1-WIRE + DNP1-SPEC-crypto"
+    },
+    {
+      "id": "protocol-native-capability-redesign",
+      "repository": "deep-protocol",
+      "pathRegex": "^src/Deep\\.Protocol\\.Abstractions/(?:ProtocolConstants|State/SessionStateModels)\\.cs$|^src/Deep\\.Protocol\\.MembershipRoutes/MembershipRouteDescriptor\\.cs$|^src/Deep\\.Protocol/DeepExtension/(?:NearbyHandshakes|NearbySecureChannels|LoRaFragments)/",
+      "classification": "redesign",
+      "currentConsumers": "Useful primitive-size constants, conversation/group/config state and reviewed Deep-native membership, Nearby and LoRa capabilities that still carry Session-shaped identity or compatibility fields.",
+      "prerequisite": "Split retained primitive constants from legacy policy, then replace identity/state fields with versioned DeepAccountId/device key references without weakening capability, replay or bounded-framing invariants.",
+      "impact": "Wire and signed-field version bump; capability semantics retained.",
+      "evidenceToPort": "P03C/P03D/P18A and membership-route golden, mutation, replay, maximum-frame and downgrade tests.",
+      "owner": "DNP1-ID + DNP1-TRANSPORT"
+    },
+    {
+      "id": "shared-session-transport-remove",
+      "repository": "deep-client-shared",
+      "pathRegex": "^src/Deep\\.Client\\.Shared/Services/(?:OpaqueSessionStorage|RoutedSessionTransport|SessionTransport)\\.cs$",
+      "classification": "remove",
+      "currentConsumers": "Live Session storage/transport compatibility routing.",
+      "prerequisite": "Deep-native mailbox/storage transport is the sole production route and release graph has zero references.",
+      "impact": "Runtime endpoint and persistence transport removal; no migration or fallback.",
+      "evidenceToPort": "Retain failure, retry, cancellation, idempotency and privacy tests against the native transport.",
+      "owner": "DNP1-CLIENT-CUTOVER"
+    },
+    {
+      "id": "shared-product-state-redesign",
+      "repository": "deep-client-shared",
+      "pathRegex": "^src/Deep\\.Client\\.Shared/(?!Services/(?:OpaqueSessionStorage|RoutedSessionTransport|SessionTransport)\\.cs$)",
+      "classification": "redesign",
+      "currentConsumers": "Accounts, contacts, groups, messages, E2EE, push, calls, mailbox import, repositories and runtime state coupled to SessionId/DPE1/DMC1.",
+      "prerequisite": "Versioned Deep account/device identity, 24-word recovery, hybrid handshake/ratchet, native group state and atomic database reset/cutover.",
+      "impact": "Database schema, signed identity, wire envelope, push/call addressing and public application model change.",
+      "evidenceToPort": "Conversation/outbox/idempotency/mailbox/call/push/store crash and privacy suites; replace Session vectors with Deep golden vectors.",
+      "owner": "DNP1-ID + DNP1-MSG + DNP1-CLIENT-CUTOVER"
+    },
+    {
+      "id": "maui-client-redesign",
+      "repository": "deep-client-maui",
+      "pathRegex": "^src/",
+      "classification": "redesign",
+      "currentConsumers": "Onboarding, identity display/input, recovery, mailbox provisioning, background sync and view models exposing Session-shaped identifiers.",
+      "prerequisite": "Shared client Deep identity/store APIs are stable; perform one atomic UI/composition cutover and pre-production account reset.",
+      "impact": "UI validation, secure storage schema, recovery UX and composition root; no live dual stack.",
+      "evidenceToPort": "MAUI view-model, smoke, secure-store, recovery, background-sync and release-profile tests.",
+      "owner": "DNP1-CLIENT-CUTOVER"
+    },
+    {
+      "id": "xnode-session-runtime-remove",
+      "repository": "xnode",
+      "pathRegex": "^src/XNode\\.Core/(?:Onion|Session)/|^src/XNode\\.Core/Runtime/(?:IOnionPeerClient|ISessionStorageRpcBackend)\\.cs$|^src/XNode/(?:HttpOnionPeerClient|HttpSessionStorageRpcBackend)\\.cs$",
+      "classification": "remove",
+      "currentConsumers": "Session JSON-RPC storage and legacy onion peer endpoints.",
+      "prerequisite": "Deep-native node messaging/storage/onion API and route privacy model pass independent review and all devops/e2e callers cut over.",
+      "impact": "HTTP/RPC wire removal and node dependency graph reduction.",
+      "evidenceToPort": "Preserve bounded request, authentication, replay, cancellation, privacy and peer-failure tests for the new node API.",
+      "owner": "DNP1-NODE"
+    },
+    {
+      "id": "xnode-native-boundary-redesign",
+      "repository": "xnode",
+      "pathRegex": "^src/(?!XNode\\.Core/(?:Onion|Session)/)(?!XNode\\.Core/Runtime/(?:IOnionPeerClient|ISessionStorageRpcBackend)\\.cs$)(?!XNode/(?:HttpOnionPeerClient|HttpSessionStorageRpcBackend)\\.cs$)",
+      "classification": "redesign",
+      "currentConsumers": "Router composition, endpoint policy, relay contacts and mailbox replica paths still typed or configured through Session compatibility boundaries.",
+      "prerequisite": "Deep-native node contracts and algorithm/version policy are frozen; keep reviewed mailbox/membership/capacity behavior byte-for-byte where unaffected.",
+      "impact": "Composition and endpoint contracts; Deep mailbox/continuity state remains retained.",
+      "evidenceToPort": "Node runtime, relay, mailbox, production ingress, capacity and privacy tests.",
+      "owner": "DNP1-NODE"
+    },
+    {
+      "id": "registry-identity-redesign",
+      "repository": "deep-registry-api",
+      "pathRegex": "^src/",
+      "classification": "redesign",
+      "currentConsumers": "Call signaling lookup validates and stores Session-shaped identities.",
+      "prerequisite": "DeepAccountId and call-signal wire/database schema are frozen.",
+      "impact": "Database key and signed/public call-address boundary; mailbox continuity catalogs retained.",
+      "evidenceToPort": "Call signal authorization, expiry, collision, privacy and real-PostgreSQL tests.",
+      "owner": "DNP1-CALLS"
+    },
+    {
+      "id": "push-envelope-redesign",
+      "repository": "deep-push-notification-server",
+      "pathRegex": "^src/",
+      "classification": "redesign",
+      "currentConsumers": "Push envelope addressing and encryption coupled to Session identity/envelope assumptions.",
+      "prerequisite": "Deep push descriptor and device-key hierarchy are frozen and metadata-minimization review passes.",
+      "impact": "Push wire, provider payload and device-token association database.",
+      "evidenceToPort": "Provider size, encryption, replay, token rotation, privacy and canary tests.",
+      "owner": "DNP1-PUSH"
+    },
+    {
+      "id": "devops-compat-reference-retire",
+      "repository": "deep-devops",
+      "pathRegex": "^scripts/p15-compat-contracts(?:\\.test)?\\.mjs$",
+      "classification": "reference-only",
+      "currentConsumers": "Offline compatibility contract evidence only.",
+      "prerequisite": "Equivalent Deep-native golden/corpus gates exist and the last compatibility baseline is tagged.",
+      "impact": "No production wire; delete from release gates after reference extraction.",
+      "evidenceToPort": "Keep hostile vectors in an isolated non-production legacy reference archive.",
+      "owner": "DNP1-QUARANTINE"
+    },
+    {
+      "id": "devops-legacy-storage-remove",
+      "repository": "deep-devops",
+      "pathRegex": "^docker/storage-service\\.Dockerfile$",
+      "classification": "remove",
+      "currentConsumers": "Session-compatible storage service image.",
+      "prerequisite": "Native mailbox/storage service and deployment topology pass local survival and rollback rehearsals.",
+      "impact": "Container topology, environment variables and operational endpoints.",
+      "evidenceToPort": "Local compose, restart, retention, backup/restore and privacy gates.",
+      "owner": "DNP1-OPS-CUTOVER"
+    },
+    {
+      "id": "devops-native-service-redesign",
+      "repository": "deep-devops",
+      "pathRegex": "^(?!docker/storage-service\\.Dockerfile$)(?!scripts/p15-compat-contracts(?:\\.test)?\\.mjs$)(?:docker|scripts|config|nginx)/",
+      "classification": "redesign",
+      "currentConsumers": "File, push, calls, ingress, smoke and survival automation still names or routes Session-compatible services.",
+      "prerequisite": "Each native replacement has immutable build inputs, secret boundaries, health, rollback and fail-closed release gates.",
+      "impact": "Local/production topology, service URLs, ingress routing, metrics and operational documentation.",
+      "evidenceToPort": "Survival compose, chaos, canary, rollback, metadata privacy and production-ingress suites.",
+      "owner": "DNP1-OPS-CUTOVER"
+    },
+    {
+      "id": "e2e-session-reference",
+      "repository": "deep-tests-e2e",
+      "pathRegex": "^(?:src|scripts)/",
+      "classification": "reference-only",
+      "currentConsumers": "Cross-repository Session endpoint and runtime assertions.",
+      "prerequisite": "Deep-native end-to-end scenarios cover identity, recovery, messaging, groups, multi-device, push/calls and transport privacy.",
+      "impact": "Test-only; must never keep a production compatibility endpoint alive.",
+      "evidenceToPort": "Extract useful hostile/restart/latency assertions, then delete Session-specific scenarios.",
+      "owner": "DNP1-E2E"
+    },
+    {
+      "id": "staking-public-boundary-redesign",
+      "repository": "xpoint-staking-backend",
+      "pathRegex": "^src/",
+      "classification": "redesign",
+      "currentConsumers": "Only applies if a Session-shaped identifier crosses staking signed/public boundaries.",
+      "prerequisite": "DeepAccountId projection and contract/API compatibility decision are explicit.",
+      "impact": "Public API or signed projection only; financial semantics otherwise unchanged.",
+      "evidenceToPort": "Authorization, projection and ledger invariants.",
+      "owner": "DNP1-STAKING"
+    },
+    {
+      "id": "staking-contract-boundary-redesign",
+      "repository": "xpoint-staking-contracts",
+      "pathRegex": "^contracts/",
+      "classification": "redesign",
+      "currentConsumers": "Only applies if a Session-shaped identifier is committed on-chain.",
+      "prerequisite": "No such field remains, or a separately audited contract version is approved before deployment.",
+      "impact": "On-chain/public signed state; no silent reinterpretation.",
+      "evidenceToPort": "Contract storage-layout, signature, upgrade and audit tests.",
+      "owner": "DNP1-STAKING"
+    }
+  ],
+  "retainedBoundaries": [
+    {
+      "repository": "deep-protocol",
+      "pathPrefix": "src/Deep.Protocol/DeepExtension/MailboxAuthority",
+      "classification": "retain",
+      "invariant": "Reviewed PMA/PMR authority chain, canonical signatures, expiry and role separation.",
+      "owner": "DNP1-RETAIN-PROTOCOL"
+    },
+    {
+      "repository": "deep-protocol",
+      "pathPrefix": "src/Deep.Protocol/DeepExtension/MailboxCapabilities",
+      "classification": "retain",
+      "invariant": "Reviewed mailbox capability bounds, audience separation and nonforgeable verified states.",
+      "owner": "DNP1-RETAIN-PROTOCOL"
+    },
+    {
+      "repository": "deep-protocol",
+      "pathPrefix": "src/Deep.Protocol/DeepExtension/ManagedIngress",
+      "classification": "retain",
+      "invariant": "Reviewed managed-ingress canonical framing and authenticated admission semantics.",
+      "owner": "DNP1-RETAIN-PROTOCOL"
+    },
+    {
+      "repository": "deep-protocol",
+      "pathPrefix": "src/Deep.Protocol/DeepExtension/Membership",
+      "classification": "retain",
+      "invariant": "Reviewed membership authority, topology and bounded verification semantics.",
+      "owner": "DNP1-RETAIN-PROTOCOL"
+    },
+    {
+      "repository": "deep-protocol",
+      "pathPrefix": "src/Deep.Protocol.MembershipRoutes",
+      "classification": "retain",
+      "invariant": "P04/P09C/P10B/D/D2/E/F route, selection, continuity, history and owner-control capabilities remain Deep-native.",
+      "owner": "DNP1-RETAIN-PROTOCOL"
+    },
+    {
+      "repository": "deep-registry-api",
+      "pathPrefix": "src/Deep.Registry.Api/ProductionMailbox",
+      "classification": "retain",
+      "invariant": "Durable CAS/HMAC catalogs, PostgreSQL replay/fork fences and owner-control state are retained.",
+      "owner": "DNP1-RETAIN-REGISTRY"
+    },
+    {
+      "repository": "deep-client-shared",
+      "pathPrefix": "src/Deep.Client.Shared/Services/NativeMau2MailboxTransport.cs",
+      "classification": "retain",
+      "invariant": "Native MAU2 mailbox transport behavior is retained while its external identity type is redesigned.",
+      "owner": "DNP1-RETAIN-CLIENT"
+    },
+    {
+      "repository": "xnode",
+      "pathPrefix": "src/XNode.Core/Mailbox",
+      "classification": "retain",
+      "invariant": "Deep-native mailbox replica, publication, capacity and availability behavior is retained.",
+      "owner": "DNP1-RETAIN-NODE"
+    }
+  ],
+  "capabilityGaps": [
+    {
+      "capability": "pairwise forward secrecy and post-compromise security",
+      "status": "missing-final-design",
+      "requiredWorkPackage": "DNP1-SPEC-crypto",
+      "gate": "Reviewed hybrid handshake plus ratchet; DPE1 cannot be renamed and shipped."
+    },
+    {
+      "capability": "groups and membership rekey",
+      "status": "missing-final-design",
+      "requiredWorkPackage": "DNP1-GROUPS",
+      "gate": "MLS or equivalently reviewed group-state construction with removal/rekey proof."
+    },
+    {
+      "capability": "multi-device, revoke and recovery",
+      "status": "missing-final-design",
+      "requiredWorkPackage": "DNP1-ID",
+      "gate": "Versioned owner/device hierarchy, 24-word recovery, revoke and recovery tests."
+    },
+    {
+      "capability": "contact establishment and configuration synchronization",
+      "status": "legacy-coupled",
+      "requiredWorkPackage": "DNP1-CONTACTS",
+      "gate": "Native signed contact/config state with replay/fork/downgrade rules."
+    },
+    {
+      "capability": "onion privacy and traffic-analysis resistance",
+      "status": "requires-deep-specific-evidence",
+      "requiredWorkPackage": "DNP1-TRANSPORT",
+      "gate": "Path diversity, endpoint hiding, padding/metadata and censorship-resistance claims independently reviewed."
+    }
+  ],
+  "cutoverOrder": [
+    "Freeze and tag the last compatibility baseline; production release graph forbids new Session dependencies.",
+    "Specify DeepAccountId, 24-word recovery, role-separated key hierarchy, hybrid handshake/ratchet and version policy.",
+    "Implement Deep native wire/storage/onion and client state on a dark path with unmistakable magic and no downgrade negotiation.",
+    "Cut over protocol and node, then shared client and MAUI, then push/calls/file/devops/E2E as atomic consumer groups.",
+    "Perform a destructive pre-production account/database reset; never run live dual-read, dual-write or bidirectional translation.",
+    "Delete runtime compatibility packages and endpoints; retain only quarantined offline vectors until the external audit closes."
+  ],
+  "expectedProductionHits": {
+    "count": 1763,
+    "sha256": "66252356e72064426cbf957862dea0f6e66a39738d4c2d8d6b9ff0b99d47a337",
+    "classificationCounts": {
+      "retain": 0,
+      "remove": 571,
+      "redesign": 1157,
+      "reference-only": 35
+    }
+  }
+}
