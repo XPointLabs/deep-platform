@@ -12,19 +12,26 @@
     "algorithm": "SHA-256",
     "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>",
     "documentCount": 11,
-    "sha256": "c655b2452f2fffaf22a0891bd8098a695391e510023dc8cc17d6e86c45dac8ac"
+    "sha256": "ca3dc6fd425541651718fe08853b23f775646d67217b776c0f0c084c473350f1"
   },
   "machineSpecificationSet": {
     "algorithm": "SHA-256",
     "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-repo-relative-path><LF>",
-    "artifactCount": 5,
-    "sha256": "78accc5bb98606a56e3704866db5f0cdd37b2caada5d92620ae28cfd7d08bc46",
+    "artifactCount": 12,
+    "sha256": "5441b185cf3f6bb567d53f28070c107f2a00c6a68278b6aaaa391d0c1843b42c",
     "paths": [
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-attestation.schema.json",
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-manifest.schema.json",
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.json",
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.schema.json",
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-selftest-result.json",
+      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
       "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.json",
       "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.schema.json",
       "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.schema.json",
       "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.skeleton.json",
-      "scripts/check-dnp1-classical-spec.ps1"
+      "scripts/check-dnp1-classical-spec.ps1",
+      "scripts/dnp1-evidence-selftest-runner.ps1"
     ]
   },
   "inventoryBaseline": {

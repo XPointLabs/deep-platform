@@ -503,6 +503,7 @@
     "hmacTranscript": "Protocol-returns-only-exact-unsigned-protected-transcript-domain-suite-and-key-id; never-accepts-or-returns-HMAC-key-and-never-claims-durable-authority",
     "hmacKeyId": "key-id32-is-nonzero-fixed-preflighted-before-HMAC-callback; callback-output-is-frozen-once-then-locally-verified-and-only-owned-tag-is-used",
     "recoveryFreeze": "preflight-bounds-and-defensively-copy-all-DRC1-metadata-ciphertext-and-provider-input-before-callback-or-await; no-public-seed-key-or-nonce-override",
+    "recoveryExpectedContext": "OpenCandidateAsync requires sealed defensively-owned ExpectedRecoveryCandidateRelative frozen once. candidateBoundDrcFields=network16|componentSubject32|accountGeneration8|DCMRef38|DRSRef38|shadowStateHash32|nextPinCoreHash32|protectorKeyId32 and are fixed-time compared to exact DRC1 before provider; deploymentSubject32 is a distinct witness-CAS field and substitution for componentSubject32 rejects before provider. localSealedPreProviderChecks=componentKind2|componentSubject32|accountHash32|resetId32|DPLRef38|typedKeyCount2=2|orderedTypedKeys[(kind2=1 ProtectedStateHmac,keyId32),(kind2=2 RecoveryNonceLatch,keyId32)]; kinds strictly increasing, IDs nonzero unique, and these are local sealed context rather than DRC1 fields. fullPostOpenClosure=candidateBoundDrcFields|localSealedPreProviderChecks|DCMGeneration8|DRSRevision8|DRSCount8|DRSHead32|currentSourceFingerprint32 plus exact transitive DCM-DRS-DPL rows. Minted only by Protocol restore plus sealed current cutover-relative facts; full closure fixed-time compared after owned DRM restore; no raw tuple factory and no authority claim",
     "recoveryProvider": "typed-internal-recovery-provider-derives-HKDF-key-and-nonce; Protocol-fixed-time-compares-derived-nonce-with-stored-nonce-before-AEAD-open",
     "recoveryNonce": "latch-key-is-protector-key-id32|derived-nonce24; stored-value-hashes-transaction-id32-associated-data-metadata-ciphertext-and-tag; exact-key-value-replays; changed-value-permanently-latches-before-AEAD",
     "recoveryPlaintext": "successful-open-yields-one-shot-owned-plaintext-consumed-once-and-zeroed-in-finally-on-success-failure-or-cancellation",
@@ -536,6 +537,38 @@
     "requestHash": "canonicalRequestHash32 equals outerRequestHash over exact owned DPR1 and PRQ2 bytes and is nonzero in every phase",
     "outcomeHash": "innerOutcomeHash32 equals outerOutcomeHash over exact owned MRR2 then DPS1 bytes; zero in Prepared-InnerPending and exact nonzero only in Completed",
     "transitionOrder": "persist-HMAC-Prepared-before-inner-call; InnerPending-before-inner-exact-replay; persist exact MRR2 and DPS1 refs plus outcome hash in Completed; reread-HMAC-and-signatures before delivery authorization"
+  },
+  "evidenceOwnership": {
+    "classificationPath": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.json",
+    "classificationSha256": "8feb3aeba2e474a58e580e8d5fa4e0809a4baa1ef734f51596025be0329b3165",
+    "classificationSchemaPath": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.schema.json",
+    "evidenceManifestSchemaPath": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-manifest.schema.json",
+    "evidenceAttestationSchemaPath": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-attestation.schema.json",
+    "owners": ["Protocol", "Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"],
+    "gates": ["ProtocolPackageBlocking", "CutoverFinalRelease"],
+    "ownerCounts": { "Protocol": 100, "Registry": 13, "XNode": 11, "Shared": 2, "DevOpsWitness": 12, "CrossRepoE2E": 16, "MAUI": 3 },
+    "gateCounts": { "ProtocolPackageBlocking": 103, "CutoverFinalRelease": 54 },
+    "allowedMatrix": {
+      "ProtocolPackageBlocking": ["Protocol", "DevOpsWitness"],
+      "CutoverFinalRelease": ["Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"]
+    },
+    "protocolPackageRule": "GO requires exactly one complete Passed result for all 100 Protocol rows and the exact 3 ProtocolPackageBlocking DevOpsWitness rows; total103; incomplete manifests contribute zero results; no Pending-Failed-missing-duplicate-owner-gate-digest mismatch",
+    "cutoverFinalRule": "GO requires exactly one complete Passed result for all157 rows including the immutable package103 subset and all54 CutoverFinalRelease rows; incomplete manifests contribute zero and consumer-owned rows never count green at package GO",
+    "repositoryBindings": {
+      "Protocol": { "repository": "deep-protocol", "expectedRevision": null },
+      "Registry": { "repository": "deep-registry-api", "expectedRevision": null },
+      "XNode": { "repository": "xnode", "expectedRevision": null },
+      "Shared": { "repository": "deep-client-shared", "expectedRevision": null },
+      "DevOpsWitness": { "repository": "deep-devops", "expectedRevision": null },
+      "CrossRepoE2E": { "repository": "deep-tests-e2e", "expectedRevision": null },
+      "MAUI": { "repository": "deep-client-maui", "expectedRevision": null }
+    },
+    "currentClaim": "ClassificationOnly",
+    "evidenceManifestPaths": [],
+    "machineBinding": "classification-schema-evidence-manifest-schema-attestation-schema-source-snapshot-and-every-listed-evidence-manifest-are-program-manifest-machineSpecificationSet-members; the aggregate digest is stored only in program-manifest",
+    "evidenceDigestRule": "SHA-256 of exact UTF-8 evidence-manifest file bytes; the digest is referenced only by the consuming gate record or aggregate and never stored inside the hashed evidence manifest",
+    "provenanceRule": "GO evidence permits CleanGit only and rejects FrozenArchive; each complete manifest binds classification/vector digests, producer repository expected clean revision/tree, resolved toolchain executable/version/hash and sorted path-length-SHA inventory; every case names a parsed closed attestation that separates expected from observed outcome, callbacks, exit and test IDs and binds the exact runner invocation plus byte-identical output, package, deployment and participant heads; CrossRepo requires all seven clean exact repos; every path is single-read contained and reparse-free",
+    "noEarlyGreen": true
   },
   "http": {
     "path": "/api/peer/native/v1/mailbox",

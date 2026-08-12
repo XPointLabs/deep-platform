@@ -1394,6 +1394,96 @@ live row is evicted to admit work.
 
 ## 8. Package and consumer cutover
 
+### 8.1 Executable-evidence ownership and release gates
+
+The normative ownership table is
+`dnp1-classical-v1.evidence-ownership.json`. It contains exactly 157 unique
+semantic vector IDs and assigns each to one closed owner and one closed gate.
+The owner totals are Protocol 100, Registry 13, XNode 11, Shared 2,
+DevOpsWitness 12, CrossRepoE2E 16, and MAUI 3. The gate totals are 103
+`ProtocolPackageBlocking` rows (Protocol 100 plus exactly three
+DevOpsWitness rows) and 54 `CutoverFinalRelease` rows. A package GO requires
+one complete Passed result for every package row. A final-release GO requires
+one complete Passed result for all 157 rows and retains the already-proven
+package subset. Consumer-owned rows cannot be counted green at package GO.
+
+The current normative claim is `ClassificationOnly`. The observed
+implementation progress of 32 source-snapshot rows (Protocol 31 plus
+DevOpsWitness 1) is audit information, not a GO claim and is not carried
+forward across the normative split/additions without new evidence. A future
+Passed attestation separates expected outcome/callbacks from the runner's
+observed outcome, callbacks, exit code and exact test IDs. The gate reruns the
+content-hashed runner with its closed argument vector against the bound clean
+tree/archive and requires byte-identical UTF-8 output before parsing it; an
+asserted `Passed` value without that reproducible execution is never evidence.
+GO claim must update the closed claim value and exact expected repository
+revisions, list
+the exact evidence manifests in the machine specification set, and satisfy
+the checker without missing, duplicate, Pending, Failed, wrong-owner,
+wrong-gate, or digest-mismatched evidence.
+
+Each repository evidence manifest binds the classification and vector
+skeleton digests, producer, its closed repository and expected exact 40-hex
+revision, configuration, toolchain digest, and a canonical strictly sorted
+artifact inventory of `path|byteLength|SHA-256`. The checker dereferences
+only `CleanGit` evidence; `FrozenArchive` is forbidden from both package and
+final GO because it cannot prove every participant head. Every participant
+repository must exist, match its exact revision/tree, and be clean, and every
+package/deployment binding is dereferenced before its result can aggregate.
+The checker dereferences
+every inventory path under that repository, rejects traversal/missing/changed
+files and every reparse/symlink component, snapshots each file once before
+hash and parse, and recomputes the inventory digest. A Passed case must name a
+closed parsed result attestation, never an arbitrary inventory member. The
+attestation exactly binds case ID, expected outcome/callback counts, result,
+runner bytes/version, configuration, resolved toolchain executable/version and
+binary hash, clean source revision/tree, package closure, deployment manifest,
+output bytes, and participant heads. Non-CrossRepo evidence has exactly its
+producer participant. CrossRepoE2E has all seven sorted participant repositories
+(`deep-client-maui`, `deep-client-shared`, `deep-devops`, `deep-protocol`,
+`deep-registry-api`, `deep-tests-e2e`, `xnode`), with clean exact revisions,
+trees, package-set and deployment artifacts independently dereferenced.
+`incomplete` manifests contribute zero results even when individual rows say
+Passed. Evidence files do not contain
+their own digest. Their
+exact byte digest is stored only by the consuming gate record or by the outer
+program aggregate, avoiding self-reference. The program machine-set digest
+binds the evidence manifest, attestation and ownership schemas, the frozen
+source snapshot, ownership table, and every listed evidence
+manifest.
+
+Protocol package evidence covers only the pure DPJ codec/transition plans and
+the byte-frame parser. XNode owns the real durable journal cap/HMAC/GC,
+fork/stale/terminal rows and the ASP.NET host framing, compression,
+Content-Length and trailing-byte behavior. CrossRepoE2E owns crash replay that
+crosses XNode and Shared. MAUI final evidence explicitly covers empty-store
+reset, DDBG/DPL rollback fencing, and absence of every legacy Session surface.
+Protocol owner/router collision evidence is limited to deterministic ID and
+canonical-preimage comparison. Registry and XNode durable fork/collision latch
+CAS, restart restore, and cross-store behavior are a separate CrossRepoE2E
+final-release case.
+
+`recovery-drc-cycle-and-aead` is Protocol-owned and package-blocking.
+`OpenCandidateAsync` consumes a sealed, defensively owned
+`ExpectedRecoveryCandidateRelative` minted only from restored exact canonical
+DCM/DRS/DPL and sealed current cutover-relative facts. It is frozen once. The
+candidate-bound fields compared directly with DRC1 before the provider are
+exactly network, component subject, account generation, DCM ref, DRS ref,
+shadow-state hash, next-pin-core hash, and protector key ID. Component
+kind/subject, account hash, reset ID and DPL ref are separate local
+sealed-current-context checks; they are not DRC1 fields. The witness-CAS
+deployment subject is a different namespace and cannot substitute for the DRC1
+component subject; cross-feed rejects before provider work. The local context also
+contains exactly two typed rows in increasing order,
+`1=ProtectedStateHmac` and `2=RecoveryNonceLatch`, each with a distinct
+nonzero key ID. The protector ID is already candidate-bound by DRC1. All direct
+and local checks precede provider work. The full post-open closure adds DCM
+generation, DRS revision/count/head, current-source fingerprint and the exact
+transitive DCM/DRS/DPL rows, then fixed-time compares after the one owned DRM
+restore. Pre/post mutation rejects. No raw-tuple factory
+exists; the result makes no authority or durability claim. Consumer-owned
+final restore still rechecks live heads and performs its own atomic CAS.
+
 The reproducible package closure has exactly these current package names:
 
 1. `Deep.Protocol` -- Session-free retained P03B/mailbox/membership core plus

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:dnp1:classical:v1:evidence-attestation",
+  "title": "DNP1 executable case result attestation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "caseId", "executableOwner", "gate", "expectedOutcome", "expectedCallbacks", "observed", "result", "runner", "configuration", "toolchain", "source", "packageClosure", "deployment", "participants", "output"],
+  "properties": {
+    "$schema": { "const": "dnp1-classical-v1.evidence-attestation.schema.json" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "executableOwner": { "enum": ["Protocol", "Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"] },
+    "gate": { "enum": ["ProtocolPackageBlocking", "CutoverFinalRelease"] },
+    "expectedOutcome": { "enum": ["valid", "invalid-before-allocation", "invalid-before-crypto", "fork-latched", "fail-closed", "exact-replay"] },
+    "expectedCallbacks": { "$ref": "#/$defs/callbacks" },
+    "observed": { "$ref": "#/$defs/observed" },
+    "result": { "enum": ["Passed", "Pending", "Failed"] },
+    "runner": { "$ref": "#/$defs/runner" },
+    "configuration": { "enum": ["Debug", "Release"] },
+    "toolchain": { "$ref": "#/$defs/toolchain" },
+    "source": { "$ref": "#/$defs/source" },
+    "packageClosure": { "$ref": "#/$defs/artifactBinding" },
+    "deployment": { "$ref": "#/$defs/artifactBinding" },
+    "participants": { "type": "array", "minItems": 1, "maxItems": 7, "uniqueItems": true, "items": { "$ref": "#/$defs/participant" } },
+    "output": { "$ref": "#/$defs/artifactBinding" }
+  },
+  "$defs": {
+    "observed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runnerOutputPath", "runnerOutputSha256", "result", "outcome", "callbacks", "exitCode", "testIds"],
+      "properties": {
+        "runnerOutputPath": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]{0,511}$" },
+        "runnerOutputSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "result": { "enum": ["Passed", "Pending", "Failed"] },
+        "outcome": { "enum": ["valid", "invalid-before-allocation", "invalid-before-crypto", "fork-latched", "fail-closed", "exact-replay"] },
+        "callbacks": { "$ref": "#/$defs/callbacks" },
+        "exitCode": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "testIds": { "type": "array", "minItems": 1, "maxItems": 4096, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } }
+      }
+    },
+    "callbacks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signature", "agreement", "network", "mutation"],
+      "properties": {
+        "signature": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "agreement": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "network": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "mutation": { "type": "integer", "minimum": 0, "maximum": 65535 }
+      }
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactPath", "sha256"],
+      "properties": {
+        "artifactPath": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]{0,511}$" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "artifactPath", "sha256", "arguments"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9._-]{1,64}$" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "artifactPath": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]{0,511}$" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        ,"arguments": { "type": "array", "minItems": 1, "maxItems": 64, "items": { "type": "string", "minLength": 1, "maxLength": 512 } }
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executableName", "version", "executableSha256"],
+      "properties": {
+        "executableName": { "type": "string", "pattern": "^[a-zA-Z0-9._-]{1,64}$" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "executableSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "repository", "revision", "gitTree", "clean", "archiveArtifactSetSha256"],
+      "properties": {
+        "mode": { "enum": ["CleanGit", "FrozenArchive"] },
+        "repository": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]{1,63}$" },
+        "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "gitTree": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "clean": { "const": true },
+        "archiveArtifactSetSha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "participant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "revision", "gitTree", "packageArtifactPath", "packageSetSha256", "deploymentArtifactPath", "deploymentSha256"],
+      "properties": {
+        "repository": { "enum": ["deep-protocol", "deep-registry-api", "xnode", "deep-client-shared", "deep-client-maui", "deep-devops", "deep-tests-e2e"] },
+        "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "gitTree": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "packageArtifactPath": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]{0,511}$" },
+        "packageSetSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "deploymentArtifactPath": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]{0,511}$" },
+        "deploymentSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  }
+}

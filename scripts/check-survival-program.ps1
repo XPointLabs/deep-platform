@@ -45,15 +45,22 @@ if (-not $manifest.executionPolicy.localOnly -or -not $manifest.executionPolicy.
 }
 
 $expectedMachinePaths = @(
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-attestation.schema.json',
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-manifest.schema.json',
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.json',
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.schema.json',
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-selftest-result.json',
+    'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json',
     'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.json',
     'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.schema.json',
     'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.schema.json',
     'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.skeleton.json',
-    'scripts/check-dnp1-classical-spec.ps1'
+    'scripts/check-dnp1-classical-spec.ps1',
+    'scripts/dnp1-evidence-selftest-runner.ps1'
 )
 if ($manifest.machineSpecificationSet.algorithm -ne 'SHA-256' -or
     $manifest.machineSpecificationSet.entryFormat -ne '<lowercase-file-sha256><two-spaces><forward-slash-repo-relative-path><LF>' -or
-    [int]$manifest.machineSpecificationSet.artifactCount -ne 5 -or
+    [int]$manifest.machineSpecificationSet.artifactCount -ne 12 -or
     (@($manifest.machineSpecificationSet.paths) -join '|') -ne ($expectedMachinePaths -join '|')) {
     Fail 'machine specification artifact-set policy drifted'
 }

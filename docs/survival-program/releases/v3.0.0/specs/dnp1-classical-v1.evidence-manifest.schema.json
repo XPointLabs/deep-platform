@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:dnp1:classical:v1:evidence-manifest",
+  "title": "DNP1 repository executable evidence manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "status", "decision", "workPackage", "classificationSha256", "vectorSkeletonSha256", "producer", "repository", "revision", "gitTree", "worktreeClean", "configuration", "toolchainExecutableName", "toolchainVersion", "toolchainSha256", "testArtifactSetSha256", "artifactInventory", "cases"],
+  "properties": {
+    "$schema": { "const": "dnp1-classical-v1.evidence-manifest.schema.json" },
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "enum": ["incomplete", "complete"] },
+    "decision": { "const": "DR-0003" },
+    "workPackage": { "const": "DNP1-PROTO-classical-identity-reset-routing" },
+    "classificationSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "vectorSkeletonSha256": { "const": "15695d1c7e859f6396e552e95dadf9f21c1a7345b77b93f21ebaea2162a323f2" },
+    "producer": { "enum": ["Protocol", "Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"] },
+    "repository": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]{1,63}$" },
+    "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "gitTree": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "worktreeClean": { "const": true },
+    "configuration": { "enum": ["Debug", "Release"] },
+    "toolchainExecutableName": { "type": "string", "pattern": "^[a-zA-Z0-9._-]{1,64}$" },
+    "toolchainVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "toolchainSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "testArtifactSetSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "artifactInventory": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 157,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/case" }
+    }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "byteLength", "sha256"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]{0,511}$" },
+        "byteLength": { "type": "integer", "minimum": 1, "maximum": 1073741824 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "result", "attestationPath", "attestationSha256"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "result": { "enum": ["Passed", "Pending", "Failed"] },
+        "attestationPath": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]{0,511}$" },
+        "attestationSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  }
+}

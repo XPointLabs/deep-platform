@@ -1,0 +1,1 @@
+{"schemaVersion":"1.0.0","caseId":"api-dwd-full-ancestry-bounds","testIds":["api-dwd-full-ancestry-bounds"],"result":"Passed","observedOutcome":"invalid-before-allocation","observedCallbacks":{"signature":0,"agreement":0,"network":0,"mutation":0},"exitCode":0}

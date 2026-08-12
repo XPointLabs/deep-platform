@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param()
 
 $ErrorActionPreference = 'Stop'
@@ -9,12 +9,17 @@ $registryPath = Join-Path $specRoot 'dnp1-classical-v1.registry.json'
 $registrySchemaPath = Join-Path $specRoot 'dnp1-classical-v1.registry.schema.json'
 $vectorSchemaPath = Join-Path $specRoot 'dnp1-classical-v1.vectors.schema.json'
 $vectorPath = Join-Path $specRoot 'dnp1-classical-v1.vectors.skeleton.json'
+$ownershipPath = Join-Path $specRoot 'dnp1-classical-v1.evidence-ownership.json'
+$ownershipSchemaPath = Join-Path $specRoot 'dnp1-classical-v1.evidence-ownership.schema.json'
+$evidenceSchemaPath = Join-Path $specRoot 'dnp1-classical-v1.evidence-manifest.schema.json'
+$attestationSchemaPath = Join-Path $specRoot 'dnp1-classical-v1.evidence-attestation.schema.json'
+$programManifestPath = Join-Path $specRoot '..\program-manifest.json'
 
 function Fail([string]$Message) {
     throw "DNP1 classical specification check failed: $Message"
 }
 
-foreach ($path in @($specPath, $registryPath, $registrySchemaPath, $vectorSchemaPath, $vectorPath)) {
+foreach ($path in @($specPath, $registryPath, $registrySchemaPath, $vectorSchemaPath, $vectorPath, $ownershipPath, $ownershipSchemaPath, $evidenceSchemaPath, $attestationSchemaPath, $programManifestPath)) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { Fail "missing artifact: $path" }
 }
 
@@ -23,6 +28,11 @@ $registry = Get-Content -LiteralPath $registryPath -Raw -Encoding UTF8 | Convert
 $registrySchema = Get-Content -LiteralPath $registrySchemaPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $vectorSchema = Get-Content -LiteralPath $vectorSchemaPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $vectors = Get-Content -LiteralPath $vectorPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$ownership = Get-Content -LiteralPath $ownershipPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$ownershipSchema = Get-Content -LiteralPath $ownershipSchemaPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$evidenceSchema = Get-Content -LiteralPath $evidenceSchemaPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$attestationSchema = Get-Content -LiteralPath $attestationSchemaPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$programManifest = Get-Content -LiteralPath $programManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
 
 function Assert-ExactProperties($Object, [string[]]$Required, [string[]]$Allowed, [string]$Name) {
     $names = @($Object.PSObject.Properties | ForEach-Object { [string]$_.Name })
@@ -32,6 +42,252 @@ function Assert-ExactProperties($Object, [string[]]$Required, [string[]]$Allowed
     foreach ($name in $names) {
         if ($Allowed -notcontains $name) { Fail "$Name contains unknown property $name" }
     }
+}
+
+function Test-EvidenceOwnershipDocument($Document, [string[]]$VectorIds) {
+    try {
+        $top = @('$schema','schemaVersion','status','decision','workPackage','normativeCommit','normativeVectorSkeletonSha256','sourceSnapshot','sourceAudit','ownerEnum','gateEnum','rows')
+        $actual = @($Document.PSObject.Properties | ForEach-Object { [string]$_.Name })
+        if (($actual -join '|') -ne ($top -join '|') -or $Document.rows -isnot [System.Array]) { return $false }
+        $owners = @('Protocol','Registry','XNode','Shared','DevOpsWitness','CrossRepoE2E','MAUI')
+        $gates = @('ProtocolPackageBlocking','CutoverFinalRelease')
+        if ((@($Document.ownerEnum) -join '|') -ne ($owners -join '|') -or
+            (@($Document.gateEnum) -join '|') -ne ($gates -join '|') -or @($Document.rows).Count -ne 157) { return $false }
+        $seen = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
+        foreach ($row in @($Document.rows)) {
+            $rowNames = @($row.PSObject.Properties | ForEach-Object { [string]$_.Name })
+            if (($rowNames -join '|') -ne 'id|executableOwner|reasonApiSeam|gate' -or
+                $row.id -isnot [string] -or $row.executableOwner -isnot [string] -or
+                $row.reasonApiSeam -isnot [string] -or $row.gate -isnot [string] -or
+                [string]$row.id -notmatch '^[a-z0-9-]+$' -or
+                ([string]$row.reasonApiSeam).Length -lt 32 -or ([string]$row.reasonApiSeam).Length -gt 256 -or
+                $owners -notcontains [string]$row.executableOwner -or $gates -notcontains [string]$row.gate -or
+                -not $seen.Add([string]$row.id)) { return $false }
+            if ($row.gate -eq 'ProtocolPackageBlocking' -and @('Protocol','DevOpsWitness') -notcontains [string]$row.executableOwner) { return $false }
+            if ($row.gate -eq 'CutoverFinalRelease' -and @('Registry','XNode','Shared','DevOpsWitness','CrossRepoE2E','MAUI') -notcontains [string]$row.executableOwner) { return $false }
+        }
+        return ((@($seen | Sort-Object) -join '|') -eq (@($VectorIds | Sort-Object) -join '|'))
+    }
+    catch { return $false }
+}
+
+function Test-EvidenceGateSatisfied([string]$Claim, $Rows, $Results) {
+    if ($Claim -eq 'ClassificationOnly') { return $Results.Count -eq 0 }
+    $required = if ($Claim -eq 'ProtocolPackageGO') {
+        @($Rows | Where-Object { $_.gate -eq 'ProtocolPackageBlocking' })
+    } elseif ($Claim -eq 'CutoverFinalReleaseGO') {
+        @($Rows)
+    } else { return $false }
+    if ($Results.Count -ne $required.Count) { return $false }
+    foreach ($row in $required) {
+        if (-not $Results.ContainsKey([string]$row.id) -or $Results[[string]$row.id] -ne 'Passed') { return $false }
+    }
+    return $true
+}
+
+function Test-EvidencePathPolicy([string]$RelativePath, [bool]$HasReparsePoint) {
+    return (-not $HasReparsePoint -and $RelativePath -match '^[a-zA-Z0-9][a-zA-Z0-9._/-]{0,511}$' -and
+        $RelativePath -notmatch '(^|/)\.\.?(/|$)|//|\\|:')
+}
+
+function Read-OwnedEvidenceArtifact([string]$RepositoryRoot, [string]$RelativePath, [long]$ExpectedLength, [string]$ExpectedSha256) {
+    if (-not (Test-EvidencePathPolicy $RelativePath $false)) { return $null }
+    $root = [IO.Path]::GetFullPath($RepositoryRoot).TrimEnd('\')
+    $candidate = [IO.Path]::GetFullPath((Join-Path $root $RelativePath.Replace('/', '\')))
+    if (-not $candidate.StartsWith($root + '\', [StringComparison]::OrdinalIgnoreCase)) { return $null }
+    $cursor = $root
+    foreach ($segment in $RelativePath.Split('/')) {
+        $cursor = Join-Path $cursor $segment
+        if (-not (Test-Path -LiteralPath $cursor)) { return $null }
+        $item = Get-Item -LiteralPath $cursor -Force
+        if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { return $null }
+    }
+    if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) { return $null }
+    $bytes = [IO.File]::ReadAllBytes($candidate)
+    if ($bytes.LongLength -ne $ExpectedLength) { return $null }
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { $actual = ([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','').ToLowerInvariant() }
+    finally { $sha.Dispose() }
+    if ($actual -ne $ExpectedSha256) { return $null }
+    return [pscustomobject]@{ Path=$candidate; Bytes=$bytes; Sha256=$actual }
+}
+
+function Test-EvidenceAttestationDocument($Document, $ClassificationRow, $VectorCase, $Manifest, $ArtifactByPath, $OwnedArtifactByPath, [bool]$VerifyToolchain, [string]$WorkspaceRoot) {
+    try {
+        $top = @('$schema','schemaVersion','caseId','executableOwner','gate','expectedOutcome','expectedCallbacks','observed','result','runner','configuration','toolchain','source','packageClosure','deployment','participants','output')
+        if ((@($Document.PSObject.Properties | ForEach-Object { [string]$_.Name }) -join '|') -ne ($top -join '|') -or
+            $Document.'$schema' -ne 'dnp1-classical-v1.evidence-attestation.schema.json' -or $Document.schemaVersion -ne '1.0.0' -or
+            $Document.caseId -ne $ClassificationRow.id -or $Document.executableOwner -ne $ClassificationRow.executableOwner -or
+            $Document.gate -ne $ClassificationRow.gate -or $Document.expectedOutcome -ne $VectorCase.outcome -or
+            $Document.result -notin @('Passed','Pending','Failed') -or $Document.configuration -ne $Manifest.configuration) { return $false }
+        foreach ($name in @('signature','agreement','network','mutation')) {
+            if ([int]$Document.expectedCallbacks.$name -ne [int]$VectorCase.callbacks.$name -or
+                [int]$Document.observed.callbacks.$name -ne [int]$VectorCase.callbacks.$name) { return $false }
+        }
+        if ($Document.observed.result -ne $Document.result -or $Document.observed.outcome -ne $VectorCase.outcome -or [int]$Document.observed.exitCode -ne 0 -or
+            @($Document.observed.testIds).Count -ne 1 -or $Document.observed.testIds[0] -ne $Document.caseId -or
+            -not $ArtifactByPath.ContainsKey([string]$Document.observed.runnerOutputPath) -or
+            [string]$ArtifactByPath[[string]$Document.observed.runnerOutputPath].sha256 -ne [string]$Document.observed.runnerOutputSha256) { return $false }
+        foreach ($binding in @($Document.runner,$Document.packageClosure,$Document.deployment,$Document.output)) {
+            $path = if ($binding.PSObject.Properties.Name -contains 'artifactPath') { [string]$binding.artifactPath } else { return $false }
+            if (-not $ArtifactByPath.ContainsKey($path) -or [string]$ArtifactByPath[$path].sha256 -ne [string]$binding.sha256) { return $false }
+        }
+        if ($Document.runner.sha256 -ne $ArtifactByPath[[string]$Document.runner.artifactPath].sha256 -or
+            $Document.toolchain.executableName -ne $Manifest.toolchainExecutableName -or
+            $Document.toolchain.version -ne $Manifest.toolchainVersion -or
+            $Document.toolchain.executableSha256 -ne $Manifest.toolchainSha256 -or
+            $Document.source.repository -ne $Manifest.repository -or $Document.source.revision -ne $Manifest.revision -or
+            $Document.source.gitTree -ne $Manifest.gitTree -or -not $Document.source.clean) { return $false }
+        if (-not $OwnedArtifactByPath.ContainsKey([string]$Document.observed.runnerOutputPath)) { return $false }
+        try { $runnerResult = [Text.Encoding]::UTF8.GetString($OwnedArtifactByPath[[string]$Document.observed.runnerOutputPath].Bytes) | ConvertFrom-Json }
+        catch { return $false }
+        if ((@($runnerResult.PSObject.Properties | ForEach-Object { [string]$_.Name }) -join '|') -ne 'schemaVersion|caseId|testIds|result|observedOutcome|observedCallbacks|exitCode' -or
+            $runnerResult.schemaVersion -ne '1.0.0' -or $runnerResult.caseId -ne $Document.caseId -or
+            @($runnerResult.testIds).Count -ne 1 -or $runnerResult.testIds[0] -ne $Document.caseId -or
+            $runnerResult.result -ne $Document.observed.result -or $runnerResult.observedOutcome -ne $Document.observed.outcome -or
+            [int]$runnerResult.exitCode -ne [int]$Document.observed.exitCode) { return $false }
+        foreach ($name in @('signature','agreement','network','mutation')) {
+            if ([int]$runnerResult.observedCallbacks.$name -ne [int]$Document.observed.callbacks.$name) { return $false }
+        }
+        if ($Document.source.mode -eq 'CleanGit') {
+            if ($null -ne $Document.source.archiveArtifactSetSha256) { return $false }
+        } elseif ($Document.source.mode -eq 'FrozenArchive') {
+            if ($VerifyToolchain -or [string]$Document.source.archiveArtifactSetSha256 -notmatch '^[0-9a-f]{64}$') { return $false }
+        } else { return $false }
+        if ($VerifyToolchain) {
+            $command = Get-Command -Name ([string]$Manifest.toolchainExecutableName) -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($null -eq $command -or (Get-FileHash -LiteralPath $command.Source -Algorithm SHA256).Hash.ToLowerInvariant() -ne [string]$Manifest.toolchainSha256) { return $false }
+            $arguments = @($Document.runner.arguments)
+            if ($arguments.Count -lt 1 -or @($arguments | Where-Object { $_ -isnot [string] -or [string]$_ -notmatch '^[a-zA-Z0-9._/-][a-zA-Z0-9._/-]{0,511}$' }).Count -ne 0 -or
+                @($arguments | Where-Object { $_ -eq [string]$Document.runner.artifactPath }).Count -ne 1) { return $false }
+            $psi = [Diagnostics.ProcessStartInfo]::new()
+            $psi.FileName = $command.Source; $psi.WorkingDirectory = $WorkspaceRoot; $psi.UseShellExecute = $false
+            $psi.RedirectStandardOutput = $true; $psi.RedirectStandardError = $true; $psi.CreateNoWindow = $true
+            $psi.Arguments = (@($arguments | ForEach-Object { '"' + ([string]$_).Replace('"','\"') + '"' }) -join ' ')
+            $process = [Diagnostics.Process]::new(); $process.StartInfo = $psi
+            try {
+                $started = $process.Start()
+                if (-not $started) { return $false }
+                $stdout = $process.StandardOutput.ReadToEnd(); $null = $process.StandardError.ReadToEnd(); $process.WaitForExit()
+                if ($process.ExitCode -ne [int]$Document.observed.exitCode) { return $false }
+                $stdoutBytes = [Text.Encoding]::UTF8.GetBytes($stdout)
+                $expectedOutputBytes = $OwnedArtifactByPath[[string]$Document.observed.runnerOutputPath].Bytes
+                if ($stdoutBytes.Length -ne $expectedOutputBytes.Length) { return $false }
+                $outputDifference = 0
+                for ($i=0; $i -lt $stdoutBytes.Length; $i++) { $outputDifference = $outputDifference -bor ($stdoutBytes[$i] -bxor $expectedOutputBytes[$i]) }
+                if ($outputDifference -ne 0) { return $false }
+            }
+            finally { $process.Dispose() }
+        }
+        $participantProperty = $Document.PSObject.Properties['participants']
+        $participants = [object[]]$Document.participants
+        if ($null -eq $participantProperty -or $participants.Length -lt 1) { return $false }
+        if ($Document.executableOwner -ne 'CrossRepoE2E') {
+            if ($participants.Length -ne 1 -or [string]$participants[0].repository -ne [string]$Manifest.repository) { return $false }
+        }
+        $expectedRepos = if ($Document.executableOwner -eq 'CrossRepoE2E') {
+            @('deep-client-maui','deep-client-shared','deep-devops','deep-protocol','deep-registry-api','deep-tests-e2e','xnode')
+        } else { @([string]$Manifest.repository) }
+        $actualParticipantRepos = @($participants | ForEach-Object { [string]$_.repository })
+        if ($participants.Count -ne $expectedRepos.Count) { return $false }
+        for ($participantIndex=0; $participantIndex -lt $expectedRepos.Count; $participantIndex++) {
+            if ([string]$actualParticipantRepos[$participantIndex] -ne [string]$expectedRepos[$participantIndex]) { return $false }
+        }
+        $producerParticipant = @($participants | Where-Object { $_.repository -eq $Manifest.repository })
+        if ($producerParticipant.Count -ne 1 -or $producerParticipant[0].revision -ne $Manifest.revision -or
+            $producerParticipant[0].gitTree -ne $Manifest.gitTree -or
+            $producerParticipant[0].packageSetSha256 -ne $Document.packageClosure.sha256 -or
+            $producerParticipant[0].deploymentSha256 -ne $Document.deployment.sha256) { return $false }
+        if ($VerifyToolchain -and $Document.source.mode -eq 'CleanGit') {
+            foreach ($participant in $participants) {
+                $participantRoot = Join-Path $WorkspaceRoot ([string]$participant.repository)
+                if (-not (Test-Path -LiteralPath $participantRoot -PathType Container)) { return $false }
+                $head = (& git -C $participantRoot rev-parse HEAD 2>$null).Trim()
+                $tree = (& git -C $participantRoot rev-parse 'HEAD^{tree}' 2>$null).Trim()
+                $dirty = @(& git -C $participantRoot status --porcelain=v1 --untracked-files=all 2>$null)
+                if ($head -ne [string]$participant.revision -or $tree -ne [string]$participant.gitTree -or $dirty.Count -ne 0) { return $false }
+                foreach ($binding in @(
+                    [pscustomobject]@{ path=[string]$participant.packageArtifactPath; sha=[string]$participant.packageSetSha256 },
+                    [pscustomobject]@{ path=[string]$participant.deploymentArtifactPath; sha=[string]$participant.deploymentSha256 }
+                )) {
+                    if (-not (Test-EvidencePathPolicy $binding.path $false)) { return $false }
+                    $candidate = Join-Path $participantRoot $binding.path.Replace('/', '\')
+                    if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) { return $false }
+                    $item = Get-Item -LiteralPath $candidate
+                    if ($null -eq (Read-OwnedEvidenceArtifact $participantRoot $binding.path ([long]$item.Length) $binding.sha)) { return $false }
+                }
+            }
+        }
+        return $true
+    }
+    catch { return $false }
+}
+
+function Test-EvidenceAttestationAccepted($Document, $ClassificationRow, $VectorCase, $Manifest, $ArtifactByPath, $OwnedArtifactByPath, [bool]$VerifyToolchain, [string]$WorkspaceRoot) {
+    $values = @(Test-EvidenceAttestationDocument $Document $ClassificationRow $VectorCase $Manifest $ArtifactByPath $OwnedArtifactByPath $VerifyToolchain $WorkspaceRoot)
+    return [bool]$values[-1]
+}
+
+function Test-EvidenceManifestDocument($Document, $OwnershipById, $VectorById, [string]$ClassificationSha, $RepositoryBinding, [string]$RepositoryRoot, [bool]$VerifyToolchain) {
+    try {
+        $top = @('$schema','schemaVersion','status','decision','workPackage','classificationSha256','vectorSkeletonSha256','producer','repository','revision','gitTree','worktreeClean','configuration','toolchainExecutableName','toolchainVersion','toolchainSha256','testArtifactSetSha256','artifactInventory','cases')
+        if ((@($Document.PSObject.Properties | ForEach-Object { [string]$_.Name }) -join '|') -ne ($top -join '|') -or
+            $Document.cases -isnot [System.Array] -or @($Document.cases).Count -lt 1 -or @($Document.cases).Count -gt 157 -or
+            $Document.artifactInventory -isnot [System.Array] -or @($Document.artifactInventory).Count -lt 1 -or @($Document.artifactInventory).Count -gt 4096 -or
+            $Document.'$schema' -ne 'dnp1-classical-v1.evidence-manifest.schema.json' -or
+            $Document.schemaVersion -ne '1.0.0' -or @('incomplete','complete') -notcontains [string]$Document.status -or
+            $Document.decision -ne 'DR-0003' -or $Document.workPackage -ne 'DNP1-PROTO-classical-identity-reset-routing' -or
+            $Document.classificationSha256 -ne $ClassificationSha -or
+            $Document.vectorSkeletonSha256 -ne '15695d1c7e859f6396e552e95dadf9f21c1a7345b77b93f21ebaea2162a323f2' -or
+            [string]$Document.repository -ne [string]$RepositoryBinding.repository -or
+            $null -eq $RepositoryBinding.expectedRevision -or [string]$Document.revision -ne [string]$RepositoryBinding.expectedRevision -or
+            [string]$Document.revision -notmatch '^[0-9a-f]{40}$' -or
+            [string]$Document.gitTree -notmatch '^[0-9a-f]{40}$' -or -not $Document.worktreeClean -or
+            @('Debug','Release') -notcontains [string]$Document.configuration -or
+            [string]$Document.toolchainExecutableName -notmatch '^[a-zA-Z0-9._-]{1,64}$' -or
+            ([string]$Document.toolchainVersion).Length -lt 1 -or
+            [string]$Document.toolchainSha256 -notmatch '^[0-9a-f]{64}$' -or
+            [string]$Document.testArtifactSetSha256 -notmatch '^[0-9a-f]{64}$') { return $false }
+        $artifactByPath = @{}
+        $ownedArtifactByPath = @{}
+        $artifactEntries = New-Object 'System.Collections.Generic.List[string]'
+        $previousPath = $null
+        foreach ($artifact in @($Document.artifactInventory)) {
+            if ((@($artifact.PSObject.Properties | ForEach-Object { [string]$_.Name }) -join '|') -ne 'path|byteLength|sha256' -or
+                $artifact.path -isnot [string] -or [string]$artifact.path -notmatch '^[a-zA-Z0-9][a-zA-Z0-9._/-]{0,511}$' -or
+                [string]$artifact.path -match '(^|/)\.\.?(/|$)|//|\\' -or
+                ($artifact.byteLength -isnot [int] -and $artifact.byteLength -isnot [long]) -or [long]$artifact.byteLength -lt 1 -or
+                [string]$artifact.sha256 -notmatch '^[0-9a-f]{64}$' -or $artifactByPath.ContainsKey([string]$artifact.path) -or
+                ($null -ne $previousPath -and [string]::CompareOrdinal($previousPath, [string]$artifact.path) -ge 0)) { return $false }
+            $owned = Read-OwnedEvidenceArtifact $RepositoryRoot ([string]$artifact.path) ([long]$artifact.byteLength) ([string]$artifact.sha256)
+            if ($null -eq $owned) { return $false }
+            $artifactByPath[[string]$artifact.path] = $artifact
+            $ownedArtifactByPath[[string]$artifact.path] = $owned
+            $artifactEntries.Add("$($artifact.sha256)  $($artifact.byteLength)  $($artifact.path)")
+            $previousPath = [string]$artifact.path
+        }
+        $artifactDigestInput = ($artifactEntries -join "`n") + "`n"
+        $artifactSha = [System.Security.Cryptography.SHA256]::Create()
+        try { $actualArtifactDigest = ([BitConverter]::ToString($artifactSha.ComputeHash([Text.Encoding]::UTF8.GetBytes($artifactDigestInput)))).Replace('-','').ToLowerInvariant() }
+        finally { $artifactSha.Dispose() }
+        if ($actualArtifactDigest -ne [string]$Document.testArtifactSetSha256) { return $false }
+        $seen = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
+        foreach ($case in @($Document.cases)) {
+            if ((@($case.PSObject.Properties | ForEach-Object { [string]$_.Name }) -join '|') -ne 'id|result|attestationPath|attestationSha256' -or
+                -not $seen.Add([string]$case.id) -or -not $OwnershipById.ContainsKey([string]$case.id) -or -not $VectorById.ContainsKey([string]$case.id) -or
+                $OwnershipById[[string]$case.id].executableOwner -ne [string]$Document.producer -or
+                @('Passed','Pending','Failed') -notcontains [string]$case.result -or -not $artifactByPath.ContainsKey([string]$case.attestationPath) -or
+                [string]$artifactByPath[[string]$case.attestationPath].sha256 -ne [string]$case.attestationSha256 -or
+                [string]$case.attestationSha256 -notmatch '^[0-9a-f]{64}$' -or
+                ($Document.status -eq 'complete' -and $case.result -ne 'Passed')) { return $false }
+            try { $attestation = [Text.Encoding]::UTF8.GetString($ownedArtifactByPath[[string]$case.attestationPath].Bytes) | ConvertFrom-Json }
+            catch { return $false }
+            if ($attestation.result -ne $case.result -or
+                -not (Test-EvidenceAttestationAccepted $attestation $OwnershipById[[string]$case.id] $VectorById[[string]$case.id] $Document $artifactByPath $ownedArtifactByPath $VerifyToolchain $repoRoot)) { return $false }
+        }
+        return $true
+    }
+    catch { return $false }
 }
 
 function Test-ClosedVectorDocumentAgainstSchema($Document, $Schema) {
@@ -93,7 +349,7 @@ if ($registrySchema.'$schema' -ne 'https://json-schema.org/draft/2020-12/schema'
     $registry.'$schema' -ne 'dnp1-classical-v1.registry.schema.json') {
     Fail 'registry schema identity or binding drifted'
 }
-$topLevel = @('$schema','schemaVersion','status','decision','workPackage','suite','grammar','recordClasses','artifactTypes','artifactHashDomains','retainedArtifactHashRules','domains','substructures','componentKinds','releaseRootTrust','wireEnums','records','membershipAuthority','membershipProof','witness','hashTranscripts','identifiers','recovery','apiInvariants','outerJournal','http','packages','activationOrder','forbidden')
+$topLevel = @('$schema','schemaVersion','status','decision','workPackage','suite','grammar','recordClasses','artifactTypes','artifactHashDomains','retainedArtifactHashRules','domains','substructures','componentKinds','releaseRootTrust','wireEnums','records','membershipAuthority','membershipProof','witness','hashTranscripts','identifiers','recovery','apiInvariants','outerJournal','evidenceOwnership','http','packages','activationOrder','forbidden')
 Assert-ExactProperties -Object $registry -Required $topLevel -Allowed $topLevel -Name 'registry'
 $schemaRequired = @($registrySchema.required | ForEach-Object { [string]$_ })
 if (($schemaRequired -join '|') -ne ($topLevel -join '|') -or $registrySchema.additionalProperties -ne $false) {
@@ -703,7 +959,7 @@ if ($registry.identifiers.mailboxOwnerId -ne 'sha256-d(Deep/IdentityAuth/V1/mail
     $registry.identifiers.routerCollisionScope -ne 'same-network-different-preimage-latches-routing-domain') {
     Fail 'mailbox owner/router identifier provenance or collision policy drifted'
 }
-$apiInvariantNames = @('rrmPreflight','rrmTime','relativeResult','authorityConversion','dwdRestore','authorityTuple','authorityCas','hmacTranscript','hmacKeyId','recoveryFreeze','recoveryProvider','recoveryNonce','recoveryPlaintext','cancellation','commitAuthority','consumerFinalRecheck','mrlProjectionBoundary','mrlCompositeCas','mrlCacheIdentity','dxpProjection','dxpReceipt','dxpNonce','dxpFinalCas','mrlCurrentInputs','mrlContinuity','mrlSourceCas','callbackOrder')
+$apiInvariantNames = @('rrmPreflight','rrmTime','relativeResult','authorityConversion','dwdRestore','authorityTuple','authorityCas','hmacTranscript','hmacKeyId','recoveryFreeze','recoveryExpectedContext','recoveryProvider','recoveryNonce','recoveryPlaintext','cancellation','commitAuthority','consumerFinalRecheck','mrlProjectionBoundary','mrlCompositeCas','mrlCacheIdentity','dxpProjection','dxpReceipt','dxpNonce','dxpFinalCas','mrlCurrentInputs','mrlContinuity','mrlSourceCas','callbackOrder')
 Assert-ExactProperties -Object $registry.apiInvariants -Required $apiInvariantNames -Allowed $apiInvariantNames -Name 'API invariants'
 $apiSchemaNames = @($registrySchema.properties.apiInvariants.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
 $apiSchemaRequired = @($registrySchema.properties.apiInvariants.required | ForEach-Object { [string]$_ })
@@ -722,6 +978,16 @@ if ($registry.apiInvariants.rrmPreflight -ne 'freeze-exact-canonical-RRM1-332-an
     $registry.apiInvariants.hmacTranscript -ne 'Protocol-returns-only-exact-unsigned-protected-transcript-domain-suite-and-key-id; never-accepts-or-returns-HMAC-key-and-never-claims-durable-authority' -or
     $registry.apiInvariants.hmacKeyId -ne 'key-id32-is-nonzero-fixed-preflighted-before-HMAC-callback; callback-output-is-frozen-once-then-locally-verified-and-only-owned-tag-is-used' -or
     $registry.apiInvariants.recoveryFreeze -ne 'preflight-bounds-and-defensively-copy-all-DRC1-metadata-ciphertext-and-provider-input-before-callback-or-await; no-public-seed-key-or-nonce-override' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'candidateBoundDrcFields=network16\|componentSubject32\|accountGeneration8\|DCMRef38\|DRSRef38\|shadowStateHash32\|nextPinCoreHash32\|protectorKeyId32' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'deploymentSubject32 is a distinct witness-CAS field' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'localSealedPreProviderChecks=componentKind2' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'typedKeyCount2=2' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'kind2=1 ProtectedStateHmac,keyId32' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'kind2=2 RecoveryNonceLatch,keyId32' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'local sealed context rather than DRC1 fields' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'fullPostOpenClosure=candidateBoundDrcFields\|localSealedPreProviderChecks\|DCMGeneration8' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'full closure fixed-time compared after owned DRM restore' -or
+    $registry.apiInvariants.recoveryExpectedContext -notmatch 'no raw tuple factory and no authority claim' -or
     $registry.apiInvariants.recoveryProvider -ne 'typed-internal-recovery-provider-derives-HKDF-key-and-nonce; Protocol-fixed-time-compares-derived-nonce-with-stored-nonce-before-AEAD-open' -or
     $registry.apiInvariants.recoveryNonce -ne 'latch-key-is-protector-key-id32|derived-nonce24; stored-value-hashes-transaction-id32-associated-data-metadata-ciphertext-and-tag; exact-key-value-replays; changed-value-permanently-latches-before-AEAD' -or
     $registry.apiInvariants.recoveryPlaintext -ne 'successful-open-yields-one-shot-owned-plaintext-consumed-once-and-zeroed-in-finally-on-success-failure-or-cancellation' -or
@@ -844,7 +1110,7 @@ if ($vectors.schemaVersion -ne '1.0.0' -or $vectors.status -ne 'required-before-
     Fail 'vector skeleton governance binding changed'
 }
 Assert-ExactProperties $vectors $vectorTop $vectorTop 'vectors'
-if ([int]$vectorSchema.properties.cases.minItems -ne 146 -or [int]$vectorSchema.properties.cases.maxItems -ne 146 -or
+if ([int]$vectorSchema.properties.cases.minItems -ne 157 -or [int]$vectorSchema.properties.cases.maxItems -ne 157 -or
     $vectorSchema.properties.cases.uniqueItems -ne $true -or
     $vectorSchema.'$defs'.case.additionalProperties -ne $false) {
     Fail 'vector schema bounds/closed case grammar drifted'
@@ -999,9 +1265,297 @@ $requiredCases = @(
     'routing-transport-proxy-redirect-altsvc','routing-transport-coalescing-pool-disabled',
     'identity-dxp-index-key-restart-stable','identity-dxp-index-key-rotation-retention',
     'routing-final-post-tls-source-race','routing-final-post-tls-lease-expiry',
-    'package-exact-three-session-free'
+    'package-exact-three-session-free',
+    'api-recovery-expected-context-key-order','api-recovery-expected-context-preopen',
+    'api-recovery-expected-context-postopen','api-recovery-expected-context-toctou',
+    'peer-outer-journal-pure-transitions','peer-http-aspnet-host-framing',
+    'maui-reset-ddbg-dpl-rollback','maui-reset-destructive-empty-store','maui-no-legacy-session-surface',
+    'identity-owner-router-id-durable-collision-latch','api-recovery-component-deployment-subject-cross-feed'
 )
 if (-not $caseIds.SetEquals([string[]]$requiredCases)) { Fail 'vector case inventory drifted' }
+
+$ownershipIds = @($ownership.rows | ForEach-Object { [string]$_.id })
+if (-not (Test-EvidenceOwnershipDocument $ownership $ownershipIds)) {
+    Fail 'evidence ownership document is not closed or unique'
+}
+if (-not (Test-EvidenceOwnershipDocument $ownership ([string[]]@($caseIds)))) {
+    Fail 'evidence ownership IDs differ from the semantic vector inventory'
+}
+if ($ownershipSchema.'$schema' -ne 'https://json-schema.org/draft/2020-12/schema' -or
+    $ownershipSchema.'$id' -ne 'urn:deep:dnp1:classical:v1:evidence-ownership' -or
+    $ownership.'$schema' -ne 'dnp1-classical-v1.evidence-ownership.schema.json' -or
+    $evidenceSchema.'$schema' -ne 'https://json-schema.org/draft/2020-12/schema' -or
+    $evidenceSchema.'$id' -ne 'urn:deep:dnp1:classical:v1:evidence-manifest' -or
+    $evidenceSchema.additionalProperties -ne $false) {
+    Fail 'evidence ownership/manifest schema identity or closure drifted'
+}
+$expectedOwners = @('Protocol','Registry','XNode','Shared','DevOpsWitness','CrossRepoE2E','MAUI')
+$expectedGates = @('ProtocolPackageBlocking','CutoverFinalRelease')
+$expectedOwnerCounts = [ordered]@{ Protocol=100; Registry=13; XNode=11; Shared=2; DevOpsWitness=12; CrossRepoE2E=16; MAUI=3 }
+foreach ($owner in $expectedOwners) {
+    if (@($ownership.rows | Where-Object { $_.executableOwner -eq $owner }).Count -ne [int]$expectedOwnerCounts[$owner]) {
+        Fail "evidence owner count drifted: $owner"
+    }
+}
+if (@($ownership.rows | Where-Object { $_.gate -eq 'ProtocolPackageBlocking' }).Count -ne 103 -or
+    @($ownership.rows | Where-Object { $_.gate -eq 'CutoverFinalRelease' }).Count -ne 54 -or
+    @($ownership.rows | Where-Object { $_.gate -eq 'ProtocolPackageBlocking' -and $_.executableOwner -eq 'Protocol' }).Count -ne 100 -or
+    @($ownership.rows | Where-Object { $_.gate -eq 'ProtocolPackageBlocking' -and $_.executableOwner -eq 'DevOpsWitness' }).Count -ne 3 -or
+    @($ownership.rows | Where-Object { $_.gate -eq 'CutoverFinalRelease' -and $_.executableOwner -eq 'DevOpsWitness' }).Count -ne 9 -or
+    @($ownership.rows | Where-Object { $_.gate -eq 'CutoverFinalRelease' -and $_.executableOwner -eq 'MAUI' }).Count -ne 3) {
+    Fail 'evidence gate arithmetic drifted'
+}
+if ($ownership.normativeCommit -ne '8f7173956551876d3e39a23e0e792542221a5954' -or
+    $ownership.normativeVectorSkeletonSha256 -ne '15695d1c7e859f6396e552e95dadf9f21c1a7345b77b93f21ebaea2162a323f2' -or
+    $ownership.sourceSnapshot.path -ne 'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json' -or
+    $ownership.sourceSnapshot.originPath -ne 'deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json' -or
+    $ownership.sourceSnapshot.sha256 -ne '64066a8081777736f4e697b6c9fe58c81e9c4be9af65866362b5c2471e7bed43') {
+    Fail 'evidence classification provenance drifted'
+}
+$sourceSnapshotPath = Join-Path $repoRoot ([string]$ownership.sourceSnapshot.path).Replace('/', '\')
+if (-not (Test-Path -LiteralPath $sourceSnapshotPath -PathType Leaf) -or
+    (Get-FileHash -LiteralPath $sourceSnapshotPath -Algorithm SHA256).Hash.ToLowerInvariant() -ne [string]$ownership.sourceSnapshot.sha256) {
+    Fail 'frozen evidence source snapshot is missing or hash-mismatched'
+}
+$sourceSnapshot = Get-Content -LiteralPath $sourceSnapshotPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$expectedAddedIds = @('api-recovery-component-deployment-subject-cross-feed','api-recovery-expected-context-key-order','api-recovery-expected-context-postopen','api-recovery-expected-context-preopen','api-recovery-expected-context-toctou','identity-owner-router-id-durable-collision-latch','maui-no-legacy-session-surface','maui-reset-ddbg-dpl-rollback','maui-reset-destructive-empty-store','peer-http-aspnet-host-framing','peer-outer-journal-pure-transitions')
+$expectedOverrideIds = @('peer-outer-journal-cap-hmac-gc','peer-outer-journal-fork-stale','peer-outer-journal-phase-crashes','peer-outer-journal-terminal-shape')
+if ([int]$ownership.sourceAudit.sourceRowCount -ne 146 -or (@($ownership.sourceAudit.addedIds) -join '|') -ne ($expectedAddedIds -join '|') -or
+    (@($ownership.sourceAudit.overriddenIds) -join '|') -ne ($expectedOverrideIds -join '|') -or @($sourceSnapshot.rows).Count -ne 146) {
+    Fail 'evidence source-audit delta drifted'
+}
+$normativeById = @{}; foreach ($row in @($ownership.rows)) { $normativeById[[string]$row.id] = $row }
+foreach ($sourceRow in @($sourceSnapshot.rows)) {
+    if (-not $normativeById.ContainsKey([string]$sourceRow.id)) { Fail "source snapshot ID missing from normative ownership: $($sourceRow.id)" }
+    $normativeRow = $normativeById[[string]$sourceRow.id]
+    if ($expectedOverrideIds -notcontains [string]$sourceRow.id -and
+        ($sourceRow.executableOwner -ne $normativeRow.executableOwner -or $sourceRow.gate -ne $normativeRow.gate)) {
+        Fail "unaudited source owner/gate change: $($sourceRow.id)"
+    }
+}
+foreach ($addedId in $expectedAddedIds) { if (-not $normativeById.ContainsKey($addedId)) { Fail "missing audited added evidence ID: $addedId" } }
+$expectedAddedBindings = [ordered]@{
+    'api-recovery-component-deployment-subject-cross-feed'='Protocol|ProtocolPackageBlocking'
+    'api-recovery-expected-context-key-order'='Protocol|ProtocolPackageBlocking'
+    'api-recovery-expected-context-postopen'='Protocol|ProtocolPackageBlocking'
+    'api-recovery-expected-context-preopen'='Protocol|ProtocolPackageBlocking'
+    'api-recovery-expected-context-toctou'='Protocol|ProtocolPackageBlocking'
+    'identity-owner-router-id-durable-collision-latch'='CrossRepoE2E|CutoverFinalRelease'
+    'maui-no-legacy-session-surface'='MAUI|CutoverFinalRelease'
+    'maui-reset-ddbg-dpl-rollback'='MAUI|CutoverFinalRelease'
+    'maui-reset-destructive-empty-store'='MAUI|CutoverFinalRelease'
+    'peer-http-aspnet-host-framing'='XNode|CutoverFinalRelease'
+    'peer-outer-journal-pure-transitions'='Protocol|ProtocolPackageBlocking'
+}
+foreach ($id in $expectedAddedBindings.Keys) {
+    $row = $normativeById[$id]
+    if ("$($row.executableOwner)|$($row.gate)" -ne [string]$expectedAddedBindings[$id]) { Fail "audited added evidence binding drifted: $id" }
+}
+$expectedOverrides = [ordered]@{
+    'peer-outer-journal-cap-hmac-gc'='XNode|CutoverFinalRelease'
+    'peer-outer-journal-fork-stale'='XNode|CutoverFinalRelease'
+    'peer-outer-journal-phase-crashes'='CrossRepoE2E|CutoverFinalRelease'
+    'peer-outer-journal-terminal-shape'='XNode|CutoverFinalRelease'
+}
+foreach ($id in $expectedOverrides.Keys) {
+    $row = $normativeById[$id]
+    if ("$($row.executableOwner)|$($row.gate)" -ne [string]$expectedOverrides[$id]) { Fail "durable DPJ ownership split drifted: $id" }
+}
+foreach ($pair in @(
+    [pscustomobject]@{ id='identity-owner-router-id-collision'; binding='Protocol|ProtocolPackageBlocking' },
+    [pscustomobject]@{ id='peer-http-framing-compression-trailing'; binding='Protocol|ProtocolPackageBlocking' }
+)) {
+    $row = $normativeById[$pair.id]
+    if ("$($row.executableOwner)|$($row.gate)" -ne $pair.binding) { Fail "pure Protocol ownership boundary drifted: $($pair.id)" }
+}
+$negativeSource = ($sourceSnapshot | ConvertTo-Json -Depth 20 | ConvertFrom-Json)
+$unchangedSourceRow = @($negativeSource.rows | Where-Object { $expectedOverrideIds -notcontains [string]$_.id })[0]
+$unchangedSourceRow.executableOwner = if ($unchangedSourceRow.executableOwner -eq 'Protocol') { 'XNode' } else { 'Protocol' }
+$negativeDetected = $false
+foreach ($sourceRow in @($negativeSource.rows)) {
+    $normativeRow = $normativeById[[string]$sourceRow.id]
+    if ($expectedOverrideIds -notcontains [string]$sourceRow.id -and
+        ($sourceRow.executableOwner -ne $normativeRow.executableOwner -or $sourceRow.gate -ne $normativeRow.gate)) { $negativeDetected = $true; break }
+}
+if (-not $negativeDetected) { Fail 'source-snapshot negative self-test accepted fake owner mapping' }
+$ownershipSha = (Get-FileHash -LiteralPath $ownershipPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$evidenceNames = @('classificationPath','classificationSha256','classificationSchemaPath','evidenceManifestSchemaPath','evidenceAttestationSchemaPath','owners','gates','ownerCounts','gateCounts','allowedMatrix','protocolPackageRule','cutoverFinalRule','repositoryBindings','currentClaim','evidenceManifestPaths','machineBinding','evidenceDigestRule','provenanceRule','noEarlyGreen')
+Assert-ExactProperties $registry.evidenceOwnership $evidenceNames $evidenceNames 'evidence ownership policy'
+$evidenceSchemaNames = @($registrySchema.properties.evidenceOwnership.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
+$evidenceSchemaRequired = @($registrySchema.properties.evidenceOwnership.required | ForEach-Object { [string]$_ })
+if ($registrySchema.properties.evidenceOwnership.additionalProperties -ne $false -or
+    ($evidenceSchemaNames -join '|') -ne ($evidenceNames -join '|') -or
+    ($evidenceSchemaRequired -join '|') -ne ($evidenceNames -join '|')) {
+    Fail 'registry evidence ownership schema closure drifted'
+}
+if ($registry.evidenceOwnership.classificationSha256 -ne $ownershipSha -or
+    $registry.evidenceOwnership.classificationPath -ne 'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.json' -or
+    $registry.evidenceOwnership.classificationSchemaPath -ne 'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.schema.json' -or
+    $registry.evidenceOwnership.evidenceManifestSchemaPath -ne 'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-manifest.schema.json' -or
+    $registry.evidenceOwnership.evidenceAttestationSchemaPath -ne 'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-attestation.schema.json' -or
+    (@($registry.evidenceOwnership.owners) -join '|') -ne ($expectedOwners -join '|') -or
+    (@($registry.evidenceOwnership.gates) -join '|') -ne ($expectedGates -join '|') -or
+    $registry.evidenceOwnership.currentClaim -ne 'ClassificationOnly' -or
+    @($registry.evidenceOwnership.evidenceManifestPaths).Count -ne 0 -or
+    -not $registry.evidenceOwnership.noEarlyGreen) {
+    Fail 'evidence ownership policy binding drifted'
+}
+foreach ($owner in $expectedOwners) {
+    if ([int]$registry.evidenceOwnership.ownerCounts.$owner -ne [int]$expectedOwnerCounts[$owner]) { Fail "registry evidence owner count drifted: $owner" }
+}
+if ([int]$registry.evidenceOwnership.gateCounts.ProtocolPackageBlocking -ne 103 -or
+    [int]$registry.evidenceOwnership.gateCounts.CutoverFinalRelease -ne 54 -or
+    (@($registry.evidenceOwnership.allowedMatrix.ProtocolPackageBlocking) -join '|') -ne 'Protocol|DevOpsWitness' -or
+    (@($registry.evidenceOwnership.allowedMatrix.CutoverFinalRelease) -join '|') -ne 'Registry|XNode|Shared|DevOpsWitness|CrossRepoE2E|MAUI') {
+    Fail 'registry evidence gate matrix drifted'
+}
+$expectedRepositories = [ordered]@{ Protocol='deep-protocol'; Registry='deep-registry-api'; XNode='xnode'; Shared='deep-client-shared'; DevOpsWitness='deep-devops'; CrossRepoE2E='deep-tests-e2e'; MAUI='deep-client-maui' }
+foreach ($owner in $expectedRepositories.Keys) {
+    $binding = $registry.evidenceOwnership.repositoryBindings.$owner
+    if ($binding.repository -ne [string]$expectedRepositories[$owner] -or $null -ne $binding.expectedRevision) {
+        Fail "ClassificationOnly repository binding drifted: $owner"
+    }
+}
+if ($registry.evidenceOwnership.protocolPackageRule -notmatch 'all 100 Protocol rows and the exact 3' -or
+    $registry.evidenceOwnership.protocolPackageRule -notmatch 'incomplete manifests contribute zero' -or
+    $registry.evidenceOwnership.cutoverFinalRule -notmatch 'all157 rows' -or
+    $registry.evidenceOwnership.machineBinding -notmatch 'every-listed-evidence-manifest' -or
+    $registry.evidenceOwnership.evidenceDigestRule -notmatch 'never stored inside the hashed evidence manifest') {
+    Fail 'evidence release or non-self-reference rule drifted'
+}
+$negativeOwnership = ($ownership | ConvertTo-Json -Depth 20 | ConvertFrom-Json)
+$negativeOwnership.rows[1].id = $negativeOwnership.rows[0].id
+if (Test-EvidenceOwnershipDocument $negativeOwnership [string[]]$caseIds) { Fail 'ownership negative self-test accepted duplicate ID' }
+$negativeOwnership = ($ownership | ConvertTo-Json -Depth 20 | ConvertFrom-Json)
+$negativeOwnership.rows[0].executableOwner = 'MAUI'
+if (Test-EvidenceOwnershipDocument $negativeOwnership [string[]]$caseIds) { Fail 'ownership negative self-test accepted forbidden owner/gate pair' }
+$negativeOwnership = ($ownership | ConvertTo-Json -Depth 20 | ConvertFrom-Json)
+$negativeOwnership.rows[0] | Add-Member -NotePropertyName unexpected -NotePropertyValue $true
+if (Test-EvidenceOwnershipDocument $negativeOwnership [string[]]$caseIds) { Fail 'ownership negative self-test accepted additional property' }
+$packageResults = @{}
+foreach ($row in @($ownership.rows | Where-Object { $_.gate -eq 'ProtocolPackageBlocking' })) { $packageResults[[string]$row.id] = 'Passed' }
+if (-not (Test-EvidenceGateSatisfied 'ProtocolPackageGO' $ownership.rows $packageResults)) { Fail 'complete package evidence failed synthetic gate' }
+$packageResults.Remove([string](@($ownership.rows | Where-Object { $_.gate -eq 'ProtocolPackageBlocking' })[0].id))
+if (Test-EvidenceGateSatisfied 'ProtocolPackageGO' $ownership.rows $packageResults) { Fail 'package gate accepted one missing result' }
+$finalResults = @{}
+foreach ($row in @($ownership.rows)) { $finalResults[[string]$row.id] = 'Passed' }
+if (-not (Test-EvidenceGateSatisfied 'CutoverFinalReleaseGO' $ownership.rows $finalResults)) { Fail 'complete final evidence failed synthetic gate' }
+$finalResults.Remove([string]$ownership.rows[0].id)
+if (Test-EvidenceGateSatisfied 'CutoverFinalReleaseGO' $ownership.rows $finalResults) { Fail 'final gate accepted one missing result' }
+$evidenceManifestTop = @('$schema','schemaVersion','status','decision','workPackage','classificationSha256','vectorSkeletonSha256','producer','repository','revision','gitTree','worktreeClean','configuration','toolchainExecutableName','toolchainVersion','toolchainSha256','testArtifactSetSha256','artifactInventory','cases')
+if ((@($evidenceSchema.required) -join '|') -ne ($evidenceManifestTop -join '|') -or
+    (@($evidenceSchema.properties.PSObject.Properties | ForEach-Object { [string]$_.Name }) -join '|') -ne ($evidenceManifestTop -join '|') -or
+    $evidenceSchema.additionalProperties -ne $false -or [int]$evidenceSchema.properties.cases.maxItems -ne 157 -or
+    $evidenceSchema.properties.cases.uniqueItems -ne $true -or
+    $ownershipSchema.properties.rows.uniqueItems -ne $true -or $evidenceSchema.'$defs'.case.additionalProperties -ne $false) {
+    Fail 'evidence manifest schema required-set or closed shape drifted'
+}
+$ownershipById = @{}
+foreach ($row in @($ownership.rows)) { $ownershipById[[string]$row.id] = $row }
+$vectorById = @{}
+foreach ($case in @($vectors.cases)) { $vectorById[[string]$case.id] = $case }
+$attestationTop = @('$schema','schemaVersion','caseId','executableOwner','gate','expectedOutcome','expectedCallbacks','observed','result','runner','configuration','toolchain','source','packageClosure','deployment','participants','output')
+if ($attestationSchema.'$schema' -ne 'https://json-schema.org/draft/2020-12/schema' -or
+    $attestationSchema.'$id' -ne 'urn:deep:dnp1:classical:v1:evidence-attestation' -or
+    $attestationSchema.additionalProperties -ne $false -or
+    (@($attestationSchema.required) -join '|') -ne ($attestationTop -join '|') -or
+    (@($attestationSchema.properties.PSObject.Properties | ForEach-Object { [string]$_.Name }) -join '|') -ne ($attestationTop -join '|')) {
+    Fail 'evidence attestation schema identity or closed shape drifted'
+}
+$syntheticRow = @($ownership.rows | Where-Object { $_.id -eq 'api-dwd-full-ancestry-bounds' })[0]
+$syntheticVector = $vectorById[[string]$syntheticRow.id]
+$runnerPath = 'scripts/dnp1-evidence-selftest-runner.ps1'; $runnerOutputPath = 'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-selftest-result.json'
+$packagePath = 'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.json'
+$deploymentPath = 'docs/survival-program/releases/v3.0.0/program-manifest.json'; $outputPath = 'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json'
+$artifactByPath = @{}
+foreach ($path in @($runnerPath,$runnerOutputPath,$packagePath,$deploymentPath,$outputPath)) { $artifactByPath[$path] = [pscustomobject]@{ sha256=(Get-FileHash (Join-Path $repoRoot $path.Replace('/', '\')) -Algorithm SHA256).Hash.ToLowerInvariant() } }
+$ownedArtifactByPath = @{}
+foreach ($path in @($artifactByPath.Keys)) { $item=Get-Item (Join-Path $repoRoot $path.Replace('/', '\')); $ownedArtifactByPath[$path]=Read-OwnedEvidenceArtifact $repoRoot $path ([long]$item.Length) ([string]$artifactByPath[$path].sha256) }
+$toolchainCommand = Get-Command powershell -CommandType Application | Select-Object -First 1
+$toolchainSha = (Get-FileHash $toolchainCommand.Source -Algorithm SHA256).Hash.ToLowerInvariant()
+$syntheticManifest = [pscustomobject]@{ repository='deep-protocol'; revision=('a'*40); gitTree=('b'*40); worktreeClean=$true; configuration='Release'; toolchainExecutableName='powershell'; toolchainVersion=[string]$PSVersionTable.PSVersion; toolchainSha256=$toolchainSha }
+$syntheticAttestation = [pscustomobject][ordered]@{
+    '$schema'='dnp1-classical-v1.evidence-attestation.schema.json'; schemaVersion='1.0.0'; caseId=[string]$syntheticRow.id; executableOwner='Protocol'; gate=[string]$syntheticRow.gate;
+    expectedOutcome=[string]$syntheticVector.outcome; expectedCallbacks=($syntheticVector.callbacks | ConvertTo-Json -Compress | ConvertFrom-Json);
+    observed=[pscustomobject][ordered]@{ runnerOutputPath=$runnerOutputPath; runnerOutputSha256=$artifactByPath[$runnerOutputPath].sha256; result='Passed'; outcome=[string]$syntheticVector.outcome; callbacks=($syntheticVector.callbacks | ConvertTo-Json -Compress | ConvertFrom-Json); exitCode=0; testIds=@([string]$syntheticRow.id) };
+    result='Passed';
+    runner=[pscustomobject][ordered]@{ id='dnp1-evidence-selftest'; version='1.0.0'; artifactPath=$runnerPath; sha256=$artifactByPath[$runnerPath].sha256; arguments=@('-NoProfile','-ExecutionPolicy','Bypass','-File',$runnerPath,'-CaseId',[string]$syntheticRow.id) };
+    configuration='Release'; toolchain=[pscustomobject][ordered]@{ executableName='powershell'; version=[string]$PSVersionTable.PSVersion; executableSha256=$toolchainSha };
+    source=[pscustomobject][ordered]@{ mode='FrozenArchive'; repository='deep-protocol'; revision=('a'*40); gitTree=('b'*40); clean=$true; archiveArtifactSetSha256=('c'*64) };
+    packageClosure=[pscustomobject][ordered]@{ artifactPath=$packagePath; sha256=$artifactByPath[$packagePath].sha256 };
+    deployment=[pscustomobject][ordered]@{ artifactPath=$deploymentPath; sha256=$artifactByPath[$deploymentPath].sha256 };
+    participants=@([pscustomobject][ordered]@{ repository='deep-protocol'; revision=('a'*40); gitTree=('b'*40); packageArtifactPath=$packagePath; packageSetSha256=$artifactByPath[$packagePath].sha256; deploymentArtifactPath=$deploymentPath; deploymentSha256=$artifactByPath[$deploymentPath].sha256 });
+    output=[pscustomobject][ordered]@{ artifactPath=$outputPath; sha256=$artifactByPath[$outputPath].sha256 }
+}
+if ((Get-FileHash $toolchainCommand.Source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $syntheticManifest.toolchainSha256) { Fail 'deterministic evidence toolchain binding failed' }
+$runnerPsi = [Diagnostics.ProcessStartInfo]::new(); $runnerPsi.FileName=$toolchainCommand.Source; $runnerPsi.WorkingDirectory=$repoRoot; $runnerPsi.UseShellExecute=$false; $runnerPsi.RedirectStandardOutput=$true; $runnerPsi.RedirectStandardError=$true; $runnerPsi.CreateNoWindow=$true
+$runnerPsi.Arguments='-NoProfile -ExecutionPolicy Bypass -File "scripts/dnp1-evidence-selftest-runner.ps1" -CaseId "api-dwd-full-ancestry-bounds"'
+$runnerProcess=[Diagnostics.Process]::new();$runnerProcess.StartInfo=$runnerPsi
+try { if (-not $runnerProcess.Start()) { Fail 'deterministic evidence runner did not start' }; $runnerStdout=$runnerProcess.StandardOutput.ReadToEnd();$null=$runnerProcess.StandardError.ReadToEnd();$runnerProcess.WaitForExit() } finally { $runnerProcess.Dispose() }
+$expectedRunnerBytes=[IO.File]::ReadAllBytes((Join-Path $repoRoot $runnerOutputPath.Replace('/','\')));$actualRunnerBytes=[Text.Encoding]::UTF8.GetBytes($runnerStdout)
+$runnerDiff=if($expectedRunnerBytes.Length -eq $actualRunnerBytes.Length){0}else{1};if($runnerDiff -eq 0){for($i=0;$i-lt$expectedRunnerBytes.Length;$i++){$runnerDiff=$runnerDiff-bor($expectedRunnerBytes[$i]-bxor$actualRunnerBytes[$i])}}
+if($runnerDiff-ne0){Fail 'deterministic evidence runner output differs from the closed observed result'}
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.source.mode='FrozenArchive'; $negativeAttestation.source.archiveArtifactSetSha256=('c'*64)
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted forbidden FrozenArchive GO provenance' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.source.mode='FrozenArchive'; $negativeAttestation.source.archiveArtifactSetSha256=$null
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted missing FrozenArchive inventory binding' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.source.mode='FrozenArchive'; $negativeAttestation.source.archiveArtifactSetSha256=('d'*64); $negativeAttestation.participants[0].revision=('e'*40)
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted fake FrozenArchive participant tuple' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.toolchain.executableSha256=('0'*64)
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted fake toolchain' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.source.clean=$false
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted dirty source' }
+$wrongRevisionManifest = ($syntheticManifest | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $wrongRevisionManifest.revision=('f'*40)
+if (Test-EvidenceAttestationDocument $syntheticAttestation $syntheticRow $syntheticVector $wrongRevisionManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted wrong producer revision' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.participants=@([pscustomobject]@{ repository='xnode'; revision=('a'*40); gitTree=('b'*40); packageArtifactPath=$packagePath; packageSetSha256=$artifactByPath[$packagePath].sha256; deploymentArtifactPath=$deploymentPath; deploymentSha256=$artifactByPath[$deploymentPath].sha256 })
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $true $repoRoot) { Fail 'attestation accepted wrong participant repository' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.observed.result='Passed'; $negativeAttestation.observed.outcome='valid'
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted forged Passed with wrong observed outcome' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.observed.callbacks.signature=1
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted wrong observed callbacks' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.observed.exitCode=1
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted wrong runner exit code' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.observed.testIds=@('wrong-test-id')
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $false $repoRoot) { Fail 'attestation accepted wrong runner test ID' }
+$negativeAttestation = ($syntheticAttestation | ConvertTo-Json -Depth 20 | ConvertFrom-Json); $negativeAttestation.runner.arguments=@('-NoProfile','-File','scripts/check-dnp1-classical-spec.ps1')
+if (Test-EvidenceAttestationDocument $negativeAttestation $syntheticRow $syntheticVector $syntheticManifest $artifactByPath $ownedArtifactByPath $true $repoRoot) { Fail 'attestation accepted output from a different runner invocation' }
+if ($null -ne (Read-OwnedEvidenceArtifact $repoRoot 'scripts/missing-evidence-attestation.json' 1 ('0'*64))) { Fail 'missing evidence artifact was accepted' }
+if (Test-EvidencePathPolicy '../escape.json' $false -or Test-EvidencePathPolicy 'safe/result.json' $true) { Fail 'evidence path policy accepted traversal or reparse-point input' }
+$arbitraryFileRejected = $false
+try { $null = Get-Content (Join-Path $repoRoot $runnerPath.Replace('/', '\')) -Raw | ConvertFrom-Json }
+catch { $arbitraryFileRejected = $true }
+if (-not $arbitraryFileRejected) { Fail 'arbitrary runner file parsed as a result attestation' }
+$incompleteEvidence = [pscustomobject]@{ status='incomplete'; cases=@([pscustomobject]@{ id=[string]$syntheticRow.id; result='Passed' }) }
+$incompleteResults = @{}
+if ($incompleteEvidence.status -eq 'complete') { foreach ($case in @($incompleteEvidence.cases)) { $incompleteResults[[string]$case.id] = [string]$case.result } }
+if (Test-EvidenceGateSatisfied 'ProtocolPackageGO' $ownership.rows $incompleteResults) { Fail 'incomplete manifest with Passed result counted toward package GO' }
+$resultMap = @{}
+$machinePaths = @($programManifest.machineSpecificationSet.paths | ForEach-Object { [string]$_ })
+foreach ($relativePath in @($registry.evidenceOwnership.evidenceManifestPaths)) {
+    if ($machinePaths -notcontains [string]$relativePath) { Fail "listed evidence manifest is outside machine specification set: $relativePath" }
+    $fullPath = Join-Path $repoRoot ([string]$relativePath).Replace('/', '\')
+    if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) { Fail "listed evidence manifest missing: $relativePath" }
+    $manifestEvidence = Get-Content -LiteralPath $fullPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    $binding = $registry.evidenceOwnership.repositoryBindings.([string]$manifestEvidence.producer)
+    $repositoryRoot = Join-Path $repoRoot ([string]$binding.repository)
+    if ($null -eq $binding.expectedRevision) { Fail "listed evidence manifest has no frozen expected revision: $relativePath" }
+    $actualRepositoryRevision = (& git -C $repositoryRoot rev-parse HEAD 2>$null).Trim()
+    $actualRepositoryTree = (& git -C $repositoryRoot rev-parse 'HEAD^{tree}' 2>$null).Trim()
+    $repositoryDirty = @(& git -C $repositoryRoot status --porcelain=v1 --untracked-files=all 2>$null)
+    if ($LASTEXITCODE -ne 0 -or $actualRepositoryRevision -ne [string]$binding.expectedRevision -or
+        $actualRepositoryTree -ne [string]$manifestEvidence.gitTree -or $repositoryDirty.Count -ne 0 -or -not $manifestEvidence.worktreeClean) {
+        Fail "evidence repository revision differs from frozen binding: $relativePath"
+    }
+    if (-not (Test-EvidenceManifestDocument $manifestEvidence $ownershipById $vectorById $ownershipSha $binding $repositoryRoot $true)) { Fail "invalid evidence manifest: $relativePath" }
+    if ($manifestEvidence.status -ne 'complete') { continue }
+    foreach ($case in @($manifestEvidence.cases)) {
+        if ($resultMap.ContainsKey([string]$case.id)) { Fail "duplicate cross-manifest evidence case: $($case.id)" }
+        $resultMap[[string]$case.id] = [string]$case.result
+    }
+}
+if (-not (Test-EvidenceGateSatisfied ([string]$registry.evidenceOwnership.currentClaim) $ownership.rows $resultMap)) {
+    Fail "evidence manifests do not satisfy claim $($registry.evidenceOwnership.currentClaim)"
+}
 $authorityVectorOutcomes = [ordered]@{
     'witness-dwd-epoch-reuse' = 'fork-latched'
     'witness-terminal-krf-quorum-before-rrl' = 'exact-replay'
@@ -1050,6 +1604,11 @@ $apiClosureVectors = [ordered]@{
     'api-dwd-full-ancestry-bounds' = 'sixty-five complete DWD ancestry|0'
     'recovery-drm-order-row-corrupt' = '195-row and 32-MiB DRM closure|1'
     'api-recovery-nonce-reuse-latch' = 'protector plus derived nonce|0'
+    'api-recovery-expected-context-key-order' = 'Wrong local sealed HMAC or latch key kind, count, order|0'
+    'api-recovery-expected-context-preopen' = 'Exact DRC1 network, component subject|0'
+    'api-recovery-component-deployment-subject-cross-feed' = 'witness deployment subject cannot substitute|0'
+    'api-recovery-expected-context-postopen' = 'After one AEAD open|1'
+    'api-recovery-expected-context-toctou' = 'Mutation between pre-open and post-open comparisons|1'
     'recovery-drm-row-reversed' = 'Encrypted integration opens AEAD once|1'
     'recovery-drm-row-equal-duplicate' = 'Encrypted integration opens AEAD once|1'
     'recovery-drm-row-ref-collision-shaped' = 'Encrypted integration opens AEAD once|1'
@@ -1110,5 +1669,8 @@ Write-Host 'DNP1 classical identity/reset/native-routing specification check pas
 Write-Host "Records: $($recordMagics.Count)"
 Write-Host "Domains: $($domains.Count)"
 Write-Host "Vector requirements: $($caseIds.Count)"
+Write-Host 'Evidence ownership: 157 exact IDs / package 103 (Protocol 100 + DevOpsWitness 3) / final 54'
+Write-Host 'Evidence claim: ClassificationOnly / no early consumer green'
+Write-Host 'Evidence attestation: parsed result / grounded toolchain / clean tree / reparse-free / CrossRepo exact7'
 Write-Host 'Vector schema: Draft 2020-12 equivalent / additionalProperties and JSON-type negative self-tests passed'
 Write-Host 'Witness: 3-of-4 / one global deployment-set CAS'

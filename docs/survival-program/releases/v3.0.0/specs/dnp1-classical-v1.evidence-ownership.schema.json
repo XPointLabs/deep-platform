@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:dnp1:classical:v1:evidence-ownership",
+  "title": "DNP1 executable evidence ownership",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "status", "decision", "workPackage", "normativeCommit", "normativeVectorSkeletonSha256", "sourceSnapshot", "sourceAudit", "ownerEnum", "gateEnum", "rows"],
+  "properties": {
+    "$schema": { "const": "dnp1-classical-v1.evidence-ownership.schema.json" },
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "const": "normative-executable-evidence-ownership" },
+    "decision": { "const": "DR-0003" },
+    "workPackage": { "const": "DNP1-PROTO-classical-identity-reset-routing" },
+    "normativeCommit": { "const": "8f7173956551876d3e39a23e0e792542221a5954" },
+    "normativeVectorSkeletonSha256": { "const": "15695d1c7e859f6396e552e95dadf9f21c1a7345b77b93f21ebaea2162a323f2" },
+    "sourceSnapshot": {
+      "const": {
+        "path": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
+        "originPath": "deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json",
+        "sha256": "64066a8081777736f4e697b6c9fe58c81e9c4be9af65866362b5c2471e7bed43"
+      }
+    },
+    "sourceAudit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceRowCount", "addedIds", "overriddenIds"],
+      "properties": {
+        "sourceRowCount": { "const": 146 },
+        "addedIds": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } },
+        "overriddenIds": { "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } }
+      }
+    },
+    "ownerEnum": { "const": ["Protocol", "Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"] },
+    "gateEnum": { "const": ["ProtocolPackageBlocking", "CutoverFinalRelease"] },
+    "rows": {
+      "type": "array",
+      "minItems": 157,
+      "maxItems": 157,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/row" }
+    }
+  },
+  "$defs": {
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "executableOwner", "reasonApiSeam", "gate"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "executableOwner": { "enum": ["Protocol", "Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"] },
+        "reasonApiSeam": { "type": "string", "minLength": 32, "maxLength": 256 },
+        "gate": { "enum": ["ProtocolPackageBlocking", "CutoverFinalRelease"] }
+      }
+    }
+  }
+}

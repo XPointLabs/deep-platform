@@ -4,7 +4,7 @@
   "title": "DNP1 classical normative registry",
   "type": "object",
   "additionalProperties": false,
-  "required": ["$schema", "schemaVersion", "status", "decision", "workPackage", "suite", "grammar", "recordClasses", "artifactTypes", "artifactHashDomains", "retainedArtifactHashRules", "domains", "substructures", "componentKinds", "releaseRootTrust", "wireEnums", "records", "membershipAuthority", "membershipProof", "witness", "hashTranscripts", "identifiers", "recovery", "apiInvariants", "outerJournal", "http", "packages", "activationOrder", "forbidden"],
+  "required": ["$schema", "schemaVersion", "status", "decision", "workPackage", "suite", "grammar", "recordClasses", "artifactTypes", "artifactHashDomains", "retainedArtifactHashRules", "domains", "substructures", "componentKinds", "releaseRootTrust", "wireEnums", "records", "membershipAuthority", "membershipProof", "witness", "hashTranscripts", "identifiers", "recovery", "apiInvariants", "outerJournal", "evidenceOwnership", "http", "packages", "activationOrder", "forbidden"],
   "properties": {
     "$schema": { "const": "dnp1-classical-v1.registry.schema.json" },
     "schemaVersion": { "const": "1.0.0" },
@@ -235,7 +235,7 @@
     "apiInvariants": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["rrmPreflight", "rrmTime", "relativeResult", "authorityConversion", "dwdRestore", "authorityTuple", "authorityCas", "hmacTranscript", "hmacKeyId", "recoveryFreeze", "recoveryProvider", "recoveryNonce", "recoveryPlaintext", "cancellation", "commitAuthority", "consumerFinalRecheck", "mrlProjectionBoundary", "mrlCompositeCas", "mrlCacheIdentity", "dxpProjection", "dxpReceipt", "dxpNonce", "dxpFinalCas", "mrlCurrentInputs", "mrlContinuity", "mrlSourceCas", "callbackOrder"],
+      "required": ["rrmPreflight", "rrmTime", "relativeResult", "authorityConversion", "dwdRestore", "authorityTuple", "authorityCas", "hmacTranscript", "hmacKeyId", "recoveryFreeze", "recoveryExpectedContext", "recoveryProvider", "recoveryNonce", "recoveryPlaintext", "cancellation", "commitAuthority", "consumerFinalRecheck", "mrlProjectionBoundary", "mrlCompositeCas", "mrlCacheIdentity", "dxpProjection", "dxpReceipt", "dxpNonce", "dxpFinalCas", "mrlCurrentInputs", "mrlContinuity", "mrlSourceCas", "callbackOrder"],
       "properties": {
         "rrmPreflight": { "type": "string", "minLength": 128 },
         "rrmTime": { "type": "string", "minLength": 96 },
@@ -247,6 +247,7 @@
         "hmacTranscript": { "type": "string", "minLength": 96 },
         "hmacKeyId": { "type": "string", "minLength": 96 },
         "recoveryFreeze": { "type": "string", "minLength": 96 },
+        "recoveryExpectedContext": { "type": "string", "minLength": 256 },
         "recoveryProvider": { "type": "string", "minLength": 96 },
         "recoveryNonce": { "type": "string", "minLength": 96 },
         "recoveryPlaintext": { "type": "string", "minLength": 96 },
@@ -267,12 +268,58 @@
       }
     },
     "outerJournal": { "type": "object", "required": ["record", "scope", "phases", "latches", "phaseShape", "forkRule", "staleRule", "retention", "caps", "garbageCollection", "exactReplay", "requestHash", "outcomeHash", "transitionOrder"] },
+    "evidenceOwnership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classificationPath", "classificationSha256", "classificationSchemaPath", "evidenceManifestSchemaPath", "evidenceAttestationSchemaPath", "owners", "gates", "ownerCounts", "gateCounts", "allowedMatrix", "protocolPackageRule", "cutoverFinalRule", "repositoryBindings", "currentClaim", "evidenceManifestPaths", "machineBinding", "evidenceDigestRule", "provenanceRule", "noEarlyGreen"],
+      "properties": {
+        "classificationPath": { "const": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.json" },
+        "classificationSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "classificationSchemaPath": { "const": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.schema.json" },
+        "evidenceManifestSchemaPath": { "const": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-manifest.schema.json" },
+        "evidenceAttestationSchemaPath": { "const": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-attestation.schema.json" },
+        "owners": { "const": ["Protocol", "Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"] },
+        "gates": { "const": ["ProtocolPackageBlocking", "CutoverFinalRelease"] },
+        "ownerCounts": { "const": { "Protocol": 100, "Registry": 13, "XNode": 11, "Shared": 2, "DevOpsWitness": 12, "CrossRepoE2E": 16, "MAUI": 3 } },
+        "gateCounts": { "const": { "ProtocolPackageBlocking": 103, "CutoverFinalRelease": 54 } },
+        "allowedMatrix": { "const": { "ProtocolPackageBlocking": ["Protocol", "DevOpsWitness"], "CutoverFinalRelease": ["Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"] } },
+        "protocolPackageRule": { "type": "string", "minLength": 128 },
+        "cutoverFinalRule": { "type": "string", "minLength": 128 },
+        "repositoryBindings": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["Protocol", "Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"],
+          "properties": {
+            "Protocol": { "$ref": "#/$defs/protocolEvidenceRepository" },
+            "Registry": { "$ref": "#/$defs/registryEvidenceRepository" },
+            "XNode": { "$ref": "#/$defs/xnodeEvidenceRepository" },
+            "Shared": { "$ref": "#/$defs/sharedEvidenceRepository" },
+            "DevOpsWitness": { "$ref": "#/$defs/devopsEvidenceRepository" },
+            "CrossRepoE2E": { "$ref": "#/$defs/e2eEvidenceRepository" },
+            "MAUI": { "$ref": "#/$defs/mauiEvidenceRepository" }
+          }
+        },
+        "currentClaim": { "enum": ["ClassificationOnly", "ProtocolPackageGO", "CutoverFinalReleaseGO"] },
+        "evidenceManifestPaths": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^docs/survival-program/releases/v3\\.0\\.0/evidence/dnp1/[a-z0-9.-]+\\.json$" } },
+        "machineBinding": { "type": "string", "minLength": 128 },
+        "evidenceDigestRule": { "type": "string", "minLength": 128 },
+        "provenanceRule": { "type": "string", "minLength": 128 },
+        "noEarlyGreen": { "const": true }
+      }
+    },
     "http": { "type": "object", "required": ["path", "requestMediaType", "responseMediaType", "requestPrefixBytes", "storeMinimumBytes", "storeMaximumBytes", "tombstoneMinimumBytes", "tombstoneMaximumBytes", "responseBytes", "compression", "cacheControl", "publicAddressPolicy", "resolutionContract", "connectOrder", "transportIsolation"] },
     "packages": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "object", "required": ["id"] } },
     "activationOrder": { "type": "array", "minItems": 9, "uniqueItems": true, "items": { "type": "string", "minLength": 4 } },
     "forbidden": { "type": "array", "minItems": 10, "uniqueItems": true, "items": { "type": "string", "minLength": 4 } }
   },
   "$defs": {
+    "protocolEvidenceRepository": { "type": "object", "additionalProperties": false, "required": ["repository", "expectedRevision"], "properties": { "repository": { "const": "deep-protocol" }, "expectedRevision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" } } },
+    "registryEvidenceRepository": { "type": "object", "additionalProperties": false, "required": ["repository", "expectedRevision"], "properties": { "repository": { "const": "deep-registry-api" }, "expectedRevision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" } } },
+    "xnodeEvidenceRepository": { "type": "object", "additionalProperties": false, "required": ["repository", "expectedRevision"], "properties": { "repository": { "const": "xnode" }, "expectedRevision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" } } },
+    "sharedEvidenceRepository": { "type": "object", "additionalProperties": false, "required": ["repository", "expectedRevision"], "properties": { "repository": { "const": "deep-client-shared" }, "expectedRevision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" } } },
+    "devopsEvidenceRepository": { "type": "object", "additionalProperties": false, "required": ["repository", "expectedRevision"], "properties": { "repository": { "const": "deep-devops" }, "expectedRevision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" } } },
+    "e2eEvidenceRepository": { "type": "object", "additionalProperties": false, "required": ["repository", "expectedRevision"], "properties": { "repository": { "const": "deep-tests-e2e" }, "expectedRevision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" } } },
+    "mauiEvidenceRepository": { "type": "object", "additionalProperties": false, "required": ["repository", "expectedRevision"], "properties": { "repository": { "const": "deep-client-maui" }, "expectedRevision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" } } },
     "recordClass": { "type": "object", "additionalProperties": false, "required": ["headerSuite", "records"], "properties": { "headerSuite": { "type": ["integer", "null"], "minimum": 0, "maximum": 65535 }, "records": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z0-9]{4}$" } } } },
     "artifactType": {
       "type": "object",

@@ -1,0 +1,993 @@
+﻿{
+    "$schema":  "dnp1-classical-v1.evidence-ownership.schema.json",
+    "schemaVersion":  "1.0.0",
+    "status":  "normative-executable-evidence-ownership",
+    "decision":  "DR-0003",
+    "workPackage":  "DNP1-PROTO-classical-identity-reset-routing",
+    "normativeCommit":  "8f7173956551876d3e39a23e0e792542221a5954",
+    "normativeVectorSkeletonSha256":  "15695d1c7e859f6396e552e95dadf9f21c1a7345b77b93f21ebaea2162a323f2",
+    "sourceSnapshot":  {
+                           "path":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
+                           "originPath":  "deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json",
+                           "sha256":  "64066a8081777736f4e697b6c9fe58c81e9c4be9af65866362b5c2471e7bed43"
+                       },
+    "sourceAudit":  {
+                        "sourceRowCount":  146,
+                        "addedIds":  [
+                                         "api-recovery-component-deployment-subject-cross-feed",
+                                         "api-recovery-expected-context-key-order",
+                                         "api-recovery-expected-context-postopen",
+                                         "api-recovery-expected-context-preopen",
+                                         "api-recovery-expected-context-toctou",
+                                         "identity-owner-router-id-durable-collision-latch",
+                                         "maui-no-legacy-session-surface",
+                                         "maui-reset-ddbg-dpl-rollback",
+                                         "maui-reset-destructive-empty-store",
+                                         "peer-http-aspnet-host-framing",
+                                         "peer-outer-journal-pure-transitions"
+                                     ],
+                        "overriddenIds":  [
+                                              "peer-outer-journal-cap-hmac-gc",
+                                              "peer-outer-journal-fork-stale",
+                                              "peer-outer-journal-phase-crashes",
+                                              "peer-outer-journal-terminal-shape"
+                                          ]
+                    },
+    "ownerEnum":  [
+                      "Protocol",
+                      "Registry",
+                      "XNode",
+                      "Shared",
+                      "DevOpsWitness",
+                      "CrossRepoE2E",
+                      "MAUI"
+                  ],
+    "gateEnum":  [
+                     "ProtocolPackageBlocking",
+                     "CutoverFinalRelease"
+                 ],
+    "rows":  [
+                 {
+                     "id":  "api-authority-full-tuple-cas",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry persistence must CAS the complete old/new release-root authority tuples returned by the protocol plan.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "api-dwd-full-ancestry-bounds",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "ReleaseRoot restore input owns independent root-transition and complete DWD ancestry bounds and tail shape.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "api-hmac-keyid-return-buffer-toctou",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Protected key custody plus component persistence must enforce key ID before callback and own returned HMAC bytes before CAS.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "api-recovery-cancel-plaintext-zero",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RecoveryVerifier owns callback-boundary cancellation and finally-zeroing of the one-shot plaintext.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "api-recovery-freeze-provider-nonce",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RecoveryVerifier owns bounded snapshots before provider work and exact stored-versus-derived nonce comparison.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "api-recovery-no-commit-final-recheck",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Candidate-only Protocol output requires each consumer CAS to recheck current heads, lease, time, health, and kill switch.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "api-recovery-nonce-reuse-latch",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Recovery nonce latch API owns protector-plus-nonce keys and transcript-hash replay/fork decisions before AEAD.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "api-relative-authority-reflection",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Public API reflection gate ensures raw pins and relative facts cannot construct durable authority.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "api-rrm-pin-time-callback-order",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Release-root verification owns generation-zero, pin, and copied-time checks before Ed25519 callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-all-exact-lengths",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Dnp1RecordDefinitions and Dnp1CanonicalGrammar own exact fixed and variable record arithmetic.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-artifact-domain-cross-type",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Dnp1ArtifactRegistry and ComputeReference own type-specific domain separation.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-closed-wire-enums",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Record definitions own all closed scalar enums before crypto callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-machine-artifact-set-digest",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "The executable manifest generator/checker owns frozen registry, schema, vector, and implementation-scope digests.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-protected-hmac-framing",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "ComputeProtectedHmac owns domain, suite, unsigned length, N-minus-one header, and omitted-tag framing.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-record-header-suite-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Canonical preflight owns record-class, magic, header, and suite separation.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-tag-order-duplicate-trailing",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Canonical TLV preflight owns tag order, duplicate, reserved, flag, and trailing-byte rejection.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-transcript-preimage-widths",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol transcript helpers own exact domain, length-prefix, scalar, tree, quorum, and membership preimages.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-truncated-max-plus-one",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Canonical preflight owns hostile length/count rejection before owned copies.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-unknown-suite-and-pq",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "The public record header parser owns the closed suite 0x0001 table.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "grammar-vector-schema-additional-property",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "The frozen vector-schema validation gate owns rejection of additional top-level and case properties.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-dxp-final-source-cas-race",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry owns the durable Pending-to-Verified DXR operation-source CAS and must prove a racing stale final source cannot replace the exact current protected row.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-index-key-restart-stable",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry key custody must restore the same reset-bound nonce-index key ID and deterministic derived key after restart.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-index-key-rotation-retention",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry key-retention policy must keep every nonce-index key until all referenced DXR rows and tombstones are gone.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-kdf-transcript",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DXP implementation owns exact salt, Extract/Expand info, proof and stored transcript-hash framing; needs agreement instrumentation.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-dxp-mutation-expiry-reuse",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Protocol checks transcript shape and low-order inputs, but nonce reuse requires the Registry-owned durable nonce ledger.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-nonce-ledger-derived-unique",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry protected-index provider and durable unique constraint own network/role/nonce ledger-key uniqueness.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-nonce-operation-fork",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry durable operation and nonce indexes must latch changed bytes before proof callbacks.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-operation-id-authority-correlation",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry issuance API owns consumer-CSPRNG operation ID correlation and exact replay without accepting transport authority.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-operation-source-race",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry final subject/DXR CAS must compare the Protocol source fingerprint after proof and before authority mutation.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-operation-source-stages",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol operation-source model owns exact stage-zero and stage-one source tuples and fingerprints.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-dxp-pending-before-challenge",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry issuance must durably CAS authenticated DXR Pending plus nonce ledger before returning ephemeral public challenge bytes.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-pending-crash-ephemeral-loss",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry issuance state machine owns process-crash loss of ephemeral private key and durable Pending-to-Aborted transition.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-receipt-hmac-retention-gc",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Protocol verifies DXR HMAC/core shape; Registry owns retained-row accounting, tombstones and referenced-row GC.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-dxp-subject-projection-cycle-break",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Internal DPD/DNR projection and final signature verification live entirely in Protocol; needs exact signature/agreement counting.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-dxp-subject-projection-substitution",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Internal-only projection builder must reject caller bytes, nonzero transcript field, signature tags and role/full-record substitutions before agreement.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-dxp-valid",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DXP verifier owns Device and Router X25519/HKDF proof derivation; needs an agreement-counting crypto seam.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-krt-rotate-revoke-fork",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Identity relative verifier owns KRT/KRF generation, predecessor and fork-latch transitions; needs observable signature count.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-mailbox-owner-id-noncircular",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Identity verifier owns the noncircular owner-ID preimage of network, account hash and mailbox role public key only.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-owner-router-id-collision",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol identity and routing verifiers own deterministic nonzero ID derivation, canonical-preimage comparison and relative collision decisions without durable latch authority.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-pop-substitution",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Identity verifier owns exact DPA1/DPD1 proof signing preimages; needs one instrumented signature-verifier seam for the frozen count.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-release-chain-entry-65",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RRL grammar/restore owns the hard 64-transition bound before any compaction or manifest callback.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-release-effective-at",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "KRT and DWD relative verifiers own effective-at/valid-from activation under the frozen skew rule.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-release-genesis-first-dwd-atomic",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "Genesis RRL plus first DWD atomic commit and lost-response replay require ReleaseRoot/witness durable CAS.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-release-krt-dwd-atomic-crash",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "Atomic KRT/successor-DWD persistence and crash replay require the ReleaseRoot/witness administration store CAS.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-release-krt-predecessor-type-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "ReleaseRoot transition decoder owns exact RRM-or-scoped-KRT predecessor type, length and zero-account scope before crypto.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-release-lkg-hmac-rollback",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "RRL HMAC is Protocol-relative; rollback recovery also needs component durable storage, bounded chain retrieval and fresh witness lease networking.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-release-manifest-signer-substitution",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Protocol verifies one RRM pin, but uniqueness of external network pins and duplicate rejection belongs to deployment configuration.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-release-root-genesis-transition",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "ReleaseRoot relative verifier owns immutable generation-zero RRM pin binding and first KRT/DWD ancestry.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-release-root-terminal-lease",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "Protocol supplies KRF effective-time facts; lease invalidation and prevention of successor witness issuance require deployed witness state.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-role-key-reuse",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DPA1 verifier owns pairwise-distinct role-key validation before Ed25519 verification.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-router-component-id-self-reference",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Routing/cutover verifiers own non-self-referential router and component subject formulas before crypto.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "identity-suite-capability-enums",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DPA/DPD/DPM grammar owns closed suite and role-specific capability masks before crypto.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-cache-dual-identity",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "The XNode membership cache owns projected leaf/root plus full-MRL2 and prior-LKG identities.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "membership-composite-old-new-source-cas",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "XNode persistence must CAS the complete old/new membership, authority, cutover, DRS, fingerprint, and key-ID plan.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "membership-composite-selection-full-tuples",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Composite selection hashing owns ordered router ID, DNR, full MRL2, and anchor DPC tuples.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-cross-authority-substitution",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Membership and mailbox-authority verifiers own signer-domain separation before crypto.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-current-cutover-fields-source",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "CurrentCutoverRelative must be populated from live Registry/XNode/Shared heads and protected key IDs.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "membership-current-mailbox-revoked",
+                     "executableOwner":  "Shared",
+                     "reasonApiSeam":  "Shared owns current DPMC lifecycle and must withhold mailbox-role facts for revoked or expired identities.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "membership-dnrc-fact-set-bounds",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "MembershipClosureVerifier owns bounded keyed DNRC facts and duplicate, missing, unused, and mixed-source rejection.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-final-full-set-cas",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "The XNode persistence boundary must CAS every old/new plan tuple before publishing routing state.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "membership-independent-authorities",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "MembershipClosureVerifier joins independently verified membership and PMA/PMR relative facts.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mailbox-p04-mip1-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "The DNP mailbox MIP1 carrier owns namespace separation from retained P04 MIP1.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrc-member-entry-counts",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "MRC1 parser owns distinct artifact, transition, and router-member count bounds.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrl2-full-leaf-reject",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Native membership leaf hashing owns rejection of the full-row downgrade formula.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrl2-prior-full-lkg",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "VerifyNextCompositeLkgAsync owns exact prior full-MRL2 reference succession and fork latch.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrl2-projection-cycle-break",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Dnp1Mrl2Projection owns the internal field-5 and field-9 zero projection.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrl2-projection-substitution-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Projection and leaf helpers own all nonprojected tuple and domain bindings.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrl2-zero-full-refs",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Full MRL2 preflight owns nonzero DNR and anchor-DPC references.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrlc-canonical-container",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "MembershipCatalogParser owns MRC1 row count, ordering, duplicates, slices, and trailing bytes.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrlc-cold-restore",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RestoreCurrentCompositeLkgAsync owns HMAC-first catalog restore and the sealed composite LKG result.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrlc-hmac-catalog-corrupt",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Membership catalog envelope and closure verifier own HMAC, catalog, DRS, and selection validation.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-mrl-v1-v2-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Native membership hashing owns reset, epoch, generation, and V2 domain separation.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-msm-candidate-derived-lkg",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Membership closure verification rejects candidate-derived predecessor state before callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-msm-prior-head-successor",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "VerifyNextCompositeLkgAsync owns exact sealed MSM prior-head successor rules.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-pma-pmr-candidate-derived-lkg",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Mailbox authority closure rejects synthesized, skipped, alternate, and cross-network predecessor state.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-pma-pmr-prior-head-successor",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Mailbox authority closure owns exact PMA advance and PMR current-or-successor rules.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-rip2-count-index-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "NativeMembershipVerifier owns RIP2 sequence, count, index, root, and tuple binding.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-rip2-legacy-reject",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "MailboxMembershipCarrier preflight owns rejection of RIP1, MRL1, and non-RIP2 payloads.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-rip2-sealed-full-tuple",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RIP2 verification consumes the sealed catalog tuple, not standalone projection or proof bytes.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-rip2-valid",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "VerifyMailboxMembership owns canonical MIP1/RIP2 proof verification against sealed LKG state.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "membership-router-dxp-receipt-required",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "XNode router activation must supply a restored Verified Router DXR receipt to VerifyCurrentRouterCertificate.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "package-exact-three-session-free",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "Artifact graph and package ZIP gates own the exact-three production inventory and absence of Session or Native packages.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "peer-dps-mrr2-not-mqr3",
+                     "executableOwner":  "Shared",
+                     "reasonApiSeam":  "Shared mailbox mutation plus Protocol response verification must produce one exact MRR2 and DPS pair.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "peer-http-framing-compression-trailing",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol frame parsers own exact media tokens, identity encoding, declared lengths and trailing-byte rejection without claiming an ASP.NET host.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "peer-inner-commit-outer-lost-response",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Shared inner mutation and XNode outer DPJ CAS must replay across a lost-response crash without a new mutation.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "peer-outer-hash-phase-crash-replay",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Crash recovery joins signed peer verification, protected DPJ restore, Shared replay, and outer delivery authorization.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "peer-outer-inner-operation-discriminators",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Outer DPJ and inner PRQ parsers own disjoint closed operation namespaces.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "peer-outer-journal-cap-hmac-gc",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "XNode durable outer-journal store owns bounded reads, HMAC-first restore, quarantine, admission, capacity and GC rules.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "peer-outer-journal-fork-stale",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "XNode durable outer-journal CAS owns same-index changed-request fork persistence and equality-at-expiry staleness.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "peer-outer-journal-phase-crashes",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository crash evidence owns durable Prepared, InnerPending and Completed exact replay across XNode and Shared.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "peer-outer-journal-terminal-shape",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "XNode durable journal owns terminal-stale source-phase preservation, HMAC persistence and delivered-row immutability.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "peer-outer-outcome-hash-transcript",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "ComputeInnerOutcomeHash owns length-framed MRR2-then-DPS1 ordering.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "peer-outer-request-hash-transcript",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "ComputeCanonicalRequestHash owns length-framed DPR1-then-PRQ2 ordering.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "peer-prq-request-id-window-hash",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "NativePeerVerifier owns DPR/PRQ request ID, identity, operation, window, and nested hash binding.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "peer-sender-recipient-dpc-swap",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "NativePeerVerifier owns exact sender/recipient DPC reference binding before signature verification.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-after-cas-before-commit",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Component storage and external-head services must idempotently finish a CAS-committed recovery.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-before-prepare",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Each component store owns discard of an uncommitted shadow before the external CAS.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-drc-cycle-and-aead",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DRC preflight and RecoveryVerifier own sealed expected-candidate context, pin-core, shadow-state, current-DCM-DRS binding, bounds, AEAD ordering and row hashes without commit authority.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm-direct-plaintext-parser",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "The explicit owned-plaintext parser seam rejects row ordering and collision shapes without provider callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm-order-row-corrupt",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Recovery engine opens once then the DRM parser verifies ordered rows and references before downstream callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm-ref-rule-missing-cross-class",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Recovery manifest reference validation owns the closed type table and DNP-versus-retained hash rules.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm-row-equal-duplicate",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DRM parser owns equal-key duplicate rejection immediately after the single provider open.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm-row-ref-collision-shaped",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DRM parser owns equal-reference collision-shaped row rejection before copying or downstream callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm-row-reversed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DRM parser owns descending ArtifactRef rejection immediately after the single provider open.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-external-ahead-capsule-missing",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "External-head and local protected-state integration must fail closed without rollback when recovery material is missing.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-kdf-nonce-ad-vectors",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RecoveryProtectorProvider contract owns exact HKDF-SHA-512, derived nonce, and DRC metadata AD vectors.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-nonce-reuse-latch",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RecoveryNonceLatch owns exact replay versus terminal fork for a reused derived nonce.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "reset-component-kind-closed-enum",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DCP/DCS grammar owns the closed 1..4 kind enum and exact once-only sorted component table.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "reset-component-row-substitution",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DCS/cutover verifier owns exact component kind, subject, DCP reference and schema row binding before signatures.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "reset-dcp-database-rollback",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Each component must compare its restored DCP against a newer external deployment head through a network-head provider.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "reset-dra-old-new-pop",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DRA verifier owns the exact old/new account tuple and three Ed25519 proof preimages; final mutation is consumer CAS.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "reset-witness-tooling-gate",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "This is an operational rehearsal gate for destructive reset, witness and rollback tooling, with no Protocol API authority.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "revocation-empty-and-prefixes",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DRS verifier owns prefix-head reconstruction for 0..1024 catalog rows and exact signature verification.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "revocation-key-only-resign",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Identity authority verifier owns revision-plus-one DRS re-sign under an exact revocation-key transition.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "revocation-ordinary-entry-1024",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DRS grammar/verifier owns the reserved final-slot fence before crypto.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "revocation-reason-enums",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DRS/DRA grammar owns closed reason enums and AccountShutdown-to-terminal coupling before crypto.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "revocation-stale-observed-snapshot",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Protocol can seal a DRS fact, but capability minting must atomically restore the consumer\u0027s current DRS and private DRT sources.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "revocation-terminal-any-index",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DRS catalog verifier owns terminal-row placement and head reconstruction at every allowed index.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "revocation-terminal-drt-retention",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Terminal DRT compaction and rollback-horizon retention are Registry durable-storage and GC policy.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "routing-dns-private-mixed-rebind",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DpcAddressPolicy and typed resolver lifecycle own malformed, private, mixed, and rebind rejection.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "routing-dpc-anchor-and-successor",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "NativeRoutingVerifier owns real Ed25519 DPC anchor and exact predecessor succession.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "routing-final-post-tls-lease-expiry",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "XNode supplies live witness lease, time, key health, and cancellation at the final pre-byte recheck.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "routing-final-post-tls-source-race",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "The live XNode authority reader supplies the third post-TLS source recheck before any request byte.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "routing-public-address-closed-table",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DpcAddressPolicy owns the exact IPv4/IPv6 public-unicast exclusion table.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "routing-remote-ip-and-spki",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DpcIsolatedPeerClient pins connector remote IP and TLS SPKI to the verified DPC.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "routing-resolve-cancel-recheck-race",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "XNode authority reader and connector integration must share one deadline and recheck live DPC/DRS/lease state.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "routing-resolve-owned-set-mapped-order",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Typed resolver normalization owns mapped IPv4, uniqueness, sorting, set membership, and SPKI checks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "routing-role-capability-flags",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DNR, MRL2, and DPC definitions own closed role/capability and NoNextPin combinations.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "routing-transport-coalescing-pool-disabled",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DpcIsolatedPeerClient owns fresh typed resolve/connect/TLS with pooling and coalescing disabled.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "routing-transport-proxy-redirect-altsvc",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Typed isolated connection and response contracts disable proxies, redirects, compression, and Alt-Svc bypass.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-authority-head-receipt-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DCN/DHL verifier owns exact DWD, root generation/transition, terminal state and RRL authority-head binding before crypto.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-dwd-epoch-reuse",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DWD successor verifier owns exact global epoch plus-one even for an unchanged witness set.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-empty-tree-root",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DWD successor verifier owns the exact epoch/witness-ID/maximum-size empty-root formula before witness callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-enum-latch-reserved",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Canonical grammar owns witness endpoint/durability/component-mask/latch enums and reserved-zero bytes before allocation.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-equivocation-intersection",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "Global same-sequence equivocation evidence and latch persistence live in the witness deployment, not the Protocol package.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "witness-four-head-lkg-rotation",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "DWL persistence, three-head DCL refresh and explicit DWD rotation require the deployed witness-head store and quorum client.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "witness-freeze-and-lease-expiry",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Every sensitive consumer must gate use on a freshly restored three-witness lease and current time.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "witness-inclusion-consistency-corrupt",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DCN/DHL proof verification owns inclusion, consistency, prior-head and durability rejection before callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-maximum-tree-fence",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Witness record verifier must receive the sealed DWD maximum-tree bound and reject oversized receipts/proofs/leases before crypto.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-rotation-all-four-replacement",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DWD successor verifier owns the maximum-one-replacement rule before activation and witness callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-rotation-bootstrap-and-removal",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "Replacement witness bootstrap and retained-head continuity require real witness network heads plus durable rotation state.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "witness-rotation-cross-epoch-key-substitution",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DWD successor verifier owns retained-ID/key equality and replacement counting across epochs before callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-subject-policy-closed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "DWD verifier owns recomputation of the signed-network closed ACL and exact-limit subject-policy hash.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "witness-terminal-krf-quorum-before-rrl",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "Three durable terminal witness receipts must precede the local RRL terminal CAS and lost-response replay in deployed storage.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "witness-three-of-four-valid",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Protocol verifies receipts, while three witness calls and the single global deployment-set CAS span witness services and the publishing component.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "witness-two-of-four-insufficient",
+                     "executableOwner":  "DevOpsWitness",
+                     "reasonApiSeam":  "The deployed witness quorum client must expose two distinct authorized receipts without invoking publication CAS.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "api-recovery-expected-context-key-order",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RecoveryVerifier owns exact typed protected-key ID count, kind ordering, uniqueness and fixed-time comparison before provider work.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "api-recovery-expected-context-postopen",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RecoveryVerifier owns the full post-open DCM, DRS, DPL, source and protected-key closure comparison after one AEAD open.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "api-recovery-expected-context-preopen",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RecoveryVerifier owns the nonsecret DRC-direct expected subset comparison before recovery-provider invocation.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "api-recovery-expected-context-toctou",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "RecoveryVerifier freezes expected context once and rejects pre-open versus post-open source mutation without authority output.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "maui-no-legacy-session-surface",
+                     "executableOwner":  "MAUI",
+                     "reasonApiSeam":  "MAUI final cutover evidence owns removal and rejection of every legacy Session API, magic, store and fallback surface.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "identity-owner-router-id-durable-collision-latch",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Registry and XNode stores must atomically CAS and restore durable owner and router collision fork latches across restart.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "maui-reset-ddbg-dpl-rollback",
+                     "executableOwner":  "MAUI",
+                     "reasonApiSeam":  "MAUI protected reset storage must bind exact DDBG and DPL heads and fail closed on rollback, mix or reset substitution.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "maui-reset-destructive-empty-store",
+                     "executableOwner":  "MAUI",
+                     "reasonApiSeam":  "MAUI destructive activation owns empty-store initialization from the exact witnessed deployment set with no legacy migration.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "peer-http-aspnet-host-framing",
+                     "executableOwner":  "XNode",
+                     "reasonApiSeam":  "XNode ASP.NET host owns compression bypass, exact Content-Length, media headers, identity encoding and trailing-byte rejection at the real endpoint.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "peer-outer-journal-pure-transitions",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns only pure DPJ codec and Prepared, InnerPending, Completed, stale and fork transition plans with no durable-store claim.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "api-recovery-component-deployment-subject-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the exact pre-provider distinction between DRC1 component subject and the external witness deployment-subject namespace.",
+                     "gate":  "ProtocolPackageBlocking"
+                 }
+             ]
+}
