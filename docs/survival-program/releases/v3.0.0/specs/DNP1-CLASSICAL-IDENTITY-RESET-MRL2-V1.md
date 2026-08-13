@@ -222,6 +222,12 @@ Deep/Cutover/V1/recovery-aead-nonce
 Deep/Cutover/V1/recovery-drm-hash
 Deep/Cutover/V1/recovery-shadow-state
 Deep/Cutover/V1/recovery-pin-core
+Deep/Cutover/V1/recovery-frontier-checkpoint-hash
+Deep/Cutover/V1/recovery-schema-profile-fingerprint
+Deep/Cutover/V1/recovery-release-context
+Deep/Cutover/V1/recovery-identity-context
+Deep/Cutover/V1/recovery-identity-catalog
+Deep/Cutover/V1/recovery-old-protected-source
 Deep/NativeRouting/V1/router-certificate
 Deep/NativeRouting/V1/router-id
 Deep/NativeRouting/V1/contact
@@ -1095,7 +1101,7 @@ reference verification; required-artifact and Protocol restore;
 shadow/pin-core compare; only
 then authorize COMMIT. No parser or callback runs before its bound is known.
 
-`RecoveryShadowManifestV1` is a fixed 530-byte internal canonical record:
+`RecoveryShadowManifestV1` is a fixed 626-byte internal canonical record:
 
 ```text
 "RSM1"4 | version1:u8=1 | reserved1:u8=0 | network16 |
@@ -1103,20 +1109,40 @@ componentKind:u16be | componentSubject32 | transactionId32 |
 accountGeneration:u64be | oldDPLRef38 | DCMRef38 | DRSRef38 |
 pinCoreHash32 | DRMHash32 | artifactInventoryHash32 | RFC1Hash32 |
 predecessorFrontierHash32 | drtCatalogHash32 | RFC1KeyId32 | DTC1KeyId32 |
-schemaFingerprint32 | oldProtectedSourceFingerprint32
+schemaFingerprint32 | releaseContextFingerprint32 | identityContextFingerprint32 |
+cutoverContextFingerprint32 | oldProtectedSourceFingerprint32
 ```
 
 `artifactInventoryHash32 = SHA256-D(Deep/Cutover/V1/recovery-artifact-inventory,
 artifactCount:u16be || sorted ArtifactRef38[artifactCount])`. The count equals
 the DRM2 prefix count and the refs equal its row keys byte-for-byte. The
 shadow-state hash is
-`SHA256-D(Deep/Cutover/V1/recovery-shadow-state, exact-RSM1-530)`.
+`SHA256-D(Deep/Cutover/V1/recovery-shadow-state, exact-RSM1-626)`.
 `oldDPLRef38` is mandatory and nonzero. RSM1 cannot contain or resolve a DRC,
 DCP, DCS, DCT, DCN, DCQ, DWL, candidate DPL or any descendant/future-phase
 reference. RFC1, RPF1 and DTC1 hashes and key IDs equal the exact containers
 from the same owned DRM2. Its schema fingerprint identifies
 this exact DRM2 profile, adjacency table and container grammar, not an open
-extension registry. RSM1, DRC1 and the final source tuple all bind the exact
+extension registry. Specifically,
+`RFC1Hash32 = SHA256-D(Deep/Cutover/V1/recovery-frontier-checkpoint-hash,
+U32BE(RFC1.Length)||exact-RFC1-including-keyId-and-HMAC)`.
+`schemaFingerprint32 = SHA256-D(Deep/Cutover/V1/recovery-schema-profile-fingerprint,
+UTF8(exact machine `schemaProfileSourceLines` joined by byte `0A` with one final
+`0A`))`. The eighteen immutable compile-time lines cover wire/profile versions,
+grammar, sizes, caps, hash/HMAC domains, shared frontier slots/subjects, DTC
+target subjects, cardinalities, all 34 ref-field rules, allowlist/DAG, ordering
+and decrypt sequence. They contain the complete literal values, not names or
+pointers to another table, and exclude this fingerprint, deployment, package,
+documentation and mutable policy. Their exact payload is 16515 bytes and the
+pinned result is
+`98d63d2899e2f65fdd503c3061c2dd3e5c26f48729afe31fb58dbc5d3a790140`.
+The verifier derives the lines byte-for-byte from the actual immutable machine
+values and tables, requires the stored lines to equal that derivation, and
+recomputes this nonzero value,
+then fixed-time compares it before provider work and again after AEAD. Any line,
+table, order, domain or cap change requires DRM3. No caller bytes or authority
+conversion can select the fingerprint.
+RSM1, DRC1 and the final source tuple all bind the exact
 oldDPLRef, old protected-source fingerprint, RFC1/RPF1/DTC1 hashes and key IDs.
 The capsule source is `SHA256-D(Deep/Cutover/V1/recovery-capsule-source,
 oldProtectedSourceFingerprint32|RSM1Hash32|RFC1Hash32|RFC1KeyId32|DTC1Hash32|DTC1KeyId32)`.
@@ -1594,14 +1620,14 @@ live row is evicted to admit work.
 ### 8.1 Executable-evidence ownership and release gates
 
 The normative ownership table is
-`dnp1-classical-v1.evidence-ownership.json`. It contains exactly 170 unique
+`dnp1-classical-v1.evidence-ownership.json`. It contains exactly 174 unique
 semantic vector IDs and assigns each to one closed owner and one closed gate.
-The owner totals are Protocol 112, Registry 13, XNode 11, Shared 2,
-DevOpsWitness 12, CrossRepoE2E 17, and MAUI 3. The gate totals are 115
-`ProtocolPackageBlocking` rows (Protocol 112 plus exactly three
+The owner totals are Protocol 116, Registry 13, XNode 11, Shared 2,
+DevOpsWitness 12, CrossRepoE2E 17, and MAUI 3. The gate totals are 119
+`ProtocolPackageBlocking` rows (Protocol 116 plus exactly three
 DevOpsWitness rows) and 55 `CutoverFinalRelease` rows. A package GO requires
 one complete Passed result for every package row. A final-release GO requires
-one complete Passed result for all 170 rows and retains the already-proven
+one complete Passed result for all 174 rows and retains the already-proven
 package subset. Consumer-owned rows cannot be counted green at package GO.
 
 The current normative claim is `ClassificationOnly`. The observed
@@ -1661,29 +1687,62 @@ CAS, restart restore, and cross-store behavior are a separate CrossRepoE2E
 final-release case.
 
 `recovery-drc-cycle-and-aead` is Protocol-owned and package-blocking.
-`OpenCandidateAsync` consumes a sealed, defensively owned
-`ExpectedRecoveryCandidateRelative` minted only from restored exact canonical
-DCM/DRS/DPL and sealed current cutover-relative facts. It is frozen once. The
-candidate-bound fields compared directly with DRC1 before the provider are
-exactly network, component subject, account generation, DCM ref, DRS ref,
-shadow-state hash, next-pin-core hash, and protector key ID. Component
-kind/subject, account hash, reset ID, DPL ref and the exact fresh external DCL
-fact for nonterminal state are separate local
-sealed-current-context checks; they are not DRC1 fields. The witness-CAS
-deployment subject is a different namespace and cannot substitute for the DRC1
-component subject; cross-feed rejects before provider work. The local context also
-contains exactly two typed rows in increasing order,
-`1=ProtectedStateHmac` and `2=RecoveryNonceLatch`, each with a distinct
-nonzero key ID. The protector ID is already candidate-bound by DRC1. All direct
-and local checks precede provider work. The full post-open closure adds DCM
-generation, DRS revision/count/head, current-source fingerprint (including
-external DCL ref and expiry for nonterminal state), exact DCM/DRS
-rows and the exact 274-byte DPL pin-core projection, then fixed-time compares
-after the one owned DRM restore. The exact current full DPL is separately
-compared at sealed expected-context mint and again after open/final CAS; it is
-never required inside DRM2. Pre/post mutation rejects. No raw-tuple factory
-exists; the result makes no authority or durability claim. Consumer-owned
-final restore still rechecks live heads and performs its own atomic CAS.
+`OpenCandidateAsync` consumes one sealed, defensively owned tagged
+`ExpectedRecoveryCandidateRelative`; it has exactly two internally constructed
+branches and no optional or generic branch. `NormalCurrentStore` owns a
+`VerifiedCurrentReleaseRootContext`, a `VerifiedCurrentIdentityContext`, and the
+verified current Cutover/DPL context before provider work. The ReleaseRoot fact
+contains the immutable RRM pin, complete KRT/KRF and DWD ancestry, and exact
+terminal DWT or fresh DCL. The identity fact contains exact DPA/DCM/DRS heads,
+the device, mailbox, and router role heads, and the complete bounded protected
+DRS/DRT identity catalog.
+
+`ColdExternalCheckpoint` owns before AEAD only the immutable ReleaseRoot genesis
+pin, fresh witness-verified DCL/DCQ/DCP/DCS/DRC and capsule receipts, and exact
+candidate refs. It does not trust caller-provided release, identity, or cutover
+fingerprints. The witness-authenticated DRC ref authenticates DRC1
+`shadowStateHash32`; after its single bounded AEAD open, the branch recomputes
+the exact RSM1-626 hash and requires equality to that shadow-state hash before
+reading any expected fingerprint or minting any capability. It then owns and
+preflights DRM2, restores the complete ReleaseRoot ancestry, and mints
+`VerifiedRecoveredIdentityContext` only from the owned DPA/DCM/DRS/DRT/catalog
+rows. A nonforgeable `VerifiedRecoveredCutoverCheckpoint` is minted only from
+the HMAC-verified RFC1 exact old DPL ref, old-source fingerprint, and key ID,
+together with the witness-authenticated DRC/RSM and fresh DCL/DCQ/DCP/DCS at the
+latest external head. The RFC assertion alone is never authority. This sealed
+receipt authenticates the RSM cutover fingerprint and old-source tuple without
+claiming unavailable old full DPL/DWL/RRL/RIB/MRLC/DXR bytes. Every available
+signature, HMAC, ancestry edge, catalog row, and current-DRS binding is verified
+before any recovered capability is returned.
+RFC1 and DTC1 HMAC verification uses only reset-surviving external HSM
+`ProtectedStateHmac` provider lookups by the exact shared key ID, requiring RFC1KeyId == DTC1KeyId == the sealed ProtectedStateHmac key ID bound through authenticated DRC1 `shadowStateHash32` to RSM
+and the external receipts. Typed lookup and key-health checks occur only after
+public bounds; key material is never raw, capsule-contained, or plaintext.
+Missing, wrong, disabled, or unhealthy state for the shared key returns
+`ExternalCheckpointAhead`.
+
+In both branches the DRC-bound tuple compared before provider work is exactly
+`network16|componentSubject32|accountGeneration8|DCMRef38|DRSRef38|`
+`shadowStateHash32|nextPinCoreHash32|protectorKeyId32`. Component kind, account
+hash, reset ID, old DPL ref, DWT/DCL state, and protected key IDs are separate
+sealed context fields. The witness deployment subject cannot substitute for the
+component subject. The identity catalog fingerprint uses
+`Deep/Cutover/V1/recovery-identity-catalog` over the bounded canonical ordered
+inventory frozen in the machine registry: DPA, every applicable role KRT/KRF
+head, DPD/DPM/DNR heads, current DRS revision/count/head/ref, exact DRT/DTC set,
+and catalog key ID. No opaque catalog hash or caller-selected inventory exists.
+
+`recoveryOldProtectedSource` binds the exact old DPL ref, release/identity/
+cutover fingerprints, DWT or DCL identity and expiry, and all protected key IDs
+under the T1 old-DPL/source lock. Normal pre/open/final rereads recheck the full
+current contexts. Cold post-open/final CAS rechecks the recovered checkpoint,
+time, terminal/lease state, key health, and latest external DCS/DCL, then creates
+the candidate context in the empty store while fencing that external head. It
+never claims to reread absent old state. A cold
+missing, moved, stale, or invalid authority returns `ExternalCheckpointAhead`
+with zero publication. Capsule rows never mint capabilities directly. Raw keys,
+pins, tuples, and caller factories reject. The result makes no authority or
+durability claim; the consumer-owned final restore performs its own atomic CAS.
 
 The reproducible package closure has exactly these current package names:
 

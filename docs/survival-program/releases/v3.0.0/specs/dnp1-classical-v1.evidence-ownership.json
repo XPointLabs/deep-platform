@@ -1,11 +1,11 @@
-﻿{
+{
     "$schema":  "dnp1-classical-v1.evidence-ownership.schema.json",
     "schemaVersion":  "1.0.0",
     "status":  "normative-executable-evidence-ownership",
     "decision":  "DR-0003",
     "workPackage":  "DNP1-PROTO-classical-identity-reset-routing",
     "normativeCommit":  "8f7173956551876d3e39a23e0e792542221a5954",
-    "normativeVectorSkeletonSha256":  "bce49c2b3fbac361998de6941cba823421c632b1dea19728e3e8476c2849ee6e",
+    "normativeVectorSkeletonSha256":  "7fed40f9deeda116b36071dd8cc579e8bb50eee898ab5c1a0c3c4683792d38a7",
     "sourceSnapshot":  {
                            "path":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
                            "originPath":  "deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json",
@@ -38,6 +38,21 @@
                                          ,"recovery-drm2-target-fact-cross-feed"
                                          ,"recovery-drm2-dra-three-frontier-kinds"
                                          ,"recovery-drm2-target-subject-cross-kind"
+                                         ,"recovery-rfc-hash-golden"
+                                         ,"recovery-rfc-hash-domain-hmac-order"
+                                         ,"recovery-schema-profile-golden"
+                                         ,"recovery-schema-profile-order-substitution"
+                                         ,"recovery-context-sealed-authority-valid"
+                                         ,"recovery-context-wrong-stale-cross-reset"
+                                         ,"recovery-context-movement-race"
+                                         ,"recovery-context-cold-remint"
+                                         ,"recovery-context-cold-remint-missing"
+                                         ,"recovery-identity-catalog-canonical"
+                                         ,"recovery-identity-catalog-head-key-cross-feed"
+                                         ,"recovery-cold-cutover-checkpoint-constructible"
+                                         ,"recovery-cold-cutover-checkpoint-rfc-cross-feed"
+                                         ,"recovery-cold-rfc-hsm-key-survival"
+                                         ,"recovery-cold-rfc-dtc-key-id-mismatch"
                                      ],
                         "overriddenIds":  [
                                               "peer-outer-journal-cap-hmac-gc",
@@ -1078,6 +1093,96 @@
             "id":  "recovery-drm2-target-subject-cross-kind",
             "executableOwner":  "Protocol",
             "reasonApiSeam":  "Protocol owns exact DPA, DPD and DPM DTC target-kind to artifact-type, domain and subject-preimage verification.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-rfc-hash-golden",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol owns exact full protected RFC container hash computation after HMAC verification.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-rfc-hash-domain-hmac-order",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol owns RFC hash domain separation, full tag inclusion and HMAC-before-hash trust ordering.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-schema-profile-golden",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol embeds and recomputes the exact compile-time RecoverySchemaProfileV1 fingerprint.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-schema-profile-order-substitution",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol rejects any schema source line, table, domain, order or cap drift as a DRM3 requirement.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-context-sealed-authority-valid",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol owns nonforgeable sealed identity, ReleaseRoot and cutover context composition for recovery.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-context-wrong-stale-cross-reset",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol rejects wrong, stale and cross-reset sealed recovery authority contexts before provider work.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-context-movement-race",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol relative plans preserve exact context fingerprints for the consumer final CAS movement check.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-context-cold-remint",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol remints sealed relative contexts only through complete immutable and capsule-protected restore.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-context-cold-remint-missing",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol fails closed when cold authority closure is unavailable and never converts raw inputs.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-identity-catalog-canonical",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol owns the bounded canonical HMAC-verified identity catalog transcript and sealed fingerprint.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-identity-catalog-head-key-cross-feed",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol rejects identity catalog ordering, head, DRS, DRT, key and reset cross-feed before minting recovered identity.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-cold-cutover-checkpoint-constructible",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol owns the sealed cold cutover checkpoint composition from RFC plus witness-authenticated external closure.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-cold-cutover-checkpoint-rfc-cross-feed",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol rejects RFC, old-source, shadow, capsule and external-head cross-feed before minting cold cutover authority.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-cold-rfc-hsm-key-survival",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol owns typed reset-surviving HSM lookup and health gating for the exact source-bound RFC HMAC key ID.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-cold-rfc-dtc-key-id-mismatch",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol preflights exact equality of RFC, DTC and sealed ProtectedStateHmac key IDs before callbacks.",
             "gate":  "ProtocolPackageBlocking"
         }
              ]
