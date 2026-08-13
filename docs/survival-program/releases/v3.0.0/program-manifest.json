@@ -1,54 +1,54 @@
-{
-  "$schema": "../../schemas/program-manifest.schema.json",
-  "schemaVersion": "1.0.0",
-  "programId": "deep-survival",
-  "release": "3.0.0",
-  "status": "approved-local-execution",
-  "approvedAt": "2026-08-11",
-  "accountableOwner": "Mr. X",
-  "canonicalProgram": "DEEP-NATIVE-CLEAN-BREAK-RU.md",
-  "decisionRecord": "../../decisions/DR-0003-deep-native-session-clean-break.md",
-  "documentSet": {
-    "algorithm": "SHA-256",
-    "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-relative-path><LF>",
-    "documentCount": 11,
-    "sha256": "62d2cd7fab73c2437d691d7de3fe511c9a3feccc7461441938b12004e502eab5"
-  },
-  "machineSpecificationSet": {
-    "algorithm": "SHA-256",
-    "entryFormat": "<lowercase-file-sha256><two-spaces><forward-slash-repo-relative-path><LF>",
-    "artifactCount": 12,
-    "sha256": "4d7f10c3857e10e493c60403b8c0dd2fab19cf04c663f383aa3dc0f9dc96ab3e",
-    "paths": [
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-attestation.schema.json",
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-manifest.schema.json",
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.json",
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.schema.json",
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-selftest-result.json",
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.json",
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.schema.json",
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.schema.json",
-      "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.skeleton.json",
-      "scripts/check-dnp1-classical-spec.ps1",
-      "scripts/dnp1-evidence-selftest-runner.ps1"
-    ]
-  },
-  "inventoryBaseline": {
-    "algorithm": "SHA-256",
-    "path": "inventory/session-production-boundaries.v1.json",
-    "sha256": "db67e1afd75afb7918fd7465e9b6876fa401df75ff8f8aeeef7c892f8a05132a",
-    "tag": "legacy-session-baseline-v3.0.0"
-  },
-  "workPackageIdPattern": "^DNP1-(?:GOV|INV|SPEC|PROTO|CLIENT|NODE|OPS|SEC)(?:-[a-z0-9]+)*$",
-  "dependencyManifestSchema": "deep-devops/schemas/survival/dependency-manifest.schema.json",
-  "dependencyManifestPathTemplate": "deep-devops/manifests/deep-native/<wave>/<work-package-id>.json",
-  "packagePolicy": "../../PACKAGE-POLICY.md",
-  "executionPolicy": {
-    "localOnly": true,
-    "localDockerAllowed": true,
-    "pushAllowed": false,
-    "externalPublishAllowed": false,
-    "externalDeployAllowed": false
-  }
+﻿{
+    "$schema":  "../../schemas/program-manifest.schema.json",
+    "schemaVersion":  "1.0.0",
+    "programId":  "deep-survival",
+    "release":  "3.0.0",
+    "status":  "approved-local-execution",
+    "approvedAt":  "2026-08-11",
+    "accountableOwner":  "Mr. X",
+    "canonicalProgram":  "DEEP-NATIVE-CLEAN-BREAK-RU.md",
+    "decisionRecord":  "../../decisions/DR-0003-deep-native-session-clean-break.md",
+    "documentSet":  {
+                        "algorithm":  "SHA-256",
+                        "entryFormat":  "\u003clowercase-file-sha256\u003e\u003ctwo-spaces\u003e\u003cforward-slash-relative-path\u003e\u003cLF\u003e",
+                        "documentCount":  11,
+                        "sha256":  "35c9ac33ecd06f4b39d9a1b349637d6f5ff6013ab1229d393fd0256d8d027409"
+                    },
+    "machineSpecificationSet":  {
+                                    "algorithm":  "SHA-256",
+                                    "entryFormat":  "\u003clowercase-file-sha256\u003e\u003ctwo-spaces\u003e\u003cforward-slash-repo-relative-path\u003e\u003cLF\u003e",
+                                    "artifactCount":  12,
+                                    "sha256":  "0c0655df02ce96667f6be5bea26de1d7bae8923af31924e6a7a12546f21a4e14",
+                                    "paths":  [
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-attestation.schema.json",
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-manifest.schema.json",
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.json",
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.schema.json",
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-selftest-result.json",
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.json",
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.registry.schema.json",
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.schema.json",
+                                                  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.vectors.skeleton.json",
+                                                  "scripts/check-dnp1-classical-spec.ps1",
+                                                  "scripts/dnp1-evidence-selftest-runner.ps1"
+                                              ]
+                                },
+    "inventoryBaseline":  {
+                              "algorithm":  "SHA-256",
+                              "path":  "inventory/session-production-boundaries.v1.json",
+                              "sha256":  "db67e1afd75afb7918fd7465e9b6876fa401df75ff8f8aeeef7c892f8a05132a",
+                              "tag":  "legacy-session-baseline-v3.0.0"
+                          },
+    "workPackageIdPattern":  "^DNP1-(?:GOV|INV|SPEC|PROTO|CLIENT|NODE|OPS|SEC)(?:-[a-z0-9]+)*$",
+    "dependencyManifestSchema":  "deep-devops/schemas/survival/dependency-manifest.schema.json",
+    "dependencyManifestPathTemplate":  "deep-devops/manifests/deep-native/\u003cwave\u003e/\u003cwork-package-id\u003e.json",
+    "packagePolicy":  "../../PACKAGE-POLICY.md",
+    "executionPolicy":  {
+                            "localOnly":  true,
+                            "localDockerAllowed":  true,
+                            "pushAllowed":  false,
+                            "externalPublishAllowed":  false,
+                            "externalDeployAllowed":  false
+                        }
 }

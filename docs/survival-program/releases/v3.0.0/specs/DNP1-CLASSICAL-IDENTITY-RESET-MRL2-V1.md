@@ -447,9 +447,13 @@ SHA256-D(Deep/Cutover/V1/witness-terminal-quorum,
 Exactly three valid sorted distinct receipts are required. Only after DWT
 verification does one RRL CAS keep generation/current public/current
 transition/latest-DWD fields unchanged, set terminal KRF/DWT refs and state,
-increment chain count by one, and recompute chain checkpoint/HMAC. Crash after
-external durability but before local commit replays the same DWT and completes
-that exact CAS. At `effectiveAt`, DWDs authorized by that root and all leases
+increment chain count by one, and recompute chain checkpoint/HMAC. The same CAS
+HMAC-verifies WHL, rewrites only `currentReleaseRootAuthorityHead32` to the new
+terminal RRL authority head and recomputes the WHL HMAC; its current-DWD ref,
+entry count and every history entry remain byte-exact. A stale old WHL authority
+head rejects. Crash after external durability but before local commit replays
+the same DWT and completes exactly the RRL+WHL CAS, yielding only the old or the
+new pair. At `effectiveAt`, DWDs authorized by that root and all leases
 referencing them are unusable; witnesses issue no successor receipt or lease.
 Sensitive use reloads the current nonterminal RRL and a fresh 3-of-4 DCL whose
 inner DHL signatures bind exact DWD ref, root generation/transition,
@@ -929,7 +933,8 @@ AD = U32BE(metadataLength) ||
 `DRM2` plaintext prefix is exactly 284 bytes at offsets
 `magic[0..4)="DRM2"`, `wireVersion[4]=2`, `componentProfile[5]=1`,
 `artifactCount:u16be@[6..8)`, `pinCoreLength:u16be@[8..10)=274`, and
-`DplPinCoreProjectionV1@[10..284)`, followed by exact RPF1, exact DTC1, then
+`DplPinCoreProjectionV1@[10..284)`, followed by exact RFC1, exact RPF1, exact
+DTC1, exact DWH1, then
 canonical ArtifactRef rows. DRM2 is
 encrypted plaintext, not an ArtifactRef. `DRM1`, any other wire version, any
 profile other than `1`, or any other pin-core length rejects. Profile `1` is
@@ -939,7 +944,7 @@ projection hash is recomputed and fixed-time compared with DRC1
 `nextPinCoreHash` before the provider callback, then recomputed again from the
 owned post-open bytes.
 
-Immediately after the 284-byte prefix are two encrypted, internal,
+Immediately after the 284-byte prefix are four encrypted, internal,
 non-artifact containers.
 
 `RecoveryFrontierCheckpointV1` (`RFC1`) is an encrypted internal protected
@@ -1024,7 +1029,72 @@ rejects. Duplicate refs, targets or facts reject. The catalog hash is
 `SHA256-D(Deep/Cutover/V1/recovery-drt-catalog, exact-DTC1)`. DRT1 is therefore
 not an ArtifactRef row and does not consume the 64 component-row budget.
 
-After RPF1 and DTC1, a canonical artifact row key is the exact
+`RecoveryWitnessHeadHistoryV1` (`DWH1`) is the fourth internal protected
+container, `232+342*N` bytes for `0 <= N <= 64` (maximum 22120):
+
+```text
+"DWH1"4 | version1:u8=1 | reserved1:u8=0 | network16 | resetId32 |
+componentKind:u16be | accountGeneration:u64be | oldDPLRef38 |
+oldSourceFingerprint32 | transactionId32 | entryCount:u16be |
+entries(successorDWDRef38 | successorDelegationGeneration:u64be |
+        predecessorEpoch:u64be | predecessorFinalHeads288)[N] |
+protectedStateKeyId32 | HMAC32
+```
+
+Its protected-record domain is `Deep/ProtectedState/V1/DWH1`; its full
+container hash is
+`SHA256-D(Deep/Cutover/V1/recovery-witness-head-history,
+U32BE(DWH1.Length)||exact-DWH1-including-keyId-and-HMAC)`. Verify the HMAC
+before computing or trusting this hash. `N` is exactly the DWD ancestry count
+minus one. Entries are in strict successor delegation-generation/ref order
+and correspond one-for-one to DWD rows 2 through `N+1`.
+
+Each 288-byte value is the old predecessor witness set's four final heads,
+four rows `witnessId32|treeSize:u64be|treeRoot32`, in the predecessor DWD's
+canonical descriptor-ID order. IDs are unique and equal those four prior
+descriptors. Every size is at most the predecessor `maximumTreeSize`; a
+size-zero root equals `WitnessEmptyRoot(predecessorEpoch, predecessorWitnessId,
+predecessorMaximumTreeSize)`, while a nonzero size has a nonzero root. The
+entry epoch equals the prior DWD epoch, and the fixed-time recomputation of
+`SHA256-D(Deep/Cutover/V1/witness-heads,
+predecessorEpoch8||predecessorFinalHeads288)` equals the successor DWD field12.
+Exactly the three retained predecessor heads also fit the successor maximum
+tree size and are copied byte-for-byte into the successor DWL. The removed
+head remains historical only. The replacement witness is absent from the
+predecessor 288 bytes; after its bootstrap proof it is initialized separately
+at size zero with the successor epoch, replacement ID and successor maximum
+tree size.
+
+Genesis is distinct. The generation-zero, epoch-one DWD has a zero predecessor
+ref, a zero32 `predecessorFinalHeadsHash`, and no DWH entry. The restore API
+internally synthesizes its ancestry input as predecessor epoch zero plus
+exactly zero288. This is not the current witness set. Only after genesis DWD
+verification are the four current DWL empty heads initialized from the genesis
+descriptor IDs, epoch one and genesis maximum tree size.
+
+DWH is transaction-specific, so the durable source is a prospective protected
+`WitnessHeadHistoryLkgV1` (`WHL1`) kept from genesis. WHL1 is exact
+`222+342*N`: `magic4|version1|reserved1|network16|resetId32|deploymentSubject32|
+currentDWDRef38|currentReleaseRootAuthorityHead32|entryCount2|the same DWH
+entries|protectedStateKeyId32|HMAC32`, under
+`Deep/ProtectedState/V1/WHL1`. Genesis activation atomically creates DWD, RRL,
+DWL and a count-zero WHL. Every successor activation under the canonical
+DWD/RRL/DWL lock HMAC-verifies old DWL, old WHL and a fresh DCL, appends exactly
+one predecessor-set entry, and CASes successor DWD, RRL, new DWL and WHL in one
+transaction; every ordinary KRT+DWD or independent DWD successor therefore
+also rewrites WHL's authority head to the exact new RRL authority head in that
+CAS. The terminal KRF/DWT CAS HMAC-verifies WHL and atomically rewrites only
+that authority-head field plus its HMAC, preserving current DWD, entry count and
+entries. T1, while holding the old-DPL/source lock, verifies exact current
+WHL against the sealed release context and copies its entries byte-for-byte
+into DWH. WHL is not capsule authority. It is never reconstructed from current
+DWL or a signed predecessor-head hash. Missing, forked or legacy-absent history
+fails closed and requires destructive reset; no migration synthesizes it.
+
+RFC1, DTC1 and DWH1 key IDs are equal to the single sealed
+`ProtectedStateHmac` key ID. Their distinct HMAC domains prevent cross-feed.
+
+After RFC1, RPF1, DTC1 and DWH1, a canonical artifact row key is the exact
 38-byte `ArtifactRef`:
 `artifactType:u16be||canonicalLength:u32be||canonicalHash32`; the row is
 `rowKey38||exactBytes`. Because these rows are ciphertext, the AEAD provider is
@@ -1072,9 +1142,10 @@ plus authority is 111781. Nonterminal authority is 110745 and its fixed total
 is 111029. DRA1 has cardinality 0..1; all other optional rows share the
 remaining aggregate budget. Therefore RFC1 is at most `232+72*65=4912`
 bytes, RPF1 is at most `8+78*65=5078` bytes, and DTC1 is at most
-`232+368*1024=377064` bytes. These shapes conservatively use the terminal
+`232+368*1024=377064` bytes. DWH1 is at most `232+342*64=22120` bytes.
+These shapes conservatively use the terminal
 common component-artifact budget
-`33554432-111781-4912-5078-377064=33055597` encoded bytes, so DRM plaintext and ciphertext
+`33554432-111781-4912-5078-377064-22120=33033477` encoded bytes, so DRM plaintext and ciphertext
 remain at most 33,554,432 bytes. Counts, row lengths, total bytes, type ranges
 and prohibited references are checked before per-row crypto or copy.
 
@@ -1101,14 +1172,15 @@ reference verification; required-artifact and Protocol restore;
 shadow/pin-core compare; only
 then authorize COMMIT. No parser or callback runs before its bound is known.
 
-`RecoveryShadowManifestV1` is a fixed 626-byte internal canonical record:
+`RecoveryShadowManifestV1` is a fixed 658-byte internal canonical record:
 
 ```text
 "RSM1"4 | version1:u8=1 | reserved1:u8=0 | network16 |
 componentKind:u16be | componentSubject32 | transactionId32 |
 accountGeneration:u64be | oldDPLRef38 | DCMRef38 | DRSRef38 |
 pinCoreHash32 | DRMHash32 | artifactInventoryHash32 | RFC1Hash32 |
-predecessorFrontierHash32 | drtCatalogHash32 | RFC1KeyId32 | DTC1KeyId32 |
+predecessorFrontierHash32 | drtCatalogHash32 | DWH1Hash32 |
+RFC1KeyId32 | DTC1KeyId32 |
 schemaFingerprint32 | releaseContextFingerprint32 | identityContextFingerprint32 |
 cutoverContextFingerprint32 | oldProtectedSourceFingerprint32
 ```
@@ -1117,10 +1189,10 @@ cutoverContextFingerprint32 | oldProtectedSourceFingerprint32
 artifactCount:u16be || sorted ArtifactRef38[artifactCount])`. The count equals
 the DRM2 prefix count and the refs equal its row keys byte-for-byte. The
 shadow-state hash is
-`SHA256-D(Deep/Cutover/V1/recovery-shadow-state, exact-RSM1-626)`.
+`SHA256-D(Deep/Cutover/V1/recovery-shadow-state, exact-RSM1-658)`.
 `oldDPLRef38` is mandatory and nonzero. RSM1 cannot contain or resolve a DRC,
 DCP, DCS, DCT, DCN, DCQ, DWL, candidate DPL or any descendant/future-phase
-reference. RFC1, RPF1 and DTC1 hashes and key IDs equal the exact containers
+reference. RFC1, RPF1, DTC1 and DWH1 hashes and key IDs equal the exact containers
 from the same owned DRM2. Its schema fingerprint identifies
 this exact DRM2 profile, adjacency table and container grammar, not an open
 extension registry. Specifically,
@@ -1128,14 +1200,14 @@ extension registry. Specifically,
 U32BE(RFC1.Length)||exact-RFC1-including-keyId-and-HMAC)`.
 `schemaFingerprint32 = SHA256-D(Deep/Cutover/V1/recovery-schema-profile-fingerprint,
 UTF8(exact machine `schemaProfileSourceLines` joined by byte `0A` with one final
-`0A`))`. The eighteen immutable compile-time lines cover wire/profile versions,
+`0A`))`. The nineteen immutable compile-time lines cover wire/profile versions,
 grammar, sizes, caps, hash/HMAC domains, shared frontier slots/subjects, DTC
 target subjects, cardinalities, all 34 ref-field rules, allowlist/DAG, ordering
 and decrypt sequence. They contain the complete literal values, not names or
 pointers to another table, and exclude this fingerprint, deployment, package,
-documentation and mutable policy. Their exact payload is 16515 bytes and the
+documentation and mutable policy. Their exact payload is 20414 bytes and the
 pinned result is
-`98d63d2899e2f65fdd503c3061c2dd3e5c26f48729afe31fb58dbc5d3a790140`.
+`e102a0f94c8957edd5af510bed992826942c500b9465231bf17af666f0fee1dd`.
 The verifier derives the lines byte-for-byte from the actual immutable machine
 values and tables, requires the stored lines to equal that derivation, and
 recomputes this nonzero value,
@@ -1143,9 +1215,9 @@ then fixed-time compares it before provider work and again after AEAD. Any line,
 table, order, domain or cap change requires DRM3. No caller bytes or authority
 conversion can select the fingerprint.
 RSM1, DRC1 and the final source tuple all bind the exact
-oldDPLRef, old protected-source fingerprint, RFC1/RPF1/DTC1 hashes and key IDs.
+oldDPLRef, old protected-source fingerprint, RFC1/RPF1/DTC1/DWH1 hashes and key IDs.
 The capsule source is `SHA256-D(Deep/Cutover/V1/recovery-capsule-source,
-oldProtectedSourceFingerprint32|RSM1Hash32|RFC1Hash32|RFC1KeyId32|DTC1Hash32|DTC1KeyId32)`.
+oldProtectedSourceFingerprint32|RSM1Hash32|RFC1Hash32|RFC1KeyId32|DTC1Hash32|DTC1KeyId32|DWH1Hash32)`.
 
 Protocol exposes only a sealed relative `MaterializeCandidateDpl` plan. The
 plan defensively owns the projection274, oldDPLRef38, old protected-source
@@ -1698,13 +1770,15 @@ the device, mailbox, and router role heads, and the complete bounded protected
 DRS/DRT identity catalog.
 
 `ColdExternalCheckpoint` owns before AEAD only the immutable ReleaseRoot genesis
-pin, fresh witness-verified DCL/DCQ/DCP/DCS/DRC and capsule receipts, and exact
-candidate refs. It does not trust caller-provided release, identity, or cutover
-fingerprints. The witness-authenticated DRC ref authenticates DRC1
-`shadowStateHash32`; after its single bounded AEAD open, the branch recomputes
-the exact RSM1-626 hash and requires equality to that shadow-state hash before
-reading any expected fingerprint or minting any capability. It then owns and
-preflights DRM2, restores the complete ReleaseRoot ancestry, and mints
+pin, bounded frozen DCL/DCQ/DCP/DCS/DRC and capsule receipts, and exact
+candidate refs. Those external rows are not witness-verified authority yet,
+and it does not trust caller-provided release, identity, or cutover
+fingerprints. After its single bounded AEAD open, the branch owns and
+structurally preflights DRM2, recomputes the exact RSM1-658 hash and requires
+equality to the frozen DRC1 `shadowStateHash32`, HMAC-verifies RFC1, DTC1 and
+DWH1, and restores the complete RRM/KRT/KRF/DWD ancestry using DWH. Only after
+that release authority exists does it verify the external DCL/DCQ/DRC receipts
+and current witness head, read expected RSM fingerprints, and mint
 `VerifiedRecoveredIdentityContext` only from the owned DPA/DCM/DRS/DRT/catalog
 rows. A nonforgeable `VerifiedRecoveredCutoverCheckpoint` is minted only from
 the HMAC-verified RFC1 exact old DPL ref, old-source fingerprint, and key ID,
@@ -1714,8 +1788,10 @@ receipt authenticates the RSM cutover fingerprint and old-source tuple without
 claiming unavailable old full DPL/DWL/RRL/RIB/MRLC/DXR bytes. Every available
 signature, HMAC, ancestry edge, catalog row, and current-DRS binding is verified
 before any recovered capability is returned.
-RFC1 and DTC1 HMAC verification uses only reset-surviving external HSM
-`ProtectedStateHmac` provider lookups by the exact shared key ID, requiring RFC1KeyId == DTC1KeyId == the sealed ProtectedStateHmac key ID bound through authenticated DRC1 `shadowStateHash32` to RSM
+RFC1, DTC1 and DWH1 HMAC verification uses only reset-surviving external HSM
+`ProtectedStateHmac` provider lookups by the exact shared key ID, requiring
+RFC1KeyId == DTC1KeyId == DWH1KeyId == the sealed ProtectedStateHmac key ID
+bound through DRC1 `shadowStateHash32` to RSM
 and the external receipts. Typed lookup and key-health checks occur only after
 public bounds; key material is never raw, capsule-contained, or plaintext.
 Missing, wrong, disabled, or unhealthy state for the shared key returns
