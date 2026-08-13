@@ -5,7 +5,7 @@
     "decision":  "DR-0003",
     "workPackage":  "DNP1-PROTO-classical-identity-reset-routing",
     "normativeCommit":  "8f7173956551876d3e39a23e0e792542221a5954",
-    "normativeVectorSkeletonSha256":  "15695d1c7e859f6396e552e95dadf9f21c1a7345b77b93f21ebaea2162a323f2",
+    "normativeVectorSkeletonSha256":  "bce49c2b3fbac361998de6941cba823421c632b1dea19728e3e8476c2849ee6e",
     "sourceSnapshot":  {
                            "path":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
                            "originPath":  "deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json",
@@ -24,7 +24,20 @@
                                          "maui-reset-ddbg-dpl-rollback",
                                          "maui-reset-destructive-empty-store",
                                          "peer-http-aspnet-host-framing",
-                                         "peer-outer-journal-pure-transitions"
+                                         "peer-outer-journal-pure-transitions",
+                                         "recovery-drm2-allowlist-dag-bounds",
+                                         "recovery-drm2-pin-core-cycle-free",
+                                         "recovery-materialize-candidate-dpl-cold",
+                                         "recovery-materialize-candidate-dpl-key-reread",
+                                         "recovery-materialize-candidate-dpl-source-cas",
+                                         "recovery-shadow-manifest-inventory-old-dpl"
+                                         ,"recovery-drm2-frontier-unauthorized-cross-feed"
+                                         ,"recovery-drm2-max-drs-drt-catalog"
+                                         ,"recovery-drm2-post-genesis-frontier"
+                                         ,"recovery-drm2-terminal-dpa-target"
+                                         ,"recovery-drm2-target-fact-cross-feed"
+                                         ,"recovery-drm2-dra-three-frontier-kinds"
+                                         ,"recovery-drm2-target-subject-cross-kind"
                                      ],
                         "overriddenIds":  [
                                               "peer-outer-journal-cap-hmac-gc",
@@ -988,6 +1001,84 @@
                      "executableOwner":  "Protocol",
                      "reasonApiSeam":  "Protocol owns the exact pre-provider distinction between DRC1 component subject and the external witness deployment-subject namespace.",
                      "gate":  "ProtocolPackageBlocking"
-                 }
+                 },
+                 {
+                     "id":  "recovery-drm2-pin-core-cycle-free",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the internal non-artifact pin-core projection and exact DRM2 prefix construction.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm2-allowlist-dag-bounds",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the closed DRM2 per-type allowlist, reference DAG and allocation bounds.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-shadow-manifest-inventory-old-dpl",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns exact RSM1 encoding, inventory transcript and descendant exclusion.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-materialize-candidate-dpl-cold",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the sealed relative cold materialization plan from recovered and externally verified artifacts.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-materialize-candidate-dpl-key-reread",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns protected-key preflight, HMAC-once authoring, local verification and owned-byte reread contract.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-materialize-candidate-dpl-source-cas",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer stores own final old-source and live-head CAS plus zero-publication ExternalCheckpointAhead behavior.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-drm2-post-genesis-frontier",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns sealed typed predecessor-frontier restore for post-genesis component authority rows.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm2-frontier-unauthorized-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns exact frontier kind, successor, subject and sealed old-frontier comparisons with no raw authority conversion.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm2-max-drs-drt-catalog",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the encrypted DRS-ordered DTC1 catalog and complete maximum-1024 DRT restore.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-drm2-terminal-dpa-target",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns exact AccountTerminal DRT to current DPA protected target-fact verification.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+        {
+            "id":  "recovery-drm2-target-fact-cross-feed",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol owns protected DTC target-fact HMAC, source, type, identity and revocation-field verification.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-drm2-dra-three-frontier-kinds",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol owns the exact shared RFC and RPF ten-kind registry including all three distinct DRA predecessor slots.",
+            "gate":  "ProtocolPackageBlocking"
+        },
+        {
+            "id":  "recovery-drm2-target-subject-cross-kind",
+            "executableOwner":  "Protocol",
+            "reasonApiSeam":  "Protocol owns exact DPA, DPD and DPM DTC target-kind to artifact-type, domain and subject-preimage verification.",
+            "gate":  "ProtocolPackageBlocking"
+        }
              ]
 }

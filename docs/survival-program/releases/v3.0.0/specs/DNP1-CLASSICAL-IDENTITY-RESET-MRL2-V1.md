@@ -877,7 +877,25 @@ frequency; the privacy limitation is accepted and must be documented.
 
 `DRC1` cannot reference DCP or DPL because DCP references the capsule and DPL
 references DCP. It instead binds the exact DCM/DRS, shadow hash and a
-`nextPinCoreHash` that excludes DCP/DCS/DCQ references. Its DRM plaintext is a
+`nextPinCoreHash`. The hash input is the internal, non-artifact
+`DplPinCoreProjectionV1`, exactly 274 bytes:
+
+```text
+network16 || componentKind:u16be || accountGeneration:u64be || DPACRef38 ||
+DCMGeneration:u64be || DCMRef38 || resetKeyHash32 || DRSRevision:u64be ||
+DRSCount:u64be || DRSHead32 || DRSRef38 || releaseRootTransitionRef38 ||
+forkLatch:u8 || reserved7=0
+```
+
+These are exactly DPL1 fields 1..11 and 15..17 in field order. Candidate-phase
+fields 12..14 (`DCPRef`, `DCSRef`, `DCQRef`) and field 18 HMAC are absent, not
+zeroed. The projection has no magic, version, public parser, model, ArtifactRef
+or authority conversion. Protocol may derive it only from a sealed current DPL
+fact or from a sealed recovery author intent. Its hash is
+`SHA256-D(Deep/Cutover/V1/recovery-pin-core, projection274)`. This removes the
+otherwise impossible `DRC -> encrypted DRM DPL -> DCP -> DRC` fixed point.
+The exact current full DPL remains an external sealed precondition and the
+final consumer CAS source; it is never a DRM row. Its DRM plaintext is a
 sorted unique bounded artifact table, protected with the already reviewed
 XChaCha20-Poly1305 recovery protector. It carries no exported private key.
 
@@ -902,8 +920,105 @@ AD = U32BE(metadataLength) ||
      canonical DRC1 fields 1..15 encoded with fieldCount=15
 ```
 
-`DRM1` plaintext is `"DRM1"||version:u8=1||reserved:u8=0||
-artifactCount:u16be`, followed by canonical rows. A row key is the exact
+`DRM2` plaintext prefix is exactly 284 bytes at offsets
+`magic[0..4)="DRM2"`, `wireVersion[4]=2`, `componentProfile[5]=1`,
+`artifactCount:u16be@[6..8)`, `pinCoreLength:u16be@[8..10)=274`, and
+`DplPinCoreProjectionV1@[10..284)`, followed by exact RPF1, exact DTC1, then
+canonical ArtifactRef rows. DRM2 is
+encrypted plaintext, not an ArtifactRef. `DRM1`, any other wire version, any
+profile other than `1`, or any other pin-core length rejects. Profile `1` is
+not a second wire version. DRC1 `artifactCount`
+counts only the following ArtifactRef rows; it excludes the projection. The
+projection hash is recomputed and fixed-time compared with DRC1
+`nextPinCoreHash` before the provider callback, then recomputed again from the
+owned post-open bytes.
+
+Immediately after the 284-byte prefix are two encrypted, internal,
+non-artifact containers.
+
+`RecoveryFrontierCheckpointV1` (`RFC1`) is an encrypted internal protected
+record, `232+72*N` bytes for `0 <= N <= 65`:
+
+```text
+"RFC1"4 | version1:u8=1 | reserved1:u8=0 | network16 | resetId32 |
+componentKind:u16be | accountGeneration:u64be | oldDPLRef38 |
+oldSourceFingerprint32 | transactionId32 | entryCount:u16be |
+entries(kind:u16be | subjectKey32 | predecessorRef38)[N] |
+protectedStateKeyId32 | HMAC32
+```
+
+The HMAC uses the generic protected-record transcript with domain
+`Deep/ProtectedState/V1/RFC1`. DTC1 analogously uses
+`Deep/ProtectedState/V1/DTC1`. T1 authors RFC1 from the exact current protected
+stores while holding the old-DPL/source lock; the key ID is nonzero and is the
+sealed `ProtectedStateHmac` key. Entries are sorted by
+`predecessorFieldKind2|subjectKey32`. RFC1 uses the exact same closed field-kind
+registry `1..10` as RPF1. In particular, DRA old-DPAC, old-DCM and old-DRS are
+three distinct RFC1 keys `3`, `4` and `5`; they share the DRA subject formula
+but can never substitute for one another.
+The closed subject-key formula is `SHA256-D` under the kind-specific domains
+`Deep/Cutover/V1/recovery-frontier-subject/DPA`,
+`Deep/Cutover/V1/recovery-frontier-subject/DCM`,
+`Deep/Cutover/V1/recovery-frontier-subject/DRA`,
+`Deep/Cutover/V1/recovery-frontier-subject/DPD`,
+`Deep/Cutover/V1/recovery-frontier-subject/DPM`,
+`Deep/Cutover/V1/recovery-frontier-subject/DNR`,
+`Deep/Cutover/V1/recovery-frontier-subject/MRL`, and
+`Deep/Cutover/V1/recovery-frontier-subject/DPC`:
+DPA/DCM hash `network16|accountHash32|accountGeneration8`; DRA hashes the old
+account tuple; DPD hashes that account tuple plus deviceId32/deviceGeneration8;
+DPM hashes it plus mailboxOwnerId32/deviceId32/roleGeneration8; DNR hashes
+`network16|ownerId32|routerId32|routerGeneration8`; MRL hashes
+`network16|routerId32|descriptorGeneration8`; and DPC hashes
+`network16|routerId32|contactGeneration8`. RPF1 must equal RFC1 by exact
+kind/subject/ref with no missing or extra entry. Because RFC1 is inside the
+externally durable recovery capsule, after old-store loss its verified HMAC and
+the capsule source binding are the old-frontier authority; when the old store
+still exists it is also reread and fixed-time compared.
+
+`RecoveryPredecessorFrontierV1` (`RPF1`) is
+`"RPF1"4|version1:u8=1|reserved1:u8=0|entryCount:u16be|entries78N`,
+`0 <= N <= 65`. Each entry is
+`successorArtifactRef38|predecessorFieldKind:u16be|predecessorArtifactRef38`.
+Entries are strictly increasing by the unsigned 40-byte
+`successorArtifactRef38|fieldKind2` key; duplicates reject. The closed kinds
+are: `1=DPA.predecessorDPAC`, `2=DCM.predecessorDCM`,
+`3=DRA.oldDPAC`, `4=DRA.oldDCM`, `5=DRA.oldDRS`,
+`6=DPD.predecessorDPDC`, `7=DPM.predecessorDPMC`,
+`8=DNR.predecessorDNRC`, `9=MRL2.predecessorMRL2`, and
+`10=DPC.predecessorDPC`. For each named nonzero field there is exactly one
+matching entry; a zero genesis predecessor has none. The successor ref must
+resolve to the exact DRM2 row of the named type, and the predecessor ref must
+equal the independently sealed old-frontier fact for that exact subject and
+field kind. No entry can satisfy another field, successor, subject or type.
+The frontier hash is
+`SHA256-D(Deep/Cutover/V1/recovery-predecessor-frontier, exact-RPF1)`.
+
+`RecoveryDrtCatalogV1` (`DTC1`) is an encrypted internal protected record of
+`232+368*N` bytes, `0 <= N <= 1024`. Its fixed fields are byte-identical to
+RFC1 through `entryCount`, and it ends in `protectedStateKeyId32|HMAC32` under
+domain `Deep/ProtectedState/V1/DTC1`. Each entry is
+`DRT1ArtifactRef38|exactDRT1Bytes179|targetArtifactRef38|targetKind1|accountHash32|subjectKey32|targetGeneration8|randomHandle32|targetNotAfter8`.
+Count and order equal the current DRS1 cumulative entries exactly; every DRS
+entry's DRT ref is the corresponding catalog ref. Exact bytes re-decode as
+DRT1, recompute the same ref, and match account, target kind/generation and
+retention semantics. The target fact is minted from the exact verified
+protected DPA1, DPD1 or DPM1 catalog: type/ref/account/subject/generation,
+revocationHandle and notAfter must match the DRT. AccountTerminal targets the
+current DPA, use the account subject and accountRevocationHandle, and require
+targetNotAfter=0. Its `subjectKey32` is not caller data: target kind `3` requires
+DPA1 and
+`SHA256-D(Deep/Cutover/V1/recovery-target-subject/DPA, network16|accountHash32|accountGeneration8)`;
+kind `1` requires DPD1 and
+`SHA256-D(Deep/Cutover/V1/recovery-target-subject/DPD, network16|accountHash32|accountGeneration8|deviceId32|deviceGeneration8)`;
+kind `2` requires DPM1 and
+`SHA256-D(Deep/Cutover/V1/recovery-target-subject/DPM, network16|accountHash32|accountGeneration8|deviceId32|mailboxOwnerId32|roleGeneration8)`.
+Any other kind, artifact type, domain, preimage or cross-kind substitution
+rejects. Duplicate refs, targets or facts reject. The catalog hash is
+`SHA256-D(Deep/Cutover/V1/recovery-drt-catalog, exact-DTC1)`. DRT1 is therefore
+not an ArtifactRef row and does not consume the 64 component-row budget.
+
+After RPF1 and DTC1, a canonical artifact row key is the exact
 38-byte `ArtifactRef`:
 `artifactType:u16be||canonicalLength:u32be||canonicalHash32`; the row is
 `rowKey38||exactBytes`. Because these rows are ciphertext, the AEAD provider is
@@ -916,7 +1031,49 @@ storage or mutation callback. A direct plaintext-parser unit test may exercise
 the same ordering preflight with zero provider callbacks; it is not an
 encrypted integration claim.
 
-After bounds and ordering, every exact row is independently decoded and
+DRM2 has one closed component profile. Before any per-row crypto or callback,
+the complete owned plaintext is structurally scanned using row-key lengths and
+the following exact allowlist, counts and reference DAG. A future artifact
+type, changed count, or changed direction requires a new DRM version and a new
+review; it is not an ignorable extension.
+
+- Authority partition: exactly one RRM1; a total of 0..64 KRT1/KRF1 rows; all
+  1..65 DWD1 ancestry rows; and exactly one DWT1 iff terminal. A nonterminal
+  DRM has no terminal/lease row. Its fresh exact DCL1 is a separately sealed
+  current fact outside DRM2 and is rebound after open and in the final CAS.
+  RRM -> KRT/KRF -> DWD -> DWT is the only authority direction.
+- Component partition: 3..64 rows total, containing exactly one DCM1, exactly
+  one current cumulative DRS1 and exactly one DPA1. The remaining 0..61 rows
+  may contain only DRA1, DPD1, DPM1, DNR1, MRL2, DPC1, MSM1, PMA1,
+  PMR1, D--G-SOURCE, MNG1, MDG1, MRV1 or MMC1; each such type has range
+  0..61 and their aggregate plus the three mandatory rows is <=64.
+- Component references use the exact per-type adjacency table in the machine
+  registry. A reference points only to a named current DRM row, a DRT ref at
+  the same DRS index in DTC1, or one of the ten typed RPF1 predecessor kinds.
+  Retained MSM/PMA/PMR and membership transitions additionally compare their
+  separately sealed prior heads; they do not synthesize a predecessor from the
+  candidate. No row may reference
+  DPL1, DRC1, DCP1, DCS1, DCT1, DCN1, DCQ1, DHL1, DCL1, DWL1, DBG1, RIB1, XIB1,
+  MRLC, DPJ1, DPR1 or DPS1. No descendant, future phase, candidate DPL or
+  reference cycle is permitted. References are validated from decoded
+  canonical fields, never inferred from physical row order.
+
+The terminal maximum is 195 artifact rows: 131 authority rows and 64 component rows.
+The nonterminal maximum is 194: 130 authority rows and 64 component rows. With
+the 284-byte prefix and 38-byte row overhead, terminal authority is
+`(38+332)+64*(38+412)+65*(38+1217)+(38+714)=111497` bytes and its fixed prefix
+plus authority is 111781. Nonterminal authority is 110745 and its fixed total
+is 111029. DRA1 has cardinality 0..1; all other optional rows share the
+remaining aggregate budget. Therefore RFC1 is at most `232+72*65=4912`
+bytes, RPF1 is at most `8+78*65=5078` bytes, and DTC1 is at most
+`232+368*1024=377064` bytes. These shapes conservatively use the terminal
+common component-artifact budget
+`33554432-111781-4912-5078-377064=33055597` encoded bytes, so DRM plaintext and ciphertext
+remain at most 33,554,432 bytes. Counts, row lengths, total bytes, type ranges
+and prohibited references are checked before per-row crypto or copy.
+
+After bounds, allowlist, reference-DAG, ordering and uniqueness checks, every
+exact row is independently decoded and
 canonically recomposed. New DNP artifact types recompute their reference only
 with the exact `artifactHashDomains` entry. Retained `MSM1`, `PRQ2`, `MRR2`,
 `PMA1`, `PMR1`, D--G source, `MNG1`, `MDG1`, `MRV1` and `MMC1` use only their
@@ -924,15 +1081,8 @@ unchanged `retainedArtifactHashRules`. A type missing from both closed maps, in
 both maps, or cross-fed between map classes rejects. Canonical length and hash
 must reproduce the same `ArtifactRef38`. Authority ancestry follows decoded
 predecessor references, never physical row order. The exact
-maximum is 195 rows: one RRM, up to 64 KRT/KRF root transitions, all `1..65`
-DWD ancestry rows, exactly one terminal DWT or nonterminal DCL, and up to 64
-component-required rows. With the four-byte DRM header and 38-byte row
-overhead, the conservative authority closure is
-`4+(38+332)+64*(38+412)+65*(38+1217)+(38+5623)=116410` bytes. Component rows
-are bounded to 33,438,022 encoded bytes, so plaintext and ciphertext remain at
-most 33,554,432 bytes. Counts and total bytes are checked before allocation.
-`DRMHash`, `shadowStateHash`, and `nextPinCoreHash` use exactly
-the three recovery hash transcripts in the registry. Reusing a derived nonce
+`DRMHash` and `nextPinCoreHash` use the exact DRM2 and projection transcripts
+in the registry. Reusing a derived nonce
 is keyed only by `protectorKeyId32||derivedNonce24`. The stored value is
 `SHA256-D(Deep/Cutover/V1/recovery-aead,
 transactionId32||U32BE(ADLength)||AD||U64BE(ciphertextLength)||ciphertext||
@@ -940,9 +1090,56 @@ aeadTag16)`. The same key/value is exact replay; the same key with a different
 value permanently latches before AEAD. Decryption order
 is fixed: metadata preflight; checked lengths/counts; derive and compare nonce;
 freeze AD; one bounded AEAD open; zero PRK/key; owned DRM plaintext
-metadata/order/uniqueness preflight; closed per-type reference verification;
-required-artifact and Protocol restore; shadow/pin-core compare; only
+metadata/allowlist/reference-DAG/order/uniqueness preflight; closed per-type
+reference verification; required-artifact and Protocol restore;
+shadow/pin-core compare; only
 then authorize COMMIT. No parser or callback runs before its bound is known.
+
+`RecoveryShadowManifestV1` is a fixed 530-byte internal canonical record:
+
+```text
+"RSM1"4 | version1:u8=1 | reserved1:u8=0 | network16 |
+componentKind:u16be | componentSubject32 | transactionId32 |
+accountGeneration:u64be | oldDPLRef38 | DCMRef38 | DRSRef38 |
+pinCoreHash32 | DRMHash32 | artifactInventoryHash32 | RFC1Hash32 |
+predecessorFrontierHash32 | drtCatalogHash32 | RFC1KeyId32 | DTC1KeyId32 |
+schemaFingerprint32 | oldProtectedSourceFingerprint32
+```
+
+`artifactInventoryHash32 = SHA256-D(Deep/Cutover/V1/recovery-artifact-inventory,
+artifactCount:u16be || sorted ArtifactRef38[artifactCount])`. The count equals
+the DRM2 prefix count and the refs equal its row keys byte-for-byte. The
+shadow-state hash is
+`SHA256-D(Deep/Cutover/V1/recovery-shadow-state, exact-RSM1-530)`.
+`oldDPLRef38` is mandatory and nonzero. RSM1 cannot contain or resolve a DRC,
+DCP, DCS, DCT, DCN, DCQ, DWL, candidate DPL or any descendant/future-phase
+reference. RFC1, RPF1 and DTC1 hashes and key IDs equal the exact containers
+from the same owned DRM2. Its schema fingerprint identifies
+this exact DRM2 profile, adjacency table and container grammar, not an open
+extension registry. RSM1, DRC1 and the final source tuple all bind the exact
+oldDPLRef, old protected-source fingerprint, RFC1/RPF1/DTC1 hashes and key IDs.
+The capsule source is `SHA256-D(Deep/Cutover/V1/recovery-capsule-source,
+oldProtectedSourceFingerprint32|RSM1Hash32|RFC1Hash32|RFC1KeyId32|DTC1Hash32|DTC1KeyId32)`.
+
+Protocol exposes only a sealed relative `MaterializeCandidateDpl` plan. The
+plan defensively owns the projection274, oldDPLRef38, old protected-source
+fingerprint, exact verified DCP1/DCS1/DCQ1 bytes and refs, and the protected
+HMAC key ID. It re-derives DPL fields 1..11 and 15..17 from the projection,
+requires fields 12..14 to be the exact verified refs for the same network,
+component subject, account generation, transaction, external global DCS CAS
+and 3-of-4 DCQ, emits field18 once with the protected-record HMAC transcript,
+freezes the resulting 576 bytes, locally verifies its HMAC and canonical
+re-decode, and returns only owned bytes plus exact old/new source tuples.
+HMAC key lookup occurs only after all public bounds and refs pass; missing,
+wrong, disabled, unhealthy or kill-switched key fails before authoring. A
+consumer must durably reread the exact bytes and verify HMAC again, then in one
+transaction recheck oldDPLRef, old protected-source fingerprint, DCM/DRS and
+authority heads, transaction time, external receipt/lease and key health, and
+CAS old source to the exact new DPL. Source movement returns
+`ExternalCheckpointAhead`, publishes nothing and never regenerates different
+bytes. This cold path reconstructs the candidate DPL solely from recovered
+DRC/DRM2 and externally verified DCP/DCS/DCQ even when the local candidate DPL
+and shadow pointer are both absent after the external CAS.
 
 Recovery callback ownership is stricter than the wire grammar. Before any
 callback or `await`, the implementation validates every scalar and length
@@ -1397,14 +1594,14 @@ live row is evicted to admit work.
 ### 8.1 Executable-evidence ownership and release gates
 
 The normative ownership table is
-`dnp1-classical-v1.evidence-ownership.json`. It contains exactly 157 unique
+`dnp1-classical-v1.evidence-ownership.json`. It contains exactly 170 unique
 semantic vector IDs and assigns each to one closed owner and one closed gate.
-The owner totals are Protocol 100, Registry 13, XNode 11, Shared 2,
-DevOpsWitness 12, CrossRepoE2E 16, and MAUI 3. The gate totals are 103
-`ProtocolPackageBlocking` rows (Protocol 100 plus exactly three
-DevOpsWitness rows) and 54 `CutoverFinalRelease` rows. A package GO requires
+The owner totals are Protocol 112, Registry 13, XNode 11, Shared 2,
+DevOpsWitness 12, CrossRepoE2E 17, and MAUI 3. The gate totals are 115
+`ProtocolPackageBlocking` rows (Protocol 112 plus exactly three
+DevOpsWitness rows) and 55 `CutoverFinalRelease` rows. A package GO requires
 one complete Passed result for every package row. A final-release GO requires
-one complete Passed result for all 157 rows and retains the already-proven
+one complete Passed result for all 170 rows and retains the already-proven
 package subset. Consumer-owned rows cannot be counted green at package GO.
 
 The current normative claim is `ClassificationOnly`. The observed
@@ -1470,7 +1667,8 @@ DCM/DRS/DPL and sealed current cutover-relative facts. It is frozen once. The
 candidate-bound fields compared directly with DRC1 before the provider are
 exactly network, component subject, account generation, DCM ref, DRS ref,
 shadow-state hash, next-pin-core hash, and protector key ID. Component
-kind/subject, account hash, reset ID and DPL ref are separate local
+kind/subject, account hash, reset ID, DPL ref and the exact fresh external DCL
+fact for nonterminal state are separate local
 sealed-current-context checks; they are not DRC1 fields. The witness-CAS
 deployment subject is a different namespace and cannot substitute for the DRC1
 component subject; cross-feed rejects before provider work. The local context also
@@ -1478,9 +1676,12 @@ contains exactly two typed rows in increasing order,
 `1=ProtectedStateHmac` and `2=RecoveryNonceLatch`, each with a distinct
 nonzero key ID. The protector ID is already candidate-bound by DRC1. All direct
 and local checks precede provider work. The full post-open closure adds DCM
-generation, DRS revision/count/head, current-source fingerprint and the exact
-transitive DCM/DRS/DPL rows, then fixed-time compares after the one owned DRM
-restore. Pre/post mutation rejects. No raw-tuple factory
+generation, DRS revision/count/head, current-source fingerprint (including
+external DCL ref and expiry for nonterminal state), exact DCM/DRS
+rows and the exact 274-byte DPL pin-core projection, then fixed-time compares
+after the one owned DRM restore. The exact current full DPL is separately
+compared at sealed expected-context mint and again after open/final CAS; it is
+never required inside DRM2. Pre/post mutation rejects. No raw-tuple factory
 exists; the result makes no authority or durability claim. Consumer-owned
 final restore still rechecks live heads and performs its own atomic CAS.
 
