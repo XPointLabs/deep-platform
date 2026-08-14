@@ -1,11 +1,11 @@
-﻿{
+{
     "$schema":  "dnp1-classical-v1.evidence-ownership.schema.json",
     "schemaVersion":  "1.0.0",
     "status":  "normative-executable-evidence-ownership",
     "decision":  "DR-0003",
     "workPackage":  "DNP1-PROTO-classical-identity-reset-routing",
     "normativeCommit":  "8f7173956551876d3e39a23e0e792542221a5954",
-    "normativeVectorSkeletonSha256":  "2ea44348d82c58b556262b5d9bf0216eb3f31696acee18755d954f467b2c1468",
+    "normativeVectorSkeletonSha256":  "8ce08ed54c5b5fa98992f9cf049aafe19b823acf18b843151229f31065fba242",
     "sourceSnapshot":  {
                            "path":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
                            "originPath":  "deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json",
@@ -60,7 +60,25 @@
                                          "recovery-dwh-missing-history-reset",
                                          "recovery-dwh-cold-receipt-before-authority",
                                          "recovery-whl-atomic-rotation-crash",
-                                         "recovery-whl-terminal-authority-head-crash"
+                                         "recovery-whl-terminal-authority-head-crash",
+                                         "recovery-generation-existing-constructible",
+                                         "recovery-generation-self-cycle-reject",
+                                         "recovery-generation-cross-dcp-reject",
+                                         "recovery-generation-exact-replay",
+                                         "recovery-generation-cas-crash",
+                                         "recovery-generation-source-move",
+                                         "recovery-genesis-anchor-constructible",
+                                         "recovery-genesis-double-bootstrap-race",
+                                         "recovery-genesis-crash-replay",
+                                         "recovery-genesis-descendant-cross-feed",
+                                         "recovery-genesis-terminal-reject",
+                                         "recovery-genesis-release-context-golden",
+                                         "recovery-genesis-release-ordinary-cross-feed",
+                                         "recovery-existing-release-genesis-cross-feed",
+                                         "recovery-genesis-release-stale-head",
+                                         "recovery-genesis-release-dwt-race",
+                                         "recovery-genesis-release-dcl-substitution",
+                                         "recovery-genesis-release-fork-latch"
                                      ],
                         "overriddenIds":  [
                                               "peer-outer-journal-cap-hmac-gc",
@@ -962,7 +980,7 @@
                  {
                      "id":  "api-recovery-expected-context-key-order",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "RecoveryVerifier owns the exact sealed 158-byte scope, two-row role order, distinct IDs, reset/DRC selectors and no-caller-construction preflight.",
+                     "reasonApiSeam":  "RecoveryVerifier owns exact sealed 158-byte shape, two-row role order, distinct IDs, DRC operation selector and no-caller-construction preflight; reset equality is post-open.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1028,19 +1046,19 @@
                  {
                      "id":  "recovery-drm2-pin-core-cycle-free",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns the internal non-artifact pin-core projection, exact DRM3 prefix construction, and mandatory DRM1/DRM2 rejection without reinterpretation.",
+                     "reasonApiSeam":  "Protocol owns the internal non-artifact pin-core projection, exact DRM5 prefix construction, and mandatory DRM1/DRM2/DRM3/DRM4 rejection without reinterpretation.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
                      "id":  "recovery-drm2-allowlist-dag-bounds",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns the closed DRM3 scoped per-type allowlist, reference DAG and allocation bounds; DRM1/DRM2 are rejected without reinterpretation.",
+                     "reasonApiSeam":  "Protocol owns the closed DRM5 scoped per-type allowlist, reference DAG and allocation bounds; DRM1/DRM2/DRM3/DRM4 are rejected without reinterpretation.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
                      "id":  "recovery-shadow-manifest-inventory-old-dpl",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns exact RSM1 encoding, inventory transcript and descendant exclusion.",
+                     "reasonApiSeam":  "Protocol owns exact RSM2 encoding, typed predecessor union, inventory transcript and descendant exclusion.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1124,7 +1142,7 @@
                  {
                      "id":  "recovery-schema-profile-order-substitution",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol rejects any schema source line, table, domain, order or cap drift as a DRM3 requirement.",
+                     "reasonApiSeam":  "Protocol rejects any schema source line, table, domain, order or cap drift as a DRM5 requirement.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1136,7 +1154,7 @@
                  {
                      "id":  "recovery-context-wrong-stale-cross-reset",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol rejects wrong, stale and cross-reset sealed recovery authority contexts before provider work.",
+                     "reasonApiSeam":  "Protocol rejects wrong, stale and cross-reset NormalCurrentStore sealed recovery authority contexts before provider work.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1154,7 +1172,7 @@
                  {
                      "id":  "recovery-context-cold-remint-missing",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol returns ExternalCheckpointAhead when cold authority or recovery-provider state is missing, moved, unhealthy or cross-selected and never converts raw inputs.",
+                     "reasonApiSeam":  "Protocol post-open compares registry reset to authenticated DCM and returns ExternalCheckpointAhead for mismatch or missing, moved, unhealthy or cross-selected provider state.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1240,6 +1258,114 @@
                      "executableOwner":  "CrossRepoE2E",
                      "reasonApiSeam":  "CrossRepoE2E owns atomic terminal RRL/WHL authority-head rewrite, crash restart and stale-head rejection evidence.",
                      "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-generation-existing-constructible",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the sealed ExistingDPL predecessor versus candidate tuple split and rejects old-DCP-to-new-DRC conflation.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-generation-self-cycle-reject",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol rejects candidate-as-predecessor and every self-referential RSM2/DPL/DCP/DRC construction.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-generation-cross-dcp-reject",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol fixed-time binds every predecessor and candidate ref to one network, reset, component and transaction.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-generation-exact-replay",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol deterministically reconstructs one exact candidate tuple and rejects changed replay bytes.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-generation-cas-crash",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "CrossRepoE2E owns the durable external-CAS to local-CAS crash matrix and candidate replay evidence.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-generation-source-move",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "CrossRepoE2E owns durable source/head/provider movement races and zero-publication evidence.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-anchor-constructible",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns exact492 genesis source, exact460 internal anchor, RSM2 union and sequence-one candidate construction.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-double-bootstrap-race",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "CrossRepoE2E owns the one linearizable zero-to-one deployment CAS, losing bootstrap and fork-latch evidence.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-crash-replay",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "CrossRepoE2E owns the post-quorum pre-local-install crash and exact empty-store replay evidence.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-descendant-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol derives the closed genesis transcripts and rejects every candidate, lease or deployment-head descendant.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-terminal-reject",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol stops on authenticated DWT before genesis authoring and emits no candidate or DCL-zero meaning.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-release-context-golden",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns sealed GenesisReleaseContextV1 derivation from verified nonterminal ReleaseRoot and WHL ancestry facts.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-release-ordinary-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol rejects ordinary DWT-or-DCL release fingerprints in the genesis branch.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-existing-release-genesis-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol rejects the genesis-only release fingerprint in ExistingDPL restore.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-release-stale-head",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol exact-compares sealed RRL, DWD and WHL head/history facts before minting genesis intent.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-release-dwt-race",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol rechecks nonterminal release state and stops if DWT appears before genesis publication.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-release-dcl-substitution",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol rejects DCL, lease, deployment-head and candidate descendants in GenesisReleaseContextV1.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-release-fork-latch",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol requires the permanent ReleaseRoot fork latch to remain zero through genesis mint, authoring and final CAS.",
+                     "gate":  "ProtocolPackageBlocking"
                  }
              ]
 }
