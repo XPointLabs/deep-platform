@@ -1,5 +1,8 @@
 [CmdletBinding()]
-param()
+param(
+    [ValidateSet('ProtocolPackageGO','CutoverFinalReleaseGO','ClassificationOnly')]
+    [string]$RequiredEvidenceClaim = 'ProtocolPackageGO'
+)
 
 $ErrorActionPreference = 'Stop'
 
@@ -204,7 +207,7 @@ $classicalSpecCheck = Join-Path $repoRoot 'scripts\check-dnp1-classical-spec.ps1
 if (-not (Test-Path -LiteralPath $classicalSpecCheck -PathType Leaf)) {
     Fail "DNP1 classical specification checker is missing: $classicalSpecCheck"
 }
-& $classicalSpecCheck
+& $classicalSpecCheck -RequiredEvidenceClaim $RequiredEvidenceClaim
 if ($LASTEXITCODE -ne 0) {
     Fail "DNP1 classical specification checker failed with exit code $LASTEXITCODE"
 }

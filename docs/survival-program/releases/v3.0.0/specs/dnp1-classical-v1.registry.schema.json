@@ -46,7 +46,7 @@
     },
     "artifactHashDomains": { "type": "object", "minProperties": 34, "maxProperties": 34, "additionalProperties": { "type": "string", "pattern": "^Deep/Artifact/V1/[A-Z0-9]+$" } },
     "retainedArtifactHashRules": { "type": "object", "minProperties": 10, "maxProperties": 10, "additionalProperties": { "enum": ["unchanged-reviewed-canonical-hash", "unchanged-reviewed-source-hash"] } },
-    "domains": { "type": "array", "minItems": 115, "maxItems": 115, "uniqueItems": true, "items": { "type": "string", "pattern": "^Deep/[A-Za-z0-9/-]+$" } },
+    "domains": { "type": "array", "minItems": 117, "maxItems": 117, "uniqueItems": true, "items": { "type": "string", "pattern": "^Deep/[A-Za-z0-9/-]+$" } },
     "substructures": { "type": "object" },
     "componentKinds": {
       "type": "array",
@@ -209,7 +209,7 @@
     "recovery": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["suiteId", "suite", "inputKeyMaterial", "transactionId", "extractSalt", "aeadKey", "nonce", "associatedData", "pinCoreProjection", "drmHeader", "frontierCheckpoint", "predecessorFrontier", "frontierSlots", "drtCatalog", "witnessHeadHistory", "drmCardinality", "drmRow", "drmRowOrder", "drmRowUniqueness", "drmReferenceRules", "drmReferenceFields", "drmAdjacency", "drmHash", "schemaProfileSourceLines", "schemaFingerprint", "shadowManifest", "artifactInventoryHash", "shadowStateHash", "pinCoreHash", "materializeCandidateDpl", "nonceLatchKey", "nonceLatchValue", "nonceReuse", "decryptOrder"],
+      "required": ["suiteId", "suite", "inputKeyMaterial", "transactionId", "extractSalt", "aeadKey", "nonce", "associatedData", "pinCoreProjection", "drmHeader", "frontierCheckpoint", "predecessorFrontier", "frontierSlots", "drtCatalog", "witnessHeadHistory", "resetAuthorityHead", "drmCardinality", "drmRow", "drmRowOrder", "drmRowUniqueness", "drmReferenceRules", "drmReferenceFields", "drmAdjacency", "drmHash", "schemaProfileSourceLines", "schemaFingerprint", "shadowManifest", "artifactInventoryHash", "shadowStateHash", "pinCoreHash", "materializeCandidateDpl", "nonceLatchKey", "nonceLatchValue", "nonceReuse", "decryptOrder"],
       "properties": {
         "suiteId": { "const": 1 },
         "suite": { "type": "string", "minLength": 32 },
@@ -226,7 +226,8 @@
         "frontierSlots": { "type": "array", "minItems": 10, "maxItems": 10, "uniqueItems": true, "items": { "type": "object", "required": ["kind", "successorType", "field", "predecessorType", "zeroAllowed", "maximumPerSuccessor", "sameCanonicalSubject"], "properties": { "kind": { "type": "integer", "minimum": 1, "maximum": 10 }, "successorType": { "type": "string", "pattern": "^[A-Z0-9]{4}$" }, "field": { "type": "string", "minLength": 8 }, "predecessorType": { "type": "string", "pattern": "^[A-Z0-9]{4}$" }, "zeroAllowed": { "type": "boolean" }, "maximumPerSuccessor": { "const": 1 }, "sameCanonicalSubject": { "const": true } }, "additionalProperties": false } },
         "drtCatalog": { "type": "string", "minLength": 192 },
         "witnessHeadHistory": { "type": "string", "minLength": 512 },
-        "drmCardinality": { "type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": { "type": "string", "minLength": 64 } },
+        "resetAuthorityHead": { "type": "string", "minLength": 64 },
+        "drmCardinality": { "type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": { "type": "string", "minLength": 64 } },
         "drmRow": { "type": "string", "minLength": 96 },
         "drmRowOrder": { "type": "string", "minLength": 128 },
         "drmRowUniqueness": { "type": "string", "minLength": 128 },
@@ -234,7 +235,7 @@
         "drmReferenceFields": { "type": "object", "minProperties": 30, "additionalProperties": { "type": "string", "minLength": 24 } },
         "drmAdjacency": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "minLength": 32 } },
         "drmHash": { "type": "string", "minLength": 48 },
-        "schemaProfileSourceLines": { "type": "array", "minItems": 19, "maxItems": 19, "uniqueItems": true, "items": { "type": "string", "minLength": 32 } },
+        "schemaProfileSourceLines": { "type": "array", "minItems": 20, "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 32 } },
         "schemaFingerprint": { "type": "string", "minLength": 384 },
         "shadowManifest": { "type": "string", "minLength": 192 },
         "artifactInventoryHash": { "type": "string", "minLength": 128 },
