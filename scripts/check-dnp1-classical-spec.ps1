@@ -1212,8 +1212,8 @@ if ($registry.apiInvariants.rrmPreflight -ne 'freeze-exact-canonical-RRM1-332-an
     $registry.apiInvariants.recoveryExpectedContext -notmatch 'Capsule rows never directly mint capabilities' -or
     $registry.apiInvariants.recoveryExpectedContext -notmatch 'Raw keys, pins, tuples and caller factories reject' -or
     $registry.apiInvariants.recoveryExpectedContext -notmatch 'no authority or durability claim' -or
-    $registry.apiInvariants.recoveryProvider -ne 'typed-internal-recovery-provider-derives-HKDF-key-and-nonce; Protocol-fixed-time-compares-derived-nonce-with-stored-nonce-before-AEAD-open' -or
-    $registry.apiInvariants.recoveryNonce -ne 'latch-key-is-protector-key-id32|derived-nonce24; stored-value-hashes-transaction-id32-associated-data-metadata-ciphertext-and-tag; exact-key-value-replays; changed-value-permanently-latches-before-AEAD' -or
+    $registry.apiInvariants.recoveryProvider -ne 'RecoveryProviderRegistryContext is sealed reset-surviving defensively owned nonserializable and internally minted only by a typed external registry verifier; its exact 158-byte scope is network16|resetId32|componentSubject32|accountGeneration8|rowCount2-equals2|kind1-u16-equals1|ProtectedStateHmacKeyId32|kind2-u16-equals2|RecoveryNonceLatchKeyId32; both IDs are nonzero and distinct; lookup freezes immutable resetId plus DRC operation selector network16|componentSubject32|accountGeneration8|transactionId32|protectorKeyId32 and returns monotonic sourceRevision8 with both roles healthy; no raw ID key public factory optional row role substitution or caller selection; Protocol derives the HKDF key and nonce and fixed-time compares the derived nonce with the stored nonce before AEAD open' -or
+    $registry.apiInvariants.recoveryNonce -ne 'before AEAD sealed row2 is the selector in exact typed latch request recovery-latch-key-id32|protector-key-id32|derived-nonce24|latch-value32; latch value is sha256-d(Deep/Cutover/V1/recovery-aead,transaction-id32|u32be-associated-data-length|exact-associated-data|u64be-ciphertext-length|ciphertext|aead-tag16); provider atomically compares-or-latches and exact key-value replays while changed value permanently latches even on cancellation; after open require row1 exact-equals all RFC-RAH-DTC-DWH key IDs then recompute recoveryOldProtectedSource with row1 row2 and DRC protector IDs and fixed-time compare RSM; post-open and final CAS reread exact scope IDs sourceRevision8 role health and latch value; missing rotated unhealthy moved cross-reset cross-selector or role-substituted state is ExternalCheckpointAhead with no authority; row2 ID and source revision cannot rotate or retire until DRC retainUntil and authenticated capsule-plus-transaction retention horizons elapsed and bounded authenticated GC proves zero retained rows' -or
     $registry.apiInvariants.recoveryPlaintext -ne 'successful-open-yields-one-shot-owned-plaintext-consumed-once-and-zeroed-in-finally-on-success-failure-or-cancellation' -or
     $registry.apiInvariants.cancellation -ne 'cancellation-before-or-after-every-signature-HMAC-agreement-AEAD-or-provider-callback-yields-no-commit-authority-and-no-retained-caller-buffer' -or
     $registry.apiInvariants.commitAuthority -ne 'Protocol-recovery-and-relative-results-never-authorize-durable-commit' -or
@@ -1545,7 +1545,7 @@ if (@($ownership.rows | Where-Object { $_.gate -eq 'ProtocolPackageBlocking' }).
     Fail 'evidence gate arithmetic drifted'
 }
 if ($ownership.normativeCommit -ne '8f7173956551876d3e39a23e0e792542221a5954' -or
-    $ownership.normativeVectorSkeletonSha256 -ne '9b6fe2b713aed6cd7fcb8fe47430d429f9159736a571cafdb98110bf885a7127' -or
+    $ownership.normativeVectorSkeletonSha256 -ne '2ea44348d82c58b556262b5d9bf0216eb3f31696acee18755d954f467b2c1468' -or
     $ownership.sourceSnapshot.path -ne 'docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json' -or
     $ownership.sourceSnapshot.originPath -ne 'deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json' -or
     $ownership.sourceSnapshot.sha256 -ne '64066a8081777736f4e697b6c9fe58c81e9c4be9af65866362b5c2471e7bed43') {
@@ -1897,12 +1897,12 @@ $apiClosureVectors = [ordered]@{
     'api-rrm-pin-time-callback-order' = 'generation-one RRM|0'
     'api-dwd-full-ancestry-bounds' = 'sixty-five complete DWD ancestry|0'
     'recovery-drm-order-row-corrupt' = 'terminal 452-row/nonterminal 451-row and 32-MiB DRM3 closure|1'
-    'api-recovery-nonce-reuse-latch' = 'protector plus derived nonce|0'
-    'api-recovery-expected-context-key-order' = 'Wrong local sealed HMAC or latch key kind, count, order|0'
+    'api-recovery-nonce-reuse-latch' = 'exact typed latch request; protector plus derived nonce|0'
+    'api-recovery-expected-context-key-order' = 'Exact sealed 158-byte scope has two ordered, nonzero, distinct rows|0'
     'api-recovery-expected-context-preopen' = 'Exact DRC1 network, component subject|0'
     'api-recovery-component-deployment-subject-cross-feed' = 'witness deployment subject cannot substitute|0'
-    'api-recovery-expected-context-postopen' = 'After one AEAD open|1'
-    'api-recovery-expected-context-toctou' = 'Mutation between pre-open and post-open comparisons|1'
+    'api-recovery-expected-context-postopen' = 'oldSource recomputation must bind sealed row 1, row 2 and DRC protector IDs|1'
+    'api-recovery-expected-context-toctou' = 'source revision, health or latch mutation between pre-open, post-open and final CAS|1'
     'recovery-drm-row-reversed' = 'Encrypted integration opens AEAD once|1'
     'recovery-drm-row-equal-duplicate' = 'Encrypted integration opens AEAD once|1'
     'recovery-drm-row-ref-collision-shaped' = 'Encrypted integration opens AEAD once|1'
@@ -1928,8 +1928,8 @@ $apiClosureVectors = [ordered]@{
     'recovery-context-sealed-authority-valid' = 'Sealed current identity, full ReleaseRoot ancestry and current cutover contexts bind exact fingerprints|5'
     'recovery-context-wrong-stale-cross-reset' = 'Wrong, stale or cross-reset identity, ReleaseRoot or cutover context rejects before provider|0'
     'recovery-context-movement-race' = 'final old-protected-source CAS with zero publication|5'
-    'recovery-context-cold-remint' = 'nonterminal tag supplies exact fresh DCL and no DWT, while the terminal tag supplies exact DWT and no DCL|5'
-    'recovery-context-cold-remint-missing' = 'ExternalCheckpointAhead and performs zero publication or authority conversion|1'
+    'recovery-context-cold-remint' = 'exact sealed 158-byte provider scope supplies stable healthy row IDs and source revision|5'
+    'recovery-context-cold-remint-missing' = 'cross-reset, cross-selector or role-substituted provider state returns ExternalCheckpointAhead|1'
     'recovery-identity-catalog-canonical' = 'bounded canonical ordered DPA, role transition, DPD, DPM, DNR, DRS and exact DRT/DTC inventory|4'
     'recovery-identity-catalog-head-key-cross-feed' = 'Catalog row order, count, role head, DRS revision, DRT set, target, protected key ID or cross-reset substitution|1'
     'recovery-cold-cutover-checkpoint-constructible' = 'old store absent, HMAC-verified RFC plus witness-authenticated DRC/RSM and fresh DCL/DCQ/DCP/DCS|5'

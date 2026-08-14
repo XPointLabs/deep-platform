@@ -1864,6 +1864,45 @@ public bounds; key material is never raw, capsule-contained, or plaintext.
 Missing, wrong, disabled, or unhealthy state for the shared key returns
 `ExternalCheckpointAhead`.
 
+Cold recovery obtains the otherwise nonrecoverable
+`recoveryLatchKeyId32` only through a sealed reset-surviving
+`RecoveryProviderRegistryContext`. Only a typed external registry verifier can
+mint it; the type is defensively owned, nonserializable, and has no public raw
+constructor or authority conversion. Its exact 158-byte scope is
+`network16|resetId32|componentSubject32|accountGeneration8|rowCount2=2|`
+`kind1:u16=1|ProtectedStateHmacKeyId32|kind2:u16=2|RecoveryNonceLatchKeyId32`.
+Both IDs are nonzero and distinct. Lookup freezes the immutable reset ID plus
+the exact ordered DRC operation selector
+`network16|componentSubject32|accountGeneration8|transactionId32|protectorKeyId32`;
+neither is caller-provided. The registry returns the context with a monotonic
+`sourceRevision8` and healthy state for both roles. The roles are never
+interchangeable. Before AEAD, Protocol freezes the selector, scope and revision,
+then passes exact typed request
+`recoveryLatchKeyId32|protectorKeyId32|derivedNonce24|latchValue32` to row 2.
+The provider atomically compares or reserves the latch key formed by the middle
+56 bytes. `latchValue32` is the existing
+`recovery-aead` transcript hash over transaction ID, length-framed AD,
+ciphertext length and bytes, and tag. Exact key/value replay is allowed;
+changed value permanently latches, and cancellation never rolls consumption
+back.
+
+After the single AEAD open, Protocol first authenticates RSM through the DRC
+shadow hash, then requires row 1 to equal every shared RFC1/RAH1/DTC1/DWH1
+ProtectedStateHmac ID before those HMAC checks. It recomputes
+`recoveryOldProtectedSource` with row 1, row 2, and the DRC protector ID and
+fixed-time compares it with RSM. Post-open and final-CAS rereads require the
+exact scope, operation selector, role order, IDs, source revision, healthy
+state, latch key/value, and permanent fork state to remain unchanged. Missing,
+rotated, retired, unhealthy, moved, cross-reset, cross-selector, or
+role-substituted provider state returns
+`ExternalCheckpointAhead` with no authority, candidate CAS, or publication.
+The latch provider ID and source revision cannot rotate or retire until DRC
+`retainUntil8` and the authenticated capsule and transaction retention horizons
+have elapsed and bounded authenticated GC proves zero retained rows. This is an
+API/provider-source closure for the already committed old-source preimage: it
+adds no DRM3, DRC1, RSM1, container, domain, hash transcript, decrypt-order, or
+schema-profile field and therefore does not reinterpret DRM3.
+
 In both branches the DRC-bound tuple compared before provider work is exactly
 `network16|componentSubject32|accountGeneration8|DCMRef38|DRSRef38|`
 `shadowStateHash32|nextPinCoreHash32|protectorKeyId32`. Component kind, account
