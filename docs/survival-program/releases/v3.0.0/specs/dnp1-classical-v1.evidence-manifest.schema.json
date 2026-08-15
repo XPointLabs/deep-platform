@@ -12,7 +12,7 @@
     "decision": { "const": "DR-0003" },
     "workPackage": { "const": "DNP1-PROTO-classical-identity-reset-routing" },
     "classificationSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-    "vectorSkeletonSha256": { "const": "8ce08ed54c5b5fa98992f9cf049aafe19b823acf18b843151229f31065fba242" },
+    "vectorSkeletonSha256": { "const": "93c73a56d63c0c189d866e247be2adcfb9301598d553ecbcebfb1dbe3ea1a5a0" },
     "producer": { "enum": ["Protocol", "Registry", "XNode", "Shared", "DevOpsWitness", "CrossRepoE2E", "MAUI"] },
     "repository": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]{1,63}$" },
     "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
@@ -33,7 +33,7 @@
     "cases": {
       "type": "array",
       "minItems": 1,
-        "maxItems": 211,
+        "maxItems": 279,
       "uniqueItems": true,
       "items": { "$ref": "#/$defs/case" }
     }

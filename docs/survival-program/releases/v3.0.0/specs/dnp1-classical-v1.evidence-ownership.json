@@ -4,8 +4,8 @@
     "status":  "normative-executable-evidence-ownership",
     "decision":  "DR-0003",
     "workPackage":  "DNP1-PROTO-classical-identity-reset-routing",
-    "normativeCommit":  "8f7173956551876d3e39a23e0e792542221a5954",
-    "normativeVectorSkeletonSha256":  "8ce08ed54c5b5fa98992f9cf049aafe19b823acf18b843151229f31065fba242",
+    "normativeCommit":  "7390d0996dd8ec9c6d8953ed55d299e7f2e90ddb",
+    "normativeVectorSkeletonSha256":  "83da5aee51043a8973fb91111627920a15ca22bbeec413683bb2dbf116d1c756",
     "sourceSnapshot":  {
                            "path":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
                            "originPath":  "deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json",
@@ -78,7 +78,75 @@
                                          "recovery-genesis-release-stale-head",
                                          "recovery-genesis-release-dwt-race",
                                          "recovery-genesis-release-dcl-substitution",
-                                         "recovery-genesis-release-fork-latch"
+                                         "recovery-genesis-release-fork-latch",
+                                         "recovery-genesis-keyset-shape-order",
+                                         "recovery-genesis-keyset-closed-rows",
+                                         "recovery-genesis-keyset-axis-cross-feed",
+                                         "recovery-genesis-keyset-role-swap",
+                                         "recovery-genesis-keyset-provider-cross-feed",
+                                         "recovery-genesis-keyset-source492-golden",
+                                         "recovery-genesis-keyset-reflection",
+                                         "recovery-genesis-keyset-registry-fork-restart",
+                                         "recovery-genesis-keyset-health-retention",
+                                         "recovery-genesis-keyset-final-reread-race",
+                                         "recovery-genesis-identity-context-golden",
+                                         "recovery-genesis-identity-dcm-absent",
+                                         "recovery-genesis-component-table-cross-feed",
+                                         "recovery-genesis-identity-provenance",
+                                         "recovery-genesis-author-order",
+                                         "recovery-genesis-dcm-single-author-distribution",
+                                         "recovery-genesis-dcm-divergent-distribution",
+                                         "recovery-genesis-dcm-dual-signer-mutation",
+                                         "recovery-genesis-base-identity-no-source",
+                                         "recovery-genesis-dtc-zero-branch",
+                                         "recovery-genesis-dtc-existing-cross-feed",
+                                         "recovery-genesis-full-constructibility-dag",
+                                         "recovery-genesis-dcm-first-reset-intent",
+                                         "recovery-genesis-dcm-same-account-successor",
+                                         "recovery-genesis-dcm-account-reset-intent",
+                                         "recovery-genesis-dcm-reset-intent-cross-feed",
+                                         "recovery-genesis-account-terminal-fence",
+                                         "recovery-genesis-outer-author-replay",
+                                         "recovery-genesis-outer-crash-after-external-cas",
+                                         "recovery-genesis-dcm-coordinator-distribution-crash",
+                                         "recovery-genesis-reset-reservation-request-shape",
+                                         "recovery-genesis-reset-same-account-bypass",
+                                         "recovery-genesis-reset-result-reflection",
+                                         "recovery-genesis-author-replay-phase-matrix",
+                                         "recovery-genesis-author-replay-raw-phase-reflection",
+                                         "recovery-genesis-author-replay-local-committed-normal",
+                                         "recovery-genesis-seal-candidate-selfcheck-cancel",
+                                         "recovery-genesis-author-dcp-dcs-dct-freeze",
+                                         "recovery-genesis-dcn-dcq-quorum-no-durability",
+                                         "recovery-genesis-materialize-dpl-dedicated-key",
+                                         "recovery-genesis-artifact-receipt-shape-bounds",
+                                         "recovery-genesis-reset-reservation-durable-replay",
+                                         "recovery-genesis-reset-reservation-fork-no-reuse",
+                                         "recovery-genesis-reset-reservation-cancel-retention",
+                                         "recovery-genesis-author-replay-created-crash",
+                                         "recovery-genesis-author-replay-external-committed-crash",
+                                         "recovery-genesis-author-replay-external-ahead-missing",
+                                         "recovery-genesis-author-replay-toctou-candidate-fork",
+                                         "recovery-genesis-artifact-store-stream-reread",
+                                         "recovery-genesis-artifact-store-revision-race",
+                                         "recovery-genesis-dcq-durability-substitution",
+                                         "recovery-genesis-candidate-core-cycle-free",
+                                         "recovery-genesis-artifact-receipt-max-plus-one",
+                                         "recovery-genesis-reset-reservation-state-immutable",
+                                         "recovery-genesis-seal-intent-pre-aead",
+                                         "recovery-genesis-dcn-selection-exact3-replay",
+                                         "recovery-genesis-artifact-store-handle-remint",
+                                         "recovery-genesis-reset-reservation-provider-return-crash",
+                                         "recovery-drmv-version-pair-preflight",
+                                         "recovery-genesis-gqs-hash-length-framing",
+                                         "recovery-genesis-reset-logical-scope-fork",
+                                         "recovery-genesis-quorum-pending-crash-rollback",
+                                         "recovery-genesis-transaction-intent-remint",
+                                         "recovery-genesis-prejournal-gas-crash-remint",
+                                         "recovery-genesis-prejournal-gqp-crash-remint",
+                                         "recovery-genesis-post-seal-pre-gas-crash-replay",
+                                         "recovery-genesis-gas-fsync-return-loss-remint",
+                                         "recovery-genesis-gqp-fsync-return-loss-remint"
                                      ],
                         "overriddenIds":  [
                                               "peer-outer-journal-cap-hmac-gc",
@@ -1046,13 +1114,13 @@
                  {
                      "id":  "recovery-drm2-pin-core-cycle-free",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns the internal non-artifact pin-core projection, exact DRM5 prefix construction, and mandatory DRM1/DRM2/DRM3/DRM4 rejection without reinterpretation.",
+                     "reasonApiSeam":  "Protocol owns the internal non-artifact pin-core projection, exact DRM15 prefix construction, and mandatory DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14 rejection without reinterpretation.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
                      "id":  "recovery-drm2-allowlist-dag-bounds",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns the closed DRM5 scoped per-type allowlist, reference DAG and allocation bounds; DRM1/DRM2/DRM3/DRM4 are rejected without reinterpretation.",
+                     "reasonApiSeam":  "Protocol owns the closed DRM15 scoped per-type allowlist, reference DAG and allocation bounds; DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14 are rejected without reinterpretation.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1142,7 +1210,7 @@
                  {
                      "id":  "recovery-schema-profile-order-substitution",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol rejects any schema source line, table, domain, order or cap drift as a DRM5 requirement.",
+                     "reasonApiSeam":  "Protocol rejects any schema source line, table, domain, order or cap drift as a DRM15 requirement.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1366,6 +1434,414 @@
                      "executableOwner":  "Protocol",
                      "reasonApiSeam":  "Protocol requires the permanent ReleaseRoot fork latch to remain zero through genesis mint, authoring and final CAS.",
                      "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-shape-order",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns exact296 sealed key-set shape, closed role order and pairwise-distinct validation.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-closed-rows",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol rejects missing, extra, unknown, reordered and duplicate protected-role rows.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-axis-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol fixed-time joins key-set, identity, release and component-intent axes before source construction.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-role-swap",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol binds each protected-record HMAC operation to its exact key-set role.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-provider-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol rejects equality or substitution between genesis role IDs and shared HMAC, latch or protector roles.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-source492-golden",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol alone mints the sealed composite and derives unchanged Source492 and anchor460.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-reflection",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol enforces sealed nonserializable capabilities with no public raw-ID API or authority conversion.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-registry-fork-restart",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry owns durable idempotent reservation, restart restore and permanent changed-set fork latch.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-health-retention",
+                     "executableOwner":  "Registry",
+                     "reasonApiSeam":  "Registry owns six-role health, nonrotation retention and authenticated multi-horizon GC.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-keyset-final-reread-race",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository evidence owns registry movement races around witness zero-to-one CAS and local publication.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-identity-context-golden",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol verifies the complete current identity closure and mints the sealed provenance-tagged genesis identity context.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-identity-dcm-absent",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol refuses genesis authoring without a preexisting signed current DCM and exposes no recovery DCM authoring authority.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-component-table-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol verifies the closed four-row DCM component table and derives component intent without caller values.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-identity-provenance",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol keeps CurrentProtectedStore and RecoveredDRM15 identity provenance distinct at the genesis authoring boundary.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-author-order",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the fixed identity, DTC, release, component, key-set and composite source authoring sequence.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcm-single-author-distribution",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol returns one frozen self-verified relative DCM plan; coordinator persistence is exercised through the typed CAS seam.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcm-divergent-distribution",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "The deployment coordinator must reject divergent or partial DCM distribution and fence every component bootstrap across restart.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcm-dual-signer-mutation",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol freezes the unsigned DCM before both typed signer callbacks and self-verifies exact returned bytes.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-base-identity-no-source",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol keeps the base identity context non-authoritative until the exact genesis DTC is authenticated.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dtc-zero-branch",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the canonical HMAC-authenticated zero-predecessor genesis DTC branch.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dtc-existing-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol rejects mixed or cross-fed genesis and ExistingDPL DTC predecessor shapes.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-full-constructibility-dag",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the acyclic relative author/replay DAG through Source492, anchor460 and candidate construction.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcm-first-reset-intent",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol verifies the sealed FirstDeployment reset/predecessor intent and emits only an exact relative DCM plan.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcm-same-account-successor",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol verifies exact predecessor, generation increment and reset-ID preservation for the same-account branch.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcm-account-reset-intent",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol freezes the sealed old/new reset intent and authors the new DCM before the DRA that binds its exact ref.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcm-reset-intent-cross-feed",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol rejects reset-ID, predecessor, account and branch cross-feed before signer callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-account-terminal-fence",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol fully replays current DRS and rejects AccountTerminal before DCM, DTC or genesis source authoring.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-outer-author-replay",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the sealed GenesisAuthorReplay phase machine and byte-identical relative candidate replay.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-outer-crash-after-external-cas",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository evidence must restore ExternalCommitted and finish empty-local CAS after external success without predecessor artifacts.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcm-coordinator-distribution-crash",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "The coordinator owns atomic branch persistence and byte-identical four-component distribution/restart behavior.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-reset-reservation-request-shape",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the exact267 sealed-authority-derived request grammar and callback-zero branch rejection.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-reset-same-account-bypass",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol proves SameAccount reset-ID derivation without invoking the reservation provider.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-reset-result-reflection",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the sealed exact381 result shape and absence of public raw-ID construction or authority conversion.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-author-replay-phase-matrix",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the pure exact880 journal phase transitions, GQS hash plus single aggregate DCQ slot grammar, stable candidate-core binding and immutable-field comparisons.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-author-replay-raw-phase-reflection",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol reflection proves raw phase and bytes-to-capability construction are absent.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-author-replay-local-committed-normal",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol maps authenticated LocalCommitted state to no Genesis capability and a fresh Normal restore requirement.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-seal-candidate-selfcheck-cancel",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the V5 plaintext/intent commitment, durable pre-AEAD latch seam, deterministic bounded AEAD, immediate open self-check and zero-on-cancel semantics.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-author-dcp-dcs-dct-freeze",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns pure frozen canonical DCP/DCS/DCT author plans and signature self-verification.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcn-dcq-quorum-no-durability",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol accepts exactly three sorted distinct sealed DCNs, assembles one canonical DCQ and rejects DCS/DCQ as a local durability capability.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-materialize-dpl-dedicated-key",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol routes genesis DPL HMAC only through exact296 role1 and self-verifies exact576 bytes.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-artifact-receipt-shape-bounds",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns exact285 GAS1 bounds, transcript, HMAC verification and sealed stable-handle contract.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-reset-reservation-durable-replay",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer/HSM evidence proves fsynced GRR replay survives restart with the same ID and revision.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-reset-reservation-fork-no-reuse",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository provider evidence proves changed requests, IDs and cross-scope reuse permanently fork-latch.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-reset-reservation-cancel-retention",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer evidence proves cancellation never frees a reserved reset ID before authenticated retention GC.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-author-replay-created-crash",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository crash evidence advances Created from either both heads zero or exact external committed/local zero by reminting GAS, restoring GQS and deterministically rebuilding DPL/source.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-author-replay-external-committed-crash",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository crash evidence advances ExternalCommitted from local zero or already byte-equal candidate and closes GAJ LocalCommitted byte-identically.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-author-replay-external-ahead-missing",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository restore proves external-ahead with missing journal, capsule or artifacts fails ExternalCheckpointAhead.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-author-replay-toctou-candidate-fork",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer and external stores jointly prove revision/source movement stops publication and alternate candidates fork-latch.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-artifact-store-stream-reread",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer artifact-store evidence proves bounded streaming, fsync, exact-byte reread and sealed GAS/GAJ store-handle remint after process loss.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-artifact-store-revision-race",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer artifact-store revision, health, retention and byte movement are fenced across journal and CAS boundaries.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcq-durability-substitution",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "End-to-end evidence rejects signed quorum evidence as a substitute for independently durable candidate bytes.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-candidate-core-cycle-free",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the exact494 acyclic stable candidate-core transcript and excludes every late or self-hashing field.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-artifact-receipt-max-plus-one",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol enforces the exact seven-artifact 33558991-byte maximum and rejects max-plus-one before callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-reset-reservation-state-immutable",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol accepts only immutable GRR Reserved1 and rejects transition-state replay before signer or CAS callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-seal-intent-pre-aead",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the exact V5 plaintext and seal-intent transcripts and permits AEAD only after durable exact-intent latch CAS.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-dcn-selection-exact3-replay",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer/HSM and witness evidence proves exact GQP1-461 IDs-only Pending persistence before witness calls and one exact later GQS1-580 completion for those three DCN receipts.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-artifact-store-handle-remint",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer store evidence proves sealed exact GAS/GAJ lookup, bounded byte revalidation and nonserializable handle remint without caller paths.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-reset-reservation-provider-return-crash",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer/HSM crash evidence restores the unique provider-generated operation/reset IDs through protected GRI1 logical-scope index plus exact GRR1 after fsync-before-return loss.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-drmv-version-pair-preflight",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns executable closed DRMV/version15/profile1/pin274 preflight and rejects every old, future or mixed pair before row callbacks.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-gqs-hash-length-framing",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the exact U32BE(580)-framed GQS hash transcript and wrong-inner-length rejection before journal or DPL use.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-reset-logical-scope-fork",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer reset provider evidence proves stable branch-specific logical indexing, exact intent binding and permanent fork latch on changed intent without a second mint.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-quorum-pending-crash-rollback",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer/HSM and witness evidence proves IDs-only Pending fsync and journal binding before any witness call, one exact later receipt/DCQ completion and fail-closed missing or rolled-back state after external advance.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-transaction-intent-remint",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer/HSM evidence proves exact-scope GTI1 fsync/remint, stable transaction and nonce-intent replay after a pre-seal crash without a second ID.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-prejournal-gas-crash-remint",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer store/journal evidence proves GAS-only pre-journal recovery under authenticated GAJ absence and zero external/local heads.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-prejournal-gqp-crash-remint",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer store/provider/journal evidence proves exact GAS plus IDs-only GQP recovery can create only byte-identical GAJ Created under zero heads.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-post-seal-pre-gas-crash-replay",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository crash evidence proves GTI1 and the durable nonce-intent latch reconstruct the byte-identical post-seal candidate while partial DCP/DCS/DCT bytes without GAS1 remain unavailable and non-authoritative.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-gas-fsync-return-loss-remint",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer artifact-store evidence proves sealed-scope unique lookup and byte-identical GAS1 receipt/handle remint after durable fsync response loss.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-gqp-fsync-return-loss-remint",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer quorum-provider evidence proves sealed-scope unique lookup and byte-identical GQP1 Pending remint after durable fsync response loss without selecting another trio.",
+                     "gate":  "CutoverFinalRelease"
                  }
              ]
 }
