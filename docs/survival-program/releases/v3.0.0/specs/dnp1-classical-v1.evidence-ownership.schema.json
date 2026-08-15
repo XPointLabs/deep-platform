@@ -34,8 +34,8 @@
     "gateEnum": { "const": ["ProtocolPackageBlocking", "CutoverFinalRelease"] },
     "rows": {
       "type": "array",
-      "minItems": 279,
-      "maxItems": 279,
+      "minItems": 291,
+      "maxItems": 291,
       "uniqueItems": true,
       "items": { "$ref": "#/$defs/row" }
     }

@@ -5,7 +5,7 @@
     "decision":  "DR-0003",
     "workPackage":  "DNP1-PROTO-classical-identity-reset-routing",
     "normativeCommit":  "7390d0996dd8ec9c6d8953ed55d299e7f2e90ddb",
-    "normativeVectorSkeletonSha256":  "83da5aee51043a8973fb91111627920a15ca22bbeec413683bb2dbf116d1c756",
+    "normativeVectorSkeletonSha256":  "00e521bf701334b9d49ab077b468739bcd504c8d0b3eeac947f3faedf047e8a3",
     "sourceSnapshot":  {
                            "path":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
                            "originPath":  "deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json",
@@ -146,7 +146,19 @@
                                          "recovery-genesis-prejournal-gqp-crash-remint",
                                          "recovery-genesis-post-seal-pre-gas-crash-replay",
                                          "recovery-genesis-gas-fsync-return-loss-remint",
-                                         "recovery-genesis-gqp-fsync-return-loss-remint"
+                                         "recovery-genesis-gqp-fsync-return-loss-remint",
+                                         "recovery-genesis-replay-disposition-matrix",
+                                         "recovery-genesis-replay-untrusted-head-tags",
+                                         "recovery-genesis-replay-fork-latch-atomic",
+                                         "recovery-genesis-replay-head-toctou",
+                                         "recovery-genesis-replay-gaj-hash-phase-slots",
+                                         "recovery-genesis-replay-gfl-revision-time",
+                                         "recovery-genesis-replay-external-dpl-provenance",
+                                         "recovery-genesis-replay-local-dpl-bytes-required",
+                                         "recovery-genesis-replay-lease-renewal-authoritative-b",
+                                         "recovery-genesis-replay-compatible-head-progress-retry",
+                                         "recovery-genesis-replay-compatible-phase-progress-retry",
+                                         "recovery-genesis-replay-movement-retry-bound"
                                      ],
                         "overriddenIds":  [
                                               "peer-outer-journal-cap-hmac-gc",
@@ -1114,13 +1126,13 @@
                  {
                      "id":  "recovery-drm2-pin-core-cycle-free",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns the internal non-artifact pin-core projection, exact DRM15 prefix construction, and mandatory DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14 rejection without reinterpretation.",
+                     "reasonApiSeam":  "Protocol owns the internal non-artifact pin-core projection, exact DRM19 prefix construction, and mandatory DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14/DRM15/DRM16/DRM17/DRM18 rejection without reinterpretation.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
                      "id":  "recovery-drm2-allowlist-dag-bounds",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns the closed DRM15 scoped per-type allowlist, reference DAG and allocation bounds; DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14 are rejected without reinterpretation.",
+                     "reasonApiSeam":  "Protocol owns the closed DRM19 scoped per-type allowlist, reference DAG and allocation bounds; DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14/DRM15/DRM16/DRM17/DRM18 are rejected without reinterpretation.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1210,7 +1222,7 @@
                  {
                      "id":  "recovery-schema-profile-order-substitution",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol rejects any schema source line, table, domain, order or cap drift as a DRM15 requirement.",
+                     "reasonApiSeam":  "Protocol rejects any schema source line, table, domain, order or cap drift as a DRM19 requirement.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1516,7 +1528,7 @@
                  {
                      "id":  "recovery-genesis-identity-provenance",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol keeps CurrentProtectedStore and RecoveredDRM15 identity provenance distinct at the genesis authoring boundary.",
+                     "reasonApiSeam":  "Protocol keeps CurrentProtectedStore and RecoveredDRM19 identity provenance distinct at the genesis authoring boundary.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1786,7 +1798,7 @@
                  {
                      "id":  "recovery-drmv-version-pair-preflight",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns executable closed DRMV/version15/profile1/pin274 preflight and rejects every old, future or mixed pair before row callbacks.",
+                     "reasonApiSeam":  "Protocol owns executable closed DRMV/version19/profile1/pin274 preflight and rejects every old, future or mixed pair before row callbacks.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1842,6 +1854,78 @@
                      "executableOwner":  "CrossRepoE2E",
                      "reasonApiSeam":  "Consumer quorum-provider evidence proves sealed-scope unique lookup and byte-identical GQP1 Pending remint after durable fsync response loss without selecting another trio.",
                      "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-disposition-matrix",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns validation of the untrusted full head DTO and the closed sealed five-case NoAuthorityClaim replay disposition matrix without RecordError extension or raw authority.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-untrusted-head-tags",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns deriving external/local tags after full tuple authenticity checks and rejects forged tags, partial shapes and public verified-snapshot construction before capability minting.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-fork-latch-atomic",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer journal evidence proves one atomic protected GFL1 insertion plus full GAJ fork-latch CAS, exact lost-response replay and fail-closed half-write or rollback handling.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-head-toctou",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository orchestration evidence proves that only a final stable authenticated same-sequence fork or rollback reaches the durable reasons1-3 latch; A/B movement cannot latch.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-gaj-hash-phase-slots",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the exact V9 full-GAJ hash and closed phase0 versus phase1/2 derivation of every expected candidate slot.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-gfl-revision-time",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer journal evidence proves exact GAJ-plus-one revision, authoritative DB time, fresh lease, shared key and lost-response replay invariants.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-external-dpl-provenance",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns deterministic candidate DPL materialization and HMAC/ref/source recomputation from sealed quorum and DPL-role contexts rather than DTO assertions.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-local-dpl-bytes-required",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Consumer store evidence supplies exact local DPL bytes and stable key-role revision/health for Protocol HMAC and ref/source recomputation.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-lease-renewal-authoritative-b",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns stable-head comparison and authoritative read-B acceptance of same-or-higher revision plus fresh same-or-later effective lease without movement evidence.",
+                     "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-compatible-head-progress-retry",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository orchestration evidence proves zero-to-exact-candidate progress discards the preliminary snapshot and retries without GFL or GAJ fork mutation.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-compatible-phase-progress-retry",
+                     "executableOwner":  "CrossRepoE2E",
+                     "reasonApiSeam":  "Cross-repository orchestration evidence proves compatible GAJ phase or local-head progress retries to a stable disposition and cannot become permanent fork evidence.",
+                     "gate":  "CutoverFinalRelease"
+                 },
+                 {
+                     "id":  "recovery-genesis-replay-movement-retry-bound",
+                     "executableOwner":  "Protocol",
+                     "reasonApiSeam":  "Protocol owns the exact three-attempt absolute-deadline and cancellation budget, max-plus-one rejection, zero-mutation exhaustion and fresh later invocation semantics.",
+                     "gate":  "ProtocolPackageBlocking"
                  }
              ]
 }

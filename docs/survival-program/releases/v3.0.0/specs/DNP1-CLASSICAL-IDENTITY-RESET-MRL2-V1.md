@@ -931,11 +931,11 @@ AD = U32BE(metadataLength) ||
      canonical DRC1 fields 1..15 encoded with fieldCount=15
 ```
 
-`DRM15` plaintext prefix is exactly 284 bytes at offsets
-`magic[0..4)="DRMV"`, `wireVersion[4]=15`, `componentProfile[5]=1`,
+`DRM19` plaintext prefix is exactly 284 bytes at offsets
+`magic[0..4)="DRMV"`, `wireVersion[4]=19`, `componentProfile[5]=1`,
 `artifactCount:u16be@[6..8)`, `pinCoreLength:u16be@[8..10)=274`, and
 `DplPinCoreProjectionV1@[10..284)`, followed by exact RFC1, exact RPF1, exact
-RAH1, exact DTC1, exact DWH1, then canonical ArtifactRef rows. DRM15 is
+RAH1, exact DTC1, exact DWH1, then canonical ArtifactRef rows. DRM19 is
 encrypted plaintext, not an ArtifactRef. `DRM1`, `DRM2`, any other wire version, any
 profile other than `1`, or any other pin-core length rejects. Profile `1` is
 not a second wire version. DRC1 `artifactCount`
@@ -944,8 +944,8 @@ projection hash is recomputed and fixed-time compared with DRC1
 `nextPinCoreHash` before the provider callback, then recomputed again from the
 owned post-open bytes.
 
-`DRM1`, `DRM2`, `DRM3`, `DRM4`, `DRM5`, `DRM6`, `DRM7`, `DRM8`, `DRM9`, `DRM10`, `DRM11`, `DRM12`, `DRM13` and `DRM14` reject after the single AEAD open and before any row callback; any magic other than `DRMV`, any mixed magic/version pair, and every unsupported version reject at the same boundary. DRM16 and later retain `DRMV` and increment the version byte whenever governed grammar, hash, profile semantics or schema fingerprint changes;
-their bytes are never reinterpreted as DRM15. Immediately after the 284-byte
+`DRM1`, `DRM2`, `DRM3`, `DRM4`, `DRM5`, `DRM6`, `DRM7`, `DRM8`, `DRM9`, `DRM10`, `DRM11`, `DRM12`, `DRM13`, `DRM14`, `DRM15`, `DRM16`, `DRM17` and `DRM18` reject after the single AEAD open and before any row callback; any magic other than `DRMV`, any mixed magic/version pair, and every unsupported version reject at the same boundary. DRM20 and later retain `DRMV` and increment the version byte whenever governed grammar, hash, profile semantics or schema fingerprint changes;
+their bytes are never reinterpreted as DRM19. Immediately after the 284-byte
 prefix are five encrypted, internal,
 non-artifact containers.
 
@@ -985,7 +985,7 @@ DPM hashes it plus mailboxOwnerId32/deviceId32/roleGeneration8; DNR hashes
 `network16|routerId32|descriptorGeneration8`; and DPC hashes
 `network16|routerId32|contactGeneration8`. RPF1 must equal RFC1 by exact
 kind/subject/ref with no missing or extra entry. Because RFC1 is inside the
-externally durable DRM15 recovery capsule, after old-store loss its verified HMAC and
+externally durable DRM19 recovery capsule, after old-store loss its verified HMAC and
 the capsule source binding are the old-frontier authority; when the old store
 still exists it is also reread and fixed-time compared.
 
@@ -1001,7 +1001,7 @@ are: `1=DPA.predecessorDPAC`, `2=DCM.predecessorDCM`,
 `8=DNR.predecessorDNRC`, `9=MRL2.predecessorMRL2`, and
 `10=DPC.predecessorDPC`. For each named nonzero field there is exactly one
 matching entry; a zero genesis predecessor has none. The successor ref must
-resolve to the exact DRM15 row of the named type, and the predecessor ref must
+resolve to the exact DRM19 row of the named type, and the predecessor ref must
 equal the independently sealed old-frontier fact for that exact subject and
 field kind. No entry can satisfy another field, successor, subject or type.
 The frontier hash is
@@ -1142,7 +1142,7 @@ storage or mutation callback. A direct plaintext-parser unit test may exercise
 the same ordering preflight with zero provider callbacks; it is not an
 encrypted integration claim.
 
-DRM15 has one closed component profile. Before any per-row crypto or callback,
+DRM19 has one closed component profile. Before any per-row crypto or callback,
 the complete owned plaintext is structurally scanned using row-key lengths and
 the following exact allowlist, counts and reference DAG. A future artifact
 type, changed count, or changed direction requires a new DRM version and a new
@@ -1152,7 +1152,7 @@ review; it is not an ignorable extension.
   KRT1/KRF1 rows; all
   1..65 DWD1 ancestry rows; and exactly one DWT1 iff terminal. A nonterminal
   DRM has no terminal/lease row. Its fresh exact DCL1 is a separately sealed
-  current fact outside DRM15 and is rebound after open and in the final CAS.
+  current fact outside DRM19 and is rebound after open and in the final CAS.
   RRM -> scope-1 KRT/KRF -> DWD -> DWT is the only authority direction.
 - Current-identity partition contains exactly one DCM1, one current cumulative
   DRS1 and one current DPA1. It contains three independent current-account
@@ -1213,7 +1213,7 @@ unchanged `retainedArtifactHashRules`. A type missing from both closed maps, in
 both maps, or cross-fed between map classes rejects. Canonical length and hash
 must reproduce the same `ArtifactRef38`. Authority ancestry follows decoded
 predecessor references, never physical row order. The exact
-`DRMHash` and `nextPinCoreHash` use the exact DRM15 and projection transcripts
+`DRMHash` and `nextPinCoreHash` use the exact DRM19 and projection transcripts
 in the registry. Reusing a derived nonce
 is keyed only by `protectorKeyId32||derivedNonce24`. The stored value is
 `SHA256-D(Deep/Cutover/V1/recovery-aead,
@@ -1243,7 +1243,7 @@ cutoverOrGenesisSourceFingerprint32 | oldProtectedSourceFingerprint32
 
 `artifactInventoryHash32 = SHA256-D(Deep/Cutover/V1/recovery-artifact-inventory,
 artifactCount:u16be || sorted ArtifactRef38[artifactCount])`. The count equals
-the DRM15 prefix count and the refs equal its row keys byte-for-byte. The
+the DRM19 prefix count and the refs equal its row keys byte-for-byte. The
 shadow-state hash is
 `SHA256-D(Deep/Cutover/V2/recovery-shadow-state, exact-RSM2-723)`.
 The predecessor is a closed union. Kind `1=ExistingDPL` requires a nonzero
@@ -1252,25 +1252,25 @@ requires the zero ArtifactRef38 sentinel and a nonzero exact anchor hash.
 Both, neither or another kind rejects. RSM2 cannot contain or resolve a DRC,
 DCP, DCS, DCT, DCN, DCQ, DWL, candidate DPL or any descendant/future-phase
 reference. RFC1, RPF1, RAH1, DTC1 and DWH1 hashes and key IDs equal the exact containers
-from the same owned DRM15. Its schema fingerprint identifies
-this exact DRM15 profile, adjacency table and container grammar, not an open
+from the same owned DRM19. Its schema fingerprint identifies
+this exact DRM19 profile, adjacency table and container grammar, not an open
 extension registry. Specifically,
 `RFC1Hash32 = SHA256-D(Deep/Cutover/V1/recovery-frontier-checkpoint-hash,
 U32BE(RFC1.Length)||exact-RFC1-including-keyId-and-HMAC)`.
 `schemaFingerprint32 = SHA256-D(Deep/Cutover/V1/recovery-schema-profile-fingerprint,
 UTF8(exact machine `schemaProfileSourceLines` joined by byte `0A` with one final
-`0A`))`. The twenty-four immutable compile-time lines cover wire/profile versions,
+`0A`))`. The twenty-five immutable compile-time lines cover wire/profile versions,
 grammar, sizes, caps, hash/HMAC domains, shared frontier slots/subjects, DTC
 target subjects, cardinalities, all 34 ref-field rules, allowlist/DAG, ordering,
 decrypt sequence and the complete genesis source/anchor union. They contain the complete literal values, not names or
 pointers to another table, and exclude this fingerprint, deployment, package,
-documentation and mutable policy. Their exact payload is 58791 bytes and the
-pinned result is `0fb5f78d923d67d65f85b7579dbc3927b823042a0f9b27f76270929e95d35d71`.
+documentation and mutable policy. Their exact payload is 66810 bytes and the
+pinned result is `5b4078e8519e7b8dfa1371acd77615515fb791c905f479ea28b7872dc7cc1f1a`.
 The verifier derives the lines byte-for-byte from the actual immutable machine
 values and tables, requires the stored lines to equal that derivation, and
 recomputes this nonzero value,
 then fixed-time compares it before provider work and again after AEAD. Any line,
-table, order, domain or cap change requires DRM16. No caller bytes or authority
+table, order, domain or cap change requires DRM20. No caller bytes or authority
 conversion can select the fingerprint.
 RSM2, DRC1 and the final source tuple all bind the predecessor kind, exact
 old-DPL-or-anchor, old protected-source fingerprint, RFC1/RPF1/RAH1/DTC1/DWH1 hashes and key IDs.
@@ -1449,7 +1449,7 @@ zero `oldSourceFingerprint32`; after HMAC verification it mints final sealed
 `GenesisIdentityContext` binding the exact DTC hash/key. ExistingDPL DTC
 requires both old fields nonzero and exact; mixed or cross-branch values reject.
 The final identity context is tagged internally as `CurrentProtectedStore` or
-`RecoveredDRM15`; only `CurrentProtectedStore` may authorize genesis authoring,
+`RecoveredDRM19`; only `CurrentProtectedStore` may authorize genesis authoring,
 and neither tag accepts a caller fingerprint or raw authority. The base context
 alone cannot mint Source492, anchor, RSM, DRC or any authority.
 
@@ -1470,7 +1470,7 @@ DRC authoring.
 
 Genesis candidate authoring is a sealed relative, no-durability composition.
 `RecoveryProtector.SealCandidateAsync` accepts only the already-owned bounded
-DRM15 plaintext and frozen DRC metadata. It freezes the associated data,
+DRM19 plaintext and frozen DRC metadata. It freezes the associated data,
 derives the existing HKDF key and nonce, and fixed-time compares the nonce.
 Before AEAD it computes `plaintextHash32 = SHA256-D(Deep/Cutover/V5/recovery-seal-plaintext,
 U64BE(plaintextLength)|exactOwnedPlaintext)` and
@@ -1669,7 +1669,7 @@ the live or reminted GAS1 stable handle and exact bytes, the
 latest external DCS/DCQ/DCP/DRC/capsule tuple, local DPL/source head, the sealed
 reset reservation and genesis release/identity/intent/key-set/provider
 contexts, and the current witness head. It rechecks bounded bytes, journal
-HMAC and phase, the GAS inventory and candidate core fingerprint, DRC/RSM/DRM15,
+HMAC and phase, the GAS inventory and candidate core fingerprint, DRC/RSM/DRM19,
 capsule and transitive availability, signatures, quorum, reset reservation,
 provider/store revisions, and latest heads before minting a sealed replay
 plan. The phase/head matrix is exhaustive. Created plus external-zero/local-zero
@@ -1688,6 +1688,137 @@ receipt does likewise. Every provider, store, journal and source is reread
 before and after awaits and at final CAS. No raw phase enum, reference tuple,
 parser, factory or durability claim exists.
 
+DRM19 closes the replay-orchestration authority seam without extending
+`RecordError`. Protocol derives a sealed, nonserializable exact122
+`GenesisReplayScopeV1`
+`network16|resetId32|componentKind2|componentSubject32|accountGeneration8|`
+`transactionId32` only from HMAC-verified GAJ1 and sealed genesis contexts.
+A consumer callback takes only that sealed scope and performs one locked
+operation: preliminary read-A of the authenticated external head/lease, one
+transactional GAJ1 plus local DPL/source read, then authoritative read-B of the
+external head/lease under the same per-scope orchestration lock. Stable head
+identity is sequence plus the complete candidate ref/source tuple; renewable
+lease and external revision are metadata, not head identity. If A and B have
+the same stable head and B has a same-or-higher revision and a fresh same-or-
+later effective lease, Protocol uses B. A compatible zero-to-exact-candidate
+head advance, compatible phase/local advance, or any other A/B movement cannot
+mint evidence or a public disposition: Protocol discards the snapshot and
+internally retries the whole callback. This is one network callback per
+attempt even though it contains two provider reads. One replay invocation has
+exactly `maxAttempts=3` under one absolute deadline captured from the trusted
+consumer time/timeout policy before acquiring the per-scope lock. Protocol
+checks cancellation and that deadline before and after every read-A and
+read-B, and before and after the transactional GAJ/local read. Three moving
+attempts exhaust the invocation; a fourth callback is forbidden. Exhaustion,
+deadline or cancellation fails closed with no disposition subtype, GFL,
+GAJ/local mutation, authority or publication, releases the scope lock, and a
+later invocation starts a fresh three-attempt budget. It returns only an
+untrusted defensively-owned bounded `GenesisReplayHeadReadResult`; consumer
+code cannot mint a verified snapshot and there is no public
+bytes-to-verified factory.
+
+The provider DTO includes the full bounded external artifact bytes and head
+facts needed for verification. Protocol verifies GAJ HMAC, release authority,
+fresh signed windows, exact DRC1, four kind-ordered DCP1, DCS1, DCT1,
+exact-three DCN/DCQ quorum and the complete local DPL bytes when local is
+nonempty. The external DPL ref/source carried by the DTO are equality-only
+assertions: Protocol deterministically materializes the exact DPL bytes from
+verified GQP, the exact three DCN/DCQ facts and a sealed current
+`GenesisProtectedKeySetContext`, HMAC-verifies with its DPL-role key, and
+recomputes both ref and source. Local tag1 likewise requires the exact local
+DPL bytes, DPL-role HMAC verification and recomputed ref/source. The sealed
+key-set revision and health are reread before and after materialization, GAJ
+transition and local CAS; no raw DPL key or key ID enters the result. It
+does not trust provider tags: it derives the external and local tags only after
+those checks and then internally mints the sealed snapshot. The canonical
+observed tuple is exact519 bytes:
+`externalTag1|externalSequence8|DRCRef38|fourDCPRefs152|DCSRef38|DCTRef38|`
+`DCQRef38|externalDPLRef38|externalSourceFingerprint32|localTag1|`
+`localDPLRef38|localSourceFingerprint32|GAJPhase1|GAJRevision8|GAJHash32|`
+`externalRevision8|leaseExpiry8|localRevision8`. External tag 0 requires
+sequence0, every external candidate slot zero and leaseExpiry=0; tag1 requires
+sequence1, the complete verified tuple and leaseExpiry equal the minimum of
+the authenticated provider lease expiry, the four signed DCP expiresAt values,
+DCS expiresAt, DCT expiresAt and DCQ quorumExpiresAt. That effective minimum is
+nonzero and strictly greater than the one authoritative transaction time; no
+skew allowance exists. Local tag0 requires
+zero DPL/source and no local DPL bytes; tag1 requires exact HMAC-verified DPL
+bytes and recomputed DPLRef38/source32. All revisions are nonzero monotonic.
+A final authoritative read-B is mandatory under the same scope lock before any
+disposition or CAS. Only a final stable authenticated tuple is classified by
+the matrix; an A/B mismatch is retry state, never permanent fork evidence.
+Local installation uses exact empty-to-candidate
+CAS and immediate transactional reread; there is no fictitious cross-system
+atomic snapshot. Timeout, unavailable state, unauthenticated bytes or failed
+HMAC/signature/lease verification fail closed and are not fork evidence.
+
+Protocol returns exactly one sealed `GenesisReplayDisposition` subtype, each
+with an internal constructor and `NoAuthorityClaim`:
+`CreatedContinue`, `ExternalCatchUp`, `LocalCatchUp`,
+`NormalCurrentRequired`, or `ExternalCheckpointAhead`. There is no public
+enum, raw phase/ref constructor, generic result factory or `RecordError`
+mapping. The closed matrix is:
+
+- Created plus external-zero/local-zero yields `CreatedContinue`, owning the
+  same verified GAS/GQP/GAJ candidate continuation.
+- Created plus the exact external candidate and local zero yields
+  `ExternalCatchUp`. It owns sealed GAS, DRC, four DCP, DCS, DCT, GQP, the
+  exact three DCN receipts, verified DCQ and a sealed current
+  `GenesisProtectedKeySetContext` with DPL-role revision/health needed to
+  complete the byte-identical GQS, materialize candidate DPL/source and CAS GAJ
+  phase 0 to 1.
+- ExternalCommitted plus the exact external candidate and local zero or
+  byte-equal candidate yields `LocalCatchUp`. It owns exact candidate DPL
+  bytes/source, the verified external tuple and the sealed local/GAJ CAS
+  predicate for empty-to-candidate or byte-equal replay followed by GAJ phase 1
+  to 2.
+- LocalCommitted yields `NormalCurrentRequired` only when GAJ candidate,
+  external candidate and local DPL/source are all byte-equal. It owns no
+  genesis capability and forces fresh NormalCurrentStore restore.
+- Every other fully authenticated tuple, including any phase-2 inequality,
+  yields `ExternalCheckpointAhead` only after permanent latch verification.
+
+Protocol deterministically derives a closed mismatch reason byte only from the
+final stable authenticated tuple: 1 ExternalDifferent, 2 LocalDifferent, or
+3 InvalidPhaseCombination. There is no movement reason; read-A is never part
+of GFL evidence and A/B movement always retries without latching. The
+phase-relative expected candidate slots are
+exact374 bytes
+`DRCRef38|fourDCPRefs152|DCSRef38|DCTRef38|DCQRef38|DPLRef38|source32`.
+For Created phase0, the DRC, four DCP, DCS and DCT refs are copied exactly from
+the HMAC-verified GAJ1 and DCQ/DPL/source are zero. For ExternalCommitted or
+LocalCommitted phase1/2, all seven slots are copied exactly from GAJ1 and are
+nonzero as required by that phase. `expectedGAJHash32` is
+`SHA256-D(Deep/Cutover/V9/genesis-author-journal-hash,U32BE(880)|`
+`exact-full-HMAC-verified-GAJ1-880)`; the GAJ HMAC is verified first.
+Fork evidence is the exact1056 transcript
+`sealedScope122|reason1|expectedGAJHash32|expectedGAJRevision8|`
+`expectedCandidateSlots374|observedTuple519`; its hash is
+`SHA256-D(Deep/Cutover/V8/genesis-replay-fork-evidence,U32BE(1056)|exact1056)`.
+
+Only Protocol can derive the sealed latch request after every authenticity
+check. Consumer-owned `LatchGenesisReplayForkAsync` uses one atomic local
+journal transaction to insert or exact-replay protected internal non-artifact
+`GFL1` and CAS the exact full HMAC-verified GAJ1 forkLatch from 0 to 1 with
+revision increment and new HMAC. GFL1 is exact1176 bytes:
+`magic4|version1|reserved3|evidenceTranscript1056|evidenceHash32|`
+`latchRevision8|observedAt8|protectedStateKeyId32|HMAC32`, under
+`Deep/ProtectedState/V1/GFL1` with the exact same shared protected-state HMAC
+key ID as expected GAJ1. `latchRevision` equals the resulting GAJ
+`journalRevision`, which must equal `expectedGAJRevision+1`; maximum-u64
+expected revision rejects before mutation. The transaction supplies one
+authoritative nonzero local database `observedAt`. For external tag1 it must
+be strictly less than the final read-B leaseExpiry; for external tag0 the
+canonical leaseExpiry remains zero. GAJ bytes 0 through 806 are preserved
+byte-exact and only forkLatch 0-to-1, journalRevision +1 and HMAC change. The
+same evidence is idempotent; a different later observation under the already
+latched scope cannot replace the first receipt. After a lost response Protocol
+rereads both the unique GFL1 and full GAJ1, verifies both HMACs, exact evidence
+hash, revisions, key health and forkLatch=1, and only then may return
+`ExternalCheckpointAhead`. A GFL-only or GAJ-only half-write, ambiguous row,
+revision rollback or failed latch durability returns no disposition or
+authority. No signer, witness, local CAS or publication callback occurs between
+detecting the authenticated mismatch and durably verifying the latch.
 The internal non-artifact genesis anchor transcript is exactly 460 bytes:
 `network16|resetId32|componentKind2|componentSubject32|accountGeneration8|
 DCMRef38|DRSRef38|DWDRef38|releaseContextFingerprint32|
@@ -1759,7 +1890,7 @@ only after a later fresh restore; it is never relabeled as its own predecessor
 inside this transaction. Source movement returns
 `ExternalCheckpointAhead`, publishes nothing and never regenerates different
 bytes. This cold path reconstructs the candidate DPL solely from recovered
-DRC/DRM15 and externally verified DCP/DCS/DCQ even when the local candidate DPL
+DRC/DRM19 and externally verified DCP/DCS/DCQ even when the local candidate DPL
 and shadow pointer are both absent after the external CAS.
 
 Genesis has no predecessor DPL. Before authoring, any authenticated DWT returns
@@ -2229,14 +2360,14 @@ live row is evicted to admit work.
 ### 8.1 Executable-evidence ownership and release gates
 
 The normative ownership table is
-`dnp1-classical-v1.evidence-ownership.json`. It contains exactly 279 unique
+`dnp1-classical-v1.evidence-ownership.json`. It contains exactly 291 unique
 semantic vector IDs and assigns each to one closed owner and one closed gate.
-The owner totals are Protocol 188, Registry 15, XNode 11, Shared 2,
-DevOpsWitness 12, CrossRepoE2E 48, and MAUI 3. The gate totals are 191
-`ProtocolPackageBlocking` rows (Protocol 188 plus exactly three
-DevOpsWitness rows) and 88 `CutoverFinalRelease` rows. A package GO requires
+The owner totals are Protocol 194, Registry 15, XNode 11, Shared 2,
+DevOpsWitness 12, CrossRepoE2E 54, and MAUI 3. The gate totals are 197
+`ProtocolPackageBlocking` rows (Protocol 194 plus exactly three
+DevOpsWitness rows) and 94 `CutoverFinalRelease` rows. A package GO requires
 one complete Passed result for every package row. A final-release GO requires
-one complete Passed result for all 279 rows and retains the already-proven
+one complete Passed result for all 291 rows and retains the already-proven
 package subset. Consumer-owned rows cannot be counted green at package GO.
 
 The registry, ownership table and vector skeleton form one closed machine
@@ -2290,8 +2421,8 @@ manifest. The dedicated specification-authoring invocation must explicitly
 request `ClassificationOnly`. The no-argument program/CI governance command
 requires `ProtocolPackageGO`: it never treats an ownership-only green run,
 zero mapped evidence, or the classification claim as package completion. It
-requires all 191 package rows from complete, parsed, revision-bound evidence
-manifests without opt-in filters. Final release separately requires all 279.
+requires all 197 package rows from complete, parsed, revision-bound evidence
+manifests without opt-in filters. Final release separately requires all 291.
 
 Protocol package evidence covers only the pure DPJ codec/transition plans and
 the byte-frame parser. XNode owns the real durable journal cap/HMAC/GC,
@@ -2340,7 +2471,7 @@ refs. The nonterminal tag instead owns fresh exact DCL/DCQ/DCP/DCS and exact
 candidate refs, and owns no DWT. Those external rows are not witness-verified authority yet,
 and it does not trust caller-provided release, identity, or cutover
 fingerprints. After its single bounded AEAD open, the branch owns and
-structurally preflights DRM15, rejects DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14, recomputes the exact RSM2-723
+structurally preflights DRM19, rejects DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14/DRM15/DRM16/DRM17/DRM18, recomputes the exact RSM2-723
 hash and requires equality to the frozen DRC1 `shadowStateHash32`, HMAC-verifies
 RFC1, RAH1, DTC1 and DWH1, and restores the complete RRM/scope-1 KRT/KRF/DWD
 ancestry using DWH. Only after that release authority exists does it verify
@@ -2410,8 +2541,8 @@ role-substituted provider state returns
 The latch provider ID and source revision cannot rotate or retire until DRC
 `retainUntil8` and the authenticated capsule and transaction retention horizons
 have elapsed and bounded authenticated GC proves zero retained rows. This is an
-API/provider-source closure remains part of the DRM15 schema profile. DRM1,
-DRM2, DRM3, DRM4, DRM5, DRM6, DRM7, DRM8, DRM9, DRM10, DRM11, DRM12, DRM13 and DRM14 are rejected and never reinterpreted.
+API/provider-source closure remains part of the DRM19 schema profile. DRM1,
+DRM2, DRM3, DRM4, DRM5, DRM6, DRM7, DRM8, DRM9, DRM10, DRM11, DRM12, DRM13, DRM14, DRM15, DRM16, DRM17 and DRM18 are rejected and never reinterpreted.
 
 In both branches the DRC-bound tuple compared before provider work is exactly
 `network16|componentSubject32|accountGeneration8|DCMRef38|DRSRef38|`
