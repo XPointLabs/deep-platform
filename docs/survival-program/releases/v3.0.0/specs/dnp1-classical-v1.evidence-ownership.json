@@ -5,7 +5,7 @@
     "decision":  "DR-0003",
     "workPackage":  "DNP1-PROTO-classical-identity-reset-routing",
     "normativeCommit":  "7390d0996dd8ec9c6d8953ed55d299e7f2e90ddb",
-    "normativeVectorSkeletonSha256":  "00e521bf701334b9d49ab077b468739bcd504c8d0b3eeac947f3faedf047e8a3",
+    "normativeVectorSkeletonSha256":  "449c84b2bfd754e44da11fcd69aa4d3917db95a2a410168cabc98d6d57959b25",
     "sourceSnapshot":  {
                            "path":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
                            "originPath":  "deep-protocol/artifacts/dnp1-vector-fragments/all146-classification.json",
@@ -158,7 +158,30 @@
                                          "recovery-genesis-replay-lease-renewal-authoritative-b",
                                          "recovery-genesis-replay-compatible-head-progress-retry",
                                          "recovery-genesis-replay-compatible-phase-progress-retry",
-                                         "recovery-genesis-replay-movement-retry-bound"
+                                         "recovery-genesis-replay-movement-retry-bound",
+                                         "recovery-drm20-dgo-layout-pin",
+                                         "recovery-drm20-dgo-rrm-schema-binding",
+                                         "recovery-drm20-bootstrap-environment-index",
+                                         "recovery-drm20-dgi-remint-fork",
+                                         "recovery-drm20-branch-transcripts",
+                                         "recovery-drm20-reset-origin-complete",
+                                         "recovery-drm20-gar-atomic-remint",
+                                         "recovery-drm20-gdi-prepared-signed",
+                                         "recovery-drm20-gdi-signer-order-idempotency",
+                                         "recovery-drm20-gra-prepared-signed",
+                                         "recovery-drm20-gra-signer-order-idempotency",
+                                         "recovery-drm20-gmd-bitmap-revision",
+                                         "recovery-drm20-gmd-final-barrier",
+                                         "api-drm20-relative-rrm-no-authority",
+                                         "api-drm20-data-only-relative-verifiers",
+                                         "recovery-dtc2-max-target-history",
+                                         "recovery-dtc2-history-crossfeed",
+                                         "recovery-dtc2-history-ordinal-closure",
+                                         "recovery-dtc2-cycle-free-dag",
+                                         "recovery-dtc1-drm20-migration-reject",
+                                         "recovery-dtc2-protected-fact-no-capability",
+                                         "recovery-dtc2-active-ref-collision",
+                                         "recovery-dtc2-history-order-time"
                                      ],
                         "overriddenIds":  [
                                               "peer-outer-journal-cap-hmac-gc",
@@ -1126,13 +1149,13 @@
                  {
                      "id":  "recovery-drm2-pin-core-cycle-free",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns the internal non-artifact pin-core projection, exact DRM19 prefix construction, and mandatory DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14/DRM15/DRM16/DRM17/DRM18 rejection without reinterpretation.",
+                     "reasonApiSeam":  "Protocol owns the internal non-artifact pin-core projection, exact DRM20 prefix construction, and mandatory DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14/DRM15/DRM16/DRM17/DRM18/DRM19 rejection without reinterpretation.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
                      "id":  "recovery-drm2-allowlist-dag-bounds",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns the closed DRM19 scoped per-type allowlist, reference DAG and allocation bounds; DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14/DRM15/DRM16/DRM17/DRM18 are rejected without reinterpretation.",
+                     "reasonApiSeam":  "Protocol owns the closed DRM20 scoped per-type allowlist, reference DAG and allocation bounds; DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14/DRM15/DRM16/DRM17/DRM18/DRM19 are rejected without reinterpretation.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1174,7 +1197,7 @@
                  {
                      "id":  "recovery-drm2-max-drs-drt-catalog",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns the encrypted DRS-ordered DTC1 catalog and complete maximum-1024 DRT restore.",
+                     "reasonApiSeam":  "Protocol owns the encrypted DRS-ordered DTC2 catalog and complete maximum-1024 DRT restore.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1222,7 +1245,7 @@
                  {
                      "id":  "recovery-schema-profile-order-substitution",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol rejects any schema source line, table, domain, order or cap drift as a DRM19 requirement.",
+                     "reasonApiSeam":  "Protocol rejects any schema source line, table, domain, order or cap drift as a DRM21 requirement.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1528,7 +1551,7 @@
                  {
                      "id":  "recovery-genesis-identity-provenance",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol keeps CurrentProtectedStore and RecoveredDRM19 identity provenance distinct at the genesis authoring boundary.",
+                     "reasonApiSeam":  "Protocol keeps CurrentProtectedStore and RecoveredDRM20 identity provenance distinct at the genesis authoring boundary.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1798,7 +1821,7 @@
                  {
                      "id":  "recovery-drmv-version-pair-preflight",
                      "executableOwner":  "Protocol",
-                     "reasonApiSeam":  "Protocol owns executable closed DRMV/version19/profile1/pin274 preflight and rejects every old, future or mixed pair before row callbacks.",
+                     "reasonApiSeam":  "Protocol owns executable closed DRMV/version20/profile1/pin274 preflight and rejects every old, future or mixed pair before row callbacks.",
                      "gate":  "ProtocolPackageBlocking"
                  },
                  {
@@ -1926,6 +1949,75 @@
                      "executableOwner":  "Protocol",
                      "reasonApiSeam":  "Protocol owns the exact three-attempt absolute-deadline and cancellation budget, max-plus-one rejection, zero-mutation exhaustion and fresh later invocation semantics.",
                      "gate":  "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-dgo-layout-pin", "executableOwner": "Protocol", "reasonApiSeam": "Protocol owns exact DGO282 parsing, immutable signer-public pin equality, V1 key-ID derivation and signed RRM verification.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-dgo-rrm-schema-binding", "executableOwner": "Protocol", "reasonApiSeam": "Protocol owns the V10 DGO hash and exact equality to the signed RRM schema fingerprint without provider authority.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-bootstrap-environment-index", "executableOwner": "Protocol", "reasonApiSeam": "Protocol defines bootstrap166 and validates the consumer provider's separate stable environment index and permanent fork response.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-dgi-remint-fork", "executableOwner": "Protocol", "reasonApiSeam": "Protocol verifies DGI1-160 HMAC, retained exact DGO/source and byte-identical remint while exposing no mutation authority.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-branch-transcripts", "executableOwner": "Protocol", "reasonApiSeam": "Protocol owns closed First197, Same203 and Reset65 branch shapes and distinct V10 framed hashes.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-reset-origin-complete", "executableOwner": "Protocol", "reasonApiSeam": "Protocol verifies exact ResetOrigin588 old-terminal/new-nonterminal evidence, key hashes, cutoff, reason and three signatures.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-gar-atomic-remint", "executableOwner": "Protocol", "reasonApiSeam": "Protocol verifies GAR1-742 complete evidence and post-HMAC receipt; consumer persistence supplies atomic retention and remint.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-gdi-prepared-signed", "executableOwner": "Protocol", "reasonApiSeam": "Protocol owns GDI1 exact phase validation, zero Prepared signatures and complete atomic Signed transition plan.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-gdi-signer-order-idempotency", "executableOwner": "Protocol", "reasonApiSeam": "Protocol freezes DCM signing bytes, roles, order and stable idempotency-key inputs, then self-verifies both signatures.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-gra-prepared-signed", "executableOwner": "Protocol", "reasonApiSeam": "Protocol owns GRA1 exact phase validation, zero Prepared signatures and complete atomic Signed transition plan.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-gra-signer-order-idempotency", "executableOwner": "Protocol", "reasonApiSeam": "Protocol freezes DRA signing bytes, three roles, order and idempotency inputs and verifies every returned signature.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-gmd-bitmap-revision", "executableOwner": "Protocol", "reasonApiSeam": "Protocol verifies GMD1-447 author-set binding and strict bitmap-to-revision monotonic transition predicates.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-drm20-gmd-final-barrier", "executableOwner": "CrossRepoE2E", "reasonApiSeam": "Cross-repository evidence proves each component durable CAS/reread precedes its bit and final 0x0f follows four fresh rereads.", "gate": "CutoverFinalRelease"
+                 },
+                 {
+                     "id": "api-drm20-relative-rrm-no-authority", "executableOwner": "Protocol", "reasonApiSeam": "Protocol alone joins untrusted DGO/DGI/RelativeRRM with immutable offline pin/source and returns NoAuthorityClaim.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "api-drm20-data-only-relative-verifiers", "executableOwner": "Protocol", "reasonApiSeam": "Protocol data-only DCM, DRA and DWH verifiers expose bounded verified relative facts without graph extras or authority.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-dtc2-max-target-history", "executableOwner": "Protocol", "reasonApiSeam": "Protocol owns DTC2 N/H bounds, exact 555242-byte maximum and reduced 32854723-byte component budget arithmetic.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-dtc2-history-crossfeed", "executableOwner": "Protocol", "reasonApiSeam": "Protocol verifies every protected predecessor history scope, authority, prefix and target join before recovery use.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-dtc2-history-ordinal-closure", "executableOwner": "Protocol", "reasonApiSeam": "Protocol enforces DPD/DPM ordinal1-through-H, DPA ordinal0 and unique sorted fully-used history rows.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-dtc2-cycle-free-dag", "executableOwner": "Protocol", "reasonApiSeam": "Protocol keeps DTC2 historical DPD/DPM target facts outside active DRM rows and proves the content-hash graph acyclic.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-dtc1-drm20-migration-reject", "executableOwner": "Protocol", "reasonApiSeam": "Protocol rejects DTC1, mixed catalog versions and the old catalog hash domain without reinterpretation in DRM20.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-dtc2-protected-fact-no-capability", "executableOwner": "Protocol", "reasonApiSeam": "Protocol exposes DTC2 targets/history only as protected revocation facts and has no fact-to-capability conversion.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-dtc2-active-ref-collision", "executableOwner": "Protocol", "reasonApiSeam": "Protocol rejects every protected-target ArtifactRef collision with the active DRM row set before graph validation.", "gate": "ProtocolPackageBlocking"
+                 },
+                 {
+                     "id": "recovery-dtc2-history-order-time", "executableOwner": "Protocol", "reasonApiSeam": "Protocol owns prior revision, count/head prefix, same-count and issued-target-revoked-current time ordering checks.", "gate": "ProtocolPackageBlocking"
                  }
              ]
 }

@@ -931,11 +931,11 @@ AD = U32BE(metadataLength) ||
      canonical DRC1 fields 1..15 encoded with fieldCount=15
 ```
 
-`DRM19` plaintext prefix is exactly 284 bytes at offsets
-`magic[0..4)="DRMV"`, `wireVersion[4]=19`, `componentProfile[5]=1`,
+`DRM20` plaintext prefix is exactly 284 bytes at offsets
+`magic[0..4)="DRMV"`, `wireVersion[4]=20`, `componentProfile[5]=1`,
 `artifactCount:u16be@[6..8)`, `pinCoreLength:u16be@[8..10)=274`, and
 `DplPinCoreProjectionV1@[10..284)`, followed by exact RFC1, exact RPF1, exact
-RAH1, exact DTC1, exact DWH1, then canonical ArtifactRef rows. DRM19 is
+RAH1, exact DTC2, exact DWH1, then canonical ArtifactRef rows. DRM20 is
 encrypted plaintext, not an ArtifactRef. `DRM1`, `DRM2`, any other wire version, any
 profile other than `1`, or any other pin-core length rejects. Profile `1` is
 not a second wire version. DRC1 `artifactCount`
@@ -944,8 +944,8 @@ projection hash is recomputed and fixed-time compared with DRC1
 `nextPinCoreHash` before the provider callback, then recomputed again from the
 owned post-open bytes.
 
-`DRM1`, `DRM2`, `DRM3`, `DRM4`, `DRM5`, `DRM6`, `DRM7`, `DRM8`, `DRM9`, `DRM10`, `DRM11`, `DRM12`, `DRM13`, `DRM14`, `DRM15`, `DRM16`, `DRM17` and `DRM18` reject after the single AEAD open and before any row callback; any magic other than `DRMV`, any mixed magic/version pair, and every unsupported version reject at the same boundary. DRM20 and later retain `DRMV` and increment the version byte whenever governed grammar, hash, profile semantics or schema fingerprint changes;
-their bytes are never reinterpreted as DRM19. Immediately after the 284-byte
+`DRM1`, `DRM2`, `DRM3`, `DRM4`, `DRM5`, `DRM6`, `DRM7`, `DRM8`, `DRM9`, `DRM10`, `DRM11`, `DRM12`, `DRM13`, `DRM14`, `DRM15`, `DRM16`, `DRM17`, `DRM18` and `DRM19` reject after the single AEAD open and before any row callback; any magic other than `DRMV`, any mixed magic/version pair, and every unsupported version reject at the same boundary. DRM21 and later retain `DRMV` and increment the version byte whenever governed grammar, hash, profile semantics or schema fingerprint changes;
+their bytes are never reinterpreted as DRM20. Immediately after the 284-byte
 prefix are five encrypted, internal,
 non-artifact containers.
 
@@ -961,8 +961,8 @@ protectedStateKeyId32 | HMAC32
 ```
 
 The HMAC uses the generic protected-record transcript with domain
-`Deep/ProtectedState/V1/RFC1`. DTC1 analogously uses
-`Deep/ProtectedState/V1/DTC1`. T1 authors RFC1 from the exact current protected
+`Deep/ProtectedState/V1/RFC1`. DTC2 analogously uses
+`Deep/ProtectedState/V1/DTC2`. T1 authors RFC1 from the exact current protected
 stores while holding the old-DPL/source lock; the key ID is nonzero and is the
 sealed `ProtectedStateHmac` key. Entries are sorted by
 `predecessorFieldKind2|subjectKey32`. RFC1 uses the exact same closed field-kind
@@ -985,7 +985,7 @@ DPM hashes it plus mailboxOwnerId32/deviceId32/roleGeneration8; DNR hashes
 `network16|routerId32|descriptorGeneration8`; and DPC hashes
 `network16|routerId32|contactGeneration8`. RPF1 must equal RFC1 by exact
 kind/subject/ref with no missing or extra entry. Because RFC1 is inside the
-externally durable DRM19 recovery capsule, after old-store loss its verified HMAC and
+externally durable DRM20 recovery capsule, after old-store loss its verified HMAC and
 the capsule source binding are the old-frontier authority; when the old store
 still exists it is also reread and fixed-time compared.
 
@@ -1001,7 +1001,7 @@ are: `1=DPA.predecessorDPAC`, `2=DCM.predecessorDCM`,
 `8=DNR.predecessorDNRC`, `9=MRL2.predecessorMRL2`, and
 `10=DPC.predecessorDPC`. For each named nonzero field there is exactly one
 matching entry; a zero genesis predecessor has none. The successor ref must
-resolve to the exact DRM19 row of the named type, and the predecessor ref must
+resolve to the exact DRM20 row of the named type, and the predecessor ref must
 equal the independently sealed old-frontier fact for that exact subject and
 field kind. No entry can satisfy another field, successor, subject or type.
 The frontier hash is
@@ -1033,25 +1033,61 @@ signature. A valid truncated prefix therefore cannot become authority. The
 RAH hash is `SHA256-D(Deep/Cutover/V1/recovery-reset-authority-head-fact,
 U32BE(426)||exactRAH1IncludingHmac)` and is bound by RSM and capsule source.
 
-`RecoveryDrtCatalogV1` (`DTC1`) is an encrypted internal protected record of
-`232+368*N` bytes, `0 <= N <= 1024`. Its fixed fields are byte-identical to
-RFC1 through `entryCount`, and it ends in `protectedStateKeyId32|HMAC32` under
-domain `Deep/ProtectedState/V1/DTC1`. Each entry is
-`DRT1ArtifactRef38|exactDRT1Bytes179|targetArtifactRef38|targetKind1|accountHash32|subjectKey32|targetGeneration8|randomHandle32|targetNotAfter8`.
+`RecoveryDrtCatalogV2` (`DTC2`) is an encrypted internal protected record of
+exactly `234+370*N+172*H` bytes, where `0 <= N <= 1024`, `0 <= H <= N`, and
+the maximum is 555242. Its exact grammar is:
+
+```text
+DTC2[4] | version2:u8 | reservedZero:u8 | network16 | resetId32 |
+componentKind2 | accountGeneration8 | oldDPLRef38 | oldSourceFingerprint32 |
+transactionId32 | targetCount:u16be | historyCount:u16be |
+targetEntries370N | historyEntries172H | protectedStateKeyId32 | HMAC32
+```
+
+The HMAC domain is `Deep/ProtectedState/V1/DTC2` and covers the canonical
+bytes through the protected key ID. Each target entry is exact370:
+
+```text
+DRT1ArtifactRef38 | exactDRT1Bytes179 | targetArtifactRef38 | targetKind1 |
+accountHash32 | subjectKey32 | targetGeneration8 | randomHandle32 |
+targetNotAfter8 | historyOrdinal:u16be
+```
+
+Each history entry is exact172:
+
+```text
+observedDRSRef38 | snapshotRevision8 | entryCount8 | entryHead32 | issuedAt8 |
+revocationTransitionGeneration8 | revocationTransitionRef38 |
+revocationKeyHash32
+```
 The header branch is closed. `GenesisCutoverAnchor` requires both
 `oldDPLRef38` and `oldSourceFingerprint32` to be canonical zero and binds the
 exact frozen transaction, component and account tuple; `ExistingDPL` requires
 both fields nonzero and equal to its exact predecessor source. Mixed zero state
-or cross-branch reuse rejects. The genesis zero pair is authenticated by DTC1
+or cross-branch reuse rejects. The genesis zero pair is authenticated by DTC2
 HMAC and is only the cycle-breaking base-identity step; it is not an absence,
 predecessor, storage or publication authority.
-Count and order equal the current DRS1 cumulative entries exactly; every DRS
-entry's DRT ref is the corresponding catalog ref. Exact bytes re-decode as
-DRT1, recompute the same ref, and match account, target kind/generation and
-retention semantics. The target fact is minted from the exact verified
-protected DPA1, DPD1 or DPM1 catalog: type/ref/account/subject/generation,
-revocationHandle and notAfter must match the DRT. AccountTerminal targets the
-current DPA, use the account subject and accountRevocationHandle, and require
+Target count and order equal the current DRS1 cumulative entries exactly;
+every DRS entry's DRT ref is the corresponding catalog ref. Exact bytes
+re-decode as DRT1, recompute the same ref, and match account, target
+kind/generation and retention semantics. A DPD/DPM target is a protected
+historical recovery fact only, never an active DRM row or capability, and its
+history ordinal is in `1..H`. Protocol fully verifies the exact target and its
+predecessor DRS at mint. History entries are unique and strictly increasing by
+unsigned bytewise lexicographic comparison of the complete exact172 bytes;
+`historyOrdinal` is the one-based index in that canonical order, and every
+history entry is used. Each differs from the current DRS ref, has revision below current and
+count at most current, and its head equals the recomputed prefix of the current
+entry sequence at that count. Same-count history is allowed only for an older
+revision with the same head. Its transition is exact nonterminal scope-3
+authority and its times satisfy
+`historyIssuedAt <= targetIssuedAt <= revokedAt <= currentDRSIssuedAt`.
+An active DRM ArtifactRef colliding with a protected target ref rejects. This
+closes the content-hash cycle that existed when DPD/DPM were incorrectly
+required to reference the same DRS that referenced their DRT.
+
+AccountTerminal targets the current DPA, uses history ordinal zero with no
+history entry, the account subject and accountRevocationHandle, and requires
 targetNotAfter=0. Its `subjectKey32` is not caller data: target kind `3` requires
 DPA1 and
 `SHA256-D(Deep/Cutover/V1/recovery-target-subject/DPA, network16|accountHash32|accountGeneration8)`;
@@ -1059,10 +1095,12 @@ kind `1` requires DPD1 and
 `SHA256-D(Deep/Cutover/V1/recovery-target-subject/DPD, network16|accountHash32|accountGeneration8|deviceId32|deviceGeneration8)`;
 kind `2` requires DPM1 and
 `SHA256-D(Deep/Cutover/V1/recovery-target-subject/DPM, network16|accountHash32|accountGeneration8|deviceId32|mailboxOwnerId32|roleGeneration8)`.
-Any other kind, artifact type, domain, preimage or cross-kind substitution
-rejects. Duplicate refs, targets or facts reject. The catalog hash is
-`SHA256-D(Deep/Cutover/V1/recovery-drt-catalog, exact-DTC1)`. DRT1 is therefore
-not an ArtifactRef row and does not consume the 321 component-row budget.
+Any other kind, artifact type, domain, preimage, history ordinal, unused
+history row or cross-kind substitution rejects. Duplicate refs, targets,
+history rows or facts reject. The catalog hash is
+`SHA256-D(Deep/Cutover/V2/recovery-drt-catalog, exact-full-HMAC-valid-DTC2)`.
+DRT1 is not an ArtifactRef row and does not consume the 321 component-row
+budget. DTC1 is rejected by DRM20 without reinterpretation.
 
 `RecoveryWitnessHeadHistoryV1` (`DWH1`) is the fourth internal protected
 container, `232+342*N` bytes for `0 <= N <= 64` (maximum 22120):
@@ -1126,10 +1164,10 @@ into DWH. WHL is not capsule authority. It is never reconstructed from current
 DWL or a signed predecessor-head hash. Missing, forked or legacy-absent history
 fails closed and requires destructive reset; no migration synthesizes it.
 
-RFC1, DTC1 and DWH1 key IDs are equal to the single sealed
+RFC1, DTC2 and DWH1 key IDs are equal to the single sealed
 `ProtectedStateHmac` key ID. Their distinct HMAC domains prevent cross-feed.
 
-After RFC1, RPF1, RAH1, DTC1 and DWH1, a canonical artifact row key is the exact
+After RFC1, RPF1, RAH1, DTC2 and DWH1, a canonical artifact row key is the exact
 38-byte `ArtifactRef`:
 `artifactType:u16be||canonicalLength:u32be||canonicalHash32`; the row is
 `rowKey38||exactBytes`. Because these rows are ciphertext, the AEAD provider is
@@ -1142,7 +1180,7 @@ storage or mutation callback. A direct plaintext-parser unit test may exercise
 the same ordering preflight with zero provider callbacks; it is not an
 encrypted integration claim.
 
-DRM19 has one closed component profile. Before any per-row crypto or callback,
+DRM20 has one closed component profile. Before any per-row crypto or callback,
 the complete owned plaintext is structurally scanned using row-key lengths and
 the following exact allowlist, counts and reference DAG. A future artifact
 type, changed count, or changed direction requires a new DRM version and a new
@@ -1152,7 +1190,7 @@ review; it is not an ignorable extension.
   KRT1/KRF1 rows; all
   1..65 DWD1 ancestry rows; and exactly one DWT1 iff terminal. A nonterminal
   DRM has no terminal/lease row. Its fresh exact DCL1 is a separately sealed
-  current fact outside DRM19 and is rebound after open and in the final CAS.
+  current fact outside DRM20 and is rebound after open and in the final CAS.
   RRM -> scope-1 KRT/KRF -> DWD -> DWT is the only authority direction.
 - Current-identity partition contains exactly one DCM1, one current cumulative
   DRS1 and one current DPA1. It contains three independent current-account
@@ -1178,7 +1216,7 @@ review; it is not an ignorable extension.
   no-use and cannot sign a successor artifact.
 - Component references use the exact per-type adjacency table in the machine
   registry. A reference points only to a named current DRM row, a DRT ref at
-  the same DRS index in DTC1, or one of the ten typed RPF1 predecessor kinds.
+  the same DRS index in DTC2, or one of the ten typed RPF1 predecessor kinds.
   Retained MSM/PMA/PMR and membership transitions additionally compare their
   separately sealed prior heads; they do not synthesize a predecessor from the
   candidate. No row may reference
@@ -1193,14 +1231,15 @@ the 284-byte prefix and 38-byte row overhead, terminal authority is
 `(38+332)+64*(38+412)+65*(38+1217)+(38+714)=111497` bytes and its fixed prefix
 plus authority is 111781. Nonterminal authority is 110745 and its fixed total
 is 111029. DRA1 has cardinality 0..1; all other optional rows share the
-remaining aggregate budget. DTC1 is at most `232+368*1024=377064` bytes and
+remaining aggregate budget. DTC2 is at most
+`234+(370*1024)+(172*1024)=555242` bytes and
 DWH1 is at most `232+342*64=22120` bytes. RFC1 is at most
 `232+72*66=4984`, RPF1 at most `8+78*66=5156`, and
 RAH1 is exactly 426 bytes. The historical old DPA/reset chain itself is at most
 `(38+644)+64*(38+412)=29482` encoded bytes and remains inside the component cap.
 These shapes conservatively use the terminal
 common component-artifact budget
-`33554432-111781-4984-5156-426-377064-22120=33032901` encoded bytes, so DRM plaintext and ciphertext
+`33554432-111781-4984-5156-426-555242-22120=32854723` encoded bytes, so DRM plaintext and ciphertext
 remain at most 33,554,432 bytes. Counts, row lengths, total bytes, type ranges
 and prohibited references are checked before per-row crypto or copy.
 
@@ -1213,7 +1252,7 @@ unchanged `retainedArtifactHashRules`. A type missing from both closed maps, in
 both maps, or cross-fed between map classes rejects. Canonical length and hash
 must reproduce the same `ArtifactRef38`. Authority ancestry follows decoded
 predecessor references, never physical row order. The exact
-`DRMHash` and `nextPinCoreHash` use the exact DRM19 and projection transcripts
+`DRMHash` and `nextPinCoreHash` use the exact DRM20 and projection transcripts
 in the registry. Reusing a derived nonce
 is keyed only by `protectorKeyId32||derivedNonce24`. The stored value is
 `SHA256-D(Deep/Cutover/V1/recovery-aead,
@@ -1236,14 +1275,14 @@ accountGeneration:u64be | predecessorKind:u8 | oldDPLRef38 |
 genesisAnchorHash32 | DCMRef38 | DRSRef38 |
 pinCoreHash32 | DRMHash32 | artifactInventoryHash32 | RFC1Hash32 |
 predecessorFrontierHash32 | RAH1Hash32 | drtCatalogHash32 | DWH1Hash32 |
-RFC1KeyId32 | DTC1KeyId32 |
+RFC1KeyId32 | DTC2KeyId32 |
 schemaFingerprint32 | releaseContextFingerprint32 | identityContextFingerprint32 |
 cutoverOrGenesisSourceFingerprint32 | oldProtectedSourceFingerprint32
 ```
 
 `artifactInventoryHash32 = SHA256-D(Deep/Cutover/V1/recovery-artifact-inventory,
 artifactCount:u16be || sorted ArtifactRef38[artifactCount])`. The count equals
-the DRM19 prefix count and the refs equal its row keys byte-for-byte. The
+the DRM20 prefix count and the refs equal its row keys byte-for-byte. The
 shadow-state hash is
 `SHA256-D(Deep/Cutover/V2/recovery-shadow-state, exact-RSM2-723)`.
 The predecessor is a closed union. Kind `1=ExistingDPL` requires a nonzero
@@ -1251,32 +1290,32 @@ exact full `oldDPLRef38` and a zero anchor. Kind `2=GenesisCutoverAnchor`
 requires the zero ArtifactRef38 sentinel and a nonzero exact anchor hash.
 Both, neither or another kind rejects. RSM2 cannot contain or resolve a DRC,
 DCP, DCS, DCT, DCN, DCQ, DWL, candidate DPL or any descendant/future-phase
-reference. RFC1, RPF1, RAH1, DTC1 and DWH1 hashes and key IDs equal the exact containers
-from the same owned DRM19. Its schema fingerprint identifies
-this exact DRM19 profile, adjacency table and container grammar, not an open
+reference. RFC1, RPF1, RAH1, DTC2 and DWH1 hashes and key IDs equal the exact containers
+from the same owned DRM20. Its schema fingerprint identifies
+this exact DRM20 profile, adjacency table and container grammar, not an open
 extension registry. Specifically,
 `RFC1Hash32 = SHA256-D(Deep/Cutover/V1/recovery-frontier-checkpoint-hash,
 U32BE(RFC1.Length)||exact-RFC1-including-keyId-and-HMAC)`.
 `schemaFingerprint32 = SHA256-D(Deep/Cutover/V1/recovery-schema-profile-fingerprint,
 UTF8(exact machine `schemaProfileSourceLines` joined by byte `0A` with one final
-`0A`))`. The twenty-five immutable compile-time lines cover wire/profile versions,
+`0A`))`. The twenty-six immutable compile-time lines cover wire/profile versions,
 grammar, sizes, caps, hash/HMAC domains, shared frontier slots/subjects, DTC
 target subjects, cardinalities, all 34 ref-field rules, allowlist/DAG, ordering,
 decrypt sequence and the complete genesis source/anchor union. They contain the complete literal values, not names or
 pointers to another table, and exclude this fingerprint, deployment, package,
-documentation and mutable policy. Their exact payload is 66810 bytes and the
-pinned result is `5b4078e8519e7b8dfa1371acd77615515fb791c905f479ea28b7872dc7cc1f1a`.
+documentation and mutable policy. Their exact payload is 72345 bytes and the
+pinned result is `0728ac6fd910831c935077012a9a90284f343ae8e3642ebced7072a45debac11`.
 The verifier derives the lines byte-for-byte from the actual immutable machine
 values and tables, requires the stored lines to equal that derivation, and
 recomputes this nonzero value,
 then fixed-time compares it before provider work and again after AEAD. Any line,
-table, order, domain or cap change requires DRM20. No caller bytes or authority
+table, order, domain or cap change requires DRM21. No caller bytes or authority
 conversion can select the fingerprint.
 RSM2, DRC1 and the final source tuple all bind the predecessor kind, exact
-old-DPL-or-anchor, old protected-source fingerprint, RFC1/RPF1/RAH1/DTC1/DWH1 hashes and key IDs.
+old-DPL-or-anchor, old protected-source fingerprint, RFC1/RPF1/RAH1/DTC2/DWH1 hashes and key IDs.
 The capsule source is `SHA256-D(Deep/Cutover/V2/recovery-capsule-source,
 predecessorKind1|oldProtectedSourceFingerprint32|RSM2Hash32|RFC1Hash32|
-RFC1KeyId32|RPF1Hash32|RAH1Hash32|DTC1Hash32|DTC1KeyId32|DWH1Hash32)`.
+RFC1KeyId32|RPF1Hash32|RAH1Hash32|DTC2Hash32|DTC2KeyId32|DWH1Hash32)`.
 
 The internal non-artifact `GenesisCutoverSourceV1` transcript is exactly 492
 bytes:
@@ -1326,11 +1365,13 @@ joins, and hash computation and claims no storage or activation authority.
 The signed DCM is authored once deployment-wide before any of the four
 component bootstraps. `AuthorCutoverManifestAsync` accepts only sealed current
 DPA, nonterminal ResetControl, a fully replayed current DRS with no
-`AccountTerminal`, a verified governed `ComponentSchemaSet` of exactly four
-strictly sorted unique 42-byte rows
-`componentKind2|schemaGeneration8|schemaFingerprint32` for kinds 1 through 4,
-activation/creation times, a CSPRNG reset nonce, typed reset-control and
-account-PoP signers, and exactly one sealed `ResetManifestPredecessorIntent`:
+`AccountTerminal`, the sealed governance context, a distinct trusted
+`createdAt8`, a CSPRNG reset nonce, typed reset-control and account-PoP signers,
+and exactly one Protocol-derived sealed `ResetManifestPredecessorIntent`.
+The governance context is the sole source of the exact four DGO schema rows,
+DGO `activationAt8` and `deploymentGovernanceBootstrapHash32`; no caller
+`VerifiedComponentSchemaSet`, schema row, activation time or governance hash is
+accepted. The three branches are:
 
 - `FirstDeployment` owns a sealed `GenesisResetReservationResult` containing
   the provider-generated, durably reserved nonzero CSPRNG
@@ -1357,9 +1398,11 @@ field; account reset binds the exact old/new authority and old reset ID.
 Same-account successor never calls the provider. The exact 235-byte intent is
 not the provider index. The provider derives one stable logical key from the
 sealed authority: FirstDeployment uses exact
-`mode1|network16|deploymentBootstrapSubject32` (49 bytes), where the nonzero
-bootstrap subject is an immutable consumer deployment-authority fact and
-contains no reset, DCM, RSM, DRC or candidate descendant; AccountReset uses
+`mode1|network16|bootstrapSubject32` (49 bytes), where `bootstrapSubject32`
+fixed-time equals `deploymentGovernanceBootstrapHash32` and is sourced only
+from the sealed governance context and verified First197 transcript; it has no
+independent consumer or caller deployment-authority value and contains no
+reset, DCM, RSM, DRC or candidate descendant. AccountReset uses
 exact `mode2|network16|oldAccountGeneration8|oldAccountHash32` (57 bytes).
 `logicalScopeHash32 = SHA256-D(Deep/Cutover/V6/genesis-reset-logical-scope,
 U16BE(logicalKeyLength)|exactLogicalKey)` and
@@ -1444,12 +1487,12 @@ DPA1, that signed exact DCM1, a fully replayed exact current DRS1 with no
 complete bounded role and DRT target facts, but deliberately no DTC hash/key
 and no source authority. This split breaks the identity/DTC/source cycle. For
 the genesis branch only, Protocol freezes the transaction/component/account
-tuple and authors HMAC-protected DTC1 with canonical zero `oldDPLRef38` and
+tuple and authors HMAC-protected DTC2 with canonical zero `oldDPLRef38` and
 zero `oldSourceFingerprint32`; after HMAC verification it mints final sealed
 `GenesisIdentityContext` binding the exact DTC hash/key. ExistingDPL DTC
 requires both old fields nonzero and exact; mixed or cross-branch values reject.
 The final identity context is tagged internally as `CurrentProtectedStore` or
-`RecoveredDRM19`; only `CurrentProtectedStore` may authorize genesis authoring,
+`RecoveredDRM20`; only `CurrentProtectedStore` may authorize genesis authoring,
 and neither tag accepts a caller fingerprint or raw authority. The base context
 alone cannot mint Source492, anchor, RSM, DRC or any authority.
 
@@ -1470,7 +1513,7 @@ DRC authoring.
 
 Genesis candidate authoring is a sealed relative, no-durability composition.
 `RecoveryProtector.SealCandidateAsync` accepts only the already-owned bounded
-DRM19 plaintext and frozen DRC metadata. It freezes the associated data,
+DRM20 plaintext and frozen DRC metadata. It freezes the associated data,
 derives the existing HKDF key and nonce, and fixed-time compares the nonce.
 Before AEAD it computes `plaintextHash32 = SHA256-D(Deep/Cutover/V5/recovery-seal-plaintext,
 U64BE(plaintextLength)|exactOwnedPlaintext)` and
@@ -1669,7 +1712,7 @@ the live or reminted GAS1 stable handle and exact bytes, the
 latest external DCS/DCQ/DCP/DRC/capsule tuple, local DPL/source head, the sealed
 reset reservation and genesis release/identity/intent/key-set/provider
 contexts, and the current witness head. It rechecks bounded bytes, journal
-HMAC and phase, the GAS inventory and candidate core fingerprint, DRC/RSM/DRM19,
+HMAC and phase, the GAS inventory and candidate core fingerprint, DRC/RSM/DRM20,
 capsule and transitive availability, signatures, quorum, reset reservation,
 provider/store revisions, and latest heads before minting a sealed replay
 plan. The phase/head matrix is exhaustive. Created plus external-zero/local-zero
@@ -1688,7 +1731,7 @@ receipt does likewise. Every provider, store, journal and source is reread
 before and after awaits and at final CAS. No raw phase enum, reference tuple,
 parser, factory or durability claim exists.
 
-DRM19 closes the replay-orchestration authority seam without extending
+DRM20 closes the replay-orchestration authority seam without extending
 `RecordError`. Protocol derives a sealed, nonserializable exact122
 `GenesisReplayScopeV1`
 `network16|resetId32|componentKind2|componentSubject32|accountGeneration8|`
@@ -1890,7 +1933,7 @@ only after a later fresh restore; it is never relabeled as its own predecessor
 inside this transaction. Source movement returns
 `ExternalCheckpointAhead`, publishes nothing and never regenerates different
 bytes. This cold path reconstructs the candidate DPL solely from recovered
-DRC/DRM19 and externally verified DCP/DCS/DCQ even when the local candidate DPL
+DRC/DRM20 and externally verified DCP/DCS/DCQ even when the local candidate DPL
 and shadow pointer are both absent after the external CAS.
 
 Genesis has no predecessor DPL. Before authoring, any authenticated DWT returns
@@ -2360,14 +2403,14 @@ live row is evicted to admit work.
 ### 8.1 Executable-evidence ownership and release gates
 
 The normative ownership table is
-`dnp1-classical-v1.evidence-ownership.json`. It contains exactly 291 unique
+`dnp1-classical-v1.evidence-ownership.json`. It contains exactly 314 unique
 semantic vector IDs and assigns each to one closed owner and one closed gate.
-The owner totals are Protocol 194, Registry 15, XNode 11, Shared 2,
-DevOpsWitness 12, CrossRepoE2E 54, and MAUI 3. The gate totals are 197
-`ProtocolPackageBlocking` rows (Protocol 194 plus exactly three
-DevOpsWitness rows) and 94 `CutoverFinalRelease` rows. A package GO requires
+The owner totals are Protocol 216, Registry 15, XNode 11, Shared 2,
+DevOpsWitness 12, CrossRepoE2E 55, and MAUI 3. The gate totals are 219
+`ProtocolPackageBlocking` rows (Protocol 216 plus exactly three
+DevOpsWitness rows) and 95 `CutoverFinalRelease` rows. A package GO requires
 one complete Passed result for every package row. A final-release GO requires
-one complete Passed result for all 291 rows and retains the already-proven
+one complete Passed result for all 314 rows and retains the already-proven
 package subset. Consumer-owned rows cannot be counted green at package GO.
 
 The registry, ownership table and vector skeleton form one closed machine
@@ -2421,8 +2464,8 @@ manifest. The dedicated specification-authoring invocation must explicitly
 request `ClassificationOnly`. The no-argument program/CI governance command
 requires `ProtocolPackageGO`: it never treats an ownership-only green run,
 zero mapped evidence, or the classification claim as package completion. It
-requires all 197 package rows from complete, parsed, revision-bound evidence
-manifests without opt-in filters. Final release separately requires all 291.
+requires all 219 package rows from complete, parsed, revision-bound evidence
+manifests without opt-in filters. Final release separately requires all 314.
 
 Protocol package evidence covers only the pure DPJ codec/transition plans and
 the byte-frame parser. XNode owns the real durable journal cap/HMAC/GC,
@@ -2471,9 +2514,9 @@ refs. The nonterminal tag instead owns fresh exact DCL/DCQ/DCP/DCS and exact
 candidate refs, and owns no DWT. Those external rows are not witness-verified authority yet,
 and it does not trust caller-provided release, identity, or cutover
 fingerprints. After its single bounded AEAD open, the branch owns and
-structurally preflights DRM19, rejects DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14/DRM15/DRM16/DRM17/DRM18, recomputes the exact RSM2-723
+structurally preflights DRM20, rejects DRM1/DRM2/DRM3/DRM4/DRM5/DRM6/DRM7/DRM8/DRM9/DRM10/DRM11/DRM12/DRM13/DRM14/DRM15/DRM16/DRM17/DRM18/DRM19, recomputes the exact RSM2-723
 hash and requires equality to the frozen DRC1 `shadowStateHash32`, HMAC-verifies
-RFC1, RAH1, DTC1 and DWH1, and restores the complete RRM/scope-1 KRT/KRF/DWD
+RFC1, RAH1, DTC2 and DWH1, and restores the complete RRM/scope-1 KRT/KRF/DWD
 ancestry using DWH. Only after that release authority exists does it verify
 the exact terminal DWT or the nonterminal external DCL/DCQ/DRC receipts and
 current witness head. It then restores all three current role chains and, iff
@@ -2490,9 +2533,9 @@ checkpoint authenticates the RSM cutover fingerprint and old-source tuple withou
 claiming unavailable old full DPL/DWL/RRL/RIB/MRLC/DXR bytes. Every available
 signature, HMAC, ancestry edge, catalog row, and current-DRS binding is verified
 before any recovered capability is returned.
-RFC1, RAH1, DTC1 and DWH1 HMAC verification uses only reset-surviving external HSM
+RFC1, RAH1, DTC2 and DWH1 HMAC verification uses only reset-surviving external HSM
 `ProtectedStateHmac` provider lookups by the exact shared key ID, requiring
-RFC1KeyId == RAH1KeyId == DTC1KeyId == DWH1KeyId == the sealed ProtectedStateHmac key ID
+RFC1KeyId == RAH1KeyId == DTC2KeyId == DWH1KeyId == the sealed ProtectedStateHmac key ID
 bound through DRC1 `shadowStateHash32` to RSM
 and the external receipts. Typed lookup and key-health checks occur only after
 public bounds; key material is never raw, capsule-contained, or plaintext.
@@ -2528,7 +2571,7 @@ back.
 
 After the single AEAD open, Protocol first authenticates RSM through the DRC
 shadow hash and requires the scope reset ID to equal the authenticated DCM1
-`deploymentWideResetId32`. Only then does it require row 1 to equal every shared RFC1/RAH1/DTC1/DWH1
+`deploymentWideResetId32`. Only then does it require row 1 to equal every shared RFC1/RAH1/DTC2/DWH1
 ProtectedStateHmac ID before those HMAC checks. It recomputes
 the V2 `recoveryOldProtectedSource` with predecessor kind, exact old-DPL-or-
 anchor, row 1, row 2, and the DRC protector ID and
@@ -2541,8 +2584,8 @@ role-substituted provider state returns
 The latch provider ID and source revision cannot rotate or retire until DRC
 `retainUntil8` and the authenticated capsule and transaction retention horizons
 have elapsed and bounded authenticated GC proves zero retained rows. This is an
-API/provider-source closure remains part of the DRM19 schema profile. DRM1,
-DRM2, DRM3, DRM4, DRM5, DRM6, DRM7, DRM8, DRM9, DRM10, DRM11, DRM12, DRM13, DRM14, DRM15, DRM16, DRM17 and DRM18 are rejected and never reinterpreted.
+API/provider-source closure remains part of the DRM20 schema profile. DRM1,
+DRM2, DRM3, DRM4, DRM5, DRM6, DRM7, DRM8, DRM9, DRM10, DRM11, DRM12, DRM13, DRM14, DRM15, DRM16, DRM17, DRM18 and DRM19 are rejected and never reinterpreted.
 
 In both branches the DRC-bound tuple compared before provider work is exactly
 `network16|componentSubject32|accountGeneration8|DCMRef38|DRSRef38|`
@@ -2573,6 +2616,190 @@ missing, moved, stale, or invalid authority returns `ExternalCheckpointAhead`
 with zero publication. Capsule rows never mint capabilities directly. Raw keys,
 pins, tuples, and caller factories reject. The result makes no authority or
 durability claim; the consumer-owned final restore performs its own atomic CAS.
+
+### 8.11 DRM20 immutable deployment governance and authoring durability
+
+DRM20 replaces DRM19 destructively and never reinterprets DRM1 through DRM19.
+It adds no public artifact type. Instead it closes the previously implicit
+deployment-origin, authoring-crash, and four-component delivery seams with
+protected internal non-artifact records and sealed relative Protocol results.
+The complete closed V10 domain list is
+`Deep/Cutover/V10/deployment-governance-origin`,
+`Deep/Cutover/V10/deployment-governance-bootstrap`,
+`Deep/Cutover/V10/deployment-governance-environment-index`,
+`Deep/Cutover/V10/first-deployment-cutover-branch`,
+`Deep/Cutover/V10/same-account-cutover-branch`,
+`Deep/Cutover/V10/account-reset-cutover-branch`,
+`Deep/Cutover/V10/account-reset-origin`,
+`Deep/Cutover/V10/deployment-governance-index`,
+`Deep/Cutover/V10/account-reset-origin-receipt`,
+`Deep/Cutover/V10/genesis-dcm-authoring-record`,
+`Deep/Cutover/V10/genesis-reset-authoring-record`, and
+`Deep/Cutover/V10/genesis-author-set`. The complete additional protected-state
+domain list is `Deep/ProtectedState/V1/DGI1`,
+`Deep/ProtectedState/V1/GAR1`, `Deep/ProtectedState/V1/GDI1`,
+`Deep/ProtectedState/V1/GRA1`, and `Deep/ProtectedState/V1/GMD1`.
+
+Every fixed governance record starts with an exact eight-byte header: ASCII
+magic `DGO1`, `DGI1`, `GAR1`, `GDI1`, `GRA1`, or `GMD1` as named by the
+record, followed by `version:u8=1` and `reserved3=zero`. A wrong or unknown
+magic, version, reserved byte, branch kind, state or phase rejects before any
+durable mutation.
+
+`DGO1` is exact 282 bytes: header8, network16 at offset 8,
+manifestGeneration8 at 24, environmentResetId32 at 32,
+activationAt8 at 64, componentMask8 at 72, componentCount2 at 80,
+four component-kind-ordered schema rows168 at 82, and
+manifestSignerPublic32 at 250. Its hash is
+`sha256-d(Deep/Cutover/V10/deployment-governance-origin,`
+`u16be-282|exact-DGO282)`. The signer public key is nonzero and equals the
+consumer-internal immutable offline release pin. Its
+`Deep/Cutover/V1/release-manifest-key-id` equals the signed RRM signer key ID,
+`network16`, `manifestGeneration8`, `environmentResetId32`, `activationAt8`
+and `componentMask8` each fixed-time equal their signed RRM counterpart, and
+`DGOHash32` equals the signed RRM `schemaFingerprint32`. The exact DGO,
+schema rows and immutable pin/source join are retained for the entire RRM
+epoch. Provider DGO/DGI bytes and `RelativeRRM` are untrusted data, never
+authority. Only Protocol may join them to the consumer-internal immutable
+pin/source and mint a sealed nonserializable `NoAuthorityClaim` governance
+context; durable mutation remains consumer-authorized.
+
+The bootstrap transcript is exact166
+`network16|environmentResetId32|manifestSignerKeyId32|manifestGeneration8|`
+`componentMask8|DGOHash32|RRMRef38` under the named V10 U16-framed domain.
+It and the stable environment index are derived only from that one verified
+common RRM/DGO tuple; no caller or independently decoded duplicate axis may be
+substituted.
+Its result is `deploymentGovernanceBootstrapHash32`; every later
+`governanceHash32` is exactly this hash, never DGOHash or the cyclic DGI hash,
+and the sealed governance context owns it.
+The stable provider environment index is separate and hashes exactly
+`network16|environmentResetId32|manifestSignerKeyId32`. A different RRM,
+bootstrap or DGO at the same environment index permanently fork-latches; it
+cannot mint a second environment. `DGI1` is exact160:
+header8, RRMRef38@8, DGOHash32@46, sourceRevision8@78, retainUntil8@86,
+state1@94, forkLatch1@95, protectedKeyId32@96 and HMAC32@128 under
+`Deep/ProtectedState/V1/DGI1`. Exact DGO, DGI and provider source are retained
+together and byte-exactly reminted by `RestoreDeploymentGovernanceAsync`.
+The only DGI state is `Retained=1`; zero or any other value rejects.
+
+The three closed cutover branch transcripts and hashes are:
+
+- FirstDeployment has `branchKind=1` and exact197:
+  `branchKind1|network16|newAccountGeneration8|`
+  `newAccountHash32|newDPARef38|newDRSRef38|governanceHash32|`
+  `bootstrapSubject32`, under
+  `Deep/Cutover/V10/first-deployment-cutover-branch` with U16BE197;
+- SameAccount has `branchKind=2` and exact203:
+  `branchKind1|network16|accountGeneration8|`
+  `accountHash32|DPARef38|DRSRef38|currentDCMRef38|governanceHash32`, under
+  `Deep/Cutover/V10/same-account-cutover-branch` with U16BE203;
+- AccountReset has `branchKind=3` and exact65:
+  `branchKind1|accountResetOriginHash32|governanceHash32`, under
+  `Deep/Cutover/V10/account-reset-cutover-branch` with U16BE65.
+
+For FirstDeployment, `bootstrapSubject32` fixed-time equals
+`deploymentGovernanceBootstrapHash32` and is sourced only from the sealed
+governance context; no independent consumer fact or caller replacement exists.
+Protocol verifies and freezes exactly one branch transcript as the sole branch
+source for the operation.
+
+Account reset origin is exact588 in this order:
+`network16|oldAccountGeneration8|oldAccountHash32|oldDPARef38|`
+`oldDCMGeneration8|oldDCMRef38|oldDRSRevision8|oldDRSCount8|oldDRSHead32|`
+`oldDRSRef38|oldResetGeneration8|oldResetTransitionRef38|oldResetKeyHash32|`
+`newAccountGeneration8|newAccountHash32|newDPARef38|newDRSRevision8|`
+`newDRSCount8|newDRSHead32|newDRSRef38|newResetGeneration8|`
+`newResetTransitionRef38|newResetKeyHash32|governanceHash32|cutoffAt8|reason2`.
+Its domain is `Deep/Cutover/V10/account-reset-origin` with U16BE588. The old
+side must be terminal through AccountTerminal, the new side nonterminal, the
+new account generation exactly old plus one, and reason/cutoff policy closed.
+Reset/account key hashes are raw SHA-256 exactly as required by the existing
+DRA verifier. `GAR1` exact742 is
+`header8|resetOriginTranscript588@8|resetOriginHash32@596|operationId32@628|`
+`sourceRevision8@660|retainUntil8@668|state1@676|forkLatch1@677|`
+`protectedKeyId32@678|HMAC32@710`. The row binds the exact fully verified
+reset-origin transcript and hash; the provider atomically retains the
+separately referenced exact DPA/DCM/DRS evidence plus signer-remint material
+with it. Those referenced artifact bytes are not inlined into GAR742. The only state is `Retained=1`; zero or any
+other state rejects. `accountResetOriginReceiptHash32` is computed under its
+named V10 U32-framed domain over the exact full GAR only after HMAC verification;
+partial evidence or a reconstructed bundle never remints it.
+
+`GDI1` exact1031 has `GDI1|version1|reserved3` header8, branchKind1@8,
+branchHash32@9,
+reservationHash@41, frozen DCM shape@73..884, governanceHash@885,
+operationId@917, sourceRevision@949, retainUntil@957, phase@965, fork@966,
+keyId@967 and HMAC@999. `GRA1` exact980 has
+`GRA1|version1|reserved3` header8, originReceiptHash32@8,
+newDCMRef@40, frozen DRA shape@78..865, operationId@866,
+sourceRevision@898, retainUntil@906, phase@914, fork@915, keyId@916 and
+HMAC@948. Both have exactly two states: Prepared=1 has every signature slot
+zero; Signed=2 contains the complete verified signature set written in one
+atomic CAS. There are no partial-signature phases. Signer calls use the stable
+idempotency key `(operationId, artifactKind, signerRole, signingHash)` and must
+return byte-identical deterministic signatures. DCM signer order is new
+ResetControl then account PoP over one frozen V1 manifest signing form. DRA
+signer order is old ResetControl, new Account, new ResetControl over one frozen
+V1 account-reset signing form. Protocol verifies every returned signature in
+memory before the atomic Prepared-to-Signed CAS. Full DGI/GAR/GDI/GRA hashes
+use their named V10 domain and `U32BE(exactLength)|exact-full-record` only after
+the corresponding HMAC verifies.
+
+GDI reservationHash is the exact nonzero reservation receipt hash for
+FirstDeployment and AccountReset, and canonical zero for SameAccount. GRA
+exists iff AccountReset and its originReceiptHash is the exact post-HMAC GAR
+receipt hash. Related GAR, GDI, GRA and GMD records have one byte-equal nonzero
+operationId; the GRR reservation operation is a separate receipt-bound
+operation. Any missing, extra, zero/nonzero-crossed or mismatched shape rejects.
+Signed GDI `branchKind` and `branchHash`, GMD `branchKind` and `branchHash`, and
+the verified branch transcript are fixed-time byte-equal; the author-set
+`branchKind` is the same GDI kind. A same-operation cross-branch substitution
+rejects before mutation.
+
+`GMD1` is exact447: `GMD1|version1|reserved3` header8, branchKind1@8,
+branchHash32@9, authorSetHash32@41, accountGeneration@73,
+accountHash@81, resetId@113, resetGeneration@145, DCMRef@153,
+predecessorDCMRef@191, DRARef@229, governanceHash@267,
+componentCount@299, deliveredBitmap@300, four delivery revisions@301,
+operationId@333, sourceRevision@365, retainUntil@373, phase@381, fork@382,
+keyId@383 and HMAC@415. `authorSetHash32` is
+`sha256-d(Deep/Cutover/V10/genesis-author-set,u16be-65|branchKind1|`
+`signedGDIHash32|signedGRAHashOrZero32)` and is derived only from Signed
+records. For FirstDeployment and SameAccount, signedGRAHash and DRARef are
+canonical zero; for AccountReset both are the exact nonzero GRA/DRA values.
+GMD branchKind and branchHash equal the corresponding closed First197,
+Same203 or Reset65 transcript kind and hash.
+GMD accountGeneration, accountHash, resetId, resetGeneration, DCMRef,
+predecessorDCMRef and governanceHash equal the fields parsed from the frozen
+signed DCM and verified branch; no recomposed or caller-supplied duplicate is
+accepted.
+GMD predecessorDCMRef equals the authored DCM predecessor: zero for
+FirstDeployment and AccountReset, and the exact prior DCM for SameAccount.
+Component count is exactly four. `Committed=1` is created only with bitmap zero
+and all four revisions zero. While phase remains Committed, a delivery revision is zero iff its
+bitmap bit is zero, revisions and bits are monotonic, and a bit may be set only
+after that component's consumer-authorized durable CAS and immediate exact
+reread. Only after bitmap `0x0f` and a final barrier of four fresh exact rereads
+may one atomic `Committed=1` to `Distributed=2` CAS occur; Distributed is
+immutable. Zero, unknown, skipped or rolled-back phases permanently fork-latch.
+Account reset additionally HMAC- and record-revalidates the one unique GRA
+evidence before and after every component step. Lost responses exact-replay;
+different author sets, refs, revisions or branch facts permanently fork-latch.
+
+The package-blocking API exposes `RestoreDeploymentGovernanceAsync`, the
+existing sealed `RestoreOrReserveGenesisResetIdByScopeAsync`, a relative
+`AuthorCutoverManifestAsync` plan, and
+`VerifyDistributedCutoverManifestAsync`. Where the exact signature callback
+budget requires it, standalone DCM-relative fact and data-only DRA/DWH
+verifiers may return only their verified relative facts. They cannot expose
+whole-graph extras, raw constructors, commit capability, mutation authority or
+any conversion from `RelativeRRM` to authority.
+
+`AuthorCutoverManifestAsync` consumes the sealed governance context and a
+Protocol-derived branch only. It accepts no caller schema rows, activation time
+or governance hash: the exact four DGO rows and DGO activationAt are the DCM
+source, and the context supplies the exact deploymentGovernanceBootstrapHash.
 
 The reproducible package closure has exactly these current package names:
 

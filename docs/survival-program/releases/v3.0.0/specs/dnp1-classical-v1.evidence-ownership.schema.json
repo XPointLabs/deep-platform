@@ -12,7 +12,7 @@
     "decision": { "const": "DR-0003" },
     "workPackage": { "const": "DNP1-PROTO-classical-identity-reset-routing" },
     "normativeCommit": { "const": "7390d0996dd8ec9c6d8953ed55d299e7f2e90ddb" },
-    "normativeVectorSkeletonSha256": { "const": "93c73a56d63c0c189d866e247be2adcfb9301598d553ecbcebfb1dbe3ea1a5a0" },
+    "normativeVectorSkeletonSha256": { "const": "449c84b2bfd754e44da11fcd69aa4d3917db95a2a410168cabc98d6d57959b25" },
     "sourceSnapshot": {
       "const": {
         "path": "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-source-snapshot.json",
@@ -26,7 +26,7 @@
       "required": ["sourceRowCount", "addedIds", "overriddenIds"],
       "properties": {
         "sourceRowCount": { "const": 146 },
-        "addedIds": { "type": "array", "minItems": 130, "maxItems": 130, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } },
+        "addedIds": { "type": "array", "minItems": 168, "maxItems": 168, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } },
         "overriddenIds": { "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } }
       }
     },
@@ -34,8 +34,8 @@
     "gateEnum": { "const": ["ProtocolPackageBlocking", "CutoverFinalRelease"] },
     "rows": {
       "type": "array",
-      "minItems": 291,
-      "maxItems": 291,
+      "minItems": 314,
+      "maxItems": 314,
       "uniqueItems": true,
       "items": { "$ref": "#/$defs/row" }
     }
