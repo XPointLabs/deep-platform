@@ -9,6 +9,8 @@
 ## Уже подтверждено
 
 - Реальный Android ↔ Windows текст проходит через authenticated MAU2 по CA-trusted HTTPS; Android показывает точный статус `✓ / Отправлено`.
+- Реализован clean-break Deep-native privacy route: exact binary MAU2 проходит через три послойно зашифрованных XNode, primary/fallback полностью не пересекаются, а direct MAU2, Session RPC и прежний JSON-onion удалены. Это пока compile/automated-gate evidence; прежний physical run не подтверждает новый путь.
+- Survival authority публикует независимые X25519 keys и `privacy-routes.v1.json`; его SHA-256 связан одновременно с activation и подписанной Mr. X policy. Fallback разрешён только при доказанном отказе до пересылки.
 - Ошибка прежнего status test была в OEM-декодировке UTF-8 UI dump и исправлена в `deep-client-maui` commit `060a983`.
 - Public services используют системное TLS-доверие без статического leaf-SPKI pinning; UAT CA добавляется только в physical-E2E Android build.
 - UAT local-state reset разрешён. Production package/data остаются вне области сброса.
@@ -18,6 +20,7 @@
 
 ### RC-1. Закрыть physical payload matrix
 
+- Сначала заново опубликовать подписанный privacy-route runtime и доказать Android ↔ Windows текст через `/api/ingress/v1/frame`, exact 3-hop primary и непересекающийся fallback; прямой MAU2 endpoint не должен существовать.
 - Исправить Android file-picker/import: после выбора generic fixture сейчас не появляется `Chat.StagedAttachmentFilename`.
 - Доказать в обе стороны: generic file, PDF/document, inline image, voice message, exact metadata/hash, open/save/play completion.
 - Повторить cold restart и доказать сохранность/дедупликацию.
