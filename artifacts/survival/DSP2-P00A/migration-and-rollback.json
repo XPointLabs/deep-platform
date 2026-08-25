@@ -1,9 +1,0 @@
-{
-  "schemaVersion": "0.1.0",
-  "workPackageId": "DSP2-P00A",
-  "migration": "Use docs/survival-program/README.md as the entry point and atomic prompts in release v2.0.0.",
-  "dataMigration": "none",
-  "featureFlag": "not-applicable",
-  "rollback": "Revert the containing local commit. The dirty primary checkout and all child repository gitlinks remain untouched.",
-  "mixedVersionImpact": "none; this package changes governance only"
-}

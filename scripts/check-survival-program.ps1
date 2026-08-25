@@ -19,11 +19,11 @@ function Fail([string]$Message) {
 foreach ($required in @(
     $manifestPath,
     (Join-Path $releaseRoot 'DEEP-NATIVE-CLEAN-BREAK-RU.md'),
-    (Join-Path $releaseRoot 'agent-prompts\README.md'),
-    (Join-Path $governanceRoot 'decisions\DR-0001-local-execution-approval.md'),
     (Join-Path $governanceRoot 'decisions\DR-0003-deep-native-session-clean-break.md'),
     (Join-Path $governanceRoot 'schemas\program-manifest.schema.json'),
-    (Join-Path $governanceRoot 'PACKAGE-POLICY.md')
+    (Join-Path $governanceRoot 'PACKAGE-POLICY.md'),
+    (Join-Path $repoRoot 'AGENTS.md'),
+    (Join-Path $repoRoot 'docs\NEXT-SPRINT.md')
 )) {
     if (-not (Test-Path -LiteralPath $required -PathType Leaf)) {
         Fail "required file is missing: $required"
@@ -141,13 +141,12 @@ if ($brokenLinks.Count -gt 0) {
 }
 
 foreach ($entryPoint in @(
-    (Join-Path $repoRoot 'prompts\00_Agent_Entry_Point.md'),
-    (Join-Path $repoRoot 'roadmap.md'),
-    (Join-Path $repoRoot 'docs\delivery-plan.md')
+    (Join-Path $repoRoot 'AGENTS.md'),
+    (Join-Path $repoRoot 'docs\NEXT-SPRINT.md')
 )) {
     $content = Get-Content -LiteralPath $entryPoint -Raw -Encoding UTF8
-    if ($content -notmatch 'survival-program[/\\]README\.md') {
-        Fail "source-of-truth pointer is missing from $entryPoint"
+    if ($content -notmatch 'v3\.0\.0|release-candidate') {
+        Fail "active release/sprint pointer is missing from $entryPoint"
     }
 }
 

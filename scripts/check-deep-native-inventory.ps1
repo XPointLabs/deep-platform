@@ -90,22 +90,22 @@ foreach ($repository in @($inventory.repositories)) {
         Fail "repository directory is missing: $repositoryPath"
     }
 
-    $actualHead = (& git -C $repositoryPath rev-parse HEAD).Trim()
-    if ($LASTEXITCODE -ne 0) { Fail "cannot read HEAD for $($repository.name)" }
-    if ($actualHead -ne [string]$repository.expectedHead) {
-        Fail "HEAD drift for $($repository.name): expected $($repository.expectedHead), actual $actualHead"
+    $inventoryRevision = [string]$repository.expectedHead
+    & git -C $repositoryPath cat-file -e "$inventoryRevision^{commit}" 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        Fail "frozen inventory commit is missing for $($repository.name): $inventoryRevision"
     }
     $repositoryPaths[[string]$repository.name] = $repositoryPath
-    $repositoryRevisions[[string]$repository.name] = $actualHead
+    $repositoryRevisions[[string]$repository.name] = $inventoryRevision
 
     $productionRoots = @($repository.productionRoots | ForEach-Object { ([string]$_).Replace('\\', '/') })
     foreach ($root in $productionRoots) {
-        & git -C $repositoryPath cat-file -e "$actualHead`:$root" 2>$null
+        & git -C $repositoryPath cat-file -e "$inventoryRevision`:$root" 2>$null
         $existsAtHead = $LASTEXITCODE -eq 0
-        if (-not $existsAtHead) { Fail "production root $root is absent at $($repository.name)@$actualHead" }
+        if (-not $existsAtHead) { Fail "production root $root is absent at $($repository.name)@$inventoryRevision" }
     }
 
-    $lines = @(Invoke-GitGrep $repositoryPath $actualHead $productionRoots $combinedPattern)
+    $lines = @(Invoke-GitGrep $repositoryPath $inventoryRevision $productionRoots $combinedPattern)
     foreach ($line in $lines) {
         $parsed = [regex]::Match([string]$line, '^(?:[0-9a-f]{40}:)?(?<path>.+?):(?<line>[0-9]+):(?<text>.*)$')
         if (-not $parsed.Success) { Fail "cannot parse git grep output for $($repository.name): $line" }
@@ -132,7 +132,7 @@ foreach ($repository in @($inventory.repositories)) {
             $rule = $matchingRules[0]
             $hits.Add([pscustomobject]@{
                 repository = [string]$repository.name
-                revision = $actualHead
+                revision = $inventoryRevision
                 path = $relativePath
                 line = $lineNumber
                 marker = [string]$marker.name
@@ -147,10 +147,10 @@ foreach ($repository in @($inventory.repositories)) {
     $evidenceRoots = @($repository.evidenceRoots | ForEach-Object { ([string]$_).Replace('\\', '/') })
     $existingEvidenceRoots = @()
     foreach ($root in $evidenceRoots) {
-        & git -C $repositoryPath cat-file -e "$actualHead`:$root" 2>$null
+        & git -C $repositoryPath cat-file -e "$inventoryRevision`:$root" 2>$null
         if ($LASTEXITCODE -eq 0) { $existingEvidenceRoots += $root }
     }
-    $evidenceLines = @(Invoke-GitGrep $repositoryPath $actualHead $existingEvidenceRoots $combinedPattern)
+    $evidenceLines = @(Invoke-GitGrep $repositoryPath $inventoryRevision $existingEvidenceRoots $combinedPattern)
     $evidenceCounts[[string]$repository.name] = $evidenceLines.Count
 }
 
