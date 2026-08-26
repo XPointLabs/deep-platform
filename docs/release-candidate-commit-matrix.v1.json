@@ -1,0 +1,34 @@
+{
+    "schemaVersion":  "deep.rc6.release-candidate-commit-matrix.v1",
+    "bindingModel":  "child-commits-via-containing-superproject-tree",
+    "repositories":  [
+                         {
+                             "path":  "deep-client-maui",
+                             "commit":  "aed6d6da89907dadbb88f8efa25f92798fa63cdc"
+                         },
+                         {
+                             "path":  "deep-client-shared",
+                             "commit":  "b78635a16e20e1174a09b1c98bcc297adba68fef"
+                         },
+                         {
+                             "path":  "deep-devops",
+                             "commit":  "096e8776bfb4cadd126f2c20504bd305e085d3bf"
+                         },
+                         {
+                             "path":  "deep-protocol",
+                             "commit":  "9a7eaed337286758ab43bd3706457264c3be7c55"
+                         },
+                         {
+                             "path":  "deep-registry-api",
+                             "commit":  "3693d9266b3a70fe18dc237e982b3302581565bb"
+                         },
+                         {
+                             "path":  "deep-tests-e2e",
+                             "commit":  "2c703a3c0f59f2aaec5291664f77aa3274ce9465"
+                         },
+                         {
+                             "path":  "xnode",
+                             "commit":  "e9e82f50d7cf3ded2c888c9298d29148549953b6"
+                         }
+                     ]
+}
