@@ -1,6 +1,6 @@
 # Ближайший спринт: release-candidate closure
 
-Статус на 2026-08-25: текущие локальные HEAD являются точкой отсчёта. Production ещё не запускался; обратная совместимость и legacy-пути не требуются. Push, публикация и production deployment не входят в этот спринт.
+Статус на 2026-08-26: локальная реализация и доступные без production/Mr. X ceremony проверки завершены на superproject commit `99224e184b05c7f27725ba9df30616351ba7f420`. По решению владельца замечания финального независимого review перенесены в следующий спринт, который начнётся после первого production deployment. Push, публикация и production deployment выполняются отдельным Go/No-Go решением.
 
 ## Цель
 
@@ -66,3 +66,18 @@
 - Все репозитории чистые, изменения локально закоммичены, superproject указывает на точные child commits.
 - Документация описывает только реально доступное поведение и явно маркирует недоступные/непроверенные платформы.
 - Push/publication/deployment выполняются только отдельным решением после финального Go/No-Go.
+
+## Следующий спринт после первого production deployment
+
+Ниже находится полный carry-over независимого lead/security review. Эти пункты не скрываются и не считаются подтверждёнными текущим локальным evidence:
+
+- Перевыпустить Mr. X-signed Android lab policy на точные MAUI commit/APK/runner/dependency pins и заново выполнить подписанный physical Android ↔ Windows payload, exact 3-hop primary/disjoint fallback, HTTPS chaos, restart/deduplication и authenticated audio-call matrix.
+- Повторить resend-chaos suite на точной RC commit matrix и выпустить envelope, связанный с актуальным XNode commit, а не с прежним rehearsal commit.
+- Расширить application-contour recovery drill: кроме byte-exact Docker volume snapshot/restore проверять XNode identity, privacy routing, TURN/call state и полное восстановление пользовательского контура. Текущий disposable drill доказывает только bounded volume recovery.
+- Сузить UAT runtime secret mounts: HAProxy и coturn должны получать только необходимые leaf certificate/private key и public CA/CRL; `ca.key` и посторонние файлы authority root не должны попадать в runtime-контейнеры.
+- Удалить из публикуемого Android evidence стабильные несолёные SHA-256 низкоэнтропийных model/product/hardware properties либо заменить их run-scoped keyed HMAC без межзапусковой корреляции.
+- Сделать RC-6 commit-matrix scripts устойчивыми при запуске в новом PowerShell process без явного `-RepositoryRoot`; добавить контракт на документированную default-команду и не полагаться на доступность `$PSScriptRoot` в default parameter expression.
+- Устранить межтестовый SQLite pool race: сериализовать тесты, вызывающие глобальный `SqliteConnection.ClearAllPools()`, либо изолировать pools; повторить полный shared suite многократно, чтобы исключить observed `ObjectDisposedException` flake.
+- Выпустить точные signed Android/Windows artifacts, SBOM/dependency/package inspection и sanitized evidence manifest на production-bound commit matrix.
+- После появления поддерживаемого второго Android-устройства закрыть two-device evidence; Galaxy A5 API 26 остаётся ниже minSdk 28. iOS/macOS не заявлять проверенными до появления device evidence.
+- Выполнить production-only DNP1 genesis/cutover/reset seams и безопасный Gallery fixture только в предназначенном production/post-deployment контуре.
