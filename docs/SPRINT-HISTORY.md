@@ -33,6 +33,39 @@
   definitions заменены ссылками; public `xpoint-docs` оставлен user/operator слоем.
 - Добавлены threat model, Session parity baseline, performance/censorship gates,
   deployment profile matrix и детальные implementation work packages.
+- Заморожены закрытые wire/state contracts для current-value account directory,
+  arbitrary-contact publication/resolve/pre-key/update операций, contact outbox,
+  consent-based group membership, chunked group commit и revocation saga.
+- CallOffer/Answer/Reconnect/End теперь доставляют call secret и answer capability
+  только внутри ratcheted E2EE, используют pseudonymous answer CAS и свежий
+  non-exportable DTLS certificate на каждую leg/reconnect.
+- Добавлены [`architecture/release-scope.v1.json`](architecture/release-scope.v1.json)
+  и schema: stable scenario/evidence IDs, единственный producer owner,
+  воспроизводимые percentile profiles, absolute first-RC Android idle budget и
+  boundary evidence для каждой canonical retention class. Новый дублирующий
+  docs-test/CI harness для этого не создавался.
+- Bridge acquisition унифицирован на трёх обязательных channel:
+  RFC 9458 OHTTP Relay/Gateway, multi-origin HTTPS и signed user import;
+  embedded cache остаётся только bootstrap hint.
+- Устранены hash-cycle `XNV1↔PMT2` и `XNV1↔XNH1`; network/account
+  beyond-horizon recovery закрыт exact `XNF1/NFP1` и `ADF1/AFP1` с отдельным
+  offline-root package.
+- Fresh install больше не использует validity windows как источник времени:
+  текущие ADH1/XNV1 и secure interval подтверждает nonce-bound threshold-signed
+  `DTT1` с bounded monotonic round trip.
+- Call wire закрыт `CMD1` media suite, exact CAC/CAO/CAR/CAA и разделёнными
+  `CALL-CODEC-01`/`CALL-RELAY-01`; server runtime принадлежит `xnode`, deployment
+  и operational evidence — `deep-devops`.
+- Для long-offline групп добавлен per-recipient opaque group-control store
+  (`GSR1/GSW1/GSQ1/GSS1`), не раскрывающий XNode общий group/member list.
+- Финальные implementability/security/evidence-аудиты закрыли exact XNA1
+  witness/root-key policy, indexed NFP1/AFP1 membership proofs, nonce-bound
+  trusted-time ceremony, peer-verifiable call allocation, closed XOQ1/XOR1
+  OHTTP purpose envelopes, отдельный `CARRIER-GATEWAY-01` transport runtime и
+  единственный `BRIDGE-DISTRIBUTOR-01` owner для token-mint/replay transaction.
+- Все threshold-signature envelopes нормализованы через стабильные unsigned
+  core references; устранён цикл публикации `XCC1/XBB1`, а `DTS1` и `XNH1`
+  получили однозначные predecessor/generation/fork-latch правила.
 
 Все незавершённые реализации и проверки перенесены в
 [`NEXT-SPRINT.md`](NEXT-SPRINT.md); выполненные старые DPE1/contact/group paths
@@ -51,7 +84,10 @@ official mailbox/control plane. Отсутствие P2P реализации н
 
 ### Подтверждено
 
-- Exact MAU2, durable outbox/inbox, authenticated receipts и трёхузловая бинарная privacy-маршрутизация с полностью непересекающимся fallback реализованы и покрыты автоматическими тестами.
+- Exact MAU2, durable outbox/inbox, authenticated receipts и трёхузловая бинарная
+  privacy-маршрутизация были реализованы и покрыты автоматическими тестами.
+  Сделанное тогда утверждение о полностью непересекающемся fallback позднее
+  отозвано: три узла не позволяют доказать два disjoint трёх-hop маршрута.
 - XNode реализует managed HTTP/2 ingress и серверный Xray/VLESS Reality ingress; production profile fail-closed запрещает mock Xray.
 - Arbitrary-contact PeerDeposit, group fanout/state/message и отдельная ранняя physical-фаза `GroupText` реализованы в коде/тестовом harness.
 - Account/recovery phrase создаются локально без сетевого вызова; startup больше не обязан синхронизировать inbox до показа onboarding.

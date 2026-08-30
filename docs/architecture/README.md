@@ -44,7 +44,8 @@ crypto или security semantics.
 | carrier wires/bootstrap/bridge distribution | `CIRCUMVENTION-CARRIERS-V1.md` |
 | call signaling/allocation/media state | `CALL-SESSION-V1.md` |
 | deployment guarantees | `DEPLOYMENT-PROFILES.md` |
-| release features/SLO/evidence | `V1-RELEASE-SCOPE.md` |
+| release features/product claims | `V1-RELEASE-SCOPE.md` |
+| exact release scenario/evidence IDs, owners, SLO predicates | `release-scope.v1.json` validated by `release-scope.v1.schema.json` |
 | незавершённый milestone/release scope | `NEXT-SPRINT.md` |
 | agent-sized dependency DAG и ownership | `IMPLEMENTATION-PLAN-V1.md` |
 
@@ -111,7 +112,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   attachments, push и calls.
 - `DEPLOYMENT-PROFILES.md` — official, future six-node, on-prem и mesh
   guarantee matrix.
-- `V1-RELEASE-SCOPE.md` — точный функциональный и physical release gate.
+- `V1-RELEASE-SCOPE.md` — функциональный и physical release contract;
+  [`release-scope.v1.json`](release-scope.v1.json) и
+  [`release-scope.v1.schema.json`](release-scope.v1.schema.json) — его
+  машиночитаемые scenario/evidence IDs, owners и exact pass predicates.
 - [`SESSION-PARITY-AND-SOURCES.md`](SESSION-PARITY-AND-SOURCES.md) —
   функциональный/performance baseline Session и правила upstream reuse.
 - `CONTACT-AND-GROUP-PROTOCOL-V1.md` — permanent transport-neutral DID1,

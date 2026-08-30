@@ -11,9 +11,9 @@ Pairwise cryptography is defined by
 [`DEEP-CRYPTO-V1-DRAFT.md`](../survival-program/releases/v3.0.0/specs/DEEP-CRYPTO-V1-DRAFT.md).
 Transport behavior is defined by
 [`TRANSPORT-NEUTRAL-MESSAGING.md`](TRANSPORT-NEUTRAL-MESSAGING.md) and the
-selected deployment profile. `OfficialXPoint3` reachability uses `XRR1` and
-`XUR1` from [`XPOINT-NETWORK-V1.md`](XPOINT-NETWORK-V1.md).
-Resolver/pre-key service semantics are defined by
+selected deployment profile. `OfficialXPoint3` message reachability uses XRR1
+from [`XPOINT-NETWORK-V1.md`](XPOINT-NETWORK-V1.md); established-contact XUR1
+and resolver/pre-key service semantics are defined by
 [`CONTACT-RESOLVER-V1.md`](CONTACT-RESOLVER-V1.md), account-head freshness by
 [`ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`](ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md),
 and retention/recovery claims by
@@ -63,7 +63,7 @@ Protocol maxima are security bounds, not dynamic server settings:
 | UTF-8 text body | 16,384 bytes |
 | canonical application payload | 32,768 bytes |
 | attachment descriptors per event | 16 |
-| retained group commits | 1,024 or 400 days, whichever is larger |
+| retained group commits | `RET-GROUP-CONTROL-V1` |
 
 A server cannot raise a client bound. A future larger group profile uses a new
 profile ID and implementation gate.
@@ -137,18 +137,27 @@ therefore used by XPoint, future P2P mesh and on-prem transports and is
 reconstructible from the Deep Recovery Phrase.
 
 `DAB1`, version 1, suite `0x0201`, binds that permanent address to the current
-account lineage:
+account lineage in one identity realm. The permanent DID is global, but account
+authority keys are network-scoped, so each realm has an independent binding
+chain:
+
+```text
+identityRealmId32 = SHA256-D(
+  "Deep/Application/V1/address-binding-realm",
+  networkId16 || deploymentProfileId:u16be)
+```
 
 | Tag | Value | Size |
 |---:|---|---:|
 | 1 | exact DID1 hash | 32 |
-| 2 | binding generation | 8 |
-| 3 | predecessor DAB1 hash; zero at generation 0 | 32 |
-| 4 | DeepAccountId hash | 32 |
-| 5 | account generation | 8 |
-| 6 | exact DPA1 ArtifactRef | 38 |
-| 7 | DID1 address-key signature | 64 |
-| 8 | DPA1 account-role signature | 64 |
+| 2 | identity realm ID | 32 |
+| 3 | binding generation within the realm | 8 |
+| 4 | predecessor DAB1 hash in the same realm; zero at generation 0 | 32 |
+| 5 | DeepAccountId hash | 32 |
+| 6 | account generation | 8 |
+| 7 | exact DPA1 ArtifactRef | 38 |
+| 8 | DID1 address-key signature | 64 |
+| 9 | DPA1 account-role signature | 64 |
 
 Both signatures cover the same unsigned record in domains
 `Deep/Application/V1/address-binding/address` and
@@ -158,7 +167,10 @@ binding lineage without changing DID1. A future authenticated same-phrase
 account-generation advance has the same property. In public V1, a destructive
 reset creates a new phrase, account lineage and DID1; it is an explicit account
 replacement and cannot redirect the old address. Same-generation changed bytes
-or two successors fork-latch the address. DID1 has no automatic rotation.
+or two successors fork-latch only that realm; simultaneous valid bindings in
+different realms are expected and are not forks. A DAB1 from another network or
+deployment profile cannot authorize DCA1/DCB1 in the current realm. DID1 has no
+automatic rotation.
 
 Permanence is an address claim, not infinite message storage. If every signed
 publication/prekey authorization has expired, resolution returns
@@ -194,7 +206,7 @@ management:
 
 The kind mask permits bit 0 permanent-address publication and bit 1 one-time
 invitation; all other bits reject.
-Lifetime is at most 400 days. The signature domain is
+Lifetime cannot outlive `RET-DCR-PUBLICATION-V1`. The signature domain is
 `Deep/Application/V1/contact-publication-authorization`. The publisher must be
 active in the exact DMD1, and DID1/DAB1 must verify bidirectionally against the
 same DPA1/account generation. A successor DMD1 does not silently inherit DCA1; an
@@ -281,9 +293,10 @@ individually canonical and hash-addressed; they are not part of the signed DCB1
 bytes and cannot alter its interpretation. The signature covers
 `SIGINPUT("Deep/Application/V1/contact-bundle", 0x0201, unsignedDCB1)`.
 The issuer device must be active in exact DMD1, match DCA1 publisher/kind/
-generation and DID1-hash/address-key/DAB1 policy, and its DPD1 signing key verifies the signature. A permanent-address
-bundle lifetime is at most 400 days; a one-time bundle lifetime is at most 30
-days. Effective expiry is the minimum defined by the contact-resolver contract.
+generation and DID1-hash/address-key/DAB1 policy, and its DPD1 signing key verifies
+the signature. Permanent-address and one-time bundle lifetime follows
+`RET-DCR-PUBLICATION-V1`. Effective expiry is the minimum
+defined by the contact-resolver contract.
 An expired bundle cannot authorize a new contact request, but it never expires
 or redirects DID1 itself. The same DID1 may resolve a current signed successor;
 an expired one-time invitation must be replaced by the recipient.
@@ -363,8 +376,9 @@ all other magics reject. The recipient opens DAO1 before selecting the
 handshake/session and deduplicates the deposit operation atomically with inner
 processing.
 
-Sealing keys rotate with reachability state, overlap for the retention window
-and are securely retired after every object under the old key is expired or
+Sealing keys rotate with reachability state, overlap through the exact accepted
+object horizon in `RET-MAILBOX-CIPHERTEXT-V1` and are securely retired after every
+object under the old key is expired or
 reconciled. Later compromise of a sealing key can expose recorded inner header
 metadata but not DMC2 content, which remains protected by PQXDH/Triple Ratchet.
 DAO1 is metadata minimization, not an additional content-security claim.
@@ -414,8 +428,9 @@ exceed the 90-character Bech32 limit. Version 1, suite `0x0201`, has:
 | 8 | expires-at Unix seconds | 8 |
 | 9 | usage limit (must be 1) | 2 |
 
-DIA1 expires no later than 30 days after issue and never exceeds its exact
-DCB1/XIR1 authorization closure. A zero hash, zero expiry, reusable flag or
+DIA1 expiry follows the one-time bound of `RET-DCR-PUBLICATION-V1` and never
+exceeds its exact DCB1/XIR1 authorization
+closure. A zero hash, zero expiry, reusable flag or
 usage other than one rejects.
 
 The locator identifies an opaque encrypted bundle object. It contains no
@@ -443,9 +458,10 @@ response to the same random redemption operation. Permanent DID1 resolution
 uses its deterministic locator, returns the current DCR1 generation without a
 claim and never bypasses DAB1/DCB1 lineage, signature or closure verification.
 
-Supported representations are text, deep link, QR and binary file. If the full
-DCR1 fits the selected medium it MAY be embedded after DIA1; otherwise the
-resolver form is mandatory. Permanent DID1 QR displays “does not expire” and
+Supported representations are text, deep link, QR and binary file. V1 never
+appends or embeds DCR1 after DIA1: all DID1/DIA1 representations carry only the
+exact address/invitation encoding and resolution is mandatory. This avoids a
+second wrapper/framing grammar and stale embedded closure. Permanent DID1 QR displays “does not expire” and
 the account fingerprint after resolution; one-time QR displays expiry.
 Screenshots of a one-time QR are equivalent to sharing the capability.
 
@@ -468,14 +484,34 @@ until the user explicitly merges them.
 Contact state is:
 
 ```text
-Absent -> BundleVerified -> RequestQueued -> RequestAccepted
-  -> RequestDelivered -> Accepted -> Active
+Absent -> BundleVerified -> RequestQueued -> RemoteStoreAccepted
+  -> RequestMaterialized -> PeerAccepted -> Active
   -> Blocked/Deleted
 
-RequestQueued/RequestAccepted/RequestDelivered -> Rejected/Expired
+RequestQueued/RemoteStoreAccepted/RequestMaterialized -> Rejected/Expired
 Active -> IdentityConflict/DirectoryConflict/RouteStale
 IdentityConflict/DirectoryConflict -> Active only after explicit verified repair
 ```
+
+The names are deliberately different from outbox `Accepted`: transport storage,
+recipient materialization and human acceptance are separate facts.
+
+| From | Trigger / actor | Preconditions | Atomic local writes | Emission / retry | To |
+|---|---|---|---|---|---|
+| Absent | user imports DID1/DIA1 | canonical decode only | pending address record | none | BundleVerified after closure verification |
+| BundleVerified | user sends request | current directory/bundle/prekey closure | relationship, identical ContactHello and durable fanout operation | retry same logical/operation IDs | RequestQueued |
+| RequestQueued | authenticated remote mailbox receipt | at least one intended device copy durably accepted | per-device receipt and attempt state | reconcile unresolved copies only | RemoteStoreAccepted |
+| RemoteStoreAccepted | authenticated materialization ACK | ACK binds exact relationship/logical event/device | dedup/materialization evidence | no presence inference for other devices | RequestMaterialized |
+| RequestMaterialized | ratcheted ContactAccept | peer account/device/relationship and current directory match | peer acceptance and route-update operation | exact duplicate idempotent | PeerAccepted |
+| PeerAccepted | both XUR directions/current message reachability verified | no identity/directory fork | active relationship head | refresh successors idempotently | Active |
+| pending state | ContactReject or effective expiry | authenticated reject, or signed deadline reached | terminal reason; destroy unused prekey/send material | no new operation ID | Rejected/Expired |
+| any nonterminal | local block/delete | user action | block floor or local tombstone before network work | best-effort capability rotation; never claims remote deletion | Blocked/Deleted |
+| Active | verified changed identity/directory/route fork | monotonic verifier result | conflict evidence and send fence | repair uses same relationship | corresponding conflict state |
+
+No transition is inferred from socket success, HTTP status alone, notification,
+clock rollback or an unsigned service hint. A crash resumes from the last atomic
+row; an external side effect with unknown outcome enters the matching durable
+reconcile state and reuses its operation ID.
 
 Deleting locally does not remotely revoke another user's history. Blocking
 stops receipts, new route updates and new content acceptance and rotates local
@@ -518,33 +554,76 @@ local contact/group state before materialization.
 | ID | Kind | Payload and expiry |
 |---:|---|---|
 | 1 | `SessionInit` | random handshake nonce, sender DMD1 hash/bytes and capabilities; <=24 h |
-| 2 | `ContactHello` | relationship ID, sender DCB1 hash, invite-specific reply XIR1/current XRR1 closure, optional profile; <=30 d |
-| 3 | `ContactAccept` | relationship ID, recipient current DCB1 hash and recipient XUR1; <=30 d |
-| 4 | `ContactReject` | relationship ID and closed reason; <=30 d |
-| 5 | `MessageCreate` | canonical UTF-8, `1..16384`; ordinary retention |
-| 6 | `MessageEdit` | target ID plus replacement UTF-8; ordinary retention |
-| 7 | `MessageDelete` | target ID plus scope (`local-request` or `conversation-tombstone`); ordinary retention |
-| 8 | `ReactionSet` | target ID, operation (`add/remove`), normalized emoji; ordinary retention |
-| 9 | `ReceiptDelivered` | `1..128` IDs and accepted/materialized/expired status; <=30 d |
-| 10 | `ReceiptRead` | `1..128` IDs; <=30 d and only when user policy allows |
+| 2 | `ContactHello` | relationship ID, sender DCB1 hash, invite-specific reply XIR1/current XRR1 closure, optional profile; `RET-CONTACT-REQUEST-V1` |
+| 3 | `ContactAccept` | relationship ID, recipient current DCB1 hash and recipient XUR1; `RET-CONTACT-REQUEST-V1` |
+| 4 | `ContactReject` | relationship ID and closed reason; `RET-CONTACT-REQUEST-V1` |
+| 5 | `MessageCreate` | canonical UTF-8, `1..16384`; `RET-MAILBOX-CIPHERTEXT-V1` |
+| 6 | `MessageEdit` | target ID plus replacement UTF-8; `RET-MAILBOX-CIPHERTEXT-V1` |
+| 7 | `MessageDelete` | target ID plus scope (`local-request` or `conversation-tombstone`); `RET-MAILBOX-CIPHERTEXT-V1` |
+| 8 | `ReactionSet` | target ID, operation (`add/remove`), normalized emoji; `RET-MAILBOX-CIPHERTEXT-V1` |
+| 9 | `ReceiptDelivered` | `1..128` IDs and accepted/materialized/expired status; `RET-MAILBOX-CIPHERTEXT-V1` |
+| 10 | `ReceiptRead` | `1..128` IDs; `RET-MAILBOX-CIPHERTEXT-V1`, and only when user policy allows |
 | 11 | `Typing` | start/stop and random activity ID; <=120 s, never durable history |
-| 12 | `DeviceListUpdate` | exact DMD1 plus available DPK2 bundle hashes/objects; <=400 d |
-| 13 | `DeviceRevocation` | exact DRS1/DMD1 successor evidence; <=400 d |
-| 14 | `ContactRouteUpdate` | successor reachability and XUR1 state; <=400 d |
-| 15 | `GroupProposal` | exact DGP1; <=400 d |
-| 16 | `GroupCommit` | exact DGC1; <=400 d |
-| 17 | `GroupApplicationMessage` | exact DGM1; ordinary retention |
-| 18 | `AttachmentOffer` | bounded encrypted manifest descriptor; ordinary retention |
-| 19 | `AttachmentCancel` | object ID and closed reason; ordinary retention |
+| 12 | `DeviceListUpdate` | exact DMD1 plus current DCB1/XPS1 service closure; event `RET-XUR-UPDATES-V1`, referenced history `RET-DEVICE-CONTROL-V1` |
+| 13 | `DeviceRevocation` | exact DRS1/DMD1 successor evidence; event `RET-XUR-UPDATES-V1`, referenced history `RET-DEVICE-CONTROL-V1` |
+| 14 | `ContactRouteUpdate` | successor reachability and XUR1 state; `RET-XUR-UPDATES-V1` |
+| 15 | `GroupProposal` | exact DGP1; DMC2 copy `RET-MAILBOX-CIPHERTEXT-V1`, control object `RET-GROUP-CONTROL-V1` |
+| 16 | `GroupCommit` | GCP1 hash/length/chunk manifest plus exact DGC1; DMC2 copy `RET-MAILBOX-CIPHERTEXT-V1`, control package `RET-GROUP-CONTROL-V1` |
+| 17 | `GroupApplicationMessage` | exact DGM1; `RET-MAILBOX-CIPHERTEXT-V1` |
+| 18 | `AttachmentOffer` | bounded encrypted manifest descriptor under `RET-MAILBOX-CIPHERTEXT-V1`; referenced ciphertext `RET-ATTACHMENT-V1` |
+| 19 | `AttachmentCancel` | object ID and closed reason; `RET-MAILBOX-CIPHERTEXT-V1` |
 | 20 | `CallOffer` | call ID, fresh binding secret and DTLS fingerprint; <=60 s |
 | 21 | `CallAnswer` | call ID, accept/reject and DTLS fingerprint; <=120 s |
 | 22 | `CallIceCandidate` | relay-only candidate/circuit descriptor; <=120 s |
 | 23 | `CallReconnect` | call ID, sequence and replacement relay/circuit binding; <=120 s |
 | 24 | `CallEnd` | call ID, sequence and closed reason; <=24 h |
 | 25 | `HistoryTransfer` | encrypted history chunk descriptor; <=7 d |
+| 26 | `GroupInvite` | exact pending GIV1; does not grant membership |
+| 27 | `GroupInviteAccept` | exact GIA1 consent; does not grant membership until DGC1 |
+| 28 | `GroupInviteDecline` | invitation ID and coarse reason; optional notification |
+| 29 | `GroupCommitChunk` | exact GCF1 chunk; materialization waits for complete GCP1 |
 
 Unknown kinds reject rather than appear as generic messages. New kinds require a
 new registry generation and negative vectors.
+
+### 8.2 Exact kind-payload grammar
+
+Every tag 12 payload is exactly one ordered grammar below; `LP16/LP32` are the
+canonical big-endian length prefixes from the crypto baseline. Empty optional
+values are encoded with a zero length, never by omitting bytes. Trailing bytes,
+alternate integer widths and embedded non-canonical records reject.
+
+| Kind | Exact tag 12 bytes |
+|---|---|
+| SessionInit | `handshakeNonce32 || senderDMD1Hash32 || LP32(exactDMD1) || capabilityBits:u32` |
+| ContactHello | `relationshipId32 || senderDCB1Hash32 || LP32(exactReplyXIR1) || LP32(exactInitialDepositClosure) || LP16(profileUtf8[0..256])` |
+| ContactAccept | `relationshipId32 || recipientDCB1Hash32 || LP32(exactRecipientXUR1)` |
+| ContactReject | `relationshipId32 || reason:u16` |
+| MessageCreate | `LP16(canonicalUtf8[1..16384])` |
+| MessageEdit | `targetLogicalId32 || LP16(canonicalUtf8[0..16384])` |
+| MessageDelete | `targetLogicalId32 || scope:u8` where `1=LocalRequest`, `2=ConversationTombstone` |
+| ReactionSet | `targetLogicalId32 || operation:u8 || LP16(normalizedEmojiUtf8[1..32])`, operation `1=Add`, `2=Remove` |
+| ReceiptDelivered | `count:u8 || (logicalId32 || status:u8)[count]`, count `1..128`, status `1=StoreAccepted`, `2=Materialized`, `3=Expired`, `4=TerminalRejected` |
+| ReceiptRead | `count:u8 || logicalId32[count]`, count `1..128` |
+| Typing | `operation:u8 || activityId32`, operation `1=Start`, `2=Stop` |
+| DeviceListUpdate | `LP32(exactDMD1) || LP32(exactDCB1)` |
+| DeviceRevocation | `LP32(exactDRS1) || LP32(exactDMD1) || LP32(exactADC1)` |
+| ContactRouteUpdate | `LP32(exactXUR1) || LP32(exactXRR1Closure)` |
+| GroupProposal | `LP32(exactDGP1)` |
+| GroupCommit | `GCP1Hash32 || totalLength:u32 || chunkCount:u32 || LP32(exactDGC1)` |
+| GroupApplicationMessage | `LP32(exactDGM1)` |
+| AttachmentOffer | `LP32(exactDAM1)` |
+| AttachmentCancel | `objectId32 || reason:u16` |
+| CallOffer/CallAnswer/CallIceCandidate/CallReconnect/CallEnd | exact corresponding closed payload from `CALL-SESSION-V1.md`; no SDP JSON or platform-native object |
+| HistoryTransfer | `transferId32 || LP32(exactDAM1) || firstLogicalId32 || lastLogicalId32` |
+| GroupInvite | `LP32(exactGIV1)` |
+| GroupInviteAccept | `LP32(exactGIA1)` |
+| GroupInviteDecline | `invitationId32 || reason:u16` |
+| GroupCommitChunk | `LP32(exactGCF1)` |
+
+Payload closed enums are generated from the protocol registry. The DMC2
+authenticated sender/device/conversation must equal every duplicated inner
+identity; disagreement is a substitution failure, not an update hint.
 
 Edits, deletes and reactions are immutable new events. They never rewrite a
 prior authenticated record. The materialized view applies them only if sender,
@@ -554,7 +633,8 @@ conversation, target kind, policy and ordering are valid.
 
 ### 9.1 Sender algorithm
 
-1. Decode DID1, one-time DIA1 or full DCR1 and validate all bounds before network access.
+1. Decode DID1 or one-time DIA1 and validate all bounds before network access;
+   a user-imported/embedded DCR1 is never accepted as a freshness shortcut.
 2. Resolve and decrypt DCB1 if required.
 3. Verify DID1/DAB1/DPA1/DRS1/DMD1 lineage, issuer, time, bundle predecessor and all
    reachability descriptors.
@@ -564,8 +644,8 @@ conversation, target kind, policy and ordering are valid.
    claim fresh DPK2, then create DPH2 whose SessionInit embeds the identical
    ContactHello application event.
 7. Store DPH2 objects through the selected contact reachability descriptor.
-8. Mark `RequestAccepted` after verified mailbox acceptance. Mark
-   `RequestDelivered` only after authenticated recipient materialization/ACK;
+8. Mark `RemoteStoreAccepted` after verified mailbox acceptance. Mark
+   `RequestMaterialized` only after authenticated recipient materialization/ACK;
    a local socket write or storage acceptance is never delivery.
 
 At least one accepted recipient device copy is success. Missing device prekeys
@@ -608,10 +688,9 @@ Rules:
 
 - current and next update capabilities overlap;
 - each capability is random and contact-scoped, never account-derived;
-- normal lifetime is 400 days; a successor is sent at 50% lifetime plus
+- successor timing and service history use `RET-XUR-UPDATES-V1`; a successor is
+  sent at 50% lifetime plus
   +/-10% jitter and immediately on route/device change;
-- the service retains exact encrypted successor events for 400 days and at
-  least 1,024 generations;
 - a contact first tries its active route, then the retained update rendezvous;
 - a valid successor is monotonic and predecessor-bound;
 - same-generation changed bytes, a lower generation or two successors pause
@@ -621,14 +700,10 @@ Rules:
 This channel removes the circular dependency where a new route could only be
 sent through the already expired old route.
 
-Exact `XUR1`, version 1, suite `0x0201`, contains network ID, random
-relationship-scoped rendezvous/direction IDs, generation and predecessor hash,
-exact PMT2 reference, random placement input, metadata-sealing key ID/public
-key, closed route/device/revocation event mask, issued/expiry times, author
-device/DPD1 reference and device signature. The signature domain is
-`Deep/Application/V1/contact-update-rendezvous`. No public field contains an
-account or conversation ID. Storage uses the resolver quorum/idempotency rules
-and the 400-day/1,024-generation retention matrix.
+Exact `XUR1` fields and `XUW1/XUQ1/XUS1` publish/fetch/CAS/result contracts are
+owned by [`CONTACT-RESOLVER-V1.md`](CONTACT-RESOLVER-V1.md#35-established-contact-update-service-xur1--xuw1--xuq1--xus1). No public field
+contains an account or conversation ID; this document does not define a second
+codec or retention value.
 
 ## 11. Multi-device behavior
 
@@ -641,7 +716,8 @@ sender's other active devices so all devices converge on one logical history.
 If an endpoint returns a newer signed DMD1, the client verifies its exact
 successor chain and retries the logical event at most twice. A malicious service
 cannot force an unbounded Sesame update loop. Removed devices are retained as
-decrypt-only stale records until ordinary retention passes, then destroyed.
+decrypt-only stale records until every associated `RET-MAILBOX-CIPHERTEXT-V1`
+object deadline passes, then destroyed.
 
 ### 11.2 Enrollment
 
@@ -655,11 +731,31 @@ by copying a ratchet database.
 
 ### 11.3 Revocation
 
-Revocation atomically advances DRS1, DMD1 and ADC1, fences unused DPK2, rotates
-every receive/update capability known to the revoked device, sends successors
-only to remaining devices/contacts, publishes the directory update and queues
-group membership commits. New 1:1 events exclude the revoked device. A group cannot send the next application event while a
-known required remove-device commit is pending.
+Revocation is a durable saga, not a distributed transaction. Its states are
+`Prepared -> LocalFloorCommitted -> PrekeysFenced -> DirectoryCommitted ->
+CapabilitiesRotated -> ContactsNotified -> GroupsConverging -> Complete`, with
+`ReconcileRequired` reachable after any uncertain remote result.
+
+1. `Prepared` contains the exact successor DRS1/DMD1/ADC1 hashes, revoked device,
+   one operation ID per external plane and the required contact/group worklist.
+2. One local transaction installs the successor DRS1/DMD1, advances the
+   protected revocation floor and marks every new send/fanout to that device
+   forbidden. Only then may external work begin.
+3. Pre-key stores fence all unused DPK2 for the revoked device and exact-replay
+   the same fence operation after crash.
+4. The account-directory authority commits the ADC1 current-map/log successor.
+   Until a current proof is obtained, new contact publication and device/group
+   mutation remain paused; local reads and already-safe sends may continue.
+5. Receive/update capabilities known to the revoked device rotate; successors
+   are delivered only to remaining devices/contacts.
+6. Required remove-device group proposals/commits are queued and reconciled.
+   A group cannot send its next application event while its removal is pending.
+
+Every step is monotonic and idempotent; `OutcomeUnknown` retries the same
+operation ID. Failure cannot roll back the local security floor or re-enable
+the device. Completion means all mandatory acknowledgements are durable, not
+that every offline peer has observed revocation. New 1:1 events exclude the
+revoked device from `LocalFloorCommitted` onward.
 
 Offline peers may continue using a stale directory until they receive a valid
 successor. The UI states `peer device state may be stale`; it does not claim
@@ -682,6 +778,22 @@ Per-device states are `Pending`, `Accepted`, `Materialized`, `Expired`,
 `RevokedTarget` and `TerminalRejected`. Logical `Accepted` means at least one
 current recipient device accepted and all known target outcomes are durably
 tracked; it does not mean read.
+
+| From | Trigger | Atomic writes before/with side effect | Retry/reconcile | To |
+|---|---|---|---|---|
+| Queued | scheduler snapshots current targets | exact plaintext hash, target directory head, fanout IDs and expiry | no network yet | FanoutPrepared |
+| FanoutPrepared | dispatch lease acquired | attempt ID/request hash and sealed ratchet transition plan | same attempt only | Sending |
+| Sending | authenticated definitive receipt | receipt plus ratchet/outbox transition in one DB transaction | unresolved targets keep their IDs | PartiallyAccepted/Accepted |
+| Sending | timeout/reset after bytes may have left | outcome-unknown marker without advancing plaintext/logical ID | query/retry exact operation | OutcomeUnknown |
+| OutcomeUnknown | reconciliation result | exact remote receipt, retry proof or signed expiry | bounded backoff; never new plaintext/ID | Sending/PartiallyAccepted/Accepted/Expired/Cancelled |
+| PartiallyAccepted | remaining target receipt/refresh | per-target terminal state and current directory proof | at most two directory repairs | Accepted/Expired/Cancelled |
+| Accepted | recipient materialization receipt | receipt dedup and materialization evidence | exact duplicate only | RecipientMaterialized |
+| any nonterminal | signed effective expiry/user cancel | delete payload/message key; retain only canonical audit tombstone | remote accepted copies are not recalled | Expired/Cancelled |
+
+`TerminalRejected` is terminal only for its target. A logical operation becomes
+terminal rejected only when every current target is terminal rejected and none
+accepted; this closed result is stored separately from `Expired` and
+`Cancelled`. Reconciliation cannot move any terminal state backward.
 
 Receive order is:
 
@@ -724,7 +836,66 @@ One active owner device is the sequencer. Other admins cannot commit directly.
 This sacrifices concurrent membership availability to eliminate benign forks
 and keep disconnected/mesh behavior deterministic.
 
-### 13.3 Proposal: `DGP1`
+### 13.3 Pending invitation and consent: `GIV1` / `GIA1`
+
+A group invitation never changes membership. `GIV1`, version 1, suite `0x0201`,
+is a pending offer:
+
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2 | group ID | 32 |
+| 3 | random invitation ID | 32 |
+| 4 | base epoch | 8 |
+| 5 | exact base DGC1 hash | 32 |
+| 6 | inviter account hash | 32 |
+| 7 | inviter device ID | 32 |
+| 8 | inviter DPD1 ArtifactRef | 38 |
+| 9 | invitee account hash | 32 |
+| 10 | requested role (`2=Admin`, `3=Member`) | 1 |
+| 11 | invitee ADC1 ArtifactRef | 38 |
+| 12 | invitee ADH1CoreRef38 | 38 |
+| 13 | invitee ADP1 hash | 32 |
+| 14 | invitee DMD1 hash | 32 |
+| 15 | invitee DRS1 ArtifactRef | 38 |
+| 16 | issued-at Unix seconds | 8 |
+| 17 | expires-at Unix seconds | 8 |
+| 18 | inviter device signature | 64 |
+
+The inviter is Owner/Admin in the exact base commit. The signature domain is
+`Deep/Group/V1/invitation`. GIV1 expires within seven days and is delivered in
+ratcheted `GroupInvite` DMC2; fetching it emits no presence and creates no group
+member state.
+
+User acceptance creates `GIA1`, version 1, suite `0x0201`:
+
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2 | group ID | 32 |
+| 3 | invitation ID | 32 |
+| 4 | exact GIV1 ArtifactRef | 38 |
+| 5 | invitee account hash | 32 |
+| 6 | accepting device ID | 32 |
+| 7 | accepting DPD1 ArtifactRef | 38 |
+| 8 | current invitee ADC1 ArtifactRef | 38 |
+| 9 | current invitee ADH1CoreRef38 | 38 |
+| 10 | current invitee ADP1 hash | 32 |
+| 11 | current invitee DMD1 hash | 32 |
+| 12 | current invitee DRS1 ArtifactRef | 38 |
+| 13 | accepted-at Unix seconds | 8 |
+| 14 | expires-at Unix seconds | 8 |
+| 15 | invitee device signature | 64 |
+
+The signature domain is `Deep/Group/V1/invitation-acceptance`. The accepting
+device must be active in the referenced current directory closure; GIA1 matches
+the exact invitation, invitee and requested role and cannot outlive GIV1. It is
+sent to inviter/owner through the pairwise ratchet. Only a later owner-signed
+DGC1 may activate the member. A declined/expired invitation remains absent from
+membership; optional decline notification is a DMC2 event, not a governance
+record.
+
+### 13.4 Proposal: `DGP1`
 
 `DGP1`, version 1, suite `0x0201`, has:
 
@@ -744,13 +915,14 @@ and keep disconnected/mesh behavior deterministic.
 | 12 | expires-at Unix seconds | 8 |
 | 13 | proposer device signature | 64 |
 
-Actions are `1=AddAccount`, `2=RemoveAccount`, `3=ChangeRole`,
-`4=AddDevice`, `5=RemoveDevice`, `6=ChangeProfile`, `7=TransferOwnerDevice`.
+Actions are `1=ActivateAcceptedInvite`, `2=RemoveAccount`, `3=ChangeRole`,
+`4=AddDevice`, `5=RemoveDevice`, `6=ChangeProfile`,
+`7=TransferOwnerDevice`, `8=LeaveAccount`.
 The signature domain is `Deep/Group/V1/proposal`. The proposer must have the
 required role in the exact base commit. A proposal never changes state by
 itself and expires within seven days.
 
-`AddAccount` and device-changing actions include exact ADC1/ADH1 and DMD1/DRS1
+`ActivateAcceptedInvite` and device-changing actions include exact ADC1/ADH1 and DMD1/DRS1
 references plus the verified account-directory proof hash. A display name or
 DCB1 alone cannot choose member device state.
 
@@ -758,21 +930,26 @@ Canonical action payloads are closed:
 
 | Action | Exact payload |
 |---|---|
-| AddAccount | account32, requestedRole:u8, ADC1Ref38, ADH1Ref38, ADP1Hash32, DMD1Hash32, DRS1Ref38 |
+| ActivateAcceptedInvite | GIV1Ref38, GIA1Ref38, account32, requestedRole:u8, ADC1Ref38, ADH1Ref38, ADP1Hash32, DMD1Hash32, DRS1Ref38 |
 | RemoveAccount | account32, expectedMemberEntryHash32, reason:u16 |
 | ChangeRole | account32, expectedRole:u8, newRole:u8, expectedMemberEntryHash32 |
 | AddDevice | account32, device32, DPD1Ref38, DMD1Hash32, DRS1Ref38, ADP1Hash32 |
 | RemoveDevice | account32, device32, expectedDPD1Ref38, DMD1Hash32, DRS1Ref38 |
 | ChangeProfile | UTF8 name LP16 (1..128), historyPolicy:u8, ordinaryExpiry:u32 |
 | TransferOwnerDevice | oldDevice32, newDevice32, DPD1Ref38, DMD1Hash32, DRS1Ref38 |
+| LeaveAccount | account32, expectedMemberEntryHash32, reason:u16 |
 
-Owner may propose every action. Admin may propose AddAccount, RemoveAccount,
+Owner may propose every action except leaving without first transferring
+ownership. Admin may propose ActivateAcceptedInvite, RemoveAccount,
 ChangeRole between Admin/Member, AddDevice, RemoveDevice and ChangeProfile, but
-cannot create another Owner or transfer owner device. Member cannot author a
-membership proposal. Only the current owner sequencer commits any proposal;
+cannot create another Owner or transfer owner device. Admin/Member may author
+`LeaveAccount` only for their own account; this is the only membership proposal
+a Member may author. While the owner is offline, leave remains pending: the
+leaving client stops new sends/materialization locally, but other members do not
+remove it until the owner commit. Only the current owner sequencer commits any proposal;
 authorization is checked both at proposal base epoch and commit epoch.
 
-### 13.4 Commit: `DGC1`
+### 13.5 Commit: `DGC1`
 
 `DGC1`, version 1, suite `0x0201`, has:
 
@@ -789,7 +966,7 @@ authorization is checked both at proposal base epoch and commit epoch.
 | 9 | proposal count | 2 |
 | 10 | sorted proposal hashes | `32 * count` |
 | 11 | member count | 2 |
-| 12 | canonical sorted member entries | `1..49152` |
+| 12 | canonical sorted member entries | `1..60000` |
 | 13 | UTF-8 group name | `1..128` |
 | 14 | history policy | 1 |
 | 15 | ordinary-event expiry seconds | 4 |
@@ -801,6 +978,9 @@ Member entries are LP16 records:
 ```text
 accountHash32
 role:u8
+exactADC1Ref38
+exactADH1Ref38
+exactADP1Hash32
 deviceDirectoryGeneration:u64be
 exactDMD1Hash32
 exactDRS1Ref38
@@ -814,13 +994,25 @@ generation/hash and unrevoked in exact DRS1. `historyPolicy` is `0=none` or
 `1=explicit-user-selected-transfer`.
 
 The signature domain is `Deep/Group/V1/commit`. Epoch zero is locally created
-and sent as invitations; every successor advances exactly by one and binds the
-exact predecessor. The commit hash includes the signature.
+with exactly the Owner account/current devices; it is referenced by pending
+GIV1 invitations but does not pre-add invitees. Every successor advances
+exactly by one and binds the exact predecessor. The commit hash includes the
+signature.
 
-### 13.5 Commit rules and forks
+### 13.6 Commit rules and forks
 
 - Only the exact active sequencer device signs the next commit.
-- Admin proposals are sorted by proposal hash before application.
+- Proposal records are sorted by exact proposal hash. Authorization is checked
+  against the immutable base-commit role snapshot; state preconditions and
+  expected-entry hashes are then checked sequentially against the result of
+  earlier sorted proposals.
+- Reduction is all-or-nothing. Duplicate proposal hashes, two proposals that
+  target the same account/device/profile transition, a precondition invalidated
+  by an earlier proposal, an unauthorized action or a result that violates any
+  count/role invariant invalidates the whole DGC1. The sequencer cannot silently
+  skip or reorder a listed proposal.
+- A verifier independently applies the same reducer and requires byte-identical
+  tag 12 member entries, group profile fields and owner/sequencer result.
 - The sequencer revalidates current DMD1/DRS1 for every affected account.
 - Removal of an account removes all its devices.
 - Device revocation removes that leaf before future group events.
@@ -838,26 +1030,81 @@ Application events may merge after a network partition while every sender
 remained on the same commit. Membership mutation during an unresolved partition
 is unavailable by design. This rule is compatible with later mesh transport.
 
-`DGT1` binds network/group ID, exact current DGC1 hash/epoch, lost sequencer,
-new active owner device plus DPD1/DMD1 references, random ceremony ID,
-issued/expiry time and DPA1 account-role signature in domain
-`Deep/Group/V1/emergency-sequencer-transfer`. It is single-use and expires in
-24 hours. If the owner account cannot authorize it, V1 creates a new group.
+`DGT1`, version 1, suite `0x0201`, is:
 
-Every commit is delivered as canonical `GCP1`: exact DGC1; sorted exact DGP1
-records; exact DMD1, DPD1 and DRS1 support objects; exact ADC1/ADH1 references
-for every member; and optional exact DGT1. The closure contains every referenced
-hash exactly once and no extras. Maximum canonical size is 8 MiB because
-worst-case cumulative DRS1 closures are bounded but not constant-size; larger
-packages reject. Authenticated 64 KiB chunking binds package hash, total length, chunk
-index/count and each chunk hash, and state changes only after full verification.
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2 | group ID | 32 |
+| 3 | exact current DGC1 ArtifactRef | 38 |
+| 4 | current epoch | 8 |
+| 5 | lost sequencer device ID | 32 |
+| 6 | new active owner device ID | 32 |
+| 7 | new device DPD1 ArtifactRef | 38 |
+| 8 | current owner-account DMD1 hash | 32 |
+| 9 | current owner-account DRS1 ArtifactRef | 38 |
+| 10 | random ceremony ID | 32 |
+| 11 | issued-at | 8 |
+| 12 | expires-at | 8 |
+| 13 | exact owner DPA1 ArtifactRef | 38 |
+| 14 | DPA1 account-role signature | 64 |
+
+The signature domain is `Deep/Group/V1/emergency-sequencer-transfer`. Ceremony
+ID is single-use and its expiry is bounded by `RET-GROUP-CONTROL-V1`. If the owner
+account cannot authorize it, V1 creates a new
+group.
+
+Every commit is delivered as canonical `GCP1`, version 1, suite `0x0201`. Its
+8 MiB per-record maximum is an explicit exception to the default canonical
+record limit:
+
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2 | group ID | 32 |
+| 3 | epoch | 8 |
+| 4 | exact DGC1 | `LP32`, `1..65535` |
+| 5 | DGP1 count | 2 |
+| 6 | sorted exact DGP1 records | repeated `LP32` |
+| 7 | support-object count | 4 |
+| 8 | sorted support entries | repeated `kind:u16 || ArtifactRef38 || LP32(exactBytes)` |
+| 9 | accepted-invitation pair count | 2 |
+| 10 | sorted `GIV1Ref38 || LP32(GIV1) || GIA1Ref38 || LP32(GIA1)` | bounded by proposal count |
+| 11 | optional exact DGT1 | empty or `LP32` |
+
+Support kinds are `1=ADC1`, `2=ADH1`, `3=ADP1`, `4=DMD1`, `5=DRS1`,
+`6=DPD1`; all other values reject. Entries sort by `(kind, ArtifactRef)` and
+contain every object referenced by DGC1/member entries/proposals exactly once,
+with no extras. GIV1/GIA1 pairs sort by invitation ID and exist exactly for
+`ActivateAcceptedInvite` proposals. Maximum canonical size is 8 MiB because
+worst-case cumulative closures are bounded but not constant-size; larger
+packages reject.
+
+Transport chunking uses canonical `GCF1`, version 1, suite `0x0201`:
+
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | SHA-256 of exact GCP1 | 32 |
+| 2 | total GCP1 bytes | 4 |
+| 3 | fixed non-final chunk size (`24576`) | 4 |
+| 4 | chunk index | 4 |
+| 5 | chunk count | 4 |
+| 6 | SHA-256 of chunk bytes | 32 |
+| 7 | chunk bytes | `LP32`, `1..24576` |
+
+Chunk count is `ceil(total/24576)` and at most 342; all non-final chunks are
+exactly 24,576 bytes and the final length follows from total. This bound keeps
+one LP32(GCF1) inside the DMC2 payload maximum. Duplicate exact
+chunks are idempotent; changed bytes/hash/total/count at one package/index
+fork-latch the transfer. No group state changes before all chunks, exact GCP1
+hash and complete closure verify.
 
 Recipients gossip `(groupId, epoch, DGC1Hash)` in pairwise ratcheted control
 events. Two hashes for one epoch produce portable fork evidence and stop sends.
 A newly enrolled device receives group traffic only after the owner sequencer
 commits AddDevice; while the owner is offline this is explicitly pending.
 
-### 13.6 Group event: `DGM1`
+### 13.7 Group event: `DGM1`
 
 `DGM1`, version 1, suite `0x0201`, has:
 
@@ -904,18 +1151,19 @@ Scale gates are cumulative: 3-member correctness, 20-member/100-device
 integration, then final 100-member/500-device release load. Intermediate gates
 do not reduce the product maximum.
 
-### 13.7 Group invitations
+### 13.8 Group invitations
 
-An admin proposes AddAccount using the invitee's verified DCB1. The owner
-commits the account and current device set, then sends every required exact GCP1
-closure from the invitation checkpoint through pairwise DPE2 to each new device. The new
-member accepts only after verifying every predecessor from the invitation
-checkpoint and matching its own account/device entry.
+An Owner/Admin sends GIV1 using the invitee's verified DCB1 and pairwise DPE2.
+The user explicitly accepts by authoring GIA1. Only then may an authorized
+proposer author `ActivateAcceptedInvite`, and only the owner may commit it.
+After that commit, every required exact GCP1 closure from the invitation base is
+sent to each newly active device. The new member materializes membership only
+after verifying GIV1/GIA1, every required predecessor and its exact current
+account/device entry. Fetch, accept and active membership are three distinct
+states. Decline is local unless the user elects to send a coarse ratcheted
+notification.
 
-The user explicitly accepts a group invitation. Fetching it does not join or
-send presence. Decline is local unless the user elects to notify the inviter.
-
-### 13.8 Rekey property
+### 13.9 Rekey property
 
 DeepSmallGroupV1 has no shared group content key. Removing an account/device
 changes the epoch and future fanout target set; every remaining target copy uses
@@ -928,6 +1176,63 @@ new commit is durable. Delayed old-epoch events remain visibly associated with
 their old epoch and policy; they never mutate new membership state.
 
 ## 14. Group history and recovery
+
+Long-offline group control does not rely on an online member or
+`RET-MAILBOX-CIPHERTEXT-V1`. For every active member account the Owner creates an
+independent random
+`GSR1`, version 1, suite `0x0201`, and shares it only through that member's pairwise
+E2EE:
+
+```text
+networkId16, randomServiceCapability32, randomDirectionId32
+serviceGeneration:u64, predecessorGSR1Hash32
+exactPMT2Ref38, randomPlacementInput32
+sealingKeyId32, sealingX25519Public32
+ownerDeviceId32, ownerDPD1Ref38, issuedAt:u64, expiresAt:u64
+ownerDeviceSignature64
+```
+
+The signature domain is `Deep/Group/V1/control-rendezvous`. Capability, direction,
+placement and sealing key are independently random per `(group, recipient account,
+generation)` and never contain/derive group/account/device IDs in service requests.
+The XNode store therefore cannot correlate two members as one group from GSR1.
+
+`GSW1` uses the common request tags from the resolver contract plus
+`16=serviceCapability32`, `17=exactGSR1Hash32`, `18=controlSequence:u64`,
+`19=predecessorControlHash32`, `20=sealedGCF1Hash32`,
+`21=LP32(sealedExactGCF1[1..32768])`, `22=effectiveExpiresAt:u64`.
+It is a two-replica CAS. Every exact GCP1/GCF1 chunk needed for the recipient's
+current membership lineage is written; owner commit becomes publish-complete only
+after every target's durable receipts are recorded in the local fanout plan.
+
+`GSQ1` uses common request tags plus `16=serviceCapability32`,
+`17=exactGSR1Hash32`, `18=afterControlSequence:u64`, `19=maxRecords:u16(1..64)`
+and `20=responsePaddingClass:u16(0..4)`. Class 4 can carry at least one
+maximum-size sealed GCF1. `GSS1` uses the exact XUS1 common result,
+status/outcome/payload/receipt matrix with operation kinds `1=Write`, `2=Fetch`,
+but its committed tuple is
+`requestHash32 || controlSequence || sealedGCF1Hash32 || commitGeneration` in
+signature domain `Deep/Group/V1/control-store-commit`. Mixed XUS/GSS records reject.
+
+For GSS1, XUS1 `eventGeneration/eventHash` mean
+`controlSequence/sealedGCF1Hash`; an Events record is exactly
+`controlSequence:u64 || predecessorControlHash32 || sealedGCF1Hash32 ||
+expiresAt:u64 || LP32(sealedExactGCF1[1..32768])`.
+Pagination applies the XUS1 longest-prefix algorithm with GSQ1 tag 18 as the
+exclusive lower bound and returns `nextAfterControlSequence` in Events tag 19.
+It never skips a control sequence; every changed cursor or padding class uses a fresh
+GSQ1 operation ID. `SizeFailure` is Write-only for a GSW1 tag-21
+length outside `1..32768`; `RecordTooLarge` is Fetch-only when the next valid
+record does not fit the requested class and returns the minimum required class.
+Every valid V1 GCF1 fits class 4, so class-4 `RecordTooLarge` is invalid and
+fork/corruption-latches the replica rather than truncating or skipping the record.
+
+Storage, compaction and checkpointing follow only `RET-GROUP-CONTROL-V1`. A
+recipient verifies/decrypts
+all chunks, exact GCP closure and predecessor epochs before state mutation. Missing
+or expired control returns an explicit gap; it never becomes an empty successful
+sync. GSR successor/handover imports all unexpired CAS/replay state before serving.
+This store recovers control state, not expired group message content.
 
 New members receive no pre-join plaintext history by default. With history
 policy 1, an existing member may explicitly select a bounded range and create a
@@ -943,9 +1248,9 @@ history transfer:
 Recovery on a new own device follows the same mechanism or restores an explicit
 encrypted backup. Copying a group/ratchet database between devices is forbidden.
 
-Group commits and proposals are control-plane objects retained for at least 400
-days. Ordinary DGM1 copies follow message retention: default and maximum
-30 days. A device offline longer can recover current membership and continue,
+Group commits/proposals use `RET-GROUP-CONTROL-V1`; ordinary DGM1 copies use
+`RET-MAILBOX-CIPHERTEXT-V1`. A device offline beyond the latter
+can recover current membership and continue,
 but does not receive expired application history.
 
 ## 15. MLS successor profile
@@ -975,12 +1280,34 @@ fanout as silent fallbacks.
 
 ## 16. Attachments
 
-An attachment event contains exact `DAM1` manifest: network ID, random object
-ID32, random blob capability32, plaintext total (`1..25 MiB`), fixed chunk size
-262,144, chunk count (`1..100`), final-chunk plaintext length, sorted
-`index:u32 || ciphertextLength:u32 || SHA256(ciphertext)`, size bucket, expiry,
-optional UTF-8 filename (`0..255`) and media type (`0..128`). Unknown fields,
-duplicate/missing indexes and inconsistent totals reject.
+An attachment event contains canonical `DAM1`, version 1, suite `0x0201`:
+
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2 | random object ID | 32 |
+| 3 | random blob capability | 32 |
+| 4 | random object key | 32 |
+| 5 | total plaintext bytes | 8; `1..26,214,400` |
+| 6 | fixed non-final plaintext chunk size | 4; exactly `262144` |
+| 7 | chunk count | 4; `1..100` |
+| 8 | final chunk plaintext bytes | 4; `1..262144` |
+| 9 | chunk-entry count | 4; equals tag 7 |
+| 10 | sorted chunk entries | `count * 40` |
+| 11 | size-bucket ID | 2 |
+| 12 | expires-at Unix seconds | 8 |
+| 13 | canonical UTF-8 filename | `0..255` |
+| 14 | canonical ASCII media type | `0..128` |
+
+Each tag 10 entry is exactly
+`index:u32be || ciphertextLength:u32be || SHA256(ciphertext)32`; indexes are
+strictly `0..count-1`. `count = ceil(totalPlaintext/262144)`, final plaintext
+length is `total - 262144*(count-1)`, and each ciphertext length is its
+plaintext length plus the 16-byte XChaCha20-Poly1305 tag. Size-bucket mapping is
+registry-owned and MUST be at least the exact total ciphertext size. Unknown
+fields/buckets, duplicate/missing indexes, inconsistent totals and max+1 reject
+before allocation or blob access. The manifest identity is
+`SHA256-D("Deep/Attachment/V1/manifest", exactDAM1)`.
 
 The sender generates random object key32 and derives for every index:
 
@@ -993,7 +1320,8 @@ aad = networkId16 || objectId32 || index:u32be ||
   plaintextLength:u32be || totalPlaintextLength:u64be
 ```
 
-Each chunk is XChaCha20-Poly1305 ciphertext. A repeated index is idempotent only
+Each chunk is XChaCha20-Poly1305 ciphertext. DAM1, including object key, exists
+only inside DMC2/DGM1 E2EE and MUST NOT be uploaded as blob metadata. A repeated index is idempotent only
 when length/hash/exact bytes match; changed bytes fork-latch the object. DAM1 and
 object key are inside DMC2/DGM1 E2EE. Preview/thumbnail is a separate bounded
 encrypted object and is never uploaded in plaintext.

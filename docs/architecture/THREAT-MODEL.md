@@ -32,6 +32,7 @@
 | Сговор entry+exit | E2EE сохраняется | timing/volume unlinkability не гарантируется |
 | Global passive observer | E2EE сохраняется | глобальная traffic-correlation resistance |
 | Компрометация Registry/directory | signed/transparent state не позволяет подменить identity/topology незаметно | withholding, selective denial и наблюдение запросов без oblivious access |
+| Компрометация bootstrap-оператора D0 | изоляция witness keys/processes ограничивает одиночный host/credential fault | одновременная компрометация/принуждение единственного оператора может связать metadata и выпустить threshold split view; operator independence начинается только с D2 |
 | Компрометация mailbox/file/push | ciphertext и opaque capabilities; bounded replay | availability и удаление сохранённых blobs |
 | Компрометация TURN/media relay | SRTP/WebRTC E2EE; relay не получает chat keys | relay видит call endpoints, время и объём |
 | Компрометация одного device | revoke/rekey и PCS ограничивают будущий ущерб | plaintext и активный state этого устройства до revoke/rekey |
@@ -62,7 +63,11 @@ Account-directory threshold является отдельной metadata boundar
 ADC1/XPA1 он проверяет DID1 hash/address-key ↔ account binding, но не получает
 resolver read capability; запрос приходит
 только через OHTTP/XPoint и не передаёт mapping invite/mailbox storage. Сговор
-directory threshold с глобальным наблюдателем остаётся явным non-claim.
+directory threshold с глобальным наблюдателем остаётся явным non-claim. Public
+mirrors получают только roots/opaque transition commitments, не leaf-key index.
+Holder конкретного DID1 при активном resolve может наблюдать generation/update
+timing этого DID; это принятая contact-local metadata surface, а не пассивно
+энумерируемый публичный account log.
 
 ## 4. Traffic analysis
 
@@ -110,8 +115,11 @@ replay protection обязательны во всех профилях.
 
 ## 7. Offline и revocation
 
-Свежая установка всегда может проверить полный retained root lineage и
-актуальный threshold-signed checkpoint. История trust roots и transparency
+Свежая установка может проверить полный retained root lineage и актуальный
+threshold-signed checkpoint, если доступен хотя бы один подписанный acquisition
+path либо user import. Если все такие пути заблокированы, account всё равно
+создаётся локально, но network state остаётся `Blocked/RecoveryRequired` без
+mutation или direct/stale fallback. История trust roots и transparency
 checkpoints хранится бессрочно; hot issuer private keys не сохраняются.
 
 Длительный offline означает возможность безопасно восстановить trust и

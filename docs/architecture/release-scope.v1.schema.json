@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/XPointLabs/deep-platform/blob/main/docs/architecture/release-scope.v1.schema.json",
+  "title": "Deep V1 release scenario and evidence contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "releaseId", "normativeSource", "retentionNormativeSource", "releaseVerifierPackage", "releaseGateConsumerRepository", "semanticValidation", "boundaryRules", "measurementProfiles", "scenarios", "retentionScenarios"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "releaseId": { "const": "deep-v1-official-xpoint3" },
+    "normativeSource": { "const": "V1-RELEASE-SCOPE.md" },
+    "retentionNormativeSource": { "const": "RETENTION-AND-RECOVERY-V1.md" },
+    "releaseVerifierPackage": { "const": "E2E-01" },
+    "releaseGateConsumerRepository": { "const": "deep-devops" },
+    "semanticValidation": { "const": { "exactCatalogs": true, "uniqueIds": true, "referencesMustResolve": true, "scenarioSpecificPredicates": true, "pairProfilesRequireTargetPairs": true, "ownersAreSchemaPinned": true } },
+    "boundaryRules": { "$ref": "#/$defs/boundaryCatalog" },
+    "measurementProfiles": { "$ref": "#/$defs/profileCatalog" },
+    "scenarios": { "$ref": "#/$defs/scenarioCatalog" },
+    "retentionScenarios": { "$ref": "#/$defs/retentionCatalog" }
+  },
+  "$defs": {
+    "platform": { "enum": ["android-arm64-phone-a", "android-arm64-phone-b", "windows-x64", "windows-arm64", "portable-sqlite", "portable-in-memory", "call-relay", "official-xpoint3-deployment"] },
+    "allTargetPairs": { "const": ["android-arm64-phone-a->android-arm64-phone-b", "android-arm64-phone-b->android-arm64-phone-a", "android-arm64-phone-a->windows-x64", "windows-x64->android-arm64-phone-a", "android-arm64-phone-b->windows-arm64", "windows-arm64->android-arm64-phone-b"] },
+    "targetPair": { "enum": ["android-arm64-phone-a->android-arm64-phone-b", "android-arm64-phone-b->android-arm64-phone-a", "android-arm64-phone-a->windows-x64", "windows-x64->android-arm64-phone-a", "android-arm64-phone-b->windows-arm64", "windows-arm64->android-arm64-phone-b"] },
+    "boundaryId": { "enum": ["TIME-BOUNDARY-V1", "GENERATION-BOUNDARY-V1", "SUPERSESSION-GRACE-V1", "TERMINAL-TOMBSTONE-V1", "INDEFINITE-CHECKPOINT-V1"] },
+    "boundaryRule": {
+      "type": "object", "additionalProperties": false, "required": ["id", "rule"],
+      "properties": { "id": { "$ref": "#/$defs/boundaryId" }, "rule": { "type": "string", "minLength": 1 } }
+    },
+    "boundaryCatalog": {
+      "type": "array", "minItems": 5, "maxItems": 5, "items": { "$ref": "#/$defs/boundaryRule" },
+      "allOf": [
+        { "contains": { "properties": { "id": { "const": "TIME-BOUNDARY-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "GENERATION-BOUNDARY-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "SUPERSESSION-GRACE-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "TERMINAL-TOMBSTONE-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "INDEFINITE-CHECKPOINT-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 }
+      ]
+    },
+    "profileId": { "enum": ["LATENCY-LAB-V1", "GROUP-LAB-V1", "GROUP-200-BASELINE-LAB-V1", "ATTACHMENT-LAB-V1", "MEDIA-LAB-V1", "ANDROID-IDLE-V1", "SESSION-COMPARISON-V1"] },
+    "profileBase": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "targetPlatforms", "warmupSamplesPerRun", "measuredSamplesPerRun", "clock", "percentileAlgorithm", "failureTreatment", "outlierPolicy", "networkProfile", "environmentCapture"],
+      "properties": {
+        "id": { "$ref": "#/$defs/profileId" }, "kind": { "enum": ["latency", "group", "attachment", "media", "idle", "comparison"] },
+        "targetPlatforms": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/platform" } },
+        "targetPairs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/targetPair" } },
+        "independentRunsPerTargetPair": { "type": "integer", "minimum": 1 }, "independentRunsPerTarget": { "type": "integer", "minimum": 1 },
+        "warmupSamplesPerRun": { "type": "integer", "minimum": 0 }, "measuredSamplesPerRun": { "type": "integer", "minimum": 1 },
+        "clock": { "type": "string", "minLength": 1 }, "percentileAlgorithm": { "type": "string", "minLength": 1 },
+        "failureTreatment": { "type": "string", "minLength": 1 }, "outlierPolicy": { "type": "string", "minLength": 1 },
+        "networkProfile": { "type": "string", "minLength": 1 }, "environmentCapture": { "type": "string", "minLength": 1 },
+        "preconditions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "pairProfileShape": { "required": ["targetPairs", "independentRunsPerTargetPair"], "not": { "required": ["independentRunsPerTarget"] } },
+    "nonPairProfileShape": { "required": ["independentRunsPerTarget"], "allOf": [{ "not": { "required": ["targetPairs"] } }, { "not": { "required": ["independentRunsPerTargetPair"] } }] },
+    "measurementProfile": {
+      "allOf": [
+        { "$ref": "#/$defs/profileBase" },
+        { "oneOf": [
+          { "allOf": [{ "$ref": "#/$defs/pairProfileShape" }, { "properties": { "id": { "const": "LATENCY-LAB-V1" }, "kind": { "const": "latency" }, "targetPlatforms": { "const": ["android-arm64-phone-a", "android-arm64-phone-b", "windows-x64", "windows-arm64"] }, "targetPairs": { "$ref": "#/$defs/allTargetPairs" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/nonPairProfileShape" }, { "properties": { "id": { "const": "GROUP-LAB-V1" }, "kind": { "const": "group" }, "targetPlatforms": { "const": ["android-arm64-phone-a", "android-arm64-phone-b", "windows-x64", "windows-arm64"] } } }] },
+          { "allOf": [{ "$ref": "#/$defs/nonPairProfileShape" }, { "properties": { "id": { "const": "GROUP-200-BASELINE-LAB-V1" }, "kind": { "const": "group" }, "targetPlatforms": { "const": ["android-arm64-phone-a", "windows-x64"] } } }] },
+          { "allOf": [{ "$ref": "#/$defs/pairProfileShape" }, { "properties": { "id": { "const": "ATTACHMENT-LAB-V1" }, "kind": { "const": "attachment" }, "targetPlatforms": { "const": ["android-arm64-phone-a", "android-arm64-phone-b", "windows-x64", "windows-arm64"] }, "targetPairs": { "$ref": "#/$defs/allTargetPairs" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/pairProfileShape" }, { "properties": { "id": { "const": "MEDIA-LAB-V1" }, "kind": { "const": "media" }, "targetPlatforms": { "const": ["android-arm64-phone-a", "android-arm64-phone-b", "windows-x64", "windows-arm64"] }, "targetPairs": { "$ref": "#/$defs/allTargetPairs" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/nonPairProfileShape" }, { "properties": { "id": { "const": "ANDROID-IDLE-V1" }, "kind": { "const": "idle" }, "targetPlatforms": { "const": ["android-arm64-phone-a", "android-arm64-phone-b"] } } }] },
+          { "allOf": [{ "$ref": "#/$defs/pairProfileShape" }, { "properties": { "id": { "const": "SESSION-COMPARISON-V1" }, "kind": { "const": "comparison" }, "targetPlatforms": { "const": ["android-arm64-phone-a", "android-arm64-phone-b", "windows-x64", "windows-arm64"] }, "targetPairs": { "$ref": "#/$defs/allTargetPairs" } } }] }
+        ] }
+      ]
+    },
+    "profileCatalog": {
+      "type": "array", "minItems": 7, "maxItems": 7, "items": { "$ref": "#/$defs/measurementProfile" },
+      "allOf": [
+        { "contains": { "properties": { "id": { "const": "LATENCY-LAB-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "GROUP-LAB-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "GROUP-200-BASELINE-LAB-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "ATTACHMENT-LAB-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "MEDIA-LAB-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "ANDROID-IDLE-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "id": { "const": "SESSION-COMPARISON-V1" } }, "required": ["id"] }, "minContains": 1, "maxContains": 1 }
+      ]
+    },
+    "pFunctional": { "type": "object", "additionalProperties": false, "required": ["requiredPairs", "allCasesPass"], "properties": { "requiredPairs": { "$ref": "#/$defs/allTargetPairs" }, "allCasesPass": { "type": "boolean" } } },
+    "pGroup100": { "type": "object", "additionalProperties": false, "required": ["members", "activeTargetDevices", "p95FirstRemoteMaterializationMsMax", "p95CompleteAcceptedFanoutMsMax", "wireBytesMax"], "properties": { "members": { "type": "integer", "minimum": 1 }, "activeTargetDevices": { "type": "integer", "minimum": 1 }, "p95FirstRemoteMaterializationMsMax": { "type": "integer", "minimum": 1 }, "p95CompleteAcceptedFanoutMsMax": { "type": "integer", "minimum": 1 }, "wireBytesMax": { "type": "integer", "minimum": 1 } } },
+    "pGroup200": { "type": "object", "additionalProperties": false, "required": ["artifactRequired", "thresholdBlocking"], "properties": { "artifactRequired": { "type": "boolean" }, "thresholdBlocking": { "type": "boolean" } } },
+    "pOutbox": { "type": "object", "additionalProperties": false, "required": ["deterministicCasesMin", "allAcceptedCorpusEventsMaterializeOnce", "caseGeneratorVersionRecorded", "seedSetRecorded"], "properties": { "deterministicCasesMin": { "type": "integer", "minimum": 1 }, "allAcceptedCorpusEventsMaterializeOnce": { "type": "boolean" }, "caseGeneratorVersionRecorded": { "type": "boolean" }, "seedSetRecorded": { "type": "boolean" } } },
+    "pText": { "type": "object", "additionalProperties": false, "required": ["p50MsMax", "p95MsMax", "p99MsMax"], "properties": { "p50MsMax": { "type": "integer", "minimum": 1 }, "p95MsMax": { "type": "integer", "minimum": 1 }, "p99MsMax": { "type": "integer", "minimum": 1 } } },
+    "pP95": { "type": "object", "additionalProperties": false, "required": ["p95MsMax"], "properties": { "p95MsMax": { "type": "integer", "minimum": 1 } } },
+    "pAttachment": { "type": "object", "additionalProperties": false, "required": ["objectBytes", "medianGoodputRatioMin"], "properties": { "objectBytes": { "type": "integer", "minimum": 1 }, "medianGoodputRatioMin": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 } } },
+    "pCallSetup": { "type": "object", "additionalProperties": false, "required": ["ringP95MsMax", "connectedMediaP95MsMax"], "properties": { "ringP95MsMax": { "type": "integer", "minimum": 1 }, "connectedMediaP95MsMax": { "type": "integer", "minimum": 1 } } },
+    "pCallMedia": { "type": "object", "additionalProperties": false, "required": ["sameRegionRttP95MsMax", "rttWarningMs", "tenMinuteRecoveryAudioLossFractionMaxExclusive", "udpBlockedTcpAudioRecoveryP95MsMax"], "properties": { "sameRegionRttP95MsMax": { "type": "integer", "minimum": 1 }, "rttWarningMs": { "type": "integer", "minimum": 1 }, "tenMinuteRecoveryAudioLossFractionMaxExclusive": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }, "udpBlockedTcpAudioRecoveryP95MsMax": { "type": "integer", "minimum": 1 } } },
+    "pIdle": { "type": "object", "additionalProperties": false, "required": ["durationSeconds", "processCpuSecondsMax", "totalWakelockSecondsMax", "singleWakelockSecondsMax", "backgroundWakeupsMax", "networkBytesMax", "batteryPercentagePointDropMax"], "properties": { "durationSeconds": { "type": "integer", "minimum": 1 }, "processCpuSecondsMax": { "type": "number", "minimum": 0 }, "totalWakelockSecondsMax": { "type": "number", "minimum": 0 }, "singleWakelockSecondsMax": { "type": "number", "minimum": 0 }, "backgroundWakeupsMax": { "type": "integer", "minimum": 0 }, "networkBytesMax": { "type": "integer", "minimum": 0 }, "batteryPercentagePointDropMax": { "type": "number", "minimum": 0 } } },
+    "pOhttp": { "type": "object", "additionalProperties": false, "required": ["channel", "rfc9458RelayGatewaySplitUsed", "validSignedBundleAccepted", "wrongNetworkRollbackForkRejected"], "properties": { "channel": { "const": "in-app-oblivious" }, "rfc9458RelayGatewaySplitUsed": { "type": "boolean" }, "validSignedBundleAccepted": { "type": "boolean" }, "wrongNetworkRollbackForkRejected": { "type": "boolean" } } },
+    "pMulti": { "type": "object", "additionalProperties": false, "required": ["channel", "unrelatedOriginsUsed", "validSignedBundleAccepted", "withholdingAndForkDetected"], "properties": { "channel": { "const": "multi-origin-https" }, "unrelatedOriginsUsed": { "type": "boolean" }, "validSignedBundleAccepted": { "type": "boolean" }, "withholdingAndForkDetected": { "type": "boolean" } } },
+    "pImport": { "type": "object", "additionalProperties": false, "required": ["channel", "validSignedBundleAccepted", "tamperWrongNetworkRollbackRejected"], "properties": { "channel": { "const": "user-import" }, "validSignedBundleAccepted": { "type": "boolean" }, "tamperWrongNetworkRollbackRejected": { "type": "boolean" } } },
+    "pNminus1": { "type": "object", "additionalProperties": false, "required": ["eachSingleChannelFailureTested", "atLeastOneRemainingAuthorizedPathWorks", "threeChannelsDoNotResolveToOneRequiredOriginOrCredential"], "properties": { "eachSingleChannelFailureTested": { "type": "boolean" }, "atLeastOneRemainingAuthorizedPathWorks": { "type": "boolean" }, "threeChannelsDoNotResolveToOneRequiredOriginOrCredential": { "type": "boolean" } } },
+    "pCens": { "type": "object", "additionalProperties": false, "required": ["noDirectFallback", "textContactFileRemainAvailableThroughAnAuthorizedRemainingCarrier", "udpBlockUsesMaskedTcpAudio", "apkAndMsixExtractionTested"], "properties": { "noDirectFallback": { "type": "boolean" }, "textContactFileRemainAvailableThroughAnAuthorizedRemainingCarrier": { "type": "boolean" }, "udpBlockUsesMaskedTcpAudio": { "type": "boolean" }, "apkAndMsixExtractionTested": { "type": "boolean" } } },
+    "pOffline": { "type": "object", "additionalProperties": false, "required": ["sameAccountAndDid", "newDeviceKeysOnPhraseRecovery", "noExpiredCiphertextPromise", "rollbackForkWrongNetworkRejected"], "properties": { "sameAccountAndDid": { "type": "boolean" }, "newDeviceKeysOnPhraseRecovery": { "type": "boolean" }, "noExpiredCiphertextPromise": { "type": "boolean" }, "rollbackForkWrongNetworkRejected": { "type": "boolean" } } },
+    "pCallPhysical": { "type": "object", "additionalProperties": false, "required": ["noPeerHostCandidate", "noSilentDirectPath", "allCasesPass"], "properties": { "noPeerHostCandidate": { "type": "boolean" }, "noSilentDirectPath": { "type": "boolean" }, "allCasesPass": { "type": "boolean" } } },
+    "pRelayDecrypt": { "type": "object", "additionalProperties": false, "required": ["relayHasNoEndpointPrivateKeyOrExportedSrtpKey", "decryptAttemptProducesNoAuthenticatedMedia", "fingerprintsMatchAuthenticatedPeers", "noPlaintextInRelayLogsOrArtifacts"], "properties": { "relayHasNoEndpointPrivateKeyOrExportedSrtpKey": { "type": "boolean" }, "decryptAttemptProducesNoAuthenticatedMedia": { "type": "boolean" }, "fingerprintsMatchAuthenticatedPeers": { "type": "boolean" }, "noPlaintextInRelayLogsOrArtifacts": { "type": "boolean" } } },
+    "pPrivacy": { "type": "object", "additionalProperties": false, "required": ["allCasesPass", "unresolvedCriticalOrHighDependencies", "reviewP0", "reviewP1"], "properties": { "allCasesPass": { "type": "boolean" }, "unresolvedCriticalOrHighDependencies": { "type": "integer", "minimum": 0 }, "reviewP0": { "type": "integer", "minimum": 0 }, "reviewP1": { "type": "integer", "minimum": 0 } } },
+    "pSession": { "type": "object", "additionalProperties": false, "required": ["regressionFractionRequiringReleaseDecision", "cannotRelaxBlockingAbsoluteGate", "sessionVersionAndHashRequired"], "properties": { "regressionFractionRequiringReleaseDecision": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }, "cannotRelaxBlockingAbsoluteGate": { "type": "boolean" }, "sessionVersionAndHashRequired": { "type": "boolean" } } },
+    "scenarioBase": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scenarioId", "evidenceId", "title", "blocking", "ownerPackage", "ownerRepository", "releaseVerifierPackage", "evidenceKind", "platforms", "passCriteria"],
+      "properties": {
+        "scenarioId": { "type": "string" }, "evidenceId": { "type": "string" }, "title": { "type": "string", "minLength": 1 }, "blocking": { "type": "boolean" },
+        "ownerPackage": { "type": "string" }, "ownerRepository": { "type": "string" }, "releaseVerifierPackage": { "const": "E2E-01" }, "evidenceKind": { "type": "string", "minLength": 1 },
+        "platforms": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/platform" } },
+        "measurementProfileId": { "$ref": "#/$defs/profileId" }, "cases": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }, "passCriteria": { "type": "object" }
+      }
+    },
+    "hasCasesNoProfile": { "required": ["cases"], "not": { "required": ["measurementProfileId"] } },
+    "hasProfileNoCases": { "required": ["measurementProfileId"], "not": { "required": ["cases"] } },
+    "noCasesNoProfile": { "allOf": [{ "not": { "required": ["measurementProfileId"] } }, { "not": { "required": ["cases"] } }] },
+    "scenario": {
+      "allOf": [
+        { "$ref": "#/$defs/scenarioBase" },
+        { "oneOf": [
+          { "allOf": [{ "$ref": "#/$defs/hasCasesNoProfile" }, { "properties": { "scenarioId": { "const": "REL-FUNCTIONAL-MATRIX-V1" }, "evidenceId": { "const": "EVD-FUNCTIONAL-MATRIX-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "E2E-01" }, "ownerRepository": { "const": "deep-tests-e2e" }, "passCriteria": { "$ref": "#/$defs/pFunctional" } } }] },
+          { "required": ["measurementProfileId", "cases"], "properties": { "scenarioId": { "const": "REL-GROUP-100-V1" }, "evidenceId": { "const": "EVD-GROUP-100-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "GROUP-CLIENT-01" }, "ownerRepository": { "const": "deep-client-shared" }, "measurementProfileId": { "const": "GROUP-LAB-V1" }, "passCriteria": { "$ref": "#/$defs/pGroup100" } } },
+          { "required": ["measurementProfileId", "cases"], "properties": { "scenarioId": { "const": "REL-GROUP-200-BASELINE-V1" }, "evidenceId": { "const": "EVD-GROUP-200-BASELINE-V1" }, "blocking": { "const": false }, "ownerPackage": { "const": "GROUP-CLIENT-01" }, "ownerRepository": { "const": "deep-client-shared" }, "measurementProfileId": { "const": "GROUP-200-BASELINE-LAB-V1" }, "passCriteria": { "$ref": "#/$defs/pGroup200" } } },
+          { "allOf": [{ "$ref": "#/$defs/hasCasesNoProfile" }, { "properties": { "scenarioId": { "const": "REL-OUTBOX-FAULTS-V1" }, "evidenceId": { "const": "EVD-OUTBOX-FAULTS-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "MSG-01" }, "ownerRepository": { "const": "deep-client-shared" }, "passCriteria": { "$ref": "#/$defs/pOutbox" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasProfileNoCases" }, { "properties": { "scenarioId": { "const": "PERF-TEXT-WARM-V1" }, "evidenceId": { "const": "EVD-PERF-TEXT-WARM-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "E2E-01" }, "ownerRepository": { "const": "deep-tests-e2e" }, "measurementProfileId": { "const": "LATENCY-LAB-V1" }, "passCriteria": { "$ref": "#/$defs/pText" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasProfileNoCases" }, { "properties": { "scenarioId": { "const": "PERF-START-COLD-V1" }, "evidenceId": { "const": "EVD-PERF-START-COLD-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "COMPOSE-01" }, "ownerRepository": { "const": "deep-client-maui" }, "measurementProfileId": { "const": "LATENCY-LAB-V1" }, "passCriteria": { "$ref": "#/$defs/pP95" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasProfileNoCases" }, { "properties": { "scenarioId": { "const": "PERF-BOOTSTRAP-FRESH-V1" }, "evidenceId": { "const": "EVD-PERF-BOOTSTRAP-FRESH-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "BRIDGE-01" }, "ownerRepository": { "const": "deep-devops" }, "measurementProfileId": { "const": "LATENCY-LAB-V1" }, "passCriteria": { "$ref": "#/$defs/pP95" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasProfileNoCases" }, { "properties": { "scenarioId": { "const": "PERF-ATTACHMENT-10M-V1" }, "evidenceId": { "const": "EVD-PERF-ATTACHMENT-10M-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "BLOB-01" }, "ownerRepository": { "const": "deep-client-shared" }, "measurementProfileId": { "const": "ATTACHMENT-LAB-V1" }, "passCriteria": { "$ref": "#/$defs/pAttachment" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasProfileNoCases" }, { "properties": { "scenarioId": { "const": "PERF-CALL-SETUP-V1" }, "evidenceId": { "const": "EVD-PERF-CALL-SETUP-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "CALL-MEDIA-01" }, "ownerRepository": { "const": "deep-client-maui" }, "measurementProfileId": { "const": "MEDIA-LAB-V1" }, "passCriteria": { "$ref": "#/$defs/pCallSetup" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasProfileNoCases" }, { "properties": { "scenarioId": { "const": "PERF-CALL-MEDIA-V1" }, "evidenceId": { "const": "EVD-PERF-CALL-MEDIA-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "CALL-MEDIA-01" }, "ownerRepository": { "const": "deep-client-maui" }, "measurementProfileId": { "const": "MEDIA-LAB-V1" }, "passCriteria": { "$ref": "#/$defs/pCallMedia" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasProfileNoCases" }, { "properties": { "scenarioId": { "const": "PERF-ANDROID-IDLE-V1" }, "evidenceId": { "const": "EVD-PERF-ANDROID-IDLE-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "COMPOSE-01" }, "ownerRepository": { "const": "deep-client-maui" }, "measurementProfileId": { "const": "ANDROID-IDLE-V1" }, "passCriteria": { "$ref": "#/$defs/pIdle" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/noCasesNoProfile" }, { "properties": { "scenarioId": { "const": "CENS-ACQ-OHTTP-V1" }, "evidenceId": { "const": "EVD-CENS-ACQ-OHTTP-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "BRIDGE-01" }, "ownerRepository": { "const": "deep-devops" }, "passCriteria": { "$ref": "#/$defs/pOhttp" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/noCasesNoProfile" }, { "properties": { "scenarioId": { "const": "CENS-ACQ-MULTI-ORIGIN-V1" }, "evidenceId": { "const": "EVD-CENS-ACQ-MULTI-ORIGIN-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "BRIDGE-01" }, "ownerRepository": { "const": "deep-devops" }, "passCriteria": { "$ref": "#/$defs/pMulti" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/noCasesNoProfile" }, { "properties": { "scenarioId": { "const": "CENS-ACQ-USER-IMPORT-V1" }, "evidenceId": { "const": "EVD-CENS-ACQ-USER-IMPORT-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "BRIDGE-01" }, "ownerRepository": { "const": "deep-devops" }, "passCriteria": { "$ref": "#/$defs/pImport" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasCasesNoProfile" }, { "properties": { "scenarioId": { "const": "CENS-ACQ-NMINUS1-V1" }, "evidenceId": { "const": "EVD-CENS-ACQ-NMINUS1-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "BRIDGE-01" }, "ownerRepository": { "const": "deep-devops" }, "passCriteria": { "$ref": "#/$defs/pNminus1" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasCasesNoProfile" }, { "properties": { "scenarioId": { "const": "CENS-BLOCK-MATRIX-V1" }, "evidenceId": { "const": "EVD-CENS-BLOCK-MATRIX-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "BRIDGE-01" }, "ownerRepository": { "const": "deep-devops" }, "passCriteria": { "$ref": "#/$defs/pCens" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasCasesNoProfile" }, { "properties": { "scenarioId": { "const": "OFFLINE-RECOVERY-MATRIX-V1" }, "evidenceId": { "const": "EVD-OFFLINE-RECOVERY-MATRIX-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "CONTACT-CLIENT-01" }, "ownerRepository": { "const": "deep-client-shared" }, "passCriteria": { "$ref": "#/$defs/pOffline" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasCasesNoProfile" }, { "properties": { "scenarioId": { "const": "CALL-PHYSICAL-MATRIX-V1" }, "evidenceId": { "const": "EVD-CALL-PHYSICAL-MATRIX-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "CALL-MEDIA-01" }, "ownerRepository": { "const": "deep-client-maui" }, "passCriteria": { "$ref": "#/$defs/pCallPhysical" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasCasesNoProfile" }, { "properties": { "scenarioId": { "const": "CALL-RELAY-DECRYPT-NEGATIVE-V1" }, "evidenceId": { "const": "EVD-CALL-RELAY-DECRYPT-NEGATIVE-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "CALL-RELAY-01" }, "ownerRepository": { "const": "xnode" }, "passCriteria": { "$ref": "#/$defs/pRelayDecrypt" } } }] },
+          { "allOf": [{ "$ref": "#/$defs/hasCasesNoProfile" }, { "properties": { "scenarioId": { "const": "PRIVACY-OPERATIONS-EVIDENCE-V1" }, "evidenceId": { "const": "EVD-PRIVACY-OPERATIONS-EVIDENCE-V1" }, "blocking": { "const": true }, "ownerPackage": { "const": "E2E-01" }, "ownerRepository": { "const": "deep-tests-e2e" }, "passCriteria": { "$ref": "#/$defs/pPrivacy" } } }] },
+          { "required": ["measurementProfileId", "cases"], "properties": { "scenarioId": { "const": "SESSION-COMPARATIVE-SMOKE-V1" }, "evidenceId": { "const": "EVD-SESSION-COMPARATIVE-SMOKE-V1" }, "blocking": { "const": false }, "ownerPackage": { "const": "E2E-01" }, "ownerRepository": { "const": "deep-tests-e2e" }, "measurementProfileId": { "const": "SESSION-COMPARISON-V1" }, "passCriteria": { "$ref": "#/$defs/pSession" } } }
+        ] }
+      ]
+    },
+    "scenarioCatalog": {
+      "type": "array", "minItems": 21, "maxItems": 21, "items": { "$ref": "#/$defs/scenario" },
+      "allOf": [
+        { "contains": { "properties": { "scenarioId": { "const": "REL-FUNCTIONAL-MATRIX-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "REL-GROUP-100-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "REL-GROUP-200-BASELINE-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "REL-OUTBOX-FAULTS-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "PERF-TEXT-WARM-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "PERF-START-COLD-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "PERF-BOOTSTRAP-FRESH-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "PERF-ATTACHMENT-10M-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "PERF-CALL-SETUP-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "PERF-CALL-MEDIA-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "PERF-ANDROID-IDLE-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "CENS-ACQ-OHTTP-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "CENS-ACQ-MULTI-ORIGIN-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "CENS-ACQ-USER-IMPORT-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "CENS-ACQ-NMINUS1-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "CENS-BLOCK-MATRIX-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "OFFLINE-RECOVERY-MATRIX-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "CALL-PHYSICAL-MATRIX-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "CALL-RELAY-DECRYPT-NEGATIVE-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "PRIVACY-OPERATIONS-EVIDENCE-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "SESSION-COMPARATIVE-SMOKE-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 }
+      ]
+    },
+    "retentionBase": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scenarioId", "evidenceId", "dataClass", "ownerPackage", "ownerRepository", "releaseVerifierPackage", "boundaryRuleIds", "cases"],
+      "properties": { "scenarioId": { "type": "string" }, "evidenceId": { "type": "string" }, "dataClass": { "type": "string" }, "ownerPackage": { "type": "string" }, "ownerRepository": { "type": "string" }, "releaseVerifierPackage": { "const": "E2E-01" }, "boundaryRuleIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/boundaryId" } }, "cases": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } } }
+    },
+    "retentionScenario": {
+      "allOf": [
+        { "$ref": "#/$defs/retentionBase" },
+        { "oneOf": [
+          { "properties": { "scenarioId": { "const": "RET-MAILBOX-CIPHERTEXT-V1" }, "evidenceId": { "const": "EVD-RET-MAILBOX-CIPHERTEXT-V1" }, "dataClass": { "const": "mailbox text/control ciphertext" }, "ownerPackage": { "const": "XNODE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-PERMANENT-DID-V1" }, "evidenceId": { "const": "EVD-RET-PERMANENT-DID-V1" }, "dataClass": { "const": "permanent DID1 address" }, "ownerPackage": { "const": "CONTACT-CLIENT-01" }, "ownerRepository": { "const": "deep-client-shared" }, "boundaryRuleIds": { "const": ["INDEFINITE-CHECKPOINT-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-CONTACT-REQUEST-V1" }, "evidenceId": { "const": "EVD-RET-CONTACT-REQUEST-V1" }, "dataClass": { "const": "unsolicited contact request" }, "ownerPackage": { "const": "CONTACT-SERVICE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "SUPERSESSION-GRACE-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-DCR-PUBLICATION-V1" }, "evidenceId": { "const": "EVD-RET-DCR-PUBLICATION-V1" }, "dataClass": { "const": "encrypted DCR1 publication" }, "ownerPackage": { "const": "CONTACT-SERVICE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "SUPERSESSION-GRACE-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-DPK-CLAIM-V1" }, "evidenceId": { "const": "EVD-RET-DPK-CLAIM-V1" }, "dataClass": { "const": "DPK2 claim/replay record" }, "ownerPackage": { "const": "CONTACT-SERVICE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "SUPERSESSION-GRACE-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-XRR-DEPOSIT-V1" }, "evidenceId": { "const": "EVD-RET-XRR-DEPOSIT-V1" }, "dataClass": { "const": "XRR1 deposit reachability" }, "ownerPackage": { "const": "XNODE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "SUPERSESSION-GRACE-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-XUR-UPDATES-V1" }, "evidenceId": { "const": "EVD-RET-XUR-UPDATES-V1" }, "dataClass": { "const": "XUR1 encrypted update events" }, "ownerPackage": { "const": "CONTACT-SERVICE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "GENERATION-BOUNDARY-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-DEVICE-CONTROL-V1" }, "evidenceId": { "const": "EVD-RET-DEVICE-CONTROL-V1" }, "dataClass": { "const": "DMD1/DRS1/device-control history" }, "ownerPackage": { "const": "DIRECTORY-01" }, "ownerRepository": { "const": "deep-registry-api" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "GENERATION-BOUNDARY-V1", "INDEFINITE-CHECKPOINT-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-ACCOUNT-DIRECTORY-V1" }, "evidenceId": { "const": "EVD-RET-ACCOUNT-DIRECTORY-V1" }, "dataClass": { "const": "ADC1/ADH1 account-directory history" }, "ownerPackage": { "const": "DIRECTORY-01" }, "ownerRepository": { "const": "deep-registry-api" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "GENERATION-BOUNDARY-V1", "INDEFINITE-CHECKPOINT-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-GROUP-CONTROL-V1" }, "evidenceId": { "const": "EVD-RET-GROUP-CONTROL-V1" }, "dataClass": { "const": "group proposals/commits/packages" }, "ownerPackage": { "const": "GROUP-CONTROL-SERVICE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "GENERATION-BOUNDARY-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-ATTACHMENT-V1" }, "evidenceId": { "const": "EVD-RET-ATTACHMENT-V1" }, "dataClass": { "const": "attachment ciphertext" }, "ownerPackage": { "const": "XNODE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-PROFILE-BLOB-V1" }, "evidenceId": { "const": "EVD-RET-PROFILE-BLOB-V1" }, "dataClass": { "const": "avatar/profile blob" }, "ownerPackage": { "const": "XNODE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "SUPERSESSION-GRACE-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-OUTBOX-PAYLOAD-V1" }, "evidenceId": { "const": "EVD-RET-OUTBOX-PAYLOAD-V1" }, "dataClass": { "const": "durable sender outbox payload/key" }, "ownerPackage": { "const": "MSG-01" }, "ownerRepository": { "const": "deep-client-shared" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "TERMINAL-TOMBSTONE-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-OUTBOX-TOMBSTONE-V1" }, "evidenceId": { "const": "EVD-RET-OUTBOX-TOMBSTONE-V1" }, "dataClass": { "const": "outbox audit tombstone" }, "ownerPackage": { "const": "MSG-01" }, "ownerRepository": { "const": "deep-client-shared" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "TERMINAL-TOMBSTONE-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-SEMANTIC-DEDUP-V1" }, "evidenceId": { "const": "EVD-RET-SEMANTIC-DEDUP-V1" }, "dataClass": { "const": "semantic dedup tombstone" }, "ownerPackage": { "const": "MSG-01" }, "ownerRepository": { "const": "deep-client-shared" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-ONION-REPLAY-V1" }, "evidenceId": { "const": "EVD-RET-ONION-REPLAY-V1" }, "dataClass": { "const": "onion replay ID" }, "ownerPackage": { "const": "XNODE-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-CARRIER-REPLAY-V1" }, "evidenceId": { "const": "EVD-RET-CARRIER-REPLAY-V1" }, "dataClass": { "const": "carrier replay ID" }, "ownerPackage": { "const": "CARRIER-GATEWAY-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-BRIDGE-ACQUISITION-V1" }, "evidenceId": { "const": "EVD-RET-BRIDGE-ACQUISITION-V1" }, "dataClass": { "const": "bridge acquisition transaction/XBA1 batch" }, "ownerPackage": { "const": "BRIDGE-DISTRIBUTOR-01" }, "ownerRepository": { "const": "deep-registry-api" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-NETWORK-HISTORY-V1" }, "evidenceId": { "const": "EVD-RET-NETWORK-HISTORY-V1" }, "dataClass": { "const": "XVP1/XNV1/XNH1/PMT2 operational history" }, "ownerPackage": { "const": "DIRECTORY-01" }, "ownerRepository": { "const": "deep-registry-api" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "GENERATION-BOUNDARY-V1", "INDEFINITE-CHECKPOINT-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-ROOT-CHECKPOINT-V1" }, "evidenceId": { "const": "EVD-RET-ROOT-CHECKPOINT-V1" }, "dataClass": { "const": "root lineage/transparency checkpoint" }, "ownerPackage": { "const": "DIRECTORY-01" }, "ownerRepository": { "const": "deep-registry-api" }, "boundaryRuleIds": { "const": ["INDEFINITE-CHECKPOINT-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-CALL-SIGNAL-V1" }, "evidenceId": { "const": "EVD-RET-CALL-SIGNAL-V1" }, "dataClass": { "const": "call signaling/dedup" }, "ownerPackage": { "const": "CALL-SIGNAL-01" }, "ownerRepository": { "const": "deep-client-shared" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "TERMINAL-TOMBSTONE-V1"] } } },
+          { "properties": { "scenarioId": { "const": "RET-MEDIA-ALLOCATION-V1" }, "evidenceId": { "const": "EVD-RET-MEDIA-ALLOCATION-V1" }, "dataClass": { "const": "media allocation/replay" }, "ownerPackage": { "const": "CALL-RELAY-01" }, "ownerRepository": { "const": "xnode" }, "boundaryRuleIds": { "const": ["TIME-BOUNDARY-V1", "TERMINAL-TOMBSTONE-V1"] } } }
+        ] }
+      ]
+    },
+    "retentionCatalog": {
+      "type": "array", "minItems": 22, "maxItems": 22, "items": { "$ref": "#/$defs/retentionScenario" },
+      "allOf": [
+        { "contains": { "properties": { "scenarioId": { "const": "RET-MAILBOX-CIPHERTEXT-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-PERMANENT-DID-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-CONTACT-REQUEST-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-DCR-PUBLICATION-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-DPK-CLAIM-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-XRR-DEPOSIT-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-XUR-UPDATES-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-DEVICE-CONTROL-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-ACCOUNT-DIRECTORY-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-GROUP-CONTROL-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-ATTACHMENT-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-PROFILE-BLOB-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-OUTBOX-PAYLOAD-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-OUTBOX-TOMBSTONE-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-SEMANTIC-DEDUP-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-ONION-REPLAY-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-CARRIER-REPLAY-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-BRIDGE-ACQUISITION-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-NETWORK-HISTORY-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-ROOT-CHECKPOINT-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-CALL-SIGNAL-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "properties": { "scenarioId": { "const": "RET-MEDIA-ALLOCATION-V1" } }, "required": ["scenarioId"] }, "minContains": 1, "maxContains": 1 }
+      ]
+    }
+  }
+}

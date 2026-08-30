@@ -42,38 +42,38 @@ plaintext.
 | Contacts | постоянный восстанавливаемый Deep ID/QR, отдельный one-time invite; first message без существующего route/channel |
 | 1:1 | text, reply, reaction, edit/delete, receipts, disappearing policy |
 | Groups | 100 members, до 5 active devices/member, add/remove/roles/history policy |
-| Attachments | image/file/voice, resumable encrypted transfer, 25 MiB minimum |
+| Attachments | image/file/voice and resumable encrypted transfer up to the V1 object limit in [`release-scope.v1.json`](release-scope.v1.json) |
 | Calls | 1:1 audio/video, ring/accept/mute/camera/hangup/reconnect; group calls не требуются для parity, поскольку Session их пока не поддерживает |
-| Offline | 30-day ordinary ciphertext retention; safe trust reconnect/re-enrollment после 365+ дней |
+| Offline | canonical mailbox retention; safe long-offline trust reconnect/re-enrollment по `RETENTION-AND-RECOVERY-V1.md` |
 | Privacy | three-hop source/destination separation; no global-observer claim |
 | Blocking | rotating bridges и не менее двух независимых masked carrier families |
 | Platforms | Android и Windows physical support; Apple не рекламируется без evidence |
 
 ## 4. Performance acceptance
 
-Измерения выполняются на одинаковом RC, production-equivalent XNode и двух
-реальных access networks. Warm paths не включают первый download приложения;
-masked результаты указываются отдельно от unblocked baseline.
+Числовые SLO, pass predicates и воспроизводимые measurement profiles имеют
+единственный нормативный источник —
+[`release-scope.v1.json`](release-scope.v1.json), проверяемый
+[`release-scope.v1.schema.json`](release-scope.v1.schema.json). Этот документ
+описывает только parity intent и не переопределяет значения, percentile method,
+sample count, network shaping либо failure/outlier policy.
 
-| Сценарий | Deep gate |
-| --- | --- |
-| Warm 1:1 text sender action → recipient materialization | p50 ≤1.5 s, p95 ≤3 s, p99 ≤8 s |
-| Cold app start → usable inbox | p95 ≤5 s |
-| Fresh signed bridge bootstrap → first poll | p95 ≤12 s |
-| 100-member group first remote materialization | p95 ≤5 s |
-| Complete 500-device accepted group batch | p95 ≤30 s on 5 Mbps uplink, ≤8.5 MiB wire, without UI blocking |
-| 10 MiB attachment over masked path | не менее 60% goodput валидного direct-HTTPS lab baseline |
-| Call outgoing action → ringing | p95 ≤5 s |
-| Accept → bidirectional audio | p95 ≤10 s |
-| Same-region relay media RTT | p95 ≤300 ms; UI warning above 650 ms |
-| UDP block → masked TCP audio recovery | p95 ≤15 s; video may reduce/disable before audio |
+| Parity claim | Reusable scenario / evidence | Producer owner |
+| --- | --- | --- |
+| Warm 1:1 text materialization | `PERF-TEXT-WARM-V1` / `EVD-PERF-TEXT-WARM-V1` | `E2E-01` (`deep-tests-e2e`) |
+| Cold app to usable inbox | `PERF-START-COLD-V1` / `EVD-PERF-START-COLD-V1` | `COMPOSE-01` (`deep-client-maui`) |
+| Fresh signed bootstrap to first poll | `PERF-BOOTSTRAP-FRESH-V1` / `EVD-PERF-BOOTSTRAP-FRESH-V1` | `BRIDGE-01` (`deep-devops`) |
+| Supported group fan-out | `REL-GROUP-100-V1` / `EVD-GROUP-100-V1` | `GROUP-CLIENT-01` (`deep-client-shared`) |
+| Masked attachment transfer | `PERF-ATTACHMENT-10M-V1` / `EVD-PERF-ATTACHMENT-10M-V1` | `BLOB-01` (`deep-client-shared`) |
+| Call ringing and connected media | `PERF-CALL-SETUP-V1` / `EVD-PERF-CALL-SETUP-V1` | `CALL-MEDIA-01` (`deep-client-maui`) |
+| Relay media and restricted-network recovery | `PERF-CALL-MEDIA-V1` / `EVD-PERF-CALL-MEDIA-V1` | `CALL-MEDIA-01` (`deep-client-maui`) |
 
-Перед GA выполняется сравнительный smoke с актуальной стабильной Session на
-тех же Android/Windows devices и access networks. Он является наблюдаемым
-benchmark, а не криптографическим oracle. Любая Deep regression более 20% по
-warm text/call setup требует принятого release decision и публичного
-ограничения; обязательные абсолютные SLO выше не ослабляются результатом
-сравнения.
+Перед GA `E2E-01` (`deep-tests-e2e`) публикует observational
+`SESSION-COMPARATIVE-SMOKE-V1` / `EVD-SESSION-COMPARATIVE-SMOKE-V1` на той же
+RC/device/access-network matrix. Он использует `SESSION-COMPARISON-V1`, является
+release-decision input, а не криптографическим oracle, и никогда не ослабляет
+blocking absolute gates. Exact comparison trigger и обязательная provenance
+Session build находятся только в machine contract.
 
 ## 5. Разрешённое заимствование
 

@@ -83,9 +83,10 @@ Three initial nodes also do not justify a marketing claim of complete operationa
 decentralization. Claims MUST use the maturity levels in section 5.4.
 
 The seven-day legacy DPE1 lifetime is removed by the clean break. Network retention
-and user-selected disappearing-message lifetime are separate. V1's default mailbox
-retention is 30 days; an offline user can reconnect after any supported metadata
-horizon but receives only messages whose retention has not expired.
+and user-selected disappearing-message lifetime are separate. Exact V1 mailbox
+retention comes only from `RETENTION-AND-RECOVERY-V1.md`; an offline user can
+reconnect after a supported metadata horizon but receives only messages whose
+retention has not expired.
 
 ## 3. Lessons adopted from Session
 
@@ -210,13 +211,20 @@ ownership is permitted only under the explicit launch maturity level below.
 
 | Level | Minimum condition | Permitted claim |
 | --- | --- | --- |
-| `D0 Bootstrap` | three physical XNodes, one controlling operator allowed | production bootstrap network; not operationally decentralized |
+| `D0 Bootstrap` | three physical XNodes; one legal operator allowed, but witness keys/processes/access credentials isolated on separately audited hosts | production bootstrap network; not operationally decentralized and no protection from compromise/coercion of the bootstrap operator |
 | `D1 Diverse hosting` | three nodes across >=2 providers/ASNs/regions | provider-failure diversity |
 | `D2 Independent` | >=6 nodes, >=3 unrelated operators, no operator >1/3 selection weight | decentralized XPoint Network |
 | `D3 Resilient` | >=12 nodes, measured geographic/provider diversity, public witness log | decentralized network with disjoint-route capability |
 
 Marketing and UI MUST use the current signed maturity level and MUST NOT infer a
 higher level from node count alone.
+
+Public GA at D0 still requires three independently generated witness keys, no
+shared online signing secret, separate host/service credentials and an auditable
+2-of-3 ceremony log. One operator may administer those boundaries, so this is
+fault isolation rather than operator independence. A build that lets one process,
+credential or hot key issue two witness signatures is UAT-only and cannot support
+freshness/transparency claims.
 
 ### 5.5 Three-node launch availability
 
@@ -258,32 +266,83 @@ versions, non-canonical encodings, or nonzero reserved values fail closed.
 
 ## 7. Signed network artifacts
 
+Every record in this section uses the canonical tagged record and network
+signature convention frozen in `PROTOCOL-REGISTRY-V1.md`; semantic field tables
+below become exact tags in listed order. NETCODEC-01 may add machine bounds and
+vectors but cannot choose another grammar, suite omission or signature input.
+
 Exact encodings use the repository's canonical bounded binary-record rules. The
 semantic records below are normative. All hashes are SHA-256 over exact canonical
 bytes. Signatures use domain-separated inputs.
+
+In this section an `ArtifactRef38` is exactly
+`magicAscii4 || version:u16be || SHA256(exactCanonicalRecord)`. A field naming an
+artifact type accepts only that magic and version 1; a hash with another magic or
+version does not resolve. Key IDs are looked up only in the exact authority record
+and key generation named by the signed object; no "current key" lookup is allowed.
 
 ### 7.1 `XNA1` — network authority
 
 `XNA1` is pinned in the application release and independently available from signed
 out-of-band recovery packages. It is never derived from or authorized by a user's
-Deep Recovery Phrase. It contains:
+Deep Recovery Phrase. Version 1, root suite `0x0001`, has exact tags:
 
-```text
-networkId16
-authorityGeneration:u64
-previousAuthorityHash32
-rootEd25519Keys[1..8]
-rootThreshold:u8
-directoryWitnessPolicy
-minimumClientGeneration:u64
-issuedAt, notBefore, expiresAt
-rootSignatures[]
-```
+| Tag | Value | Size / rule |
+|---:|---|---|
+| 1 | network ID | 16 |
+| 2 | authority generation | `u64` |
+| 3 | predecessor XNA authority-core hash | 32; zero only at generation 0 |
+| 4 | root-key count | `u8`, `1..8` |
+| 5 | sorted root-key entries | exactly `72 * tag4` bytes |
+| 6 | root threshold | `u8`, `1..tag4` |
+| 7 | directory-witness policy generation | `u64` |
+| 8 | witness-ID derivation profile | `u16`; exactly `1=ExplicitRandomId` |
+| 9 | witness count | `u8`, `3..32` |
+| 10 | sorted witness entries | exactly `104 * tag9` bytes |
+| 11 | witness threshold | `u8`, `2..tag9` |
+| 12 | exact DTS1PolicyCoreRef38 | 38; stable unsigned policy-core reference |
+| 13 | time-source policy hash | 32; exact DTS1-derived value |
+| 14 | maximum witness uncertainty seconds | `u32`; `1..30` and no greater than DTS1 tag 8 |
+| 15 | minimum client generation | `u64` |
+| 16 | issued-at | `u64` |
+| 17 | not-before | `u64` |
+| 18 | expires-at | `u64`; greater than tag 17 |
+| 19 | root-signature count | `u8`; authorizing threshold..authorizing root-key count |
+| 20 | sorted root-key ID/signature entries | exactly `96 * tag19` bytes |
+
+A root-key entry is `rootKeyId32 || keyGeneration:u64 ||
+Ed25519PublicKey32`; a witness entry is `witnessId32 || keyGeneration:u64 ||
+Ed25519PublicKey32 || failureDomainHash32`. Each list sorts by its ID, and IDs,
+public keys and nonzero failure-domain hashes required for one threshold are
+distinct. For generation 0 every key generation is zero and the release pins the
+exact XNA authority core. A successor increments tag 2, names the predecessor core
+in tag 3 and is signed by at least the threshold of predecessor root keys; later objects that
+name this XNA1 resolve IDs only against its tag-5/tag-10 entries and exact key
+generations.
+
+The directory-witness policy is the canonical encoding of XNA1 tags 7..14.
+`directoryWitnessPolicyHash32 = SHA256-D("Deep/XPoint/V1/directory-witness-policy",
+exactXNA1Tags7Through14)`. ADH1, XNV1, XNH1 and DTT1 carry the exact XNA
+authority-core ref plus this hash. Their `(witnessId,keyGeneration)` pairs must resolve
+to tag 10 and meet tag 11 with distinct failure domains. DTS1 tag 13 must equal
+XNA1 tag 2; XNA1 tag 13 must equal the DTS1 derivation defined by the account
+directory specification.
 
 The launch authority may use one offline root operationally, but public GA requires
 at least 2-of-3 offline root keys stored under separate custody. Root keys sign only
-authority succession, emergency revocation, and a fresh-install checkpoint; they do
-not sign per-user routes, messages, or ordinary node heartbeats.
+authority succession, XVP1 network policy, emergency revocation, DTS1
+authenticated-time-source policy and a fresh-install checkpoint; they do not sign per-user routes, messages, or
+ordinary node heartbeats. Each tag-20 entry
+signs `SIGINPUT("Deep/XPoint/V1/XNA1/root", 0x0001, unsignedXNA1 tags
+1..18)`; generation 0 self-signatures are checked in addition to the release pin,
+while a successor uses the predecessor key set and threshold.
+
+`XNAAuthorityCoreHash32 = SHA256-D("Deep/XPoint/V1/XNA1/authority-core",
+exact unsigned tags 1..18)` and `XNAAuthorityCoreRef38 = ASCII("XNA1") ||
+U16BE(1) || XNAAuthorityCoreHash32`. Tag 3 and every authorizing-XNA field use
+this stable core, never a full root-signature envelope. Valid receipt subsets may
+aggregate by root-key ID; different unsigned bytes at one authority generation are
+a fork.
 
 ### 7.2 `XND1` — node descriptor
 
@@ -305,26 +364,106 @@ nodeIdentitySignature
 identity descriptor; it is measured separately so a missing Registry cannot rewrite
 identity state.
 
-### 7.3 `XNV1` — network view
+### 7.3 `XVP1` / `XNV1` — network policy and view
 
-`XNV1` is the deterministic, globally shared roster:
+`XVP1`, version 1, root suite `0x0001`, is the sole policy preimage accepted by
+XNV1. It has exact tags:
 
-```text
-networkId16
-viewGeneration:u64, previousViewHash32
-finalizedChainId, finalizedBlockHeight, finalizedBlockHash
-authorityHash32, policyGeneration:u64
-nodeDescriptorHashes[3..4096] in nodeId order
-revokedNodeIds[]
-role/selection/retention/circuit policy
-exact current PMT2 hash and next PMT2 commitment
-circumventionPolicyHash32
-sorted carrierBindingHashes[] whose targets are descriptor cores in this view
-maturityLevel
-issuedAt, notBefore, expiresAt
-witnessSignatures[]
-exact XNH1 network-log head hash
-```
+| Tag | Value | Size / rule |
+|---:|---|---|
+| 1 | network ID | 16 |
+| 2 | policy generation | `u64` |
+| 3 | predecessor XVP policy-core hash | 32; zero only at generation 0 |
+| 4 | enabled role mask | `u16`; bits 0 Entry, 1 Relay, 2 Mailbox, 3 Blob, 4 CallRelay; all five required in V1 |
+| 5 | required onion hop count | `u8`; exactly 3 |
+| 6 | mailbox replica count | `u8`; exactly 2 at D0, `2..5` later |
+| 7 | route-constraint mask | `u16`; distinct node/host/onion-key/origin bits mandatory; operator/provider/ASN bits capability-gated |
+| 8 | maximum entry-guard candidates | `u8`; exactly 3 |
+| 9 | minimum confirmed-guard retention seconds | `u32`; exactly 2592000 |
+| 10 | maximum circuit lifetime seconds | `u16`; `60..3600` |
+| 11 | mailbox-projection profile | `u16`; exactly `1=RendezvousPmt2V1` |
+| 12 | required PMT2 generation | `u64` |
+| 13 | exact XCCCoreRef38 | 38; stable XCC1 unsigned-core reference |
+| 14 | minimum active carrier-binding count | `u16`, `1..4096` |
+| 15 | issued-at | `u64` |
+| 16 | not-before | `u64` |
+| 17 | expires-at | `u64`; `notBefore < expiresAt <= notBefore+2592000` |
+| 18 | authorizing XNAAuthorityCoreRef38 | 38; stable authority-core reference |
+| 19 | root-signature count | `u8`; XNA1 root threshold..root-key count |
+| 20 | sorted root-key ID/signature entries | exactly `96 * tag19` bytes |
+
+Every root entry signs `SIGINPUT("Deep/XPoint/V1/XVP1/root", 0x0001,
+unsignedXVP1 tags 1..18)` and resolves only through tag 18. A successor increments
+generation, names the exact predecessor and cannot silently relax a mandatory bit or
+reduce a minimum without a new root-signed policy generation. ROOT-CHECKPOINT-01
+authors XVP1 offline; DIRECTORY-01 publishes the exact bytes. There are no external
+role/selection/circuit policy hash preimages. Product retention values are not a
+mutable network-view policy: their sole source is
+`RETENTION-AND-RECOVERY-V1.md`, and an XVP1/XNV1 cannot shorten an already accepted
+object's signed deadline.
+
+`XVPPolicyCoreHash32 = SHA256-D("Deep/XPoint/V1/XVP1/policy-core", exact
+unsigned tags 1..18)` and `XVPPolicyCoreRef38 = ASCII("XVP1") || U16BE(1) ||
+XVPPolicyCoreHash32`. Tag 3 and XNV linkage use this core, never the complete
+signature envelope. Different valid root-receipt subsets over one core may aggregate
+by key ID and do not create another policy; different unsigned bytes at one policy
+generation are a fork.
+
+`XNV1`, version 1, suite `0x0201`, is the deterministic, globally shared roster
+with exact tags:
+
+| Tag | Value | Size / rule |
+|---:|---|---|
+| 1 | network ID | 16 |
+| 2 | view generation | `u64` |
+| 3 | predecessor XNV1 hash | 32; zero only at generation 0 |
+| 4 | finalized chain ID | 32 |
+| 5 | finalized block height | `u64` |
+| 6 | finalized block hash | 32 |
+| 7 | authorizing XNAAuthorityCoreRef38 | 38; stable authority-core reference |
+| 8 | directory-witness policy hash | 32; exact XNA1 derivation |
+| 9 | exact active XVPPolicyCoreRef38 | 38; stable unsigned-core reference |
+| 10 | maturity level | `u16`: `1=D0`, `2=D1`, `3=D2` |
+| 11 | node-descriptor count | `u16`, `3..4096` |
+| 12 | sorted exact XND1 ArtifactRefs | exactly `38 * tag11` bytes |
+| 13 | revoked-node count | `u16`, `0..4096` |
+| 14 | sorted revoked node IDs | exactly `32 * tag13` bytes |
+| 15 | service-descriptor count | `u16`, `0..4096` |
+| 16 | sorted service commitments | exactly `36 * tag15` bytes |
+| 17 | carrier-binding count | `u16`, `1..4096` |
+| 18 | sorted XCB1 hashes | exactly `32 * tag17` bytes |
+| 19 | issued-at | `u64` |
+| 20 | not-before | `u64` |
+| 21 | expires-at | `u64`; `notBefore < expiresAt <= notBefore+86400` |
+| 22 | minimum reader | `u16` |
+| 23 | witness count | `u8`; at least exact XNA1 threshold |
+| 24 | sorted witness ID/signature entries | exactly `96 * tag23` bytes |
+
+Tag 9 resolves a threshold-complete XVP1 envelope with that exact core. XVP1 tag 18
+must equal XNV1 tag 7; it must be current at XNV1 tag 20 and its XCC1,
+PMT2-generation rule, role mask, hop/replica/route/guard/circuit limits and minimum
+carrier count are applied exactly when deriving the view. XND1 refs sort by the resolved XND1 node ID and have distinct node IDs/hashes.
+Revoked IDs are distinct and sorted. A service commitment is
+`magicAscii4 || exactRecordHash32`, accepts only `XCD1` or `XOD1`, and sorts by
+`(magic,hash)` with no duplicate. XCB1 hashes sort bytewise and every binding target
+resolves to an XND1/XCD1 core committed by tags 12/16. Invalid or unresolved
+XVP1/XCC1 policy, unresolved reference or omitted referenced descriptor rejects the
+complete view.
+
+Each tag-24 entry is `witnessId32 || signature64` and signs
+`SIGINPUT("Deep/XPoint/V1/XNV1", 0x0201, unsignedXNV1 tags 1..22)`.
+Tag 7 resolves the sole witness ID/key-generation/failure-domain set; tag 8 must
+equal its exact XNA1 tags-7..14 policy hash, and the distinct valid receipts must
+meet XNA1 tag 11. No Registry-selected/current key lookup is valid.
+
+`XNVCoreHash32 = SHA256-D("Deep/XPoint/V1/XNV1/core", exact unsigned tags
+1..22)`. XNV1 tag 3 and every field named `XNV1 hash` in this specification use
+this core hash; an `XNV1 ArtifactRef` alone hashes one complete threshold envelope.
+`XNVCoreRef38` is exactly `ASCII("XNV1") || U16BE(1) || XNVCoreHash32`; it is
+explicitly a stable core reference, not an ArtifactRef to a receipt envelope.
+Different valid receipt subsets over the identical core are receipt aggregation,
+not a successor or fork. They may be unioned by witness ID, while a threshold-complete
+envelope remains valid. Different unsigned bytes at one view generation are a fork.
 
 The view is valid for at most 24 hours and SHOULD be republished every six hours.
 Its content is deterministically derived from finalized membership, valid descriptors,
@@ -336,27 +475,155 @@ An emergency root checkpoint can recover liveness but increments the authority a
 view generations and is publicly distinguishable.
 
 Clients accept only genesis anchored by `XNA1`, the exact next generation and parent
-hash, or a root-signed bounded-forward checkpoint carrying the complete consistency
-proof from their last-known-good view. Same-generation different-hash is a fork and
-blocks network mutation until resolved by a newer root checkpoint. An expired view
+hash, or exact XNF1/NFP1 forward proof from their last-known-good view.
+Same-generation different-hash is a fork and blocks network mutation until resolved
+by a newer XNF1/NFP1 checkpoint. An expired view
 MAY be used for read-only recovery for 72 hours, but MUST NOT authorize new nodes,
 keys, routes, bridge credentials, or mailbox mutations.
 
 ### 7.3.1 `XNH1` / `XNP1` — network transparency
 
 Every exact XNV1 hash is appended as
-`SHA256(viewGeneration || previousViewHash || XNV1Hash)` to an RFC-6962-style
-binary Merkle log. `XNH1` contains network ID, log generation, predecessor head
-hash, tree size/root, latest XNV1 generation/hash, valid-from/until, minimum
-reader and the same threshold witness set/policy as XNV1.
+`SHA256(0x00 || U64BE(viewGeneration) || previousViewHash32 || XNV1Hash32)` to
+an RFC-6962 binary Merkle log whose inner nodes are
+`SHA256(0x01 || left32 || right32)`. `XNH1`, version 1, suite `0x0201`, has exact
+tags:
+
+| Tag | Value | Size / rule |
+|---:|---|---|
+| 1 | network ID | 16 |
+| 2 | log generation | `u64` |
+| 3 | predecessor XNH1 hash | 32; zero only at generation 0 |
+| 4 | tree size | `u64` |
+| 5 | RFC-6962 root | 32 |
+| 6 | latest XNVCoreRef38 | 38; stable unsigned-core reference defined above |
+| 7 | latest XNV1 generation | `u64`; exact resolved tag 2 |
+| 8 | authorizing XNAAuthorityCoreRef38 | 38; exactly resolved XNV1 tag 7 |
+| 9 | directory-witness policy hash | 32; exactly resolved XNV1 tag 8 |
+| 10 | valid-from | `u64` |
+| 11 | valid-until | `u64`; `validFrom < validUntil <= validFrom+86400` |
+| 12 | minimum reader | `u16` |
+| 13 | predecessor consistency-node count | `u8`, `0..64` |
+| 14 | RFC-6962 consistency nodes | exactly `32 * tag13` bytes |
+| 15 | witness count | `u8`; at least exact XNA1 threshold |
+| 16 | sorted witness ID/signature entries | exactly `96 * tag15` bytes |
+
+Each tag-16 entry signs
+`SIGINPUT("Deep/XPoint/V1/XNH1", 0x0201, unsignedXNH1 tags 1..14)`.
+Witness IDs, key generations, keys, threshold and failure domains resolve only
+through tag 8 XNA1; tag 9 must equal that authority's exact policy hash. Tag 6
+resolves any threshold-complete XNV1 envelope with that exact core; receipt-subset
+changes cannot change XNH core. The latest XNV1 leaf must be present at index
+`tag4-1` in tag-5 root; tree size zero rejects.
+
+`XNHCoreHash32 = SHA256-D("Deep/XPoint/V1/XNH1/core", exact unsigned tags
+1..14)` and `XNHCoreRef38 = ASCII("XNH1") || U16BE(1) || XNHCoreHash32`.
+XNH1 tag 3 and every field named `XNH1 hash` use this core hash; receipt
+aggregation over one core follows the same rule as XNV1 and does not create another
+head generation.
+
+Genesis has XNV1/XNH1 generation zero, XNH1 tag 3 `ZERO32`, tree size exactly one,
+latest XNV generation zero and zero consistency nodes. Every successor increments
+XNH1 generation and tree size by exactly one, tag 3 equals predecessor XNH core,
+latest XNV generation increments by one, and that XNV tag 3 equals the predecessor
+latest-XNV core. Its one new leaf is at index `tag4-1`; tags 13/14 verify the
+mandatory RFC-6962 consistency proof from predecessor `(treeSize,root)` to tags
+4/5. A same-size publication, generation/view gap, changed predecessor root,
+absent/extra proof, a second appended leaf or latest-XNV leaf outside that one-item
+suffix rejects before witness signing. Re-signing the same core may add valid
+receipts but never changes generation, tree size, root or predecessor.
+
+XNH1 commits XNV1 one-way. XNV1 never contains an XNH1 hash or log position;
+XNP1 supplies later inclusion/consistency. A candidate pair with either reciprocal
+hash is non-canonical and rejects, preventing an uncomputable hash cycle.
 
 `XNP1` contains exact old/new XNH1, old/new XNV1 references, inclusion proof for
 the new view and consistency proof from the caller's LKG tree size. Proof nodes
 are ordered 32-byte hashes, each list is count-prefixed and bounded to 64 nodes;
 no pagination or source-supplied alternate algorithm is valid. Fresh install
-verifies inclusion from XNA1's embedded checkpoint. Returning clients require
+verifies inclusion from the release-manifest-pinned XNA1/XNV1/XNH1 checkpoint and the nonce-bound DTT1 current
+head/time attestation; XNH/XNV validity windows never prove their own freshness.
+Returning clients require
 consistency from protected LKG. Clients gossip `(treeSize, root, latestViewHash)`;
 two roots for one size produce portable split-view evidence and block mutation.
+
+### 7.3.2 `XNF1` / `NFP1` — beyond-horizon network forward checkpoint
+
+`XNF1`, version 1, root suite `0x0001`, is the only way to cross a compacted
+network-view history gap:
+
+| Tag | Value | Size / rule |
+|---:|---|---|
+| 1 | network ID | 16 |
+| 2 | checkpoint generation | `u64` |
+| 3 | predecessor XNF1 core hash | 32; zero only at generation 0 |
+| 4 | covered first/last XNV generation | `u64 || u64` |
+| 5 | covered-head count | `u64`, nonzero |
+| 6 | covered-head Merkle root | 32 |
+| 7 | exact target XNVCoreRef38 | 38 |
+| 8 | target XNV1 generation/hash | `u64 || 32` |
+| 9 | exact target XNHCoreRef38 | 38 |
+| 10 | target XNH tree size/root | `u64 || 32` |
+| 11 | exact authority XNAAuthorityCoreRef38 | 38 |
+| 12 | issued-at | `u64` |
+| 13 | minimum reader | `u16` |
+| 14 | root-signature count | `u8`; XNA root threshold..root-key count |
+| 15 | sorted root-key ID/signature entries | exactly `96 * tag14` bytes |
+
+The covered tree uses RFC-6962 leaves
+`SHA256(0x00 || XNVGeneration:u64be || XNVHash32 || XNHTreeSize:u64be ||
+XNHRoot32)`, sorted by generation/tree size/hash, and contains every
+threshold-valid source tuple authorized to advance. Root keys resolve only through
+tag 11 authority lineage and sign identical unsigned tags 1..13 with
+`SIGINPUT("Deep/XPoint/V1/XNF1/root", 0x0001, unsignedXNF1)`.
+`XNF1CoreHash32 = SHA256-D("Deep/XPoint/V1/XNF1/core", exact unsigned tags
+1..13)`; tag 3 and NFP predecessor verification use this core. Root receipts may
+aggregate without changing checkpoint identity.
+For every XNF1, tag 11 MUST equal the authorizing XNA authority-core ref in its exact
+target XNV1 tag 7 and target XNH1 tag 8; all three policy hashes must agree. Thus
+the last checkpoint authority also authenticates the target heads.
+
+`NFP1`, version 1, suite `0x0201`, is the exact client proof package:
+
+| Tag | Value | Size / rule |
+|---:|---|---|
+| 1 | network ID | 16 |
+| 2 | source XNV generation | `u64` |
+| 3 | source XNV hash | 32 |
+| 4 | source XNH tree size | `u64` |
+| 5 | source XNH root | 32 |
+| 6 | source leaf index | `u64` |
+| 7 | exact target XNV1 | `LP32`, `1..1048576` bytes |
+| 8 | exact target XNH1 | `LP32`, `1..65536` bytes |
+| 9 | XNA1 authority-chain count | `u8`, `1..64` |
+| 10 | ordered exact XNA1 authority chain | repeated `LP32(record)` |
+| 11 | XNF1 count | `u8`, `1..64` |
+| 12 | ordered exact predecessor-linked XNF1 chain | repeated `LP32(record)` |
+| 13 | source-membership node count | `u8`, `0..64` |
+| 14 | RFC-6962 membership nodes | exactly `32 * tag13` bytes |
+| 15 | exact live DTT1 core hash | 32; links tags 7/8 to the current ADH1 |
+
+The source tuple `(tag2,tag3,tag4,tag5)` exactly equals protected LKG and its
+canonical leaf is the leaf formula above. Tag 6 is less than the first applicable
+XNF1 tag-5 covered-head count and selects that exact leaf in the deterministically
+sorted covered tree; tags 13/14 are verified with both the index and count against
+that XNF1 tag-6 root. The target records equal the last XNF1 tags 7..10. The
+authority chain begins at protected XNA1 and continues through the authority
+referenced by the last XNF1; it contains, in successor order, every XNA authority
+core referenced by tag 11 of any XNF1 carried in NFP1 tag 12, including the
+target-head authority equality above, and no
+unused authority record. Each checkpoint signature
+resolves against its own tag-11 XNA1 key IDs/generations. Every list is
+count-prefixed, bounded as above and hash-closed. Same-generation changed XNF1, two
+successors, omitted source tuple, wrong leaf index/count, target mismatch or
+authority gap, missing checkpoint authority or extra authority record fork-latches
+recovery.
+
+After complete validation the client atomically retains its old LKG as evidence,
+advances to the strictly newer target XNV/XNH and resumes ordinary XNP1 successor
+verification. XNF/NFP restores current network trust only; it does not recreate
+expired mailbox/content. Root-authority tooling authors XNF1 offline, DIRECTORY-01
+publishes byte-identical checkpoint/proof material, and ROUTE-01 verifies/merges it.
 
 ### 7.4 `XRR1` — contact-scoped reachability record
 
@@ -394,25 +661,15 @@ fields while the recipient is offline; it cannot change device/account heads,
 operation class, quota or random placement scope. Resolve returns the complete
 DR-0004 hash closure and rejects every pre-cutover PRA/PSS/RCD/RCA record.
 
-After `ContactHello/Accept`, each direction creates a separate contact-scoped `XUR1`
-update rendezvous. `XUR1` is a random opaque capability retained for the supported
-offline horizon and carries only ratcheted E2EE successor `XRR1`, device-list/prekey
-updates, and revocation hints. Current deposit records still rotate at most every 24
-hours. Clients precommit a bounded successor set so loss of one refresh does not break
-the contact.
-
-```text
-Imported -> HelloQueued -> HelloSent -> Accepted -> Active
-                                      -> Rejected/Expired
-Active -> RefreshDue -> Active
-Active -> RecoveringViaXUR1 -> Active/ContactUnavailable
-```
-
-This removes the circular requirement to possess a current deposit route before
-obtaining its successor without introducing a globally enumerable account-to-mailbox
-mapping. A user must share the canonical contact bundle, not merely a bare account
-hash. Recovery creates a new authorized device and resolves contact update channels;
-it never clones the old device private key.
+After contact acceptance, XPoint hosts the opaque established-contact update
+service defined exclusively in
+[`CONTACT-RESOLVER-V1.md`](CONTACT-RESOLVER-V1.md#35-established-contact-update-service-xur1--xuw1--xuq1--xus1).
+Its application/contact state machine remains owned by
+[`CONTACT-AND-GROUP-PROTOCOL-V1.md`](CONTACT-AND-GROUP-PROTOCOL-V1.md#7-contact-state-and-identifiers).
+The XPoint-specific consequence is only that XUR placement is PMT2/PMS2-bound,
+uses the same two-replica CAS/repair plane and never creates a globally
+enumerable account-to-mailbox mapping. This document does not define a second
+XUR codec, retention value or contact state machine.
 
 ### 7.5 `XCP1` — client path plan
 
@@ -432,7 +689,7 @@ counts, and coarse latency buckets.
 
 ```text
 NoView
-  -> BundledCheckpoint       signed app-embedded XNA1/XNV1 is valid
+  -> BundledCheckpoint       release-manifest-pinned XNA1/XNV1/XNH1 is valid
   -> FetchingCurrent         fetch through any usable bridge/source
   -> Current                 exact verified live successor committed atomically
   -> RefreshDue              refresh margin or resume/network change
@@ -458,7 +715,18 @@ Fresh-install sources are attempted concurrently with bounded stagger:
    not in `MaskedRequired` mode.
 
 A first successful object is not trusted by source. It is trusted only after complete
-signature, predecessor/checkpoint, time, network, and minimum-reader verification.
+signature, predecessor/checkpoint, network and minimum-reader verification plus a
+fresh nonce-bound DTT1 linking the current ADH1/XNV1. Cached artifact windows are
+validity bounds, not a current-time source.
+
+The V1 control-plane partition horizon is exactly the 72-hour `StaleReadOnly`
+grace after the last verified XNV1 expires. During that horizon, the client may use
+its protected LKG only to reach previously authenticated entry/witness/acquisition
+targets and fetch a live successor; it cannot authorize mailbox/contact/group/call
+mutation from stale state. After the horizon it enters `RecoveryRequired` and needs a
+reachable signed acquisition/import path. Therefore V1 claims bounded bootstrap
+recovery under update-channel blocking, not continued messaging when every current
+control-plane path is withheld.
 
 ## 9. Mailbox placement and storage swarms
 
@@ -466,8 +734,10 @@ Production generation 1 uses clean-break `PMA2/PMT2/PMS2` records. It ports the
 reviewed deterministic `Rendezvous-SHA256-v2` placement algorithm but rejects
 pre-cutover `PMA1/PMT1/PMS1` bytes. `XNV1` is the global threshold-signed roster;
 `PMT2` is its exact mailbox-role projection and cryptographically binds the
-current `XNV1` hash. The exact current PMT2 hash and next commitment in XNV1 MUST
-match before either artifact can authorize a mutation.
+current `XNV1` hash. XNV1 commits only the projection policy/eligibility inputs
+and required PMT generation rule; it never contains current/next PMT2 hashes.
+PMT2 contains its own predecessor and next-PMT2 commitment. This one-way
+`XNV1 -> PMT2` construction follows DR-0004 and has no hash cycle.
 
 `PMA2` authorizes one directory-threshold key set, network ID, minimum reader,
 mailbox algorithm and bounded validity interval. `PMT2` contains its generation,
@@ -504,8 +774,9 @@ and retain them until the later of message expiry or 48 hours after a verified q
 acknowledges transfer. Clients retrieve from both sets and deduplicate by application
 message ID. Storage is at-least-once; user-visible materialization is idempotent.
 
-Default and maximum v1 retention is 30 days, and disappearing
-messages MAY request a shorter lifetime. Retention expiration is not account or trust
+`RET-MAILBOX-CIPHERTEXT-V1` in `RETENTION-AND-RECOVERY-V1.md` is the only V1
+mailbox text/control retention source, and disappearing messages MAY request a shorter
+lifetime. Retention expiration is not account or trust
 expiration. Quotas are enforced per blinded mailbox capability before storage, and
 proof-of-work or Privacy Pass-style unlinkable tokens MAY be required for unsolicited
 message requests.
@@ -515,10 +786,16 @@ message requests.
 ### 10.1 Entry guards
 
 Clients persist a sampled set of up to three eligible entry guards. One confirmed
-primary guard is preferred for 30 days plus uniform +/-20% jitter. A guard is replaced
-only after signed revocation, descriptor/key expiry without successor, or repeated
-failures across at least two carriers and two independent network observations.
-Ordinary Internet loss is not evidence that a guard is bad.
+primary guard is preferred for the guard-retention policy period plus uniform
+configured jitter. A guard is replaced immediately only after signed revocation or
+descriptor/key expiry without successor. Failure-driven replacement requires failures
+through two carrier families plus observations from two administratively distinct
+access networks, or one local failure set plus threshold-signed remote node-health
+evidence. Repeated probes through one ISP/censor, SSID, VPN exit or captive portal are
+one observation regardless of time or carrier. At most one failure-driven primary
+replacement is permitted per seven days; the old guard remains `Suspect` in protected
+state for 30 days and is not resampled. Ordinary Internet loss is not evidence that a
+guard is bad.
 
 Persistent guards reduce the probability that repeated random selection eventually
 exposes a client to every malicious entry. Bridge rotation is independent: multiple
@@ -645,15 +922,51 @@ threat-model specifications.
 
 ### 13.2 `XCD1` — call relay descriptor
 
-The network view references a signed descriptor containing:
+`XCD1`, version 1, suite `0x0201`, is the sole call-relay and call-CAS authority
+descriptor. The network view references its exact hash. Canonical tags are:
 
-```text
-networkId, callRelayNodeId, descriptorGeneration, predecessorHash
-relayPublicKey, supportedMediaSuites
-maxDatagramSize, maxBitrate, maxAllocations, allocationLifetime
-supportedInterNodeTransports: QUIC_DATAGRAM, HTTP_CAPSULE_STREAM
-issuedAt, notBefore, expiresAt, nodeIdentitySignature
-```
+| Tag | Value | Size / rule |
+|---:|---|---|
+| 1 | network ID | 16 |
+| 2 | call-relay node ID | 32 |
+| 3 | descriptor generation | `u64` |
+| 4 | predecessor XCD1 hash | 32; zero only at generation 0 |
+| 5 | relay target-auth Ed25519 public key | 32 |
+| 6 | replica-key generation | `u64` |
+| 7 | replica count | `u8`, `2..8` |
+| 8 | sorted replica entries | exactly `128 * tag7` bytes |
+| 9 | receipt quorum | `u8`; exactly 2 for V1 and `<= tag7` |
+| 10 | supported media suite | `u16`; exactly `1=CallMediaSuiteV1` |
+| 11 | supported CMD1 version | `u16`; exactly 1 |
+| 12 | supported DTLS version | `u16`; exactly DTLS 1.2 |
+| 13 | maximum datagram | `u16`, `576..1200` |
+| 14 | maximum bitrate | `u32` |
+| 15 | maximum concurrent allocations | `u32` |
+| 16 | allocation lifetime seconds | `u16`, `1..600` |
+| 17 | inter-node transport mask | `u16`; bit 0 QUIC_DATAGRAM, bit 1 HTTP_CAPSULE_STREAM |
+| 18 | issued-at | `u64` |
+| 19 | not-before | `u64` |
+| 20 | expires-at | `u64`; `notBefore < expiresAt <= notBefore+604800` |
+| 21 | call-relay node-identity signature | 64 |
+
+Each replica entry is
+`replicaId32 || replicaEd25519PublicKey32 || replicaNodeId32 ||
+failureDomainHash32`, sorted by replica ID. IDs, keys and node IDs are pairwise
+distinct; the quorum cannot contain two entries with one failure-domain hash. Every
+replica node is an unrevoked XNV1 member with the signed CallRelayReplica role, and
+each entry's failure-domain hash MUST equal the deterministic failure-domain
+projection of that exact replica XND1 in XNV1; a relay-authored alternate label is
+invalid. The
+node named by tag 2 signs
+`SIGINPUT("Deep/XPoint/V1/XCD1", 0x0201, unsignedXCD1 tags 1..20)` with its exact
+XND1 node-identity key.
+
+XNV1 commits the complete XCD1 hash and the XND1 descriptors for the target and all
+replicas. A verifier accepts a CAO1/CAA1 receipt only under tag-6 generation and a
+tag-8 key, requires exactly tag-9 distinct valid receipts, and rejects stale XNV1,
+cross-generation keys, repeated replica/failure domain or a replica omitted from the
+exact current XCD1. XCD1 never contains an XNV1 hash, so XNV1 -> XCD1/XND1 is the
+single acyclic authority direction.
 
 The client obtains a short-lived allocation from CallRelay through the three-hop
 request path according to `CALL-SESSION-V1.md`; Registry only distributes the
@@ -687,7 +1000,7 @@ carrier transitions and MUST NOT define an additional network-local call state.
 | `XND1` node descriptor | <=7 d | next descriptor >=24 h before use |
 | onion traffic key | <=24 h | next key published; <=2 h receive overlap |
 | `XRR1` current reachability record | <=24 h | publish successor before 6 h margin |
-| `XUR1` contact update rendezvous | <=400 d | current+next capability, ratcheted successors |
+| `XUR1` contact update rendezvous | `RET-XUR-UPDATES-V1` | current+next capability, ratcheted successors |
 | mailbox placement epoch | 7 d | two-epoch storage handover |
 | call allocation | <=10 min | no reuse across calls |
 | bridge bundle/credential | carrier policy, <=7 d | current+next cohort bundles |
@@ -702,8 +1015,8 @@ mailbox objects. Beyond retained view history, root-authorized re-enrollment cre
 new device keys under the same recovered account; it does not reuse old device or
 ratchet keys.
 
-Authorities and witnesses retain exact canonical network-view history for at least
-400 days and at least 2,048 generations. Mirrors MAY retain it indefinitely. Clients gossip
+Authorities and witnesses apply only `RET-NETWORK-HISTORY-V1` to XVP1/XNV1/XNH1/PMT2
+operational history. Mirrors MAY retain it indefinitely. Clients gossip
 coarse view hashes through XPoint and can submit fork evidence without identity.
 
 ## 15. Failure handling

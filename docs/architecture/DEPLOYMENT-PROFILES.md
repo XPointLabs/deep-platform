@@ -205,11 +205,16 @@ address/port, server name, public key, short credential/cohort, protocol/flow,
 fingerprint profile, validity, predecessor и revocation reference. Account ID
 и stable device ID в bridge credential запрещены.
 
-Bridge acquisition MUST иметь минимум три независимых пути:
+Bridge acquisition MUST реализовать три канонических channel из
+`CIRCUMVENTION-CARRIERS-V1.md`:
 
-1. bounded embedded signed cache;
-2. HTTPS/ECH endpoints у нескольких unrelated providers;
-3. user-importable signed QR/file/link через out-of-band channel.
+1. `in-app-oblivious` — RFC 9458 OHTTP с разделёнными Relay/Gateway;
+2. `multi-origin-https` — byte-identical signed bundle у нескольких unrelated
+   HTTPS/ECH providers;
+3. `user-import` — signed QR/file/copied text через out-of-band channel.
+
+Bounded embedded signed cache является bootstrap hint и четвёртым локальным
+источником, но не засчитывается вместо обязательного channel.
 
 Embedded endpoints считаются публично известными и не являются полной сетью.
 Нельзя публиковать полный bridge pool в APK, DNS или public node roster.

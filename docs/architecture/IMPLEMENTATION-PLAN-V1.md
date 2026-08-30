@@ -43,26 +43,40 @@ GOV-01 ───────────────┐
 CRYPTO-01 ────────────┼─> REG-01
 ARCH-01 ──────────────┘
 
-REG-01 -> ID-01 -> STORE-01 -> E2EE-01 -> MSG-01 -> DEVICE-01
+REG-01 -> ID-01 -> STORE-01
+REG-01 + ID-01 + CRYPTO-01 -> E2EE-01 -> APPLICATION-CODEC-01
+STORE-01 + E2EE-01 + APPLICATION-CODEC-01 -> MSG-01 -> DEVICE-01
 
-REG-01 + ARCH-01 -> NETCODEC-01 -> DIRECTORY-01
+REG-01 + ARCH-01 -> NETCODEC-01
+REG-01 + NETCODEC-01 -> CARRIER-CODEC-01 -> CARRIER-CATALOG-01
+GOV-01 + NETCODEC-01 + CARRIER-CATALOG-01 -> ROOT-CHECKPOINT-01 -> DIRECTORY-01
+NETCODEC-01 ───────────────────────────────> DIRECTORY-01
                               \-> XNODE-01 -> ROUTE-01
 REG-01 + NETCODEC-01 + XNODE-01 -> ONION-01 -> ROUTE-01
 
-REG-01 + NETCODEC-01 -> CARRIER-CODEC-01 -> SUPERVISOR-01
+CARRIER-CODEC-01 -> SUPERVISOR-01
+CARRIER-CODEC-01 + XNODE-01 -> CARRIER-GATEWAY-01
+CARRIER-CATALOG-01 + CARRIER-CODEC-01 -> BRIDGE-DISTRIBUTOR-01
 SUPERVISOR-01 -> REALITY-01
 SUPERVISOR-01 -> HTTPS-01
-DIRECTORY-01 + REALITY-01 + HTTPS-01 -> BRIDGE-01
+DIRECTORY-01 + CARRIER-CATALOG-01 + CARRIER-GATEWAY-01 + BRIDGE-DISTRIBUTOR-01 + REALITY-01 + HTTPS-01 -> BRIDGE-01
 ROUTE-01 + REALITY-01 + HTTPS-01 + BRIDGE-01 -> official XPoint path
 
-E2EE-01 + NETCODEC-01 -> CONTACT-CODEC-01 -> CONTACT-SERVICE-01
-MSG-01 + DEVICE-01 + ROUTE-01 + CONTACT-SERVICE-01 -> CONTACT-CLIENT-01
+APPLICATION-CODEC-01 + E2EE-01 + NETCODEC-01 -> CONTACT-CODEC-01
+DIRECTORY-01 + CONTACT-CODEC-01 -> ACCOUNT-DIRECTORY-AUTH-01
+DEVICE-01 + ROUTE-01 + ACCOUNT-DIRECTORY-AUTH-01 -> DIRECTORY-CLIENT-01
+CONTACT-CODEC-01 + XNODE-01 + ACCOUNT-DIRECTORY-AUTH-01 -> CONTACT-SERVICE-01
+MSG-01 + DIRECTORY-CLIENT-01 + ROUTE-01 + CONTACT-SERVICE-01 -> CONTACT-CLIENT-01
 
-CONTACT-CLIENT-01 + DEVICE-01 -> GROUP-CODEC-01 -> GROUP-CLIENT-01
+CONTACT-CODEC-01 + DEVICE-01 -> GROUP-CODEC-01
+GROUP-CODEC-01 + XNODE-01 -> GROUP-CONTROL-SERVICE-01
+GROUP-CODEC-01 + GROUP-CONTROL-SERVICE-01 + CONTACT-CLIENT-01 + MSG-01 -> GROUP-CLIENT-01
 MSG-01 + ROUTE-01 -> BLOB-01
 MSG-01 + ROUTE-01 -> PUSH-01
-CONTACT-CLIENT-01 + MSG-01 -> CALL-SIGNAL-01
-CALL-SIGNAL-01 + CARRIER-CODEC-01 + XNODE-01 + BRIDGE-01 -> CALL-MEDIA-01
+APPLICATION-CODEC-01 + CARRIER-CODEC-01 + NETCODEC-01 -> CALL-CODEC-01
+CONTACT-CLIENT-01 + MSG-01 + CALL-CODEC-01 -> CALL-SIGNAL-01
+CALL-CODEC-01 + XNODE-01 + DIRECTORY-01 -> CALL-RELAY-01
+CALL-SIGNAL-01 + CALL-RELAY-01 + BRIDGE-01 -> CALL-MEDIA-01
 
 all runtime packages -> COMPOSE-01 -> E2E-01
 ```
@@ -116,26 +130,26 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 - **integration consumer/evidence:** E2EE-01; signed dependency decision,
   benchmark JSON, license decision and SBOM fragment.
 
-### ARCH-01 — release-blocking architecture decisions
+### ARCH-01 — immutable architecture consistency and feasibility gate
 
 - **ownerRepository:** `XPointLabs` superproject documentation.
 - **dependsOn:** GOV-01.
-- **consumes:** `PROTOCOL-REGISTRY-V1.md` remaining open decisions,
-  DR-0004, `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`, `CONTACT-RESOLVER-V1.md`,
+- **consumes:** immutable DR-0004 and accepted call/carrier/account-directory
+  contracts from `PROTOCOL-REGISTRY-V1.md`,
+  `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`, `CONTACT-RESOLVER-V1.md`,
   `RETENTION-AND-RECOVERY-V1.md`, current route-continuity specs and capacity
   estimates.
-- **produces:** accepted records for D0 staking/genesis/admission input,
-  CallRelay allocation authority and exact carrier-wire scope; confirms the
-  already selected PMT2/PMS2 clean break and XNode-owned invite/prekey service;
-  records exact capacity feasibility for the accepted retention matrix.
-- **wire/API:** each decision names the future magic/API owner but authors no
-  speculative bytes.
-- **DB impact/removals:** records whether old mailbox continuity state is
-  discarded at clean break. No migration may be selected.
-- **unit gate:** decision cross-reference checker proves each open registry
-  decision has one accepted outcome and no contradictory target claim.
+- **produces:** consistency manifest proving one owner/source for D0 inputs,
+  PMT2/PMS2 clean break, XNode services, CallRelay authority and carrier wires;
+  capacity feasibility report for the accepted retention matrix. It cannot
+  select alternate wire/security semantics.
+- **wire/API:** authors no protocol bytes or new architecture choice.
+- **DB impact/removals:** verifies DR-0004 destructive reset/removal list; no
+  migration may be introduced.
+- **unit gate:** cross-reference checker proves every accepted record is closed,
+  owner-resolved, cycle-free and capacity-feasible with no contradictory claim.
 - **integration consumer/evidence:** REG-01, NETCODEC-01, CONTACT-CODEC-01,
-  CARRIER-CODEC-01 and CALL-MEDIA-01 consume exact decision hashes.
+  CARRIER-CODEC-01 and CALL-CODEC-01 consume exact manifest/source hashes.
 
 ### REG-01 — machine-readable V1 registry and code generation
 
@@ -212,10 +226,30 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 - **integration consumer/evidence:** MSG-01, DEVICE-01 and CONTACT-CODEC-01;
   vector package and independent crypto review input.
 
+### APPLICATION-CODEC-01 — identity-facing application and event codecs
+
+- **ownerRepository:** `deep-protocol`.
+- **dependsOn:** REG-01, ID-01, E2EE-01.
+- **consumes:** DID1/DAB1/DMD1/DCA1/DCB1/DCR1/DIA1/DAO1/DMC2/DAM1
+  normative tables, exact DPK2/DPH2/DPE2 refs and the canonical tagged grammar.
+- **produces:** exact schemas/codecs/vectors for every consumed magic; closed
+  numeric DMC2 kind registry and byte grammar for every kind payload; DAB1
+  realm-lineage checks; DAM1 chunk arithmetic; retired address/event negative
+  vectors.
+- **wire/API:** no kind exposes an untyped blob to application code. Unknown
+  kind/field/enum, mismatched authenticated sender/context and max+1 reject
+  before callback or mutation.
+- **DB impact/removals:** pure immutable values/sealed transition inputs. No
+  persistence or network callback.
+- **unit gate:** positive/cross-kind/substitution/hostile-size vectors, exact
+  payload-length arithmetic, DID text round-trip and retired-format rejection.
+- **integration consumer/evidence:** MSG-01, DEVICE-01, CONTACT-CODEC-01,
+  GROUP-CODEC-01, BLOB-01 and CALL-SIGNAL-01; generated codec/vector manifest.
+
 ### MSG-01 — canonical events, logical outbox/inbox and dedup
 
 - **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** STORE-01, E2EE-01, REG-01.
+- **dependsOn:** STORE-01, E2EE-01, APPLICATION-CODEC-01, REG-01.
 - **consumes:** DMC2 codec, sealed ratchet transitions, canonical semantic IDs
   and transport-neutral interface names.
 - **produces:** application-event registry service; durable logical
@@ -234,7 +268,7 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 ### DEVICE-01 — multi-device enrollment, revocation and convergence
 
 - **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** STORE-01, E2EE-01, MSG-01.
+- **dependsOn:** STORE-01, E2EE-01, APPLICATION-CODEC-01, MSG-01.
 - **consumes:** DMD1/DPD1/DRS1 codecs, per-device ratchet sessions and accepted
   retention/recovery decision.
 - **produces:** device directory store; phrase/QR/file enrollment orchestration;
@@ -256,8 +290,9 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 - **dependsOn:** REG-01, ARCH-01.
 - **consumes:** accepted membership/call decisions, XPOINT-NETWORK-V1,
   `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`, `CONTACT-RESOLVER-V1.md` and DR-0004.
-- **produces:** exact XNA1/XND1/XNV1/XNH1/XNP1/ADC1/ADH1/ADP1/ADL1/XIR1/XRA1/XRC1/
-  XRR1/XSS1/XUR1/XCD1 and PMA2/PMT2/PMS2 schemas, codecs, bounds, signatures, predecessor rules,
+- **produces:** exact XNA1/XVP1/XND1/XNV1/XNH1/XNP1/XNF1/NFP1,
+  ADC1/ADH1/ADP1/ADL1/ADF1/AFP1/DTS1/DTT1, XRA1/XRC1/XRR1/XSS1/XCD1 and
+  PMA2/PMT2/PMS2 schemas, codecs, bounds, signatures, predecessor rules,
   selection/proof primitives and vectors.
 - **wire/API:** pure author/verify/selection functions; no fetch, signer key,
   endpoint connection, database or callback authority.
@@ -265,19 +300,46 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
   fixture, not an input.
 - **unit gate:** deterministic agreement in two implementations; wrong-network,
   rollback/fork, time, failure-domain, selection and hostile-size vectors.
-- **integration consumer/evidence:** DIRECTORY-01, XNODE-01, ROUTE-01,
+- **integration consumer/evidence:** ROOT-CHECKPOINT-01, DIRECTORY-01, XNODE-01, ROUTE-01,
   CONTACT-CODEC-01 and CARRIER-CODEC-01; vector manifest.
+
+### ROOT-CHECKPOINT-01 — offline root forward-checkpoint authoring
+
+- **ownerRepository:** `deep-devops`.
+- **dependsOn:** GOV-01, NETCODEC-01, CARRIER-CATALOG-01.
+- **consumes:** offline XNA1 root custody policy, exact retained-source sets,
+  accepted closed network-policy input plus exact current XCCCoreRef38 from
+  CARRIER-CATALOG-01, resolved fork evidence and canonical
+  XVP1/XNF1/ADF1 codecs.
+- **produces:** offline threshold-signed XVP1, XNF1 and ADF1 bytes; reproducible NFP1/
+  AFP1 source-membership fixtures; signer ceremony/evidence with no online root key.
+- **wire/API:** tooling signs only complete deterministic covered-head sets and
+  strictly newer targets. It cannot sign messages, routes or account/device state.
+- **DB impact/removals:** offline ceremony manifests and public checkpoint bytes;
+  no client identity/contact/content database.
+- **unit gate:** omitted source, changed ordering, wrong authority lineage,
+  same-generation fork, two successors, threshold partial failure and deterministic
+  re-run equality.
+- **integration consumer/evidence:** DIRECTORY-01 publishes; ROUTE-01 and
+  DIRECTORY-CLIENT-01 verify/merge; root-custody audit artifact.
 
 ### DIRECTORY-01 — deterministic view/witness publication
 
 - **ownerRepository:** `deep-registry-api`.
-- **dependsOn:** NETCODEC-01.
+- **dependsOn:** NETCODEC-01, ROOT-CHECKPOINT-01, CARRIER-CODEC-01.
 - **consumes:** finalized membership/admission input selected by ARCH-01,
-  signed XND1/ADC1 objects, previous XNV1/ADH1 and witness policies.
+  exact current XVP1, signed XND1/ADC1 objects, previous XNV1/XNH1/ADH1 and exact
+  DTS1/witness policies and exact current XCC/XBB catalog from
+  CARRIER-CATALOG-01.
 - **produces:** byte-identical XNV1 and account-directory ADH1 derivation/
-  publication; ADP1 inclusion/consistency proof service; witness coordination;
-  append-only histories; mirror endpoints; fork evidence; health input kept
-  separate from identity facts.
+  publication; atomic append-log/current-value-map transition; ADP1 current
+  value/non-membership plus inclusion/consistency proof service; witness
+  coordination; exact XOQ1/XOR1 AccountDirectory and LiveTimeAttestation target
+  exchanges, including the target-owned atomic operation/request/result ledger;
+  nonce-bound live DTT1 current-head/time attestations; XNF1/ADF1
+  checkpoint and NFP1/AFP1 proof publication; append-only histories; mirror
+  endpoints; fork evidence; health
+  input kept separate from identity facts.
 - **wire/API:** Registry never selects a per-client route and never rewrites a
   signed node descriptor. It does not host a call signaling inbox.
 - **DB impact/removals:** new network-view, opaque account-directory leaf/head,
@@ -285,26 +347,75 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
   and legacy call signal state from the target generation.
 - **unit gate:** deterministic publisher replicas, 2-of-3 witness, withholding,
   same-generation fork, rollback, restart/corruption and 400-day fixtures.
-- **integration consumer/evidence:** ROUTE-01 and BRIDGE-01; byte-identical
+- **integration consumer/evidence:** ROUTE-01, BRIDGE-DISTRIBUTOR-01 and BRIDGE-01; byte-identical
   three-mirror artifact and consistency proof.
+
+### ACCOUNT-DIRECTORY-AUTH-01 — account checkpoint and publication authority
+
+- **ownerRepository:** `deep-registry-api`.
+- **dependsOn:** DIRECTORY-01, CONTACT-CODEC-01, NETCODEC-01,
+  CARRIER-CODEC-01.
+- **consumes:** exact identity/device/revocation/address closures, directory
+  map/log head, DID locator rules, XPA1/XPU1 request schemas and exact
+  XOQ1/XOR1 AccountDirectory exchange.
+- **produces:** validation/admission of account-authored ADC1, atomic directory
+  map/log CAS, threshold XPA1 one-operation issuance/consume/exact-replay,
+  signer custody/process separation, durable authorization/fork state and
+  sanitized proof APIs.
+- **wire/API:** the service never authors or substitutes ADC1: it verifies the
+  exact DPA1 device-issuer signature and admits those bytes atomically into the
+  current map plus append log. XPA1 binds one operation ID and exact XPU request
+  hash; no threshold member receives resolver read capability.
+- **DB impact/removals:** checkpoint predecessor/CAS, map-log transaction,
+  authorization issue/consume/replay and fork-latch tables. No invite ciphertext
+  or requester IP is retained.
+- **unit gate:** stale-current inclusion attack, threshold partial failure,
+  same-generation fork, crash at map/log and XPA consume boundaries, wrong
+  account/realm/locator and changed-request replay.
+- **integration consumer/evidence:** DIRECTORY-CLIENT-01 and
+  CONTACT-SERVICE-01; byte-identical multi-authority ADC/XPA artifacts.
+
+### DIRECTORY-CLIENT-01 — account freshness and revocation publication client
+
+- **ownerRepository:** `deep-client-shared`.
+- **dependsOn:** DEVICE-01, ROUTE-01, ACCOUNT-DIRECTORY-AUTH-01,
+  APPLICATION-CODEC-01, CARRIER-CODEC-01.
+- **consumes:** verified ADH1/ADP1/DTT1/ADF1/AFP1, exact XOQ1/XOR1
+  AccountDirectory/LiveTime exchanges, ADC authoring API, protected
+  secure-time/LKG and the revocation-freshness policy.
+- **produces:** account-authored ADC1 bytes signed by the exact DPA1
+  device-issuer; durable ADC publication/reconcile saga; current-map proof/LKG;
+  fresh/partition-expired/forked account state; beyond-horizon checkpoint flow;
+  mutation fence exposed to contact/group/device orchestration.
+- **wire/API:** stale inclusion is never “current”. After freshness TTL expiry,
+  new device fanout and security-sensitive mutation pause until verified repair.
+- **DB impact/removals:** protected directory floors, publication operations,
+  forward checkpoints and fork evidence.
+- **unit gate:** offline revoke saga, stale map proof, outcome-unknown publish,
+  trusted-time intersection, 30/180/365/>horizon recovery and restart.
+- **integration consumer/evidence:** CONTACT-CLIENT-01, GROUP-CLIENT-01 and
+  COMPOSE-01; cross-device monotonic freshness trace.
 
 ### XNODE-01 — XNode roles, traffic-key epochs and durable planes
 
 - **ownerRepository:** `xnode`.
 - **dependsOn:** NETCODEC-01, ARCH-01.
 - **consumes:** XND1 role descriptors, mailbox placement decision, short-lived
-  onion key policy and exact node/call target APIs.
-- **produces:** Entry/Relay/Mailbox/Blob/CallRelay runtimes; epoch-key rotation
-  and secure retirement; two-replica mailbox/blob storage, read repair,
-  join/drain/handover, InviteStore/pre-key-claim quorum, replay/quota/resource enforcement and CallRelay
-  allocation endpoint selected by ARCH-01.
+  onion key policy and exact common service-host APIs.
+- **produces:** Entry/Relay/Mailbox/Blob common role host and durable replicated
+  service substrate; epoch-key rotation and secure retirement; two-replica
+  mailbox/blob storage, read repair, join/drain/handover,
+  InviteStore/pre-key-claim quorum and common quota/resource enforcement.
+  Call answer CAS, media allocation, call credentials and call replay semantics
+  are exclusively owned by CALL-RELAY-01, which may run on this substrate.
 - **wire/API:** XNode does not select client paths, open application E2EE or
   emit carrier policy. Coarse errors preserve outcome-unknown semantics.
-- **DB impact/removals:** new node generation for role state, epoch keys,
-  immutable objects, ACK/tombstones, repair and allocation replay. Remove node
+- **DB impact/removals:** new node generation for common role state, epoch keys,
+  immutable objects, ACK/tombstones and repair. Remove node
   client-path selector and long-lived onion-decryption-key assumptions.
-- **unit gate:** key rollover/erase, restart/disk-full/clock skew, replay flood,
-  mailbox handover/read repair, allocation anti-amplification and role isolation.
+- **unit gate:** key rollover/erase, restart/disk-full/clock skew, common replay
+  flood, mailbox handover/read repair and role isolation. Call-specific
+  allocation and replay gates belong only to CALL-RELAY-01.
 - **integration consumer/evidence:** ONION-01, ROUTE-01, BLOB-01 and CALL-MEDIA-01;
   three-host no-mock role/chaos artifacts.
 
@@ -349,11 +460,13 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 
 - **ownerRepository:** `deep-protocol`.
 - **dependsOn:** REG-01, NETCODEC-01, ARCH-01.
-- **consumes:** carrier IDs, XCB1/XCC1/XBB1/XBA1 semantics and accepted call/
-  token/acquisition decisions.
-- **produces:** canonical carrier artifact codecs/vectors; exact HTTPS-stream
-  upgrade/framing; exact RFC 9298 MASQUE profile; TCP capsule framing and queue
-  bounds; bridge-token issuance/redemption and OHTTP request/result records.
+- **consumes:** carrier IDs, XCB1/XCC1/XBB1/XBA1/XOD1/XOQ1/XOR1/XHC1/XHA1/
+  MPC1/MPA1 semantics and immutable call/token/acquisition contracts.
+- **produces:** canonical carrier artifact codecs/vectors; exact XHC1/XHA1
+  transcript/KDF/directional AEAD/framing; exact HTTPS-stream
+  upgrade/framing; exact RFC 9298 MASQUE profile and MPC1/MPA1 target-auth;
+  TCP capsule framing and queue bounds; bridge-token issuance/redemption and
+  exact XOQ1/XOR1 OHTTP records.
 - **wire/API:** replaces “where practical”, “WebTunnel-like” and “OHTTP-style”
   with byte-exact transcripts and failure classes.
 - **DB impact/removals:** none. `webtunnel-h2-v1` and direct-fallback config are
@@ -362,7 +475,80 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
   half-close/backpressure, stream/datagram bounds, wrong target/purpose and
   standard interop where an RFC profile is claimed.
 - **integration consumer/evidence:** SUPERVISOR-01, REALITY-01, HTTPS-01,
-  BRIDGE-01 and CALL-MEDIA-01; machine registry hash and protocol vectors.
+  CARRIER-CATALOG-01, CARRIER-GATEWAY-01, BRIDGE-DISTRIBUTOR-01, BRIDGE-01 and CALL-MEDIA-01;
+  machine registry hash and protocol vectors.
+
+### CARRIER-CATALOG-01 — signed carrier policy and finite cohort catalog
+
+- **ownerRepository:** `deep-registry-api`.
+- **dependsOn:** CARRIER-CODEC-01, NETCODEC-01, GOV-01.
+- **consumes:** exact XNA witness policy, signed XCB1/XOD1 cores, accepted finite
+  cohort/binding input and canonical XCC1/XBB1 catalog algorithms.
+- **produces:** deterministic XBB1 catalog cores; acyclic Merkle roots; threshold-
+  witnessed XCC1 core/envelope; distributor-signed XBB1 proof envelopes; protected
+  XCC/XBB generation floors and byte-identical mirror publication. This package is
+  the sole producer of signed distributor/cohort policy consumed by XVP1 and
+  BRIDGE-DISTRIBUTOR-01.
+- **wire/API:** construction order is exactly XOD/XBB cores, XCC root/core/envelope,
+  XBB proof/envelope. It never chooses a per-client cohort, mints XBA1 or receives a
+  requester identity.
+- **DB impact/removals:** carrier-policy/core lineage, immutable cohort cores/proofs,
+  witness receipts and fork evidence; no token, operation, contact or route state.
+- **unit gate:** deterministic rebuild in two implementations, wrong index/count,
+  XCC/XBB/XOD cycle attempt, signature-subset core equality, same-generation fork,
+  omitted binding/descriptor, 128 KiB/max+1 and restart before/after threshold.
+- **integration consumer/evidence:** ROOT-CHECKPOINT-01, DIRECTORY-01,
+  BRIDGE-DISTRIBUTOR-01 and BRIDGE-01; byte-identical catalog/core/root manifest.
+
+### CARRIER-GATEWAY-01 — XPoint carrier gateway and oblivious acquisition runtime
+
+- **ownerRepository:** `xnode`.
+- **dependsOn:** CARRIER-CODEC-01, XNODE-01, NETCODEC-01.
+- **consumes:** exact XCB1/XOD1/XOQ1/XOR1/XHC1/XHA1/MPC1/MPA1 codecs,
+  verified Entry/CallRelay targets, opaque bridge tokens and canonical carrier
+  retention classes.
+- **produces:** bounded HTTPS/WebSocket XHC/XHA gateway; atomic XHC access-token
+  redemption and exact XHC/XHA transport replay; RFC 9458 Relay/Gateway validation
+  and application dispatch; MASQUE and
+  masked TCP capsule target gateway with MPC/MPA relay-key authentication; common
+  resource, rate and sanitized failure enforcement.
+- **wire/API:** accepts only a signed binding's exact purpose/target. XOQ validation
+  and dispatch are transport functions: the gateway never owns or commits an
+  application `(XOD1CoreHash32, operationId, requestHash, exactXOR)` row. It is not a
+  general proxy, does not parse application E2EE and cannot mint policy, targets or
+  credentials outside the admitted descriptor. Cross-purpose bytes reject before
+  application callback.
+- **DB impact/removals:** XHC access-token commitments, exact XHC/XHA transport
+  request/result replay, short-lived handshake secrets and bounded gateway quota state. No account,
+  contact, group, call ID, media plaintext or stable source-target mapping.
+- **unit gate:** exact/lost-response retry, changed-request conflict, token clone,
+  crash at consume/commit, XHC sequence/AEAD/flow-control failures, OHTTP
+  cross-purpose replay, MASQUE DNS rebinding/private-target attempts and
+  relay-key-auth failure.
+- **integration consumer/evidence:** BRIDGE-01 and E2E-01; server/client interop,
+  restart, resource-flood, target-auth and decrypt-negative artifacts.
+
+### BRIDGE-DISTRIBUTOR-01 — oblivious bridge-acquisition application target
+
+- **ownerRepository:** `deep-registry-api`.
+- **dependsOn:** CARRIER-CATALOG-01, CARRIER-CODEC-01.
+- **consumes:** exact XCC1/XBB1/XBA1/XOD1/XOQ1/XOR1 codecs, current signed
+  distributor/cohort policy and `RET-BRIDGE-ACQUISITION-V1`.
+- **produces:** the sole `BridgeAcquisition` XOQ target; deterministic cohort-bound
+  XBA1 token batches; atomic `(XOD1CoreHash32, operationId, exactXOQ1Hash, exactXOR1)`
+  ledger committed with token minting; exact retry/conflict and bounded quota state.
+- **wire/API:** receives only an OHTTP-decapsulated validated XOQ1 and transport
+  metadata stripped of source identity. It never serves AccountDirectory or
+  LiveTimeAttestation, chooses a client route, or returns an unsigned/full bridge
+  pool.
+- **DB impact/removals:** cohort policy reference, token commitments and the exact
+  BridgeAcquisition business/replay transaction through its canonical retention
+  deadline. No IP, account, device, DID, contact or stable client identifier.
+- **unit gate:** exact lost-response replay, changed-request conflict, crash before/
+  after mint commit, duplicate token/nonce, cohort minimum, quota and expiry
+  boundary, plus OHTTP Relay/Gateway source-separation fixture.
+- **integration consumer/evidence:** BRIDGE-01 and E2E-01; independent distributor
+  outage/withholding, no-source-identity and N-1 acquisition artifacts.
 
 ### SUPERVISOR-01 — carrier supervisor and official XPoint message adapter
 
@@ -404,7 +590,8 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 
 - **ownerRepository:** `deep-client-maui`.
 - **dependsOn:** SUPERVISOR-01, CARRIER-CODEC-01.
-- **consumes:** verified carrier bindings and exact stream/datagram transcripts.
+- **consumes:** verified carrier bindings, exact stream/datagram transcripts and
+  MPC1/MPA1 target-auth records.
 - **produces:** independent `https-stream-v1`, `masque-h3-v1` and
   `masked-tcp-capsule-v1` client adapters with bounded flow control,
   datagram drop policy and platform lifecycle.
@@ -417,15 +604,18 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 - **integration consumer/evidence:** BRIDGE-01 and CALL-MEDIA-01; physical packet
   captures on Android and Windows.
 
-### BRIDGE-01 — independent bridge/distributor/media hosting and release gates
+### BRIDGE-01 — independent bridge/distributor/media deployment and release gates
 
 - **ownerRepository:** `deep-devops`.
-- **dependsOn:** DIRECTORY-01, CARRIER-CODEC-01, REALITY-01, HTTPS-01, XNODE-01.
-- **consumes:** signed policies/bindings/bundles, exact bridge acquisition wire,
-  XNode Entry and CallRelay targets.
-- **produces:** separate Reality and HTTPS-stream hosting families; rotating
+- **dependsOn:** DIRECTORY-01, CARRIER-CODEC-01, CARRIER-CATALOG-01, CARRIER-GATEWAY-01,
+  BRIDGE-DISTRIBUTOR-01,
+  REALITY-01, HTTPS-01, XNODE-01.
+- **consumes:** signed policies/bindings/bundles, BRIDGE-DISTRIBUTOR-01 exact XOQ1/XOR1 bridge
+  acquisition wire, MPC1/MPA1 target-auth and XNode Entry/CallRelay targets.
+- **produces:** deployment/configuration of separate Reality and HTTPS-stream
+  hosting families using the CARRIER-GATEWAY-01 runtime; rotating
   bridge pools; embedded seed generation; multi-origin HTTPS/ECH, OHTTP and
-  user-import channels; MASQUE/TCP media gateways; rotation/rollback scripts;
+  user-import channels; MASQUE/TCP gateway rollout; rotation/rollback scripts;
   censorship and packet-capture harness; release gate integration.
 - **wire/API:** pools do not share all IP/provider/DNS/deployment/distributor
   failure domains. No distributor learns Deep identity or returns full pool.
@@ -441,13 +631,13 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 ### CONTACT-CODEC-01 — invite, prekey claim and contact/update protocol closure
 
 - **ownerRepository:** `deep-protocol`.
-- **dependsOn:** E2EE-01, NETCODEC-01, REG-01, ARCH-01.
-- **consumes:** DID1/DAB1/DMD1/DCB1/DCR1/DIA1/DAO1, ADC1/ADH1/ADP1/ADL1,
+- **dependsOn:** APPLICATION-CODEC-01, E2EE-01, NETCODEC-01, REG-01, ARCH-01.
+- **consumes:** application identity/event codecs, ADC1/ADH1/ADP1/ADL1,
   XIR1/XRR1/XUR1 semantics, `CONTACT-RESOLVER-V1.md` and the accepted retention
   matrix.
-- **produces:** exact codecs/vectors for contact records and
-  XIR1/XPA1/XPU1/XIQ1/XIS1/XPS1/XPK1/XPC1; effective-expiry rule; exact routable XRR
-  closure; exact XUR successor record; signed hash-closed support packages.
+- **produces:** exact codecs/vectors for XIR1/XPU1/XPO1/XPA1/XIQ1/XIS1/
+  XPS1/XPK1/XPC1/XUR1/XUW1/XUQ1/XUS1; effective-expiry rule; exact routable XRR
+  closure; signed hash-closed support packages.
 - **wire/API:** permanent DID1 resolves rotating DCB/prekeys atomically without
   expiring or redirecting the ID; one-time redemption
   exact-replays only for the same operation; DCB cannot outlive mandatory
@@ -463,7 +653,7 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 ### CONTACT-SERVICE-01 — encrypted invite/prekey/update services
 
 - **ownerRepository:** `xnode`.
-- **dependsOn:** CONTACT-CODEC-01, XNODE-01, DIRECTORY-01.
+- **dependsOn:** CONTACT-CODEC-01, XNODE-01, ACCOUNT-DIRECTORY-AUTH-01.
 - **consumes:** opaque resolver locator/capability, signed contact packages,
   PMT2/PMS2 placement, prekey claim records and XUR retention policy.
 - **produces:** durable encrypted DCR publication/resolution; atomic one-time
@@ -482,8 +672,8 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 ### CONTACT-CLIENT-01 — arbitrary contact and long-offline contact runtime
 
 - **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** MSG-01, DEVICE-01, ROUTE-01, SUPERVISOR-01, CONTACT-CODEC-01,
-  CONTACT-SERVICE-01, BRIDGE-01.
+- **dependsOn:** MSG-01, DEVICE-01, DIRECTORY-CLIENT-01, ROUTE-01,
+  SUPERVISOR-01, CONTACT-CODEC-01, CONTACT-SERVICE-01.
 - **consumes:** canonical Deep address/bundle, ADP1/ADH1 freshness proofs,
   prekey claim service, XPoint transport, pairwise sessions and XUR successor
   records.
@@ -497,7 +687,8 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
   invitation evidence, per-contact XUR/current+next reachability and request
   state. Remove Session ID contact rows and silent route reset.
 - **unit gate:** Android/Windows fixture, recipient offline, simultaneous hello,
-  stale/rotated route, 30/180/365/>400-day states, no-backup recovery and block.
+  stale/rotated route, every machine-contract long-offline/beyond-horizon state,
+  no-backup recovery and block.
 - **integration consumer/evidence:** GROUP-CODEC-01, CALL-SIGNAL-01 and E2E-01;
   arbitrary-contact cold-restart evidence.
 
@@ -507,7 +698,8 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 - **dependsOn:** CONTACT-CODEC-01, DEVICE-01, REG-01.
 - **consumes:** DGP1/DGC1/DGM1 semantics, exact
   ADC1/ADH1/DMD1/DRS1/DPD1 references and accepted 100-member/500-device limits.
-- **produces:** canonical DGP1/DGC1/DGM1/DGT1/GCP1 records plus exact group-commit closure
+- **produces:** canonical GIV1/GIA1/DGP1/DGC1/DGM1/DGT1/GCP1/GCF1 and
+  GSR1/GSW1/GSQ1/GSS1 records plus exact group-commit closure
   containing every referenced proposal/directory/revocation/device/transparency
   object; ADC1/ADH1 and DMD1 hash/ref in member entries; emergency owner-device
   transfer record; fork and predecessor verification plans.
@@ -515,17 +707,35 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
   long-term signature; governance signatures use separate domains.
 - **DB impact/removals:** pure sealed plans. Remove revision-only state and
   arrival-order conflict resolution.
-- **unit gate:** genesis/successor, missing/extra closure object, two valid
-  successors, role/device substitution, owner transfer, max/max+1 sizes and
-  delayed old-epoch event.
+- **unit gate:** pending invite/consent/activation, genesis/successor,
+  missing/extra closure object, two valid successors, role/device substitution,
+  owner transfer, chunk max/max+1 sizes and delayed old-epoch event.
 - **integration consumer/evidence:** GROUP-CLIENT-01; vector package and
   independent protocol-review input.
+
+### GROUP-CONTROL-SERVICE-01 — per-recipient retained group-control store
+
+- **ownerRepository:** `xnode`.
+- **dependsOn:** GROUP-CODEC-01, XNODE-01, NETCODEC-01.
+- **consumes:** opaque GSR1 capability/placement, GSW1/GSQ1 requests, sealed GCF1
+  chunks and canonical group-control retention policy.
+- **produces:** two-replica sequence/predecessor CAS, exact GSS1 replay/results,
+  bounded catch-up, checkpoint compaction and state-root handover.
+- **wire/API:** no group/member/account/device ID; each recipient uses an
+  independent random capability. The service never decrypts GCF/GCP or infers a
+  member list.
+- **DB impact/removals:** opaque per-capability control sequence, ciphertext,
+  replay receipts, compaction checkpoint and handover root.
+- **unit gate:** missing/duplicate/reordered chunks, changed sequence, replica
+  crash/handover, long-offline boundary, compaction restart and explicit gap.
+- **integration consumer/evidence:** GROUP-CLIENT-01 and E2E-01; server-side
+  retention/deletion plus offline-current-membership recovery artifact.
 
 ### GROUP-CLIENT-01 — group state, durable fanout and scale gates
 
 - **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** GROUP-CODEC-01, MSG-01, DEVICE-01, CONTACT-CLIENT-01,
-  SUPERVISOR-01.
+- **dependsOn:** GROUP-CODEC-01, GROUP-CONTROL-SERVICE-01, MSG-01, DEVICE-01,
+  CONTACT-CLIENT-01, SUPERVISOR-01.
 - **consumes:** verified group closures, per-device ratchets and logical outbox.
 - **produces:** proposal/commit/invite/accept/leave/remove/role state; fork
   latch; per-target durable group batch; bounded concurrency/bytes/chunking;
@@ -536,8 +746,9 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
   retained commits and history-transfer manifests. Remove 2048-member and
   revision-only rows.
 - **unit gate:** correctness at 3 members; intermediate 20-member gate; final
-  100-member/500-device p95 gate; restart/partial failure, revoke-before-send,
-  battery/data budget and no sequential 500-round-trip behavior.
+  100-member/500-device p95 gate; owned non-blocking 200-member future-profile
+  baseline; restart/partial failure, revoke-before-send, battery/data budget and
+  no sequential 500-round-trip behavior.
 - **integration consumer/evidence:** COMPOSE-01 and E2E-01; sanitized fanout
   latency/bytes/battery artifact.
 
@@ -574,12 +785,30 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 - **integration consumer/evidence:** COMPOSE-01 and E2E-01; provider canary plus
   no-push polling artifact.
 
+### CALL-CODEC-01 — call signaling, answer-CAS and allocation codecs
+
+- **ownerRepository:** `deep-protocol`.
+- **dependsOn:** APPLICATION-CODEC-01, CARRIER-CODEC-01, NETCODEC-01, REG-01.
+- **consumes:** closed call payload tables and CMD1/CAC1/CAO1/CAR1/CAA1/CAL1
+  contracts plus XCD1/XCB1 references.
+- **produces:** exact codecs/vectors for all call events and service records;
+  CallMediaSuiteV1 constants; request/result hashes, conditional fields, bounds
+  and hostile SDP/media-suite substitution vectors.
+- **wire/API:** pure immutable author/verify functions; no WebRTC, network,
+  signer key, capability store or clock callback.
+- **DB impact/removals:** none.
+- **unit gate:** max/max+1, unknown suite/codec/field, changed request, wrong
+  quorum generation, SDP injection, candidate/fingerprint/credential substitution.
+- **integration consumer/evidence:** CALL-SIGNAL-01, CALL-RELAY-01 and
+  CALL-MEDIA-01; cross-repository byte-identical call vector manifest.
+
 ### CALL-SIGNAL-01 — ratcheted one-to-one call signaling
 
 - **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** MSG-01, DEVICE-01, CONTACT-CLIENT-01, REG-01.
-- **consumes:** `CALL-SESSION-V1.md`, DMC2 call events, authenticated
-  conversation/device heads and canonical `RelayOnly` call names.
+- **dependsOn:** MSG-01, DEVICE-01, CONTACT-CLIENT-01, CALL-CODEC-01, REG-01.
+- **consumes:** `CALL-SESSION-V1.md`, DMC2 call events, exact CMD1/CAC1/CAO1,
+  authenticated conversation/device heads, protected DTT1-backed time and
+  canonical `RelayOnly` call names.
 - **produces:** offer/answer/candidate/reconnect/end state machine; fresh call
   binding; DTLS fingerprint/allocation binding; stale/replay suppression;
   multi-device CAC1 answer-winner CAS, glare, missed/busy/decline and durable outcome semantics.
@@ -588,16 +817,40 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 - **DB impact/removals:** call session/event/replay tombstone state. Remove
   `HttpCallSignalingTransport`, `/api/calls/signal` and Session-ID call records
   from the target client generation.
-- **unit gate:** duplicate/reorder/replay, 60-second offer expiry, no network
-  before callee accept, device revoke, restart and fingerprint substitution.
+- **unit gate:** duplicate/reorder/replay, trusted-time/expiry boundaries, no
+  network before callee accept, device revoke, restart, unsigned SDP injection
+  and fingerprint/media-suite substitution.
 - **integration consumer/evidence:** CALL-MEDIA-01 and COMPOSE-01; signaling
   trace through loopback and official XPoint message transport.
 
-### CALL-MEDIA-01 — CallRelay allocation and relay-only WebRTC adapters
+### CALL-RELAY-01 — replicated answer CAS and masked media allocation service
+
+- **ownerRepository:** `xnode`.
+- **dependsOn:** CALL-CODEC-01, XNODE-01, DIRECTORY-01, NETCODEC-01.
+- **consumes:** exact CAC1/CAO1/CAR1/CAA1/CAL1/CMD1 and XCD1 contracts, signed relay
+  catalogs, random bearer capabilities, DTLS fingerprint commitments and
+  canonical media-allocation retention policy.
+- **produces:** two-replica answer-claim CAS; participant-specific allocation,
+  credential, allocation-capability commitment and replay state; exact owner-only CAL1;
+  relay service runtime; durable quorum receipts,
+  handover and sanitized decrypt-negative evidence. BRIDGE-01 owns deployment.
+- **wire/API:** receives no account/device/conversation ID and never receives an
+  endpoint DTLS private key or SRTP secret. Same operation/exact request replays;
+  changed bytes conflict; no single Registry/relay process decides a winner.
+- **DB impact/removals:** capability commitments, claim/allocation operation
+  hashes, bounded replay tombstones and replica handover roots. No signaling
+  inbox, SDP archive, media plaintext or stable participant mapping.
+- **unit gate:** 100-way answer race, replica crash/handover, changed-request
+  replay, allocation expiry/revoke, malicious certificate substitution and
+  relay decrypt-negative corpus.
+- **integration consumer/evidence:** CALL-MEDIA-01 and E2E-01; quorum/expiry,
+  UDP-blocked carrier and no-plaintext artifacts.
+
+### CALL-MEDIA-01 — relay-only WebRTC client adapters
 
 - **ownerRepository:** `deep-client-maui`.
-- **dependsOn:** CALL-SIGNAL-01, CARRIER-CODEC-01, SUPERVISOR-01, XNODE-01,
-  REALITY-01, HTTPS-01, BRIDGE-01.
+- **dependsOn:** CALL-SIGNAL-01, CALL-RELAY-01, BRIDGE-01, CARRIER-CODEC-01,
+  SUPERVISOR-01, REALITY-01, HTTPS-01.
 - **consumes:** verified XCD1/XCB1, short-lived allocation API selected by
   ARCH-01, `ICallMediaPathProvider`, call binding and DTLS fingerprints.
 - **produces:** Android/Windows WebRTC adapter exposing relay-only candidates;
@@ -605,8 +858,9 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
   reconnect/network handover and privacy/status UI model.
 - **wire/API:** no host/srflx/mDNS/direct candidate, public STUN, direct TURN or
   silent `DirectPeer` fallback. CallRelay allocation does not prove peer identity.
-- **DB impact/removals:** ephemeral allocation/path state and 24-hour call-ID
-  replay cache only. Remove `DEEP_CALL_SIGNALING_BASE_URL`, direct ICE and
+- **DB impact/removals:** client-side ephemeral allocation/path state and
+  call-signaling replay state only; server allocation/replay state belongs to
+  CALL-RELAY-01. Remove `DEEP_CALL_SIGNALING_BASE_URL`, direct ICE and
   static DNS-only TURN release configuration.
 - **unit gate:** Android↔Windows and Android↔Android ring/accept/audio/video,
   selected pair inspection, UDP block to TCP audio, relay rotation, reconnect,
@@ -649,7 +903,7 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 - **DB impact/removals:** fixture data only; each generation reset is explicit.
   Remove old iOS-blocking, disjoint-route and Registry-call acceptance fixtures.
 - **unit gate:** fixtures schema/compat/smoke/full/load; full DNS/SNI/path/IP/UDP/
-  active-probe/APK-extraction matrix; crash/restart/rotation; performance SLOs;
+  active-probe/APK-and-MSIX-extraction matrix; crash/restart/rotation; performance SLOs;
   secret scan and local Markdown-link check.
 - **integration consumer/evidence:** `deep-devops` release gate and independent
   reviewers; one signed commit matrix with P0=0/P1=0 before GA.
@@ -661,11 +915,11 @@ disjoint lanes:
 
 | Lane | Packages | First integration rendezvous |
 | --- | --- | --- |
-| identity/crypto | ID-01, STORE-01, E2EE-01, MSG-01, DEVICE-01 | loopback two-device ratcheted event with crash recovery |
-| network | NETCODEC-01, DIRECTORY-01, XNODE-01, ROUTE-01, ONION-01 | exact-three-hop opaque Store/Retrieve with XPR1/XRS1 |
-| carriers | CARRIER-CODEC-01, SUPERVISOR-01, REALITY-01, HTTPS-01, BRIDGE-01 | same opaque operation through each independent carrier |
-| contacts | CONTACT-CODEC-01, CONTACT-SERVICE-01, CONTACT-CLIENT-01 | unrelated offline recipient accepts first contact |
-| feature planes | GROUP-CODEC-01/GROUP-CLIENT-01, BLOB-01, PUSH-01, CALL-SIGNAL-01/CALL-MEDIA-01 | each feature uses the same identity/outbox/policy seams |
+| identity/crypto | ID-01, STORE-01, E2EE-01, APPLICATION-CODEC-01, MSG-01, DEVICE-01 | loopback two-device ratcheted event with crash recovery |
+| network | NETCODEC-01, ROOT-CHECKPOINT-01, DIRECTORY-01, XNODE-01, ROUTE-01, ONION-01 | exact-three-hop opaque Store/Retrieve with XPR1/XRS1 and forward-checkpoint fixtures |
+| carriers | CARRIER-CODEC-01, CARRIER-CATALOG-01, CARRIER-GATEWAY-01, BRIDGE-DISTRIBUTOR-01, SUPERVISOR-01, REALITY-01, HTTPS-01, BRIDGE-01 | same opaque operation through each independent carrier |
+| contacts/directory | CONTACT-CODEC-01, ACCOUNT-DIRECTORY-AUTH-01, DIRECTORY-CLIENT-01, CONTACT-SERVICE-01, CONTACT-CLIENT-01 | unrelated offline recipient accepts first contact |
+| feature planes | GROUP-CODEC-01/GROUP-CONTROL-SERVICE-01/GROUP-CLIENT-01, BLOB-01, PUSH-01, CALL-CODEC-01/CALL-SIGNAL-01/CALL-RELAY-01/CALL-MEDIA-01 | each feature uses the same identity/outbox/policy seams |
 
 An agent may prepare tests against checked-in producer fixtures while a producer
 is running, but cannot merge implementation that invents missing producer bytes.
@@ -675,12 +929,12 @@ is running, but cannot merge implementation that invents missing producer bytes.
 | Milestone | Required packages | Demonstration |
 | --- | --- | --- |
 | `M0 Freeze` | GOV-01, CRYPTO-01, ARCH-01, REG-01 | no open registry/ownership/provider P0; generated collision gate green |
-| `M1 Local secure core` | ID-01 through DEVICE-01 | offline account, two-device ratchet, durable loopback outbox and revoke |
+| `M1 Local secure core` | ID-01 through DEVICE-01, including APPLICATION-CODEC-01 | offline account, two-device ratchet, durable loopback outbox and revoke |
 | `M2 XPoint text spine` | NETCODEC-01 through ONION-01, CARRIER-CODEC-01 through REALITY-01 | one Reality carrier, exact three hops, opaque 1:1 operation, no direct path |
-| `M3 Arbitrary contacts` | CONTACT-CODEC-01 through CONTACT-CLIENT-01 | copied Deep address reaches offline unrelated user and survives rotation/restart |
-| `M4 Circumvention` | HTTPS-01, BRIDGE-01 | Reality and independent HTTPS carrier; APK/IP/DNS/SNI/UDP scenarios |
+| `M3 Arbitrary contacts` | CONTACT-CODEC-01, ACCOUNT-DIRECTORY-AUTH-01, DIRECTORY-CLIENT-01, CONTACT-SERVICE-01, CONTACT-CLIENT-01 | copied Deep address reaches offline unrelated user and survives rotation/restart over the M2 Reality path |
+| `M4 Circumvention` | CARRIER-CATALOG-01, CARRIER-GATEWAY-01, BRIDGE-DISTRIBUTOR-01, HTTPS-01, BRIDGE-01 | Reality and independent HTTPS carrier; APK/IP/DNS/SNI/UDP scenarios |
 | `M5 Product parity` | GROUP packages, BLOB-01, PUSH-01 | 100-member final gate, 25 MiB resume and no-push convergence |
-| `M6 Calls` | CALL-SIGNAL-01, CALL-MEDIA-01 | relay-only audio/video plus UDP-blocked masked TCP audio |
+| `M6 Calls` | CALL-CODEC-01, CALL-SIGNAL-01, CALL-RELAY-01, CALL-MEDIA-01 | relay-only audio/video plus UDP-blocked masked TCP audio |
 | `M7 Release candidate` | COMPOSE-01, E2E-01 | one signed commit matrix, all physical/security/SLO gates, P0/P1=0 |
 
 Stop the affected lane when any of these occur:

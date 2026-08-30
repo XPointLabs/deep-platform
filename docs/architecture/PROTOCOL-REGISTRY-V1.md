@@ -279,6 +279,13 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | `DAM1` | encrypted attachment manifest carried inside DMC2/DGM1. | `TARGET_UNFROZEN` |
 | `DGT1` | emergency owner-sequencer transfer authorization. | `TARGET_UNFROZEN` |
 | `GCP1` | hash-closed group commit/support package. | `TARGET_UNFROZEN` |
+| `GIV1` | pending group invitation; does not grant membership. | `TARGET_UNFROZEN` |
+| `GIA1` | invitee-signed acceptance of one exact GIV1. | `TARGET_UNFROZEN` |
+| `GCF1` | authenticated chunk frame for one exact GCP1 package. | `TARGET_UNFROZEN` |
+| `GSR1` | per-recipient opaque long-offline group-control rendezvous. | `TARGET_UNFROZEN` |
+| `GSW1` | group-control chunk CAS write. | `TARGET_UNFROZEN` |
+| `GSQ1` | bounded group-control catch-up query. | `TARGET_UNFROZEN` |
+| `GSS1` | closed group-control write/fetch result. | `TARGET_UNFROZEN` |
 
 `DPAC`, `DPDC`, `DPKB`, `DPHI`, `DPE1` and `DMC1` are
 `RETIRED_REJECT`. They are not aliases for the rows above.
@@ -299,6 +306,10 @@ Normative source: `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`.
 | `ADH1` | threshold-witnessed append-only directory log head. | `TARGET_UNFROZEN` |
 | `ADP1` | exact lookup/inclusion/consistency proof and signed identity/device closure. | `TARGET_UNFROZEN` |
 | `ADL1` | opaque lookup capability shared only by Deep address/E2EE peers. | `TARGET_UNFROZEN` |
+| `ADF1` | root-authorized beyond-horizon account-directory forward checkpoint. | `TARGET_UNFROZEN` |
+| `AFP1` | exact authority/ADF/source-membership proof package for ADP1 forward mode. | `TARGET_UNFROZEN` |
+| `DTS1` | root-signed closed authenticated-time-source policy committed by the directory witness policy. | `TARGET_UNFROZEN` |
+| `DTT1` | nonce-bound threshold-signed live time/current ADH1/XNV1 attestation. | `TARGET_UNFROZEN` |
 
 These records are mandatory freshness inputs to first contact and group member
 directory verification. A valid old DMD1 signature without a current ADP1/ADH1
@@ -312,22 +323,33 @@ Normative source: `XPOINT-NETWORK-V1.md`.
 | Magic | Meaning | Runtime owner | Status |
 | --- | --- | --- | --- |
 | `XNA1` | network root/authority lineage. | offline authority tooling + client verifier | `TARGET_UNFROZEN` |
+| `XVP1` | root-signed closed role/routing/mailbox/circuit/circumvention network policy. | offline authority tooling authors; witnesses consume | `TARGET_UNFROZEN` |
 | `XND1` | signed node descriptor and role/key/failure-domain projection. | node authors; witnesses publish | `TARGET_UNFROZEN` |
 | `XNV1` | threshold-signed deterministic global network view. | witness publisher; client verifies | `TARGET_UNFROZEN` |
 | `XNH1` | threshold-witnessed network-view transparency head. | witness publisher; clients gossip | `TARGET_UNFROZEN` |
 | `XNP1` | bounded XNV inclusion/consistency proof. | mirrors publish; clients verify | `TARGET_UNFROZEN` |
+| `XNF1` | root-authorized beyond-horizon network-view forward checkpoint. | offline root tooling authors; mirrors publish; clients verify | `TARGET_UNFROZEN` |
+| `NFP1` | exact authority/checkpoint/source-membership proof package for XNF1 merge. | mirrors package; clients verify | `TARGET_UNFROZEN` |
 | `XIR1` | long-lived invite rendezvous embedded in DCB1; never a current message deposit route. | contact owner authors; selected invite-store pair hosts | `TARGET_UNFROZEN`; source `CONTACT-RESOLVER-V1.md` |
 | `XRR1` | short-lived established-contact/message deposit reachability. It is not a public Deep ID artifact. | contact owner authors; selected mailbox pair hosts | `TARGET_UNFROZEN` |
-| `XUR1` | established-contact update rendezvous capability/record. | contact owner authors; update-rendezvous service hosts | `TARGET_UNFROZEN`; exact semantics/fields fixed, machine codec pending M0 |
+| `XUR1` | established-contact update rendezvous capability/record. | contact owner authors; update-rendezvous service hosts | `TARGET_UNFROZEN`; codec owner is CONTACT-CODEC-01 |
 | `XCP1` | local protected client path plan. Never uploaded. | `deep-client-shared` | `TARGET_UNFROZEN`; local DB generation only |
-| `XCD1` | signed CallRelay descriptor. | CallRelay authors; witnesses publish | `TARGET_UNFROZEN` |
+| `XCD1` | signed CallRelay target-auth plus replica/quorum authority descriptor. | CallRelay authors; XNV1 witnesses authorize/publish the exact hash | `TARGET_UNFROZEN`; exact codec owner is NETCODEC-01 |
 | `XRA1` | long-lived recipient reachability authorization. | recipient authors; directory threshold verifies | `TARGET_UNFROZEN` |
 | `XRC1` | short-lived XNV/PMT/PMS-bound live route closure. | directory threshold authors | `TARGET_UNFROZEN` |
 | `XSS1` | retained route successor/checkpoint closure. | route stores/witnesses | `TARGET_UNFROZEN` |
 
-The authority/witness package must decide whether XNA/XND/XNV use the same
-canonical tagged grammar as application records or a separately registered
-network grammar. Agents must not infer a grammar from the semantic field lists.
+Records whose normative field/signature owner is `XPOINT-NETWORK-V1.md` use the exact
+canonical tagged grammar in `DEEP-CRYPTO-V1-DRAFT.md` section 3.2, with version
+1. Ordinary network records use suite `0x0201`; root-authority XNA1/XVP1/XNF1
+records use suite `0x0001` and the exact `/root` signature domains in their
+normative tables. An ordinary network signature covers
+`SIGINPUT("Deep/XPoint/V1/" || magicASCII, 0x0201, unsignedCanonicalRecord)`;
+multi-witness records sort `(witnessId32, signature64)` by witness ID and every
+witness signs the identical unsigned bytes. A separately inferred network
+grammar, omitted suite, context-dependent magic or alternate signature input
+rejects. This is a frozen architecture choice; NETCODEC-01 supplies machine
+schemas/vectors, not a new decision.
 
 ### 6.6 Contact resolver and prekey service records
 
@@ -338,12 +360,16 @@ Normative source: `CONTACT-RESOLVER-V1.md`.
 | Magic | Meaning | Status |
 | --- | --- | --- |
 | `XPU1` | compare-and-swap publication of encrypted DCR1 at an opaque invite locator. | `TARGET_UNFROZEN` |
+| `XPO1` | closed publication outcome for one XPU1 operation. | `TARGET_UNFROZEN` |
 | `XPA1` | short-lived directory-threshold authorization for one opaque XPU1 publication; exposes no Deep ID/account/device. | `TARGET_UNFROZEN` |
 | `XIQ1` | idempotent permanent-address resolve or one-time invite claim request. | `TARGET_UNFROZEN` |
 | `XIS1` | closed invite resolve result with exact-replay semantics. | `TARGET_UNFROZEN` |
 | `XPS1` | signed per-device prekey service descriptor carried by DCB1. | `TARGET_UNFROZEN` |
 | `XPK1` | atomic one-time/last-resort prekey claim request. | `TARGET_UNFROZEN` |
 | `XPC1` | witnessed prekey claim/replay/failure result bound into DPH2. | `TARGET_UNFROZEN` |
+| `XUW1` | established-contact encrypted successor/update publication. | `TARGET_UNFROZEN` |
+| `XUQ1` | established-contact successor/update query. | `TARGET_UNFROZEN` |
+| `XUS1` | closed established-contact update result. | `TARGET_UNFROZEN` |
 
 `DID1` plus `XIR1` and these operations replaces the earlier plan to embed
 consumable DPK2 bytes or a 24-hour XRR1 in a reusable address. DID1 itself has
@@ -359,20 +385,30 @@ Owner: `deep-protocol`; normative source: `CIRCUMVENTION-CARRIERS-V1.md`.
 | `XCB1` | signed binding of one carrier endpoint to one Entry/CallRelay target and key epoch. | `TARGET_UNFROZEN` |
 | `XCC1` | signed allowed-carrier/downgrade/backoff/distributor policy. | `TARGET_UNFROZEN` |
 | `XBB1` | small cohort-specific signed bridge bundle. | `TARGET_UNFROZEN` |
-| `XBA1` | RFC 9458-issued bounded-use bridge access token container. | `TARGET_UNFROZEN`; exact codec/vectors pending M0 |
+| `XBA1` | signed, purpose/binding/time-bounded random bearer bridge-access token. | `TARGET_UNFROZEN` |
+| `XOD1` | signed purpose-bound RFC 9458 Relay/Gateway/HPKE resource descriptor. | `TARGET_UNFROZEN` |
+| `XOQ1` | closed purpose-discriminated decrypted OHTTP application request. | `TARGET_UNFROZEN` |
+| `XOR1` | closed operation-bound decrypted OHTTP application result. | `TARGET_UNFROZEN` |
 | `XHC1` | HTTPS-stream authenticated client hello. | `TARGET_UNFROZEN` |
 | `XHA1` | HTTPS-stream gateway acceptance/challenge. | `TARGET_UNFROZEN` |
+| `MPC1` | MASQUE gateway challenge bound to one signed CallRelay destination. | `TARGET_UNFROZEN` |
+| `MPA1` | CallRelay target-auth response for one exact MPC1 and socket destination. | `TARGET_UNFROZEN` |
 
 ### 6.8 Call records
 
-Owner: codecs in `deep-protocol`, capability stores/allocations in `xnode`,
-state machine in `deep-client-shared`. Source: `CALL-SESSION-V1.md`.
+Owner: codecs in `CALL-CODEC-01` (`deep-protocol`), server
+capability/CAS/allocation runtime in `CALL-RELAY-01` (`xnode`), client state
+machine in `deep-client-shared` and deployment/evidence in `BRIDGE-01`.
+Source: `CALL-SESSION-V1.md`.
 
 | Magic | Meaning | Status |
 |---|---|---|
 | `CAC1` | capability-based multi-device answer-winner CAS. | `TARGET_UNFROZEN` |
+| `CAO1` | quorum-bound closed outcome for one CAC1 request. | `TARGET_UNFROZEN` |
+| `CMD1` | E2EE-carried closed WebRTC media suite/ICE/DTLS/SRTP/codec description. | `TARGET_UNFROZEN` |
 | `CAR1` | participant-specific CallRelay allocation request. | `TARGET_UNFROZEN` |
-| `CAA1` | CallRelay-signed allocation response. | `TARGET_UNFROZEN` |
+| `CAA1` | peer-verifiable quorum-signed public allocation response; contains no raw allocation capability. | `TARGET_UNFROZEN` |
+| `CAL1` | owner-only sealed allocation result carrying exact CAA1 plus its raw allocation capability. | `TARGET_UNFROZEN` |
 
 ### 6.9 Mailbox/continuity records
 
@@ -387,9 +423,9 @@ documents under `../../deep-protocol/docs/`.
 | `PMA2`, `PMT2`, `PMS2` | DR-0004 clean-break threshold authority, XNV1-bound projection and deterministic blinded selection. | `TARGET_UNFROZEN`; decision resolved, exact grammar/vectors require NETCODEC-01. |
 | `XRA1`, `XRC1`, `XRR1`, `XSS1` | DR-0004 owner authorization, live route, shared reachability and retained successor closure. | `TARGET_UNFROZEN`; pre-cutover continuity records reject. |
 
-The mailbox decision is release-blocking. `XRR1` commitments do not by
-themselves provide a routable deposit closure; the selected design must define
-the exact objects a first-contact sender verifies and presents.
+DR-0004 is immutable for this generation. `XRR1` alone is not a routable deposit
+closure; the exact XRA1/XRC1/XRR1/XSS1 plus PMT2/PMS2 closure in the contact/XPoint
+specifications is mandatory. Implementations may not reopen or replace that choice.
 
 ## 7. Status and collision manifest required from deep-protocol
 

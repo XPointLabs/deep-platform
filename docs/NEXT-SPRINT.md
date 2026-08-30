@@ -31,6 +31,8 @@
 - `architecture/TRANSPORT-NEUTRAL-MESSAGING.md`
 - `architecture/DEPLOYMENT-PROFILES.md`
 - `architecture/V1-RELEASE-SCOPE.md`
+- [`architecture/release-scope.v1.json`](architecture/release-scope.v1.json)
+- [`architecture/release-scope.v1.schema.json`](architecture/release-scope.v1.schema.json)
 - [`architecture/SESSION-PARITY-AND-SOURCES.md`](architecture/SESSION-PARITY-AND-SOURCES.md)
 - `architecture/CONTACT-AND-GROUP-PROTOCOL-V1.md`
 - `architecture/CONTACT-RESOLVER-V1.md`
@@ -61,9 +63,6 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
   не означают wire compatibility.
 - Зафиксировать release crypto suite и resource budgets после реальных
   Android/Windows benchmarks. Classical-only/PQ-only silent fallback запрещён.
-- Создать machine-readable `release-scope.v1.json`: обязательные платформы
-  Android/Windows, features, suites, transports, scenarios и evidence schema.
-
 Gate: подписанный dependency decision, воспроизводимая minimal native test app
 на обеих платформах, KAT/vector agreement и отсутствие unresolved license P0.
 
@@ -195,8 +194,9 @@ malicious directory/fork/rollback, storage repair и route latency/load. Gate
   `MediaRelayDescriptor`: endpoint, transport, server name, public key,
   short/cohort credential, validity, predecessor, limits и policy generation.
 - Embedded endpoints являются только начальными seeds. Клиент получает
-  rotating bridge catalog минимум через три независимых пути: cached bundle,
-  multi-provider HTTPS/ECH и user-importable QR/file/out-of-band bundle.
+  rotating bridge catalog через три канонических channel:
+  `in-app-oblivious` RFC 9458 OHTTP, `multi-origin-https` и signed
+  `user-import`; embedded cache не заменяет ни один из них.
 - Не встраивать полный bridge pool или account/device-linked VLESS credential
   в APK/MSIX. Не использовать один camouflage target/fingerprint для всей сети.
 - Реализовать независимый TCP/HTTPS-compatible carrier; UDP/QUIC/MASQUE может
@@ -226,7 +226,7 @@ carrier без ручной переустановки приложения.
 - Определить eventual revocation и максимальный stale-trust window для
   offline partitions; никогда не обещать мгновенный revoke без связи.
 
-Gate: fresh APK, 30/180/365-day trust reconnect, beyond-horizon recovery,
+Gate: fresh APK, все machine-contract long-offline fixtures, beyond-horizon recovery,
 expired-message semantics, retained root chain, selective withholding/fork,
 restart во время refresh и сохранение identity/history/durable outbox.
 

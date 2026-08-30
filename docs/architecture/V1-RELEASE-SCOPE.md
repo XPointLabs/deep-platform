@@ -27,6 +27,26 @@ V1 использует только профиль `OfficialXPoint3` из
 применяются к V1. Они должны быть приведены в соответствие при следующем
 разрешённом documentation sweep.
 
+Стабильные reusable scenario/evidence IDs, package/repository owners, blocking
+status, measurement profiles и machine pass predicates находятся в
+[`release-scope.v1.json`](release-scope.v1.json), проверяемом
+[`release-scope.v1.schema.json`](release-scope.v1.schema.json). JSON является
+machine contract этого документа: Markdown определяет product claim и
+обязательную матрицу, а automation и evidence manifest используют только IDs и
+точные predicates из JSON. Новый test/harness не создаётся только из-за нового
+ID: один owner публикует evidence, `E2E-01` повторно проверяет его на RC matrix.
+Schema проверяет record shape и закрытые profile/boundary references. Перед
+исполнением `E2E-01` дополнительно выполняет обязательные semantic invariants из
+JSON: все scenario/evidence/profile/boundary IDs уникальны, каждая ссылка
+разрешается, catalog в точности покрывает перечисленные Markdown gates/retention
+rows, owner совпадает с `IMPLEMENTATION-PLAN-V1.md`, а неизвестный
+scenario-specific predicate key отклоняет весь catalog. Эти проверки являются
+одним preflight verifier, а не отдельными prose snapshots или CI harness.
+
+Retention limits не копируются в JSON: `retentionNormativeSource` указывает на
+единственную таблицу `RETENTION-AND-RECOVERY-V1.md`; machine cases называют её
+data class и boundary rule, а exact signed deadlines берутся из canonical row.
+
 ## 2. Supported platforms
 
 | Platform | V1 status |
@@ -59,8 +79,9 @@ compile.
   recovery phrase; его current DCB1 publication может временно быть недоступна,
   но ID не истекает и не меняется при смене transport;
 - добавление произвольного contact через DID1 text/QR или one-time DIA1 QR/file;
-- асинхронный первый message при offline recipient в пределах 400-day
-  prepublished XPS1/DPK2 inventory и signed admission/quota; exhaustion или
+- асинхронный первый message при offline recipient в пределах canonical
+  prepublished resolver/pre-key horizon из `RETENTION-AND-RECOVERY-V1.md` и
+  signed admission/quota; exhaustion или
   beyond-horizon состояние показывается явно и не включает crypto fallback;
 - text, emoji, reply, reaction, edit и delete-for-everyone event;
 - delivered/read receipts с возможностью отключить read receipts;
@@ -121,13 +142,15 @@ batch, а не последовательными сетевыми запрос�
 
 - encrypted opaque push hint без sender/conversation/message metadata;
 - messenger корректно работает без FCM/WNS через resume/polling;
-- default XPoint message retention — 30 дней; disappearing-message policy MAY
-  выбирать меньший срок и показывает effective value пользователю;
-- default unsent local outbox retention — 30 дней, configurable downward by
-  user; expiry показывается явно;
-- trust/control-plane history поддерживает безопасное возвращение устройства
-  после 365 дней offline;
-- возвращение после 365 дней сохраняет account, contacts и локальную историю,
+- XPoint message/disappearing retention следует только canonical mailbox row из
+  `RETENTION-AND-RECOVERY-V1.md` и показывает effective value пользователю;
+- outbox retry payload/key и metadata-only audit tombstone имеют разные
+  deadlines из [`RETENTION-AND-RECOVERY-V1.md`](RETENTION-AND-RECOVERY-V1.md):
+  retryUntil следует canonical outbox-payload row и может быть уменьшен
+  application/user policy, а tombstone не продлевает хранение payload/key;
+- trust/control-plane history поддерживает безопасное long-offline возвращение
+  по exact fixtures machine contract;
+- long-offline возвращение сохраняет account, contacts и локальную историю,
   но не обещает получение server messages старше effective retention;
 - за пределами trust horizon выполняется authenticated re-enrollment без
   потери account identity; новое device session state создаётся заново.
@@ -190,7 +213,9 @@ signed placement. Требования:
 - `masque-h3-v1` для preferred call media и обязательный
   `masked-tcp-capsule-v1` при блокировке UDP;
 - embedded seeds — cache, а не полный bridge pool;
-- минимум три bridge-acquisition channels из deployment profile;
+- три обязательных bridge-acquisition channels: `in-app-oblivious`,
+  `multi-origin-https` и `user-import`; embedded signed cache является
+  дополнительным bootstrap hint, а не заменой channel;
 - direct public MAU2/file/signaling fallback отсутствует;
 - attachments используют masked carrier;
 - call signaling использует message plane; call relay имеет rotating catalog.
@@ -204,11 +229,22 @@ onion-routed:
 
 ## 7. Measurable release gates
 
-Все latency/throughput gates выполняются минимум на двух Android phones и
-Windows x64/arm64, на production-bound signed commit matrix. Измерения имеют
-sanitized raw artifacts, network profile, timestamp и percentile calculation.
+Каждый gate ниже ссылается на stable `scenarioId`/`evidenceId` из machine
+contract. Там же закреплены один producer owner, `E2E-01` release verifier,
+обязательные platforms, blocking status и pass predicate. WP/milestone может
+запустить тот же scenario раньше, но WP9 повторяет тот же ID на одной
+production-bound signed commit matrix и не создаёт второй harness.
+
+Latency/throughput gates используют named measurement profile из machine
+contract. Profile фиксирует targets, independent runs, warmups, sample count,
+monotonic clock, nearest-rank percentile, network shaping, failure-as-infinity
+и запрет post-hoc outlier removal. Sanitized raw samples, harness failures,
+network profile, timestamps и calculation report входят в exact evidence ID.
 
 ### 7.1 Functional matrix
+
+Blocking scenario: `REL-FUNCTIONAL-MATRIX-V1` / evidence
+`EVD-FUNCTIONAL-MATRIX-V1`, owner `E2E-01` (`deep-tests-e2e`).
 
 Обязательные пары:
 
@@ -229,17 +265,24 @@ sanitized raw artifacts, network profile, timestamp и percentile calculation.
 - 7/14/30-day retention boundaries with controlled clock;
 - app cold restart at every durable state.
 
-Groups проходят 3- и 100-member automated load с максимум пятью devices/member,
+Groups проходят 3- и 100-member automated load с максимум пятью devices/member
+по blocking `REL-GROUP-100-V1`, owner `GROUP-CLIENT-01`,
 а physical gate — минимум Android A + Android B + Windows. Проверяются
 concurrent admin proposals, single-owner sequencing, fork rejection,
 stale-successor recovery, remove/revoke, offline member catch-up, duplicate и
-cold restart. Отдельный 200-member non-blocking benchmark фиксирует baseline
-для будущего MLS profile, но не расширяет V1 support.
+cold restart. Отдельный `REL-GROUP-200-BASELINE-V1`, owner
+`GROUP-CLIENT-01`, является non-blocking benchmark для будущего MLS profile и
+не расширяет V1 support.
 
 ### 7.2 Correctness semantics
 
-- 100% accepted semantic events materialize exactly once locally under injected
-  duplicate/reorder and allowed cross-adapter replay;
+Blocking scenario `REL-OUTBOX-FAULTS-V1`, owner `MSG-01`, хранит version
+генератора, полный seed set и SQLite/in-memory traces; `E2E-01` проверяет
+machine result на RC.
+
+- все accepted semantic events в зафиксированном deterministic corpus
+  materialize exactly once locally under injected duplicate/reorder and allowed
+  cross-adapter replay;
 - changed authenticated bytes под тем же semantic ID дают fork error;
 - сеть описывается как at-least-once, не exactly-once;
 - после `OutcomeUnknown` новый plaintext/message ID не создаётся;
@@ -248,29 +291,36 @@ cold restart. Отдельный 200-member non-blocking benchmark фиксир�
 
 ### 7.3 Performance
 
-Тестовая сеть задаёт 50 ms RTT client→entry, 25 ms между nodes, 1% random packet
-loss и 20 Mbps down/5 Mbps up. После warm bootstrap:
+Blocking performance IDs and their sole numeric predicates are:
 
-| Метрика | Gate |
-| --- | --- |
-| 1:1 text sender action → recipient materialization | p50 ≤ 1.5 s; p95 ≤ 3 s; p99 ≤ 8 s |
-| Cold app start → usable inbox, сеть доступна | p95 ≤ 5 s |
-| Fresh bridge/bootstrap → первый successful poll | p95 ≤ 12 s |
-| 100-member/500-device group: first remote materialization | p95 ≤ 5 s |
-| 100-member/500-device group: complete accepted fanout | p95 ≤ 30 s at 5 Mbps, ≤8.5 MiB wire; одна durable logical batch |
-| 10 MiB attachment over masked carrier | ≥ 60% throughput прямого CA-valid HTTPS baseline |
-| Voice call ring | p95 ≤ 5 s |
-| Voice/video call connected | p95 ≤ 10 s |
-| Relay media RTT in same configured region | p95 ≤ 300 ms |
-| Sustained audio loss after WebRTC recovery | < 5% over 10-minute call |
+| Scenario ID | Metric family | Measurement profile |
+| --- | --- | --- |
+| `PERF-TEXT-WARM-V1` | warm 1:1 materialization | `LATENCY-LAB-V1` |
+| `PERF-START-COLD-V1` | cold app to usable inbox | `LATENCY-LAB-V1` |
+| `PERF-BOOTSTRAP-FRESH-V1` | fresh signed bootstrap to poll | `LATENCY-LAB-V1` |
+| `REL-GROUP-100-V1` | first remote and complete 500-device fanout | `GROUP-LAB-V1` |
+| `PERF-ATTACHMENT-10M-V1` | masked/direct HTTPS goodput ratio | `ATTACHMENT-LAB-V1` |
+| `PERF-CALL-SETUP-V1` | ring and connected media | `MEDIA-LAB-V1` |
+| `PERF-CALL-MEDIA-V1` | relay RTT, recovery loss and UDP-blocked TCP recovery | `MEDIA-LAB-V1` |
+| `PERF-ANDROID-IDLE-V1` | absolute 15-minute screen-off idle budgets | `ANDROID-IDLE-V1` |
 
-На supported Android device 15 минут idle background работы не должны создавать
-busy loop; polling/backoff и battery benchmark фиксируются относительно
-предыдущего release candidate. Регрессия >10% требует release decision.
+`PERF-ANDROID-IDLE-V1` is the first-RC baseline: every run must satisfy the
+absolute CPU, wakelock, wakeup, network-byte and battery budgets in the machine
+contract. A moving “previous RC” baseline cannot pass or relax this gate.
 
 ### 7.4 Censorship scenarios
 
-Отдельный external-network harness выполняет:
+Owner `BRIDGE-01` produces, and `E2E-01` verifies, these reusable blocking
+evidence groups:
+
+- `CENS-ACQ-OHTTP-V1`, `CENS-ACQ-MULTI-ORIGIN-V1` и
+  `CENS-ACQ-USER-IMPORT-V1` доказывают обязательные `in-app-oblivious`,
+  `multi-origin-https` и `user-import` channels отдельно;
+- `CENS-ACQ-NMINUS1-V1` отключает по очереди каждый channel и доказывает, что
+  оставшиеся paths не схлопываются в один обязательный origin/credential;
+- `CENS-BLOCK-MATRIX-V1` выполняет external-network blocking matrix ниже.
+
+External-network blocking cases:
 
 1. direct MAU2/file/Registry signaling endpoints blocked;
 2. public DNS poisoned/blocked;
@@ -282,9 +332,10 @@ busy loop; polling/backoff и battery benchmark фиксируются отно�
 8. bridge descriptor rotated/revoked во время queued outbox;
 9. APK распакован, все найденные адреса считаются известными censor.
 
-Gate: fresh install может создать account offline; после предоставления любого
-из двух независимо получаемых valid signed bootstrap paths contact/message/file
-работают без direct fallback. При блокировке Reality автоматически выбирается
+Gate: fresh install может создать account offline; каждый из трёх channels
+принимает valid signed bootstrap и отклоняет tamper/wrong-network/rollback.
+Каждый N-1 case оставляет минимум один разрешённый path для contact/message/file
+без direct fallback. При блокировке Reality автоматически выбирается
 разрешённый независимый masked TCP/443 carrier. При UDP block call использует
 TCP/TLS relay; смена path видна в evidence и не раскрывает peer IP в relay-only
 mode.
@@ -294,9 +345,12 @@ claim перечисляет только пройденные сценарии 
 
 ### 7.5 Offline, rotation and recovery
 
+Blocking scenario `OFFLINE-RECOVERY-MATRIX-V1`, owner `CONTACT-CLIENT-01`,
+агрегирует class-specific retention evidence IDs из canonical retention table.
+
 - fresh APK с embedded floor `N` проверяет и принимает signed `N+K` без
   rollback/fork/wrong-network;
-- 30/180/365-day simulated offline reconnect сохраняет account, contacts,
+- machine-contract long-offline fixtures сохраняют account, contacts,
   local history и non-expired outbox;
 - phrase-only restore воспроизводит byte-identical DID1 и после новой
   DAB1/DCB1 publication тот же адрес снова разрешается;
@@ -310,7 +364,8 @@ claim перечисляет только пройденные сценарии 
 
 ### 7.6 Calls
 
-Physical evidence для Android↔Windows и Android↔Android:
+`CALL-PHYSICAL-MATRIX-V1`, owner `CALL-MEDIA-01`, даёт physical evidence для
+Android↔Windows и Android↔Android:
 
 - ringing/accept/reject/missed-call stale suppression;
 - двусторонние audio/video, mute/camera toggle/hangup;
@@ -318,9 +373,18 @@ Physical evidence для Android↔Windows и Android↔Android:
 - relay-only не публикует peer host candidates другой стороне;
 - forced TURN, UDP block → TCP/TLS relay, relay rotation and reconnect;
 - signaling duplicate/replay/stale events не поднимают повторный звонок;
-- TURN/relay не расшифровывает DTLS-SRTP media.
+- TURN/relay не получает peer DTLS private keys или exported SRTP keys.
+
+Отдельный blocking `CALL-RELAY-DECRYPT-NEGATIVE-V1`, owner `CALL-RELAY-01`,
+инвентаризирует все доступные relay process/key inputs, выполняет adversarial
+decrypt attempt, связывает peer DTLS fingerprints с authenticated signaling и
+подтверждает отсутствие authenticated media plaintext в relay logs/artifacts.
+Один packet capture или selected ICE pair не удовлетворяет этот scenario.
 
 ### 7.7 Privacy and operational evidence
+
+Blocking scenario `PRIVACY-OPERATIONS-EVIDENCE-V1`, owner `E2E-01`, объединяет
+следующие artifacts; release consumer — reviewed `deep-devops` gate.
 
 - packet capture подтверждает отсутствие direct MAU2/file/signaling bypass;
 - logs/evidence не содержат plaintext, Deep IDs, contact/route bindings,
