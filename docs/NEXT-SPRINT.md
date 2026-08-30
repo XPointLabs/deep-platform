@@ -218,11 +218,9 @@ carrier без ручной переустановки приложения.
   rollback/equivocation/wrong-network fail closed. За пределами retained
   operational history выполняется recovery-authorized re-enrollment без смены
   AccountId и без доверия к неподписанному latest state.
-- Реализовать единственную нормативную таблицу
-  `architecture/RETENTION-AND-RECOVERY-V1.md`: control/contact/group/network
-  history 400 дней и минимум 2,048 поколений (что больше), text ciphertext 30
-  дней, attachment 7 дней после materialization/30 без delivery, indefinite
-  root lineage и точные local/phrase/backup recovery guarantees.
+- Реализовать без локальных переопределений все class-specific limits,
+  compaction rules и recovery guarantees из единственной нормативной таблицы
+  [`RETENTION-AND-RECOVERY-V1.md`](architecture/RETENTION-AND-RECOVERY-V1.md).
 - Proactive refresh выполняется на foreground/resume и перед operation с
   expiry margin, jitter/backoff, lifecycle cancellation и durable outbox.
 - Определить eventual revocation и максимальный stale-trust window для
