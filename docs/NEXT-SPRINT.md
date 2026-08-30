@@ -87,6 +87,11 @@ production dependency/runtime scan.
 
 ## WP2 — asynchronous 1:1 E2EE и multi-device
 
+Gate каждого WP создаёт переиспользуемый black-box evidence set для своего
+контракта. WP9 повторно запускает эти же scenario/evidence IDs на одной RC
+commit matrix и проверяет композицию; отдельные копии harness/tests для WP9 не
+создаются.
+
 - Реализовать exact hybrid asynchronous AKE, signed prekey bundles, atomic
   one-time-key claim и transcript binding по crypto spec.
 - Реализовать reviewed ratchet со skipped-key bounds, out-of-order delivery,
@@ -215,7 +220,7 @@ carrier без ручной переустановки приложения.
   AccountId и без доверия к неподписанному latest state.
 - Реализовать единственную нормативную таблицу
   `architecture/RETENTION-AND-RECOVERY-V1.md`: control/contact/group/network
-  history 400 дней и минимум 1,024 поколения (что больше), text ciphertext 30
+  history 400 дней и минимум 2,048 поколений (что больше), text ciphertext 30
   дней, attachment 7 дней после materialization/30 без delivery, indefinite
   root lineage и точные local/phrase/backup recovery guarantees.
 - Proactive refresh выполняется на foreground/resume и перед operation с
@@ -260,10 +265,9 @@ restricted-network relay, relay rotation и no silent downgrade.
   account, restore/new device, contacts, 1:1, small groups, files/images/voice,
   push/no-push, calls, carrier blocking/rotation, restart и offline recovery.
 - Исправить оставшийся PowerShell smoke failure; заменить/изолировать HonKit
-  dependency с high-severity advisory. Для V1 оставить один path-filtered
-  lightweight docs job (UTF-8, links/navigation, render, secret/path scan,
-  registry/schema), без prose snapshot/regex; RC-6 phrase contracts не включать
-  в default V1 CI. Устранить SQLite pool race и сузить UAT secret mounts.
+  dependency с high-severity advisory и реализовать единственную
+  [documentation CI policy](architecture/README.md#documentation-ci-policy).
+  Устранить SQLite pool race и сузить UAT secret mounts.
 - Выпустить reproducible APK/MSIX, dependency lock, SBOM, signatures,
   sanitized evidence, backup/restore и rollback rehearsal.
 - После завершения провести независимые lead-developer, protocol/crypto,

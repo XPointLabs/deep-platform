@@ -45,7 +45,8 @@ crypto или security semantics.
 | call signaling/allocation/media state | `CALL-SESSION-V1.md` |
 | deployment guarantees | `DEPLOYMENT-PROFILES.md` |
 | release features/SLO/evidence | `V1-RELEASE-SCOPE.md` |
-| незавершённая реализация и dependency DAG | `NEXT-SPRINT.md` / `IMPLEMENTATION-PLAN-V1.md` |
+| незавершённый milestone/release scope | `NEXT-SPRINT.md` |
+| agent-sized dependency DAG и ownership | `IMPLEMENTATION-PLAN-V1.md` |
 
 Нижестоящие документы MUST ссылаться на владельца и могут описывать только:
 
