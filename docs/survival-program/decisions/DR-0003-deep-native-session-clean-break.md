@@ -6,6 +6,8 @@ Decision owner: **Mr. X**
 
 Recorded: 2026-08-11
 
+Reaffirmed and activated for the first public release: **2026-08-30**
+
 Applies to program: `deep-survival` release `2.0.0` as a strategic successor
 decision. Implementation requires a new SemVer program release and revision;
 this record does not mutate the immutable `2.0.0` manifest.
@@ -14,6 +16,33 @@ this record does not mutate the immutable `2.0.0` manifest.
 
 Deep will stop treating Session wire/runtime compatibility as a product
 requirement and will move to one Deep-native protocol and runtime.
+
+There are no production users and no compatibility obligation. The first
+public release therefore uses the clean-break generation directly. Current
+13-word Session-derived identity, DPE1/DMC1 messaging, Session identifiers and
+current group-state bytes are disposable implementation evidence, not a
+migration source or production contract.
+
+The accepted release direction is:
+
+- `DeepRecoveryV1` with exactly 24 words and role-separated recovery/account
+  authority;
+- independently generated per-device signing, agreement, prekey and local
+  storage keys;
+- an asynchronous reviewed hybrid AKE and ratchet providing forward secrecy
+  and post-compromise recovery;
+- a permanent transport-neutral recovery-derived Deep ID, separately expiring
+  one-time invites and an encrypted contact-rendezvous protocol that does not
+  require an existing contact channel;
+- owner-sequenced small-group state with pairwise ratcheted fanout for v1;
+  MLS remains the intended scalable group successor, not an implicit v1
+  dependency;
+- one new database/account/wire generation and deterministic rejection of all
+  old state.
+
+The implementation may reuse reviewed upstream libraries after license,
+provenance, platform and API audits. It must not copy upstream wire identity,
+server trust or product claims merely because a library is reused.
 
 The target state is a complete pre-production clean break:
 
@@ -68,8 +97,10 @@ claim Session's properties.
   metadata-minimization principles;
 - replay, fork, idempotency, durable CAS, atomic inbox/outbox and protected
   state semantics;
-- P04 membership, authenticated mailbox V2/MAU2, PMA/PMR/PMT/PMS/PSS,
-  Profile Carrier, managed ingress and route-continuity/history D/D2/E/F;
+- P04 membership and authenticated mailbox V2/MAU2 semantics, deterministic
+  blinded placement, Profile Carrier, managed ingress and reviewed continuity/
+  replay/CAS properties; DR-0004 replaces all pre-cutover PMA/PMT/PMS/PRA/PSS/
+  route-authority bytes with the XNV-bound generation;
 - Registry production-mailbox state and XNode native peer-mailbox paths;
 - useful privacy-routing concepts such as independent hop keys, layered
   encryption, endpoint hiding and path diversity, subject to a new Deep-native
@@ -85,7 +116,9 @@ claim Session's properties.
 - P03A/DPE compatibility bridges after the successor envelope is ready;
 - Session compatibility services, fixtures, parity gates and release evidence;
 - legacy storage first; file/avatar and push only after their Deep-native
-  replacements are accepted; calls consolidate on the Registry-owned path.
+  replacements are accepted; call signaling becomes a typed ratcheted E2EE
+  message, while Registry may distribute signed relay policy but is not a
+  steady-state signaling inbox.
 
 ### Redesign rather than delete blindly
 

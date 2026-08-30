@@ -55,8 +55,13 @@ compile.
 
 ### 3.2 Contacts and 1:1 messaging
 
-- добавление произвольного contact через `DeepContactBundleV1` text/QR/file;
-- асинхронный первый message, даже если recipient offline;
+- бессрочный transport-neutral `DID1` (UI: Deep ID), восстанавливаемый из
+  recovery phrase; его current DCB1 publication может временно быть недоступна,
+  но ID не истекает и не меняется при смене transport;
+- добавление произвольного contact через DID1 text/QR или one-time DIA1 QR/file;
+- асинхронный первый message при offline recipient в пределах 400-day
+  prepublished XPS1/DPK2 inventory и signed admission/quota; exhaustion или
+  beyond-horizon состояние показывается явно и не включает crypto fallback;
 - text, emoji, reply, reaction, edit и delete-for-everyone event;
 - delivered/read receipts с возможностью отключить read receipts;
 - durable retry после restart/crash;
@@ -67,7 +72,7 @@ compile.
 
 ### 3.3 Groups
 
-- closed E2EE groups до **20 members** и до 5 devices/member;
+- closed E2EE groups до **100 members** и до 5 devices/member;
 - create, invite, accept, leave, remove, promote/demote;
 - text/reply/reaction/edit/delete и attachment manifests;
 - owner-sequenced monotonic epoch и exact predecessor commit hash;
@@ -79,12 +84,11 @@ compile.
 - group calls, public communities/channels и anonymous open groups не входят в
   V1.
 
-Лимит 20 — сознательный first-release компромисс. Он делает bounded fan-out до
-100 target devices проверяемым на телефонах и не закрепляет старый
-compile-time лимит 2048 как обещание продукта. Паритет с обычными private
-Session groups (100 members) — обязательная post-V1 цель: он достигается после
-перехода на MLS-compatible scalable group engine и отдельного load/privacy
-gate, не увеличением pairwise fan-out лимита.
+Лимит 100 обеспечивает функциональный паритет с обычными private Session
+groups и не закрепляет старый compile-time лимит 2048 как обещание продукта.
+До 500 target-device envelopes отправляются одной bounded durable logical
+batch, а не последовательными сетевыми запросами. MLS-compatible engine
+остаётся будущей оптимизацией и путём масштабирования сверх 100 участников.
 
 ### 3.4 Attachments and media messages
 
@@ -102,11 +106,12 @@ gate, не увеличением pairwise fan-out лимита.
 - one-to-one voice и video WebRTC calls;
 - offer/answer/ICE/end/reconnect signals идут как E2EE application events через
   XPoint message plane;
-- `RelayPrivacy` — единственный official V1 privacy profile: relay-only без
+- `RelayOnly` — единственный official V1 `CallPrivacyProfile`: relay-only без
   peer candidates;
-- `DirectFast`/direct ICE зарезервирован для будущей отдельной opt-in policy с
+- `DirectPeer`/direct ICE зарезервирован для будущей отдельной opt-in policy с
   предупреждением о раскрытии peer IP и не входит в V1;
-- `RestrictedNetwork` сохраняет relay privacy через masked TCP, когда UDP
+- `NetworkCondition=Restricted` сохраняет relay privacy через
+  `MediaCarrier=MaskedTcpCapsule`, когда UDP
   заблокирован;
 - DTLS-SRTP media, short-lived TURN credentials;
 - signed rotating relay catalog с UDP/443 и TCP/TLS 443 paths;
@@ -116,8 +121,8 @@ gate, не увеличением pairwise fan-out лимита.
 
 - encrypted opaque push hint без sender/conversation/message metadata;
 - messenger корректно работает без FCM/WNS через resume/polling;
-- default XPoint message retention — 14 дней; signed operator policy MAY
-  выбирать 7–30 дней и показывает effective value пользователю;
+- default XPoint message retention — 30 дней; disappearing-message policy MAY
+  выбирать меньший срок и показывает effective value пользователю;
 - default unsent local outbox retention — 30 дней, configurable downward by
   user; expiry показывается явно;
 - trust/control-plane history поддерживает безопасное возвращение устройства
@@ -181,9 +186,9 @@ signed placement. Требования:
 - staking/admission и roster publication находятся вне hot message path;
 - один canonical roster epoch доступен минимум через три mirrors/carriers и
   проверяется относительно protected LKG;
-- `reality-xhttp-v1` плюс независимо реализованный `webtunnel-h2-v1`;
+- `reality-xhttp-v1` плюс независимо реализованный `https-stream-v1`;
 - `masque-h3-v1` для preferred call media и обязательный
-  `capsule-over-masked-tcp-v1` при блокировке UDP;
+  `masked-tcp-capsule-v1` при блокировке UDP;
 - embedded seeds — cache, а не полный bridge pool;
 - минимум три bridge-acquisition channels из deployment profile;
 - direct public MAU2/file/signaling fallback отсутствует;
@@ -224,11 +229,11 @@ sanitized raw artifacts, network profile, timestamp и percentile calculation.
 - 7/14/30-day retention boundaries with controlled clock;
 - app cold restart at every durable state.
 
-Groups проходят 3- и 20-member automated load с максимум пятью devices/member,
+Groups проходят 3- и 100-member automated load с максимум пятью devices/member,
 а physical gate — минимум Android A + Android B + Windows. Проверяются
 concurrent admin proposals, single-owner sequencing, fork rejection,
 stale-successor recovery, remove/revoke, offline member catch-up, duplicate и
-cold restart. Отдельный non-blocking 100-member benchmark фиксирует baseline
+cold restart. Отдельный 200-member non-blocking benchmark фиксирует baseline
 для будущего MLS profile, но не расширяет V1 support.
 
 ### 7.2 Correctness semantics
@@ -251,7 +256,8 @@ loss и 20 Mbps down/5 Mbps up. После warm bootstrap:
 | 1:1 text sender action → recipient materialization | p50 ≤ 1.5 s; p95 ≤ 3 s; p99 ≤ 8 s |
 | Cold app start → usable inbox, сеть доступна | p95 ≤ 5 s |
 | Fresh bridge/bootstrap → первый successful poll | p95 ≤ 12 s |
-| 20-member/100-device group logical message | p95 ≤ 8 s; одна durable logical batch |
+| 100-member/500-device group: first remote materialization | p95 ≤ 5 s |
+| 100-member/500-device group: complete accepted fanout | p95 ≤ 30 s at 5 Mbps, ≤8.5 MiB wire; одна durable logical batch |
 | 10 MiB attachment over masked carrier | ≥ 60% throughput прямого CA-valid HTTPS baseline |
 | Voice call ring | p95 ≤ 5 s |
 | Voice/video call connected | p95 ≤ 10 s |
@@ -292,6 +298,8 @@ claim перечисляет только пройденные сценарии 
   rollback/fork/wrong-network;
 - 30/180/365-day simulated offline reconnect сохраняет account, contacts,
   local history и non-expired outbox;
+- phrase-only restore воспроизводит byte-identical DID1 и после новой
+  DAB1/DCB1 publication тот же адрес снова разрешается;
 - predecessor/history запрос криптографически связан с protected LKG;
 - route/carrier/device revocation fail closed;
 - beyond-horizon re-enrollment создаёт новое device и не сбрасывает account;
@@ -353,7 +361,7 @@ Physical evidence для Android↔Windows и Android↔Android:
 
 Порядок минимизирует повторную работу и позволяет агентам работать параллельно:
 
-1. freeze canonical IDs/events/contact bundle and hostile vectors;
+1. freeze canonical DID1/DAB1, IDs/events/contact bundle and hostile vectors;
 2. выбрать/pin 1:1 crypto provider после license/platform spike;
 3. реализовать account/device/prekey/revocation stores;
 4. реализовать ratchet + `DeepSmallGroupV1` и crypto interoperability harness;
@@ -365,7 +373,7 @@ Physical evidence для Android↔Windows и Android↔Android:
 10. добавить media relay catalog и push hints;
 11. выполнить Docker, fault, censorship и physical matrices;
 12. независимые lead/security reviews, fix freeze, final rerun;
-13. после V1 — OpenMLS/native ABI spike и 100-member scalable group profile.
+13. после V1 — OpenMLS/native ABI spike и scalable group profile свыше 100 участников.
 
 P2P/on-prem adapters начинаются только после V1 production release, но
 compile-time architecture tests из transport-neutral specification входят в V1
@@ -384,5 +392,5 @@ compile-time architecture tests из transport-neutral specification входя�
   offline;
 - native crypto provider увеличивает supply-chain и memory-safety integration
   risk, поэтому pinned build, fuzzing и independent audit обязательны;
-- V1 small groups ограничены 20 members; 100-member Session parity отложен до
-  scalable MLS successor.
+- V1 group fanout ограничен 100 members/500 active devices и требует больше
+  sender CPU/network metadata, чем будущий scalable MLS successor.

@@ -2,11 +2,14 @@
 
 Версия: `3.0.0`
 
-Статус: **approved for local execution**
+Статус: **утверждённая целевая архитектура первого публичного релиза**
 
 Владелец решения: **Mr. X**
 
 Дата: 2026-08-11
+
+Повторно подтверждено: 2026-08-30. Пользователей production нет; clean break
+выполняется непосредственно, без миграции и временного выпуска DPE1.
 
 ## 1. Цель
 
@@ -53,12 +56,18 @@ Deep Native Core v1
 Deep Transport
 ├── Managed HTTP/XPoint
 ├── reviewed privacy routing
-├── Nearby/BLE
-└── LoRa
+├── Direct P2P mesh (future provider)
+├── User-managed/on-prem MAU2 (future provider)
+└── additional reviewed carriers
 
 Legacy.Session
 └── temporary offline reference vectors only
 ```
+
+Transport не определяет account/message/group wire. Один и тот же логический
+E2EE envelope может доставляться через XPoint, будущий P2P mesh или on-prem,
+сохраняя общий operation ID, deduplication и durable outbox. Capability
+negotiation не может ослабить crypto suite или privacy policy.
 
 Новый wire использует собственные magic, version и signing domains. Старый
 magic или state всегда fail closed; negotiation downgrade отсутствует.
@@ -203,7 +212,9 @@ References: NIST FIPS 203/204 и Signal PQXDH/Double Ratchet:
 - replace Session peer origin/RPC/storage contracts atomically across XNode,
   Registry, clients and DevOps;
 - land native file/push contracts before deleting their compatibility services;
-- consolidate call signaling on the Registry-owned path.
+- replace the current Registry call inbox with typed ratcheted E2EE call
+  signaling over the selected message transport; Registry may distribute
+  signed relay policy but does not own conversation semantics.
 
 ### Wave 4 — destructive cutover and deletion
 

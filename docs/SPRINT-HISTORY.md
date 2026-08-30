@@ -1,5 +1,43 @@
 # История спринтов
 
+## 2026-08-30 — итоговая clean-break/XPoint specification
+
+Статус: завершена документация целевой архитектуры; runtime, physical evidence
+и production deployment не выполнялись.
+
+- Подтверждён destructive clean break: 24-word `DeepRecoveryV1`, DNP1
+  account/device roles, device-scoped hybrid AKE/Triple Ratchet и отсутствие
+  legacy migration/fallback.
+- Специфицирован permanent transport-neutral DID1/DAB1, initial contact через XIR1, oblivious account transparency,
+  atomic fresh pre-key claim и offline route delegation без циклического PRA lookup, multi-device,
+  owner-sequenced groups до 100 участников/500 active devices и будущий MLS
+  profile.
+- Специфицирован transport-neutral application/outbox contract для XPoint,
+  будущих P2P mesh и on-prem profiles.
+- XPoint разделён на threshold-signed public roster, clean-break PMA2/PMT2/PMS2
+  mailbox projection, three-hop routes, access bridges и pluggable carriers.
+- Для initial three-node profile снято утверждение о disjoint fallback; оно
+  возможно только при 6+ узлах и проверенном failure-domain diversity.
+- Reality принят как первый carrier вместе с независимым HTTPS-like carrier,
+  rotating bridge distribution и masked call-relay paths.
+- Calls включены в v1: signaling идёт через E2EE message plane, media использует
+  relay-only WebRTC; direct ICE и отдельный Registry signaling inbox исключены
+  из release target.
+- Разделены safe reconnect и message retention: trust возвращается после
+  длительного offline, обычные server messages хранятся 30 дней; phrase-only
+  recovery не обещает contacts/history без backup/device transfer.
+- Добавлены единый protocol registry/collision policy и DAG из agent-sized
+  implementation packages; старые AGENTS/runbooks помечены как pre-cutover.
+- Техническая документация централизована в `docs/architecture`: для каждого
+  предмета назначен один normative owner, повторные call/SLO/recovery/task
+  definitions заменены ссылками; public `xpoint-docs` оставлен user/operator слоем.
+- Добавлены threat model, Session parity baseline, performance/censorship gates,
+  deployment profile matrix и детальные implementation work packages.
+
+Все незавершённые реализации и проверки перенесены в
+[`NEXT-SPRINT.md`](NEXT-SPRINT.md); выполненные старые DPE1/contact/group paths
+сохраняются ниже только как историческое evidence и не являются release target.
+
 ## 2026-08-30 — аудит release transport целей
 
 Статус: завершён документарный и code-path аудит без production deployment и без новых physical claims.

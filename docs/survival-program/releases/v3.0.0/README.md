@@ -16,6 +16,6 @@ The machine registries and frozen specifications remain authoritative for bytes,
 
 ## Active work
 
-The only sprint backlog is [`docs/NEXT-SPRINT.md`](../../../../NEXT-SPRINT.md). Do not recreate per-phase prompt packs. New work must be a bounded issue against the sprint item and the owning repository.
+The only sprint backlog is [`docs/NEXT-SPRINT.md`](../../../NEXT-SPRINT.md). Do not recreate per-phase prompt packs. New work must be a bounded issue against the sprint item and the owning repository.
 
 Local commits and UAT are allowed. Push, publication and production deployment require a separate Go/No-Go decision.

@@ -2,15 +2,22 @@
 
 Date: 2026-08-11
 
-Status: **NO-GO for production provider selection; GO for dark-path vectors
-and benchmarks**
+Status: **preferred implementation strategy selected; production activation
+remains gated by pinned-build, benchmark and independent review evidence**
 
 ## Outcome
 
-Deep should specify and prototype hybrid post-quantum messaging now, but should
-not activate it in the product runtime yet. The blocking issue is not ML-KEM or
-ML-DSA standardization; it is a maintained, reviewed provider with consistent
-Windows, Linux/server, Android and Apple behavior.
+Deep V1 targets a narrow Rust static-library ABI around the dual MIT/Apache-2.0
+RustCrypto `ml-kem` implementation for ML-KEM-768 on Android arm64 and Windows
+x64/arm64. Existing libsodium remains the provider for X25519, Ed25519 and
+XChaCha20-Poly1305. `libcrux-ml-kem`, .NET/OpenSSL/CNG where supported and NIST
+KATs are independent oracles, not production fallbacks. No Apple provider is
+required by the first Android/Windows release scope.
+
+This is an implementation direction, not activation evidence. CRYPTO-01 must
+still pin exact commits, freeze the C ABI, produce reproducible binaries, pass
+physical benchmarks/malformed-input/zeroization checks and obtain independent
+review before suite `0x0201` becomes releasable.
 
 The 24-word DeepRecoveryV1 work is independent of that provider and may proceed
 first.
@@ -58,19 +65,39 @@ not the production mobile provider by default.
 
 Reference: <https://github.com/open-quantum-safe/liboqs>
 
+### RustCrypto `ml-kem` — preferred production candidate
+
+The pure-Rust/no_std implementation tracks FIPS 203 and is dual MIT/Apache-2.0.
+Deep uses a tiny owned ABI rather than exposing Rust types or serialization.
+The exact revision is selected only by CRYPTO-01 after KAT, fault, side-channel,
+mobile resource and reproducible-build gates.
+
+Reference: <https://github.com/RustCrypto/KEMs/tree/master/ml-kem>
+
+### libcrux — independent high-assurance oracle
+
+libcrux provides verified ML-KEM implementations and permissive licensing, but
+its project currently describes the crates as pre-release and explicitly does
+not claim compiled executables are side-channel resistant. It is therefore a
+valuable cross-check and future candidate, not the default production library
+without maintainer/audit evidence.
+
+Reference: <https://github.com/celabshq/libcrux>
+
 ## Required provider gate
 
 A production provider is selected only after all of the following are true:
 
 1. Exact FIPS 203/204 revision and current errata are pinned.
 2. ML-KEM-768 and ML-DSA-65 KATs pass at process start or installation audit.
-3. Windows, Linux/server, Android and Apple implementations agree on the Deep
-   vectors and malformed inputs.
+3. Windows x64/arm64 and Android arm64 production builds agree with NIST,
+   libcrux and platform-oracle vectors and malformed inputs. Apple is a later
+   scope generation and cannot inherit this evidence.
 4. Key generation/import/export and deterministic seed behavior required by
    DeepRecoveryV1 are explicit and version-stable.
 5. Constant-time, zeroization, RNG, fault handling and native ABI behavior are
    reviewed.
-6. Android/iOS package size, startup, memory, CPU, thermal and battery budgets
+6. Android/Windows package size, startup, memory, CPU, thermal and battery budgets
    pass.
 7. Reproducible source/package provenance, vulnerability response and rollback
    policy are accepted.

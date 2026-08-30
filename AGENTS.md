@@ -11,19 +11,28 @@
 
 1. This file.
 2. The nearest repository `AGENTS.md`.
-3. `docs/NEXT-SPRINT.md` for current unfinished work.
-4. The relevant code, tests, and repo-native architecture/runbook docs.
-5. Frozen protocol inputs under `docs/survival-program/releases/v3.0.0/` only when protocol bytes, crypto, identity, reset, or evidence ownership are in scope.
+3. `docs/architecture/README.md`, `PROTOCOL-REGISTRY-V1.md` and the relevant
+   package in `IMPLEMENTATION-PLAN-V1.md`.
+4. `docs/NEXT-SPRINT.md` for current unfinished work.
+5. The relevant code, tests, and repo-native architecture/runbook docs.
+6. Frozen protocol inputs under `docs/survival-program/releases/v3.0.0/` only when protocol bytes, crypto, identity, reset, or evidence ownership are in scope.
 
 Do not load historical plans. If code, tests, and docs disagree, stop the affected claim, verify the implementation, and update the stale source in the same change.
+The documentation ownership matrix in `docs/architecture/README.md` is
+mandatory: edit the single normative owner and replace downstream duplicated
+requirements with links plus repository-specific consequences. `xpoint-docs`
+contains public user/operator behavior, not a second protocol specification.
 
 ## Repository map
 
 - `deep-protocol`: normative codecs, cryptography boundaries, exact packages and evidence gates.
 - `deep-client-shared`: portable domain, SQLCipher persistence, E2EE/message/attachment/call orchestration and transport interfaces.
 - `deep-client-maui`: MAUI UI, platform adapters, UAT/device automation and release composition.
-- `xnode`: node runtime, path selection, transport supervision, bootstrap and registry heartbeat.
-- `deep-registry-api`: authenticated registry, membership, call signaling/ICE and operational state.
+- `xnode`: Entry/Relay/Mailbox/InviteStore/Blob/CallRelay runtime, epoch keys,
+  forwarding, replication, quotas and heartbeat; never client path selection.
+- `deep-registry-api`: byte-identical signed network/directory/catalog
+  distribution, membership projection and witness coordination; no steady-state
+  contact resolver, call signaling/ICE inbox or call-allocation authority.
 - `deep-push-notification-server`: encrypted provider delivery and push ingress.
 - `deep-devops`: Docker/UAT topology, TLS/PKI, release gates, chaos and operational evidence.
 - `deep-tests-e2e`: black-box cross-service fixtures and tests.

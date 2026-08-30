@@ -73,7 +73,7 @@ UI / conversation commands
 Canonical application events
           |
           v
-1:1 ratchet or MLS group engine  <-- owns E2EE state, epochs, replay window
+1:1 ratchet / selected group engine <-- owns E2EE state, epochs, replay window
           |
           v
 Durable logical outbox/inbox     <-- owns semantic lifecycle and dedup
@@ -154,9 +154,11 @@ recovery и governance records в отдельных domains.
 
 ## 5. Contact bootstrap без циклической зависимости
 
-Deep ID сам по себе идентифицирует account, но не обязан раскрывать постоянный
-mailbox. Для первого контакта используется canonical `DeepContactBundleV1`,
-передаваемый text/QR/file/deep-link через любой канал. Bundle содержит:
+Постоянный transport-neutral `DID1` содержит recovery-derived public address
+key, не имеет срока действия и не раскрывает постоянный mailbox. Каждый
+transport domain-separated выводит из него свой opaque resolver locator.
+Resolver возвращает rotating canonical `DCB1`; отдельный `DIA1` используется
+только для истекающих one-time приглашений. Bundle содержит:
 
 - network/genesis ID и bundle version;
 - `DeepAccountId` и current device-list commitment;
@@ -165,10 +167,10 @@ mailbox. Для первого контакта используется canonic
 - случайный contact-scoped rendezvous descriptor или начальный набор deposit
   descriptors;
 - supported crypto suite floor и application version floor;
-- expiry, one-time invitation nonce и predecessor/rotation commitment;
+- current-publication expiry и predecessor/rotation commitment;
 - account/recovery-authorization signature в отдельном contact-invite domain.
 
-Bundle MUST NOT содержать recovery material, private keys, reusable bearer
+Bundle MUST NOT содержать recovery material, private keys, reusable secret bearer
 credential или полный глобальный topology. Один invite нельзя использовать для
 неограниченного числа неизвестных senders: режимы `single-use`, `bounded-use`
 и `public-address` имеют разные signed policy и rate limits.
@@ -178,6 +180,9 @@ route-update channels. Их единственная роль — достави
 descriptors, prekey/device-list updates и revocation hints. Старый deposit route
 может истечь, не уничтожая контакт. Получатель хранит bounded precommitted
 successors и долгоживущий update rendezvous на заявленный offline horizon.
+Истечение всех current publication objects даёт `TemporarilyUnavailable`, но
+не меняет и не инвалидирует DID1; после recovery-authorized republication тот
+же ID снова разрешается.
 
 Fresh install, возвращающееся устройство и recovered account — три разные
 flows. Recovery не копирует device private key: создаётся новое устройство,
@@ -421,32 +426,14 @@ conversation, message type или plaintext preview. Получив hint, кли
 
 ## 12. Calls
 
-Call state machine и все signaling events проходят через тот же 1:1 E2EE и
-logical outbox. Отдельный public Registry signaling endpoint не является
-обязательной message semantics и в целевой композиции не нужен для official
-calls.
-
-Media policy выбирается независимо:
-
-1. `DirectFast` (`DirectIce`) — минимальная latency, но peers могут узнать IP;
-   только по явной privacy policy и не в official V1.
-2. `RelayPrivacy` (`RelayOnly`) — рекомендуемый privacy default: WebRTC DTLS-SRTP через
-   короткоживущие TURN credentials, recipient не видит client IP.
-3. `RestrictedNetwork` (`MaskedRelay`) — relay endpoint достигается через
-   rotating signed carrier catalog; `masque-h3-v1` является предпочтительным
-   UDP/443 path, `capsule-over-masked-tcp-v1` — обязательным TCP/443 fallback.
-   При блокировке UDP используется masked TCP, а не direct downgrade.
-
-TURN/relay видит IP, время и объём, но не media plaintext. Три-hop onion для RTP
-не применяется из-за latency и bandwidth amplification. Абсолютная
-«невидимость для блокировок» не обещается; release gate доказывает конкретные
-DNS/SNI/IP/UDP blocking scenarios. MASQUE CONNECT-UDP
-([RFC 9298](https://www.rfc-editor.org/rfc/rfc9298.html)) является допустимым
-будущим media carrier, но не единственным из-за блокируемости UDP.
-
-Store-carry-forward mesh поддерживает call signaling, но не заявляет realtime
-media без live end-to-end path. UI показывает `call unavailable on current
-path`, а не скрыто переключает profile.
+Этот документ владеет только seam: signaling идёт как DMC2 через
+`IMessageDeliveryTransport`, а media выбирается отдельно через
+`ICallMediaPathProvider`; transport switch не экспортирует ratchet keys и не
+меняет call identity. Exact state/KDF/privacy profiles принадлежат
+[`CALL-SESSION-V1.md`](CALL-SESSION-V1.md), carrier wire —
+[`CIRCUMVENTION-CARRIERS-V1.md`](CIRCUMVENTION-CARRIERS-V1.md), release SLO —
+[`V1-RELEASE-SCOPE.md`](V1-RELEASE-SCOPE.md). Adapter MUST surface unavailable
+media capability instead of silently selecting another privacy profile.
 
 ## 13. Adapter conformance
 
@@ -471,32 +458,16 @@ Deep-operated DNS/Registry/billing/signer. Эти suites проектируют�
 
 ## 14. Implementation slicing for agents
 
-Работу следует делить по compile-time boundaries:
-
-1. canonical IDs/events + hostile vectors;
-2. device identity/prekey store + 1:1 crypto engine;
-3. `DeepSmallGroupV1` state/hash-chain and bounded fan-out;
-4. logical outbox/inbox v1 store and crash matrix;
-5. adapter contracts + in-memory conformance fixture;
-6. XPoint MAU2 adapter;
-7. carrier catalog/Reality adapter and censorship harness;
-8. contact bootstrap/update rendezvous;
-9. attachment chunk adapter;
-10. signaling over message plane + media providers;
-11. push hint adapter;
-12. physical Android/Windows matrix;
-13. post-V1 OpenMLS/native-ABI spike for the scalable group successor.
-
-Каждый slice имеет один owner repository, canonical vectors до consumers и не
-добавляет временный production fallback. Исходный код Session/SimpleX/Signal
-можно использовать как reference или dependency только после license/SBOM,
-maintenance, platform и security review; copy-paste криптографии запрещён.
+Единственный dependency DAG и agent-sized slicing находится в
+[`IMPLEMENTATION-PLAN-V1.md`](IMPLEMENTATION-PLAN-V1.md). Для этого документа
+нормативны только adapter interfaces и conformance suite выше; parallel
+перечень work packages здесь не поддерживается.
 
 ## 15. Границы гарантий
 
 Эта архитектура защищает content и позволяет скрыть endpoint от отдельных
 relays. Она сама по себе не скрывает timing/volume, proximity в BLE/Wi-Fi,
-recipient IP при DirectIce, факт использования приложения от global observer,
+recipient IP при будущем `DirectPeer`, факт использования приложения от global observer,
 malicious endpoint, compromised device или denial/withholding. Padding,
 jitter, batching, guards и bridge rotation уменьшают отдельные риски, но не
 создают абсолютную анонимность или unblockability.

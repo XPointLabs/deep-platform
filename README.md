@@ -5,6 +5,8 @@ Windows ARM64 superproject for the Deep pre-production release candidate. Child 
 ## Start here
 
 - Agent rules: [`AGENTS.md`](AGENTS.md)
+- Target architecture and normative index:
+  [`docs/architecture/README.md`](docs/architecture/README.md)
 - Only active backlog: [`docs/NEXT-SPRINT.md`](docs/NEXT-SPRINT.md)
 - Frozen protocol/governance inputs: [`docs/survival-program/README.md`](docs/survival-program/README.md)
 - User and administrator documentation: [`xpoint-docs`](xpoint-docs)

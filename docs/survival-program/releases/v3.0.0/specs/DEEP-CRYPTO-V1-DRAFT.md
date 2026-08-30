@@ -1,53 +1,139 @@
-# DeepRecoveryV1 and Deep Hybrid Messaging V1
+# Deep Production Cryptography and Pairwise Messaging V1
 
-Status: **design draft; dark-path work only; not production activation
-authority**
+Status: **normative implementation target; clean-break production profile**
 
 Decision: DR-0003
 
 Work package: DNP1-SPEC-crypto
 
-## 1. Security objective
+This specification replaces the earlier dark-path crypto draft. There are no
+deployed Deep-native users and therefore no legacy account, database, envelope,
+session, key or migration requirement. Implementations MUST NOT read or emit
+Session-derived identities, 13-word phrases, DPE1, DMC1, the retired DPAC/DPDC
+draft records, or any transitional dual format.
 
-This document freezes the first reviewable shape of:
+Production activation still requires the implementation and evidence gates in
+section 18. Normative contact, multi-device and group behavior is defined by
+[`CONTACT-AND-GROUP-PROTOCOL-V1.md`](../../../../architecture/CONTACT-AND-GROUP-PROTOCOL-V1.md).
 
-- a 24-word Deep recovery phrase backed by 256 bits of operating-system CSPRNG
-  entropy;
-- role-separated account, recovery and device key roots;
-- an asynchronous hybrid X25519 + ML-KEM handshake;
-- a path to hybrid classical/PQ authentication and a reviewed hybrid ratchet.
+## 1. Goals and non-goals
 
-It does not authorize a public security claim or production activation. The
-current DPE1/DMC1 construction is evidence only and must not be renamed into
-this profile.
+This profile provides:
 
-## 2. Normative language and byte rules
+- a new 24-word Deep recovery generation;
+- one authoritative DNP1 account lineage and independently generated device
+  keys;
+- asynchronous first contact while the recipient is offline;
+- per-device hybrid X25519 + ML-KEM-768 initial key agreement;
+- a mandatory Triple Ratchet: classical Double Ratchet plus SPQR/ML-KEM Braid;
+- forward secrecy, post-compromise security and passive post-quantum
+  confidentiality for 1:1 device sessions;
+- cryptographic deniability for ordinary message content;
+- fail-closed suite, generation, rollback and replay handling;
+- transport-independent ciphertext usable over XPoint, direct P2P mesh,
+  on-premise XNode and later transports.
+
+This profile does not by itself provide anonymity, censorship resistance,
+traffic-analysis resistance, immediate revocation knowledge while a peer is
+offline, post-quantum authentication against an active quantum attacker,
+post-quantum MLS group confidentiality, or plaintext history recovery without
+an explicit encrypted backup or history transfer. Those boundaries MUST appear
+in product security claims.
+
+## 2. Normative dependencies and authority
 
 `MUST`, `MUST NOT`, `SHOULD` and `MAY` are normative.
 
-- Octet strings are length-exact. No parser accepts trailing bytes.
+The exact `DPA1`, `DPD1`, `DRS1`, `DRA1`, reset, witness, membership and
+ArtifactRef bytes remain owned by
+[`DNP1-CLASSICAL-IDENTITY-RESET-MRL2-V1.md`](DNP1-CLASSICAL-IDENTITY-RESET-MRL2-V1.md)
+and its machine registry. This document does not redefine those bytes.
+`DPA1.minimumSuite=0x0001` and `DPD1.suite=0x0001` are values in the closed
+DNP1 identity-artifact suite namespace. Messaging suite `0x0201` is a separate
+closed namespace and never replaces or negotiates those identity values.
+
+The production account authority graph is exactly:
+
+```text
+DPA1 account generation
+  -> account signing role
+  -> device-certificate issuer role
+  -> account revocation role
+  -> reset-control role
+  -> DPD1 independently generated device identities
+  -> DRS1 monotonic revocation state
+```
+
+The older `deep-crypto-v1.registry.json` remains non-production dark-path
+evidence. Its retired `DPAC`, `DPDC`, `DPKB` and `DPHI` records MUST NOT be
+accepted as aliases for this profile. The implementation work package MUST
+generate a new machine registry and vectors for the records defined below
+before code is activated.
+
+For governance reproducibility, the retained dark-path registry has the exact
+primitive-size inventory below. These values are test-oracle inputs, not an
+authorization to emit its retired records:
+
+| Registry item | Bytes |
+|---|---:|
+| Ed25519 public key / signature | 32 / 64 |
+| X25519 public key / shared secret | 32 / 32 |
+| ML-KEM-768 encapsulation key / decapsulation key | 1184 / 2400 |
+| ML-KEM-768 ciphertext / shared secret | 1088 / 32 |
+| ML-DSA-65 public key / private key / signature | 1952 / 4032 / 3309 |
+| XChaCha20 nonce / AEAD tag | 24 / 16 |
+| retained registry record maximum | 65535 |
+
+The retained registry's domain inventory is likewise frozen only as evidence:
+`Deep/Recovery/V1/extract`, `Deep/Recovery/V1/account-signing-seed`,
+`Deep/Recovery/V1/account-pq-signing-seed`,
+`Deep/Recovery/V1/recovery-authorization-seed`,
+`Deep/Recovery/V1/backup-wrapping-seed`,
+`Deep/Identity/V1/account-certificate`,
+`Deep/Identity/V1/device-certificate`, `Deep/Identity/V1/account-id`,
+`Deep/Handshake/V1/prekey-bundle`, `Deep/Handshake/V1/transcript`,
+`Deep/Handshake/V1/ec-root`, `Deep/Handshake/V1/pq-root` and
+`Deep/Handshake/V1/initial-aead`. None is an alias for a V2 messaging domain.
+
+The following external documents are incorporated as algorithm references,
+not as wire compatibility:
+
+- Signal PQXDH, revision 3, for asynchronous hybrid AKE;
+- Signal Double Ratchet specification including the 2025 Triple Ratchet and
+  SPQR construction;
+- NIST FIPS 203 and its published errata for ML-KEM;
+- NIST SP 800-227 for KEM use and key lifecycle.
+
+Deep owns its outer canonical records, limits, persistence, identity binding
+and error behavior. An upstream library's private serialization is never a
+Deep wire format.
+
+## 3. Canonical grammar
+
+### 3.1 Primitive encodings
+
+- Octet strings are length-exact. Parsers reject trailing bytes.
 - Integers are unsigned, fixed-width and big-endian.
-- Text in cryptographic domains is printable ASCII and is never locale
+- Cryptographic domain labels are printable ASCII and are not locale
   normalized.
 - Human recovery text is UTF-8 NFKD before BIP-39 processing.
-- `LP32(x)` is `u32be(length(x)) || x`.
-- `SHA256-D(label, x)` is
-  `SHA-256(ASCII(label) || 0x00 || LP32(x))`.
-- `SHA512-D(label, x)` is
-  `SHA-512(ASCII(label) || 0x00 || LP32(x))`.
+- `LP16(x) = u16be(length(x)) || x`.
+- `LP32(x) = u32be(length(x)) || x`.
+- `SHA256-D(label, x) = SHA-256(ASCII(label) || 0x00 || LP32(x))`.
+- `SHA512-D(label, x) = SHA-512(ASCII(label) || 0x00 || LP32(x))`.
 - `HKDF-Extract-512` and `HKDF-Expand-512` are RFC 5869 HKDF with SHA-512.
-- `SIGINPUT(label, suite, record)` is
-  `ASCII(label) || 0x00 || suite:u16 || LP32(record)`.
-- Secret intermediates MUST be zeroed as soon as their successor state is
-  committed.
-- Every all-zero X25519 shared secret is rejected.
-- Unknown suite, version, field tag, flag or non-zero reserved field is
-  rejected before a signer, KEM decapsulation, state mutation or payload
-  allocation.
+- `SIGINPUT(label, suite, record) = ASCII(label) || 0x00 || suite:u16 ||
+  LP32(record)`.
+- `ZERO32` means exactly 32 zero octets and is permitted only where explicitly
+  stated.
 
-### 2.1 Canonical record
+Every all-zero X25519 shared secret is rejected. Secret intermediates and
+retired ratchet keys MUST be zeroed as soon as successor state is durably
+committed.
 
-All records in this draft use:
+### 3.2 Canonical record
+
+All Deep messaging records use:
 
 ```text
 offset  size  field
@@ -61,34 +147,54 @@ offset  size  field
 field := tag:u16 || reserved:u16(0) || length:u32 || value:length
 ```
 
-Tags are strictly increasing and unique. A record is at most 65535 (65,535)
-bytes.
-All scalar, count-derived and total-length checks occur before copying or
-cryptographic callbacks.
+Tags are strictly increasing and unique. Unknown tags, versions, suites,
+flags, enums and non-zero reserved values reject. No parser accepts a partial
+known prefix. The total record limit is 65,535 bytes unless a lower per-record
+limit is specified.
 
-## 3. DeepRecoveryV1
+Scalar, count, individual-length and total-length validation happens before
+allocation, hashing, signature verification, KEM decapsulation, database
+mutation or application callback. Decoders return owned immutable bytes or a
+sealed validated value; they never expose a mutable view over attacker input.
 
-### 3.1 Phrase generation and decoding
+### 3.3 Version and suite closure
 
-1. Generate exactly 32 bytes from the platform OS CSPRNG.
-2. Encode those 256 bits with the canonical English BIP-39 word list:
+The only production pairwise suite is:
+
+| ID | Name | Required algorithms |
+|---:|---|---|
+| `0x0201` | `DHM2-X25519-MLKEM768-TRIPLE-XCHACHA20` | X25519, ML-KEM-768, Ed25519 certificate/prekey authentication, SHA-256/SHA-512, HKDF-SHA-512, XChaCha20-Poly1305-IETF, Double Ratchet and SPQR/ML-KEM Braid |
+
+Both classical and PQ components are mandatory. There is no classical-only,
+PQ-only, retry-with-weaker-suite or environment-controlled downgrade path.
+Suite `0x0202` is reserved for later hybrid long-lived authentication and MUST
+reject until separately frozen. Negotiation means selecting an exact mutually
+supported signed suite before session creation; it never means probing weaker
+algorithms after failure.
+
+## 4. DeepRecoveryV1
+
+### 4.1 Phrase creation
+
+1. Generate exactly 32 bytes with the platform OS CSPRNG.
+2. Encode them with the canonical English BIP-39 list as 256 entropy bits,
    eight checksum bits and exactly 24 words.
-3. The only accepted word-list identifier is `bip39-en-v1`.
-4. Input is trimmed between words, lower-cased with invariant rules and
-   normalized to UTF-8 NFKD. Exactly 24 known words and a valid checksum are
-   required before any derivation.
-5. V1 accepts only the empty BIP-39 passphrase. A non-empty passphrase is a
-   future explicit profile, not an automatically probed alternative.
-6. The UI calls this a **Deep Recovery Phrase**. It MUST NOT claim wallet
-   interoperability and MUST warn against importing a wallet mnemonic.
+3. The sole word-list identifier is `bip39-en-v1`.
+4. Canonical display is lower-case words separated by one ASCII space.
+5. Restore collapses whitespace, applies UTF-8 NFKD and invariant lower-case,
+   then requires exactly 24 known words and a valid checksum.
+6. V1 accepts only the empty BIP-39 passphrase. It does not silently probe a
+   user passphrase or another word count.
+7. The UI calls it **Deep Recovery Phrase**, warns that it is not a wallet
+   mnemonic and never offers wallet import.
 
-BIP-39 defines 24 words as 256 bits of entropy plus an 8-bit checksum. Its
-checksum detects many transcription errors but is not authentication and has
-a 1-in-256 random false-accept probability.
+The checksum is error detection, not authentication. A valid but wrong phrase
+creates another account and MUST NOT be searched against public services to
+reveal whether that account exists.
 
-### 3.2 BIP-39 seed boundary
+### 4.2 Seed and role derivation
 
-The phrase is converted to the standard 64-byte BIP-39 seed:
+The BIP-39 seed is:
 
 ```text
 bip39Seed = PBKDF2-HMAC-SHA512(
@@ -96,417 +202,623 @@ bip39Seed = PBKDF2-HMAC-SHA512(
     salt     = UTF8_NFKD("mnemonic"),
     rounds   = 2048,
     length   = 64)
-```
 
-That value is never used directly as an Ed25519, X25519, ML-KEM, ML-DSA,
-mailbox, device, push, storage or AEAD key.
-
-### 3.3 Deep recovery root
-
-For a 16-byte network identifier and an unsigned 64-bit account generation:
-
-```text
 extractSalt = SHA-512(ASCII("Deep/Recovery/V1/extract"))
 recoveryPrk = HKDF-Extract-512(extractSalt, bip39Seed)
-context     = networkId16 || accountGeneration:u64
-
-accountSigningSeed32 = HKDF-Expand-512(
-    recoveryPrk,
-    ASCII("Deep/Recovery/V1/account-signing-seed") || 0x00 || LP32(context),
-    32)
-
-accountPqSigningSeed32 = HKDF-Expand-512(
-    recoveryPrk,
-    ASCII("Deep/Recovery/V1/account-pq-signing-seed") || 0x00 || LP32(context),
-    32)
-
-recoveryAuthorizationSeed32 = HKDF-Expand-512(
-    recoveryPrk,
-    ASCII("Deep/Recovery/V1/recovery-authorization-seed") || 0x00 || LP32(context),
-    32)
-
-backupWrappingSeed32 = HKDF-Expand-512(
-    recoveryPrk,
-    ASCII("Deep/Recovery/V1/backup-wrapping-seed") || 0x00 || LP32(context),
-    32)
+context     = networkId16 || accountGeneration:u64be
 ```
 
-The account signing seed is input to the reviewed deterministic Ed25519 key
-generation API. The PQ account seed is reserved for the FIPS 204 deterministic
-ML-DSA key-generation input exposed by the selected provider; it is never
-passed to a different algorithm. The recovery authorization key has a distinct
-signing domain and cannot sign messages, devices or routing artifacts. The
-backup seed is input to a separately specified backup KDF; it is not an AEAD
-key directly.
+Except for the two permanent address values below, each following seed is 32 bytes from
+`HKDF-Expand-512(recoveryPrk, ASCII(label) || 0x00 || LP32(context), 32)`:
 
-Device signing, device agreement, mailbox holder, router, storage, push and
-per-conversation roots are generated independently by the device CSPRNG. They
-are authorized by versioned public certificates. They are not deterministic
-children of the mnemonic.
+| DPA1 role or local role | Label |
+|---|---|
+| account signing | `Deep/Recovery/V1/account-signing-seed` |
+| device-certificate issuer | `Deep/Recovery/V1/device-issuer-signing-seed` |
+| account revocation | `Deep/Recovery/V1/revocation-signing-seed` |
+| reset control | `Deep/Recovery/V1/reset-control-signing-seed` |
+| permanent Deep ID address signing | `Deep/Recovery/V1/public-address-signing-seed` |
+| permanent Deep ID resolver read capability | `Deep/Recovery/V1/public-address-read-capability` |
+| backup wrapping | `Deep/Recovery/V1/backup-wrapping-seed` |
+| reserved future ML-DSA account role | `Deep/Recovery/V1/account-pq-signing-seed` |
 
-Recovery-derived account private material is loaded only inside an explicit
-recovery or device-enrollment ceremony and is erased afterward. Routine
-messaging, sync, push, mailbox and calls use device-scoped keys. The later
-multi-device specification must define how an already authorized device and
-the recovery authority approve or revoke another device without copying an
-account private key between devices.
-
-### 3.4 Recovery security policy
-
-- Phrase display is an explicit local ceremony with screenshot, screen-share,
-  clipboard, accessibility announcement, telemetry and crash-dump suppression.
-- The phrase, `bip39Seed`, `recoveryPrk` and role seeds never leave the client
-  in plaintext and never enter logs, metrics, Registry, XNode, push/file
-  services or cloud backup.
-- Restore derives a new account instance only after the user confirms the
-  profile, network and destructive-reset warning.
-- A wrong valid phrase derives a different account; it is not searched against
-  server data to reveal account existence.
-- SLIP-39 is a possible later split-backup profile. It does not silently
-  replace or reinterpret DeepRecoveryV1.
-
-## 4. Key hierarchy
-
-The final hierarchy separates roles:
+The first four seeds instantiate the exact pairwise-distinct Ed25519 roles in
+`DPA1`. The public-address seed instantiates the stable Ed25519 key carried by
+`DID1`; it signs only `DAB1` address/account bindings, never a message, device
+certificate or key agreement. To keep DID1 independent of a network transport
+and account-generation reset, its seed is instead exactly:
 
 ```text
-Deep Recovery Phrase
-  -> account Ed25519 signing root
-  -> account ML-DSA signing root
-  -> recovery authorization root
-  -> backup wrapping root
-
-Device CSPRNG root
-  -> device signing key
-  -> device X25519 identity-agreement key
-  -> device signed X25519 prekeys
-  -> device one-time X25519 prekeys
-  -> device ML-KEM prekeys
-  -> local database and push wrapping keys
+addressSigningSeed32 = HKDF-Expand-512(
+  recoveryPrk,
+  ASCII("Deep/Recovery/V1/public-address-signing-seed") || 0x00 ||
+    LP32(ASCII("DeepGlobalAddressV1")),
+  32)
+addressReadCapability16 = HKDF-Expand-512(
+  recoveryPrk,
+  ASCII("Deep/Recovery/V1/public-address-read-capability") || 0x00 ||
+    LP32(ASCII("DeepGlobalAddressV1")),
+  16)
 ```
 
-Ed25519 and X25519 keys are independently generated. Ed25519-to-X25519 key
-conversion is forbidden in the new profile. Account and device signing keys do
-not perform key agreement.
+The backup
+seed is input to a separately domain-separated backup KDF;
+it is never an AEAD key directly. The PQ seed remains reserved and MUST NOT be
+passed to ML-KEM, another signature algorithm or a provider whose deterministic
+key generation contract has not been frozen.
 
-### 4.1 DeepAccountId hash
+Changing network ID or account generation creates unrelated account-role keys
+but intentionally leaves both permanent DID1 values unchanged. Changing
+the phrase or any label creates unrelated keys. The BIP-39 seed and no role seed is used directly as a device, X25519,
+ML-KEM, MLS, mailbox, router, storage, push, database or content key.
 
-The binary account identifier used in signed and wire records is:
+### 4.3 Device generation
 
-```text
-DeepAccountIdHash32 = SHA256-D(
-    "Deep/Identity/V1/account-id",
-    networkId16 || accountGeneration:u64 ||
-    LP32(accountEd25519Public32) ||
-    LP32(accountMlDsa65PublicOrEmpty))
-```
+Every logical device independently generates with the device OS CSPRNG:
 
-Suite `0x0101` uses an empty ML-DSA field. Suite `0x0102` uses exactly 1952
-bytes. Changing either genesis account key or account generation creates a new
-identifier. Minimum-suite and algorithm-policy rotations are signed successor
-state and do not silently change the account identifier.
+- random 32-byte `deviceId` required by `DPD1`;
+- Ed25519 device signing key;
+- X25519 device identity-agreement key;
+- `DPD1` revocation handle;
+- signed and one-time X25519 prekeys;
+- ML-KEM-768 prekeys;
+- Triple Ratchet state and ephemeral keys;
+- no MLS key in v1; a future MLS profile generates independent per-group keys
+  only after that profile is explicitly activated;
+- local SQLCipher/database and platform-keystore wrapping keys.
 
-## 5. Algorithm registry
+Ed25519 and X25519 key pairs are independently generated. Ed25519-to-X25519 or
+X25519-to-Ed25519 conversion is forbidden in every profile and test fixture.
+Account, issuer, revocation, reset and device signing keys never perform key
+agreement.
 
-The machine-readable registry beside this document is normative for sizes and
-identifiers.
+### 4.4 Recovery-root handling
 
-- `0x0101`: X25519 + ML-KEM-768 confidentiality, Ed25519 authentication.
-  Dark-path interoperability and passive-quantum-confidentiality evaluation
-  only. It does not provide post-quantum authentication.
-- `0x0102`: X25519 + ML-KEM-768 confidentiality, Ed25519 + ML-DSA-65
-  long-lived certificate authentication. This is the release-target candidate,
-  subject to provider, size, mobile and independent review gates.
+Recovery-derived private material is loaded only during account creation,
+account recovery, explicit device enrollment, revocation or account reset. It
+is erased after the signed transaction commits. Routine messaging, sync,
+push, mailbox polling, attachment transfer and calls use device-scoped keys.
 
-Both suites require both the X25519 and ML-KEM components. There is no
-classical-only or PQ-only negotiation, retry or fallback. A receiver either
-supports the exact signed suite or fails closed.
+Phrase display and entry suppress screenshots, screen sharing, clipboard,
+accessibility announcements, telemetry, crash dumps and diagnostic snapshots.
+The phrase and derived secrets never enter logs, metrics, Registry, XNode,
+push/file services or plaintext cloud backup.
 
-ML-KEM-768 has a 1184-byte encapsulation key, 2400-byte decapsulation key,
-1088-byte ciphertext and 32-byte shared secret. ML-DSA-65 has a 1952-byte
-public key, 4032-byte private key and 3309-byte signature. Those sizes are not
-inserted into every message.
+## 5. Account and device lifecycle
 
-## 6. Account and device certificates
+### 5.1 Account creation
 
-`DPAC`, version 1, is the self-authenticating account genesis certificate:
+Account creation is completely offline:
 
-| Tag | Value | Exact size |
-|---:|---|---:|
-| 1 | network ID | 16 |
-| 2 | account generation | 8 |
-| 3 | account Ed25519 public key | 32 |
-| 4 | account ML-DSA-65 public key | 0 or 1952 |
-| 5 | created-at Unix seconds | 8 |
-| 6 | policy generation | 8 |
-| 7 | minimum accepted suite | 2 |
-| 8 | account Ed25519 self-signature | 64 |
-| 9 | account ML-DSA-65 self-signature | 0 or 3309 |
+1. create and confirm DeepRecoveryV1;
+2. derive the four DPA1 signing roles for account generation zero and the
+   transport-neutral permanent DID1 address role;
+3. author exact `DPA1` and initial `DRS1` according to the frozen DNP1
+   authority specification;
+4. generate local device keys independently;
+5. prove possession and author exact `DPD1`;
+6. create empty device-directory and messaging state atomically;
+7. only then attempt transport registration and prekey publication.
 
-Both signatures cover `SIGINPUT("Deep/Identity/V1/account-certificate",
-suite, unsignedDPAC)`, where `unsignedDPAC` omits tags 8 and 9. Suite `0x0102`
-requires the ML-DSA key and signature; suite `0x0101` requires both fields to be
-empty. The DeepAccountId hash is recomputed from tags 1 through 4 before either
-callback.
+Network failure cannot invalidate the local account. It changes UI state to
+`Account ready; network registration pending`, never `Deep failed to start`.
 
-`DPDC`, version 1, is the account-authorized device certificate:
+### 5.2 Device enrollment
 
-| Tag | Value | Exact size |
-|---:|---|---:|
-| 1 | network ID | 16 |
-| 2 | account hash | 32 |
-| 3 | account generation | 8 |
-| 4 | device ID | 32 |
-| 5 | device generation | 8 |
-| 6 | device Ed25519 signing key | 32 |
-| 7 | device X25519 identity-agreement key | 32 |
-| 8 | device ML-DSA-65 signing key | 0 or 1952 |
-| 9 | issued-at Unix seconds | 8 |
-| 10 | expires-at Unix seconds | 8 |
-| 11 | capability bits | 8 |
-| 12 | minimum accepted suite | 2 |
-| 13 | predecessor device-certificate hash | 32 |
-| 14 | revocation generation | 8 |
-| 15 | account Ed25519 signature | 64 |
-| 16 | account ML-DSA-65 signature | 0 or 3309 |
+V1 enrollment requires both authenticated proximity or a scanned one-time
+enrollment QR between an already authorized device and the new device, and
+Deep Recovery Phrase confirmation on the new device to authorize exact `DPD1`
+issuance with the DPA1 device-issuer role.
 
-Both signatures cover `SIGINPUT("Deep/Identity/V1/device-certificate",
-suite, unsignedDPDC)`, where `unsignedDPDC` omits tags 15 and 16. The account
-keys must match the exact DPAC/DeepAccountId lineage. Suite-specific empty/exact
-ML-DSA rules are identical to DPAC.
+The existing device transfers only public lineage, current signed device
+directory, revocation state, route-update capabilities and an encrypted
+history/backup capability if the user explicitly enables it. It never exports
+the DPA1 issuer private key or another device private key.
 
-A device certificate binds:
+This ceremony is intentionally stricter than a phrase-free link. A future
+delegated enrollment authority would require a change to the frozen DNP1
+issuer graph and is not silently introduced here.
 
-- network ID and account generation;
-- account public key and DeepAccountId hash;
-- device ID and generation;
-- device Ed25519 signing key;
-- device X25519 identity-agreement key;
-- optional ML-DSA-65 authentication key;
-- issued-at, expires-at, capabilities and minimum suite;
-- predecessor certificate hash and revocation generation.
+### 5.3 Recovery on a new device
 
-Removing either required signature changes the certificate shape/hash and
-fails; there is no one-signature fallback.
+Recovery re-derives the same DPA1 roles for the exact network and account
+generation, verifies recovered DPA1 byte-for-byte, then generates a new device
+identity and DPD1. It does not recreate an old device or its ratchet keys.
 
-Low-bandwidth frames carry the 32-byte certificate hash only after the full
-certificate has been obtained and verified over another bounded channel.
+Public V1 account creation and phrase-only recovery support account generation
+zero only. A destructive account reset creates a new phrase/account lineage;
+the client never guesses or enumerates generations over the network. A future
+same-phrase generation advance requires an authenticated recovery package that
+stores the exact generation and DPA1 hash; it is not a hidden V1 behavior.
 
-## 7. Asynchronous prekey bundle
+Without an encrypted backup, recovery restores account authority but not
+plaintext messages, contact aliases, group application history or old ratchet
+state. Signed contact/device/group heads may be reacquired from their
+continuity channels. With backup enabled, the backup profile must use a new
+random data-encryption key, wrap it under a key derived from the backup seed
+and bind network/account/generation/schema/rollback counters.
 
-`DPKB`, version 1, is a canonical record with these tags:
+### 5.4 Revocation
+
+Revoking a device advances exact DRS1 state and the messaging device directory.
+Senders stop creating ciphertext for the revoked device after learning the
+new head. Remaining devices establish fresh pairwise sessions where needed;
+every group containing the account removes the revoked leaf and commits a new
+epoch.
+
+The same transaction advances ADC1 and rotates every mailbox, XUR1, invite,
+pre-key and push capability known to the revoked device. Successors are wrapped
+only to remaining devices/contacts. Revocation that changes keys but leaves a
+shared fetch/ack capability live is incomplete.
+
+Revocation is eventual across offline partitions. No document or UI may claim
+that an offline peer instantly knows about a remote revocation. The accepted
+stale-state window and reconnect behavior are specified in the contact/group
+document.
+
+## 6. Prekey service boundary
+
+The prekey service is an untrusted availability service. It may withhold,
+reorder, replay or equivocate, but cannot mint a valid device or bundle.
+Clients access it through a transport privacy layer; account/device identifiers
+MUST NOT appear in an unmasked XPoint outer frame.
+
+The service supports atomic publish, fetch-and-claim, exact replay of a lost
+response, revoked-device fencing and predecessor retention. The server never
+receives a device private key. Same bundle ID with changed bytes is a permanent
+conflict. Claim identifiers are random and unrelated to account, mailbox or
+transport route identifiers.
+
+## 7. `DPK2` asynchronous prekey bundle
+
+`DPK2`, version 1, suite `0x0201`, has:
 
 | Tag | Value | Exact size |
 |---:|---|---:|
 | 1 | network ID | 16 |
 | 2 | responder DeepAccountId hash | 32 |
 | 3 | responder device ID | 32 |
-| 4 | device certificate hash | 32 |
-| 5 | bundle ID | 32 |
-| 6 | issued-at Unix seconds | 8 |
-| 7 | expires-at Unix seconds | 8 |
-| 8 | responder device X25519 identity key | 32 |
-| 9 | signed X25519 prekey | 32 |
-| 10 | signed X25519 prekey ID | 32 |
-| 11 | optional one-time X25519 prekey | 0 or 32 |
-| 12 | optional one-time X25519 prekey ID | 0 or 32 |
-| 13 | ML-KEM-768 prekey | 1184 |
-| 14 | ML-KEM prekey ID | 32 |
-| 15 | ML-KEM key kind (`1=one-time`, `2=last-resort`) | 1 |
-| 16 | minimum accepted suite | 2 |
-| 17 | Ed25519 bundle signature | 64 |
-| 18 | ML-DSA-65 bundle signature | 0 or 3309 |
+| 4 | exact DPD1 ArtifactRef | 38 |
+| 5 | device-directory generation | 8 |
+| 6 | device-directory head hash | 32 |
+| 7 | bundle ID | 32 |
+| 8 | issued-at Unix seconds | 8 |
+| 9 | expires-at Unix seconds | 8 |
+| 10 | device X25519 identity public key | 32 |
+| 11 | signed X25519 prekey public key | 32 |
+| 12 | signed X25519 prekey ID | 32 |
+| 13 | one-time X25519 prekey public key | 0 or 32 |
+| 14 | one-time X25519 prekey ID | 0 or 32 |
+| 15 | ML-KEM-768 encapsulation key | 1184 |
+| 16 | ML-KEM prekey ID | 32 |
+| 17 | ML-KEM key kind (`1=one-time`, `2=last-resort`) | 1 |
+| 18 | last-resort reuse limit (`0` for one-time, otherwise `1..64`) | 2 |
+| 19 | policy generation | 8 |
+| 20 | device Ed25519 signature | 64 |
+| 21 | not-before Unix seconds | 8 |
 
-Tags 11 and 12 are both present or both absent. Tag 18 is absent for suite
-`0x0101` and exact for `0x0102`. Signature input is
-`SIGINPUT("Deep/Handshake/V1/prekey-bundle", suite, unsignedDPKB)`, where
-`unsignedDPKB` is the canonical record with tags 17 and 18 omitted. Both device
-signatures cover identical bytes.
+Tags 13 and 14 are both empty or both exact. Tag 17 value one requires reuse
+limit zero; value two requires `1..64`, expiry no later than 30 days and a
+durable per-key claim counter. Each active bundle epoch lasts at most 30 days.
+Signed X25519 prekeys rotate at least every 30 days and after 10,000
+sessions, whichever comes first. A device publishes enough one-time keys for
+its measured epoch peak plus 25%, bounded to `32..4096`.
 
-The server atomically claims one-time keys. A last-resort ML-KEM key is allowed
-only with an explicit kind, bounded reuse count, short expiry and a durable
-replay journal. Key IDs are hints; signatures, public keys, account/device
-identity and the full bundle hash are cryptographic bindings.
+To support an offline recipient, a device MAY pre-generate and sign up to
+fourteen non-overlapping future epochs covering at most 400 days. Each epoch has
+independent X25519/ML-KEM prekeys and locally protected private material; the
+service exposes only the currently valid epoch plus one overlap epoch and cannot
+move `not-before` or expiry. Future private keys are never uploaded. Inventory
+exhaustion is an explicit `PreKeysUnavailable`, not classical fallback.
 
-## 8. Initial hybrid handshake
+The signature covers
+`SIGINPUT("Deep/Messaging/V2/prekey-bundle", 0x0201, unsignedDPK2)`, where
+tag 20 is omitted. The verifier resolves exact DPD1, DPA1, DRS1 and device
+directory heads, checks tag 10 against DPD1, and checks every generation,
+expiry and revocation binding before signature or KEM use.
 
-`DPHI`, version 1, is the initiator record:
+## 8. `DPH2` hybrid initiation
+
+`DPH2`, version 1, suite `0x0201`, has:
 
 | Tag | Value | Exact size |
 |---:|---|---:|
 | 1 | network ID | 16 |
 | 2 | initiator account hash | 32 |
 | 3 | initiator device ID | 32 |
-| 4 | responder account hash | 32 |
-| 5 | responder device ID | 32 |
-| 6 | initiator device certificate hash | 32 |
-| 7 | responder prekey-bundle hash | 32 |
-| 8 | initiator device X25519 identity key | 32 |
-| 9 | initiator ephemeral X25519 key | 32 |
-| 10 | responder signed X25519 prekey ID | 32 |
-| 11 | responder one-time X25519 prekey ID | 0 or 32 |
-| 12 | responder ML-KEM prekey ID | 32 |
-| 13 | ML-KEM-768 ciphertext | 1088 |
-| 14 | initial AEAD nonce | 24 |
-| 15 | initial AEAD ciphertext | 16..32784 |
+| 4 | initiator DPD1 ArtifactRef | 38 |
+| 5 | responder account hash | 32 |
+| 6 | responder device ID | 32 |
+| 7 | responder DPK2 hash | 32 |
+| 8 | session ID | 32 |
+| 9 | initiator device X25519 identity public key | 32 |
+| 10 | initiator ephemeral X25519 public key | 32 |
+| 11 | responder signed-prekey ID | 32 |
+| 12 | responder one-time-X25519 ID | 0 or 32 |
+| 13 | responder ML-KEM prekey ID | 32 |
+| 14 | ML-KEM-768 ciphertext | 1088 |
+| 15 | initiator's fresh initial Double Ratchet X25519 public key | 32 |
+| 16 | initial payload nonce | 24 |
+| 17 | initial encrypted DMC2 payload | `16..32784` |
 
-The initiator first verifies the responder device certificate and every bundle
-signature, identity, time, suite and predecessor binding. It then generates an
-ephemeral X25519 key and encapsulates to the exact ML-KEM key.
+`sessionId = SHA256-D("Deep/Messaging/V2/session-id", network16 ||
+initiatorAccount32 || initiatorDevice32 || responderAccount32 ||
+responderDevice32 || DPK2Hash32 || initiatorEphemeral32 || randomNonce32)`.
+The random nonce is included inside encrypted SessionInit DMC2 content;
+session IDs are not caller-selected or reused.
 
-Let:
+Before computing the transcript, the initiator generates a fresh X25519
+Double-Ratchet key pair for this initiation; its public key is tag 15. The
+responder signed X25519 prekey (DPK2 tag 11) is Bob's initial ratchet public
+key. These session ratchet keys are not device agreement keys.
+
+After full responder lineage and DPK2 validation, the initiator computes:
 
 ```text
-DH1 = X25519(initiatorDeviceIdentityPrivate, responderSignedPrekeyPublic)
-DH2 = X25519(initiatorEphemeralPrivate, responderDeviceIdentityPublic)
-DH3 = X25519(initiatorEphemeralPrivate, responderSignedPrekeyPublic)
-DH4 = X25519(initiatorEphemeralPrivate, responderOneTimePrekeyPublic) // optional
-PQ  = ML-KEM-768 shared secret
+DH1 = X25519(initiatorDeviceIdentityPrivate,
+             responderSignedPrekeyPublic)
+DH2 = X25519(initiatorEphemeralPrivate,
+             responderDeviceIdentityPublic)
+DH3 = X25519(initiatorEphemeralPrivate,
+             responderSignedPrekeyPublic)
+DH4 = X25519(initiatorEphemeralPrivate,
+             responderOneTimePrekeyPublic) // only when present
+PQ  = ML-KEM-768.Encaps(responderMlKemPrekey).sharedSecret
 ```
 
-`DH4` is included only when both one-time fields are present. Every DH output
-must be non-zero. The responder reconstructs the same values using its exact
-claimed private keys.
-
-Before tag 15 is populated, define `header` as the canonical DPHI record with
-tag 15 omitted and tag 14 present. Then:
+All DH outputs are nonzero. Define `header` as canonical DPH2 with tag 17
+omitted and tag 16 present:
 
 ```text
 transcriptHash = SHA512-D(
-    "Deep/Handshake/V1/transcript",
-    prekeyBundleCanonical || header)
+  "Deep/Messaging/V2/handshake-transcript",
+  LP32(exactDPK2) || LP32(header))
 
 ikm = DH1 || DH2 || DH3 || [DH4] || PQ
 prk = HKDF-Extract-512(transcriptHash, ikm)
 
-SKec   = HKDF-Expand-512(prk,
-         ASCII("Deep/Handshake/V1/ec-root") || 0x00 || LP32(transcriptHash), 32)
-SKpq   = HKDF-Expand-512(prk,
-         ASCII("Deep/Handshake/V1/pq-root") || 0x00 || LP32(transcriptHash), 32)
-initK  = HKDF-Expand-512(prk,
-         ASCII("Deep/Handshake/V1/initial-aead") || 0x00 || LP32(transcriptHash), 32)
+SKec = HKDF-Expand-512(prk,
+  "Deep/Messaging/V2/ec-root" || 0x00 || LP32(transcriptHash), 32)
+SKscka = HKDF-Expand-512(prk,
+  "Deep/Messaging/V2/spqr-root" || 0x00 || LP32(transcriptHash), 32)
+initKey = HKDF-Expand-512(prk,
+  "Deep/Messaging/V2/initial-aead" || 0x00 || LP32(transcriptHash), 32)
 ```
 
-Tag 15 is XChaCha20-Poly1305-IETF encryption under `initK`, tag 14, and
-associated data `header || transcriptHash`. Failure is a single coarse
-handshake error. KEM decapsulation failure, key mismatch and ciphertext failure
-are not distinguished externally.
+Tag 17 is XChaCha20-Poly1305-IETF under `initKey`, tag 16 and associated data
+`header || transcriptHash`. The initial plaintext is exactly one DMC2 record
+with content kind `SessionInit`. Its canonical payload contains the random
+session nonce, exact initiator ADC1/ADP1/DPA1/DRS1/DMD1/DPD1 closure, the exact
+DPH2-header hash and zero or one length-prefixed first application event. The
+optional event uses the same closed application-kind/payload codec as DMC2 but
+has no independent ratchet envelope; first-contact `ContactHello` is carried
+here and materialized only after the session transaction commits.
 
-Both sides delete the ephemeral private key, DH outputs, ML-KEM shared secret,
-`ikm`, `prk` and `initK` after the ratchet state and one-time-key consumption
-commit atomically.
+The responder validates the initiator closure against a fresh account-directory
+head, checks tag 9 against exact DPD1, then atomically consumes exact prekeys, creates Triple
+Ratchet state, decrypts DMC2 and commits inbox dedup in one transaction. A lost
+response exact-replays the committed outcome. Changed bytes under a claimed
+operation or session ID reject and latch the affected session.
 
-## 9. Ratchet boundary
+KEM decapsulation, lineage, transcript, AEAD and prekey errors are externally
+one coarse `HandshakeRejected`; diagnostics contain only a local error class
+and random correlation ID.
 
-`SKec` and `SKpq` are two independent 32-byte inputs to a reviewed hybrid
-ratchet. The target is a Triple-Ratchet-class construction: an ordinary
-X25519 Double Ratchet and a reviewed sparse post-quantum ratchet run in
-parallel, and every message key requires a domain-separated KDF combination of
-both outputs.
+## 9. Mandatory Triple Ratchet
 
-Deep does not invent that ratchet in this work package. Production code is
-blocked until:
+### 9.1 Construction
 
-- a maintained implementation or a separately reviewable implementation plan
-  is selected;
-- skipped-key, out-of-order, replay, deletion and maximum-state rules are
-  frozen;
-- fresh PQ secret reinjection and recovery after compromise are demonstrated;
-- two independent implementations agree on golden and negative vectors.
+Suite `0x0201` uses these closed transitions:
 
-An initial PQ handshake alone is not sufficient evidence of post-compromise
-security.
+1. `CreateInitiation`: Alice generates tag-15 key pair and KEM/DH material,
+   derives SKec/SKscka, then calls `InitAlice(SKec,
+   bobSignedPrekeyPublic, aliceTag15KeyPair)` and `InitSckaAlice(SKscka)`.
+2. `AcceptInitiation`: Bob validates/claims DPK2, derives the same secrets,
+   calls `InitBob(SKec, bobSignedPrekeyKeyPair)` and
+   `InitSckaBob(SKscka)`, then processes Alice's tag-15 receive step.
+3. `ProcessFirstRatchetMessage`: Bob's first DPE2 response advances with a fresh
+   Bob ratchet key and carries `SessionAck(DPH2Hash32, sessionId32)`. Alice marks
+   the initiation acknowledged only after that authenticated response commits.
 
-## 10. Transport budgets
+The responder signed-prekey private key remains available only for the bounded
+DPK2 claim/replay horizon. Signal Triple Ratchet/SPQR behavior is pinned by
+revision; Deep freezes its own canonical headers and transition vectors.
 
-- Internet/XPoint: full DPKB/DPHI are allowed within the 65,535-byte record
-  cap. Concurrent handshakes use byte-weighted admission.
-- Nearby/BLE: exact records are fragmented by the reviewed bounded transport;
-  fragments never change transcript bytes.
-- LoRa: a first-contact ML-KEM/ML-DSA bootstrap is not admitted in ordinary
-  frames. A peer must reference a previously verified certificate/prekey hash
-  or use an independently reviewed bounded bootstrap. No PQ or anonymity claim
-  is made for LoRa until size, airtime, replay and battery tests pass.
-- ML-DSA keys/signatures live in long-lived account/device/prekey
-  certificates, not every message.
-- Every platform records peak bytes, allocations, CPU time, battery/thermal
-  effect and cancellation latency before a parameter set is accepted.
+Each logical message step obtains `ecMessageKey32` and `pqMessageKey32` from
+the two ratchets and derives:
 
-## 11. Downgrade, rollback and lifecycle
+```text
+messageKey32 = HKDF-Expand-512(
+  HKDF-Extract-512(
+    SHA512-D("Deep/Messaging/V2/triple-ratchet-salt", sessionId32),
+    ecMessageKey32 || pqMessageKey32),
+  "Deep/Messaging/V2/message-key" || 0x00 ||
+    LP32(sessionId32 || ecN:u64be || sckaEpoch:u64be ||
+      sckaN:u64be || headerHash32),
+  32)
+```
 
-- Suite and minimum-suite policy are signed into device certificates and
-  prekey bundles.
-- A conversation stores the accepted suite, transcript hash, peer certificate
-  generations and algorithm-policy generation under protected state.
-- A lower suite, missing component, stale certificate/prekey, reused one-time
-  key, changed same-ID object or older policy generation is a conflict, never a
-  retry with weaker algorithms.
-- Account/device revocation atomically fences unused prekeys and future
-  messages. Already authorized in-flight delivery follows an explicit durable
-  linearization boundary.
-- No environment accepts Session and Deep-native account/wire/database
-  generations concurrently.
+`ecN`, `sckaEpoch` and `sckaN` are exact counters committed by the canonical
+combined header. Neither component may be replaced by zeros, cached across
+counter tuples or
+treated as optional. Ratchet algorithm behavior follows the pinned Signal
+Triple Ratchet specification. The implementation work package MUST pin exact
+upstream source revisions and freeze an independent Deep codec/vector set
+before activation.
 
-## 12. Threat and claim boundary
+### 9.2 State limits
 
-Suite `0x0101` is intended to resist harvest-now/decrypt-later passive attacks
-on the initial key agreement if ML-KEM and the implementation remain secure.
-Authentication is still classical Ed25519 and must be described that way.
+- Maximum forward message-number gap per chain: `2048`.
+- Maximum retained skipped keys per device session: `2048`.
+- Maximum inactive sessions per remote device: `4`.
+- Maximum simultaneous unacknowledged initiations per device pair: `2`.
+- Maximum session state including SPQR state: `2 MiB`.
+- One remote account may expose at most `16` active devices.
+- Limits are identical across supported clients and are not remotely raised.
 
-Suite `0x0102` targets hybrid long-lived authentication, but it is not accepted
-until ML-DSA provider, certificate lifecycle and resource evidence pass.
+Skipped keys are deleted immediately after successful use and after the
+session's deterministic retirement boundary. Message-key and old chain-key
+deletion is part of the same durable transaction as ciphertext acceptance.
+Clock time alone never decides skipped-key deletion.
 
-Neither suite alone proves anonymity, censorship resistance, group security,
-multi-device recovery or traffic-analysis resistance. Those require their own
-Deep-specific specifications and evidence.
+### 9.3 Session convergence
 
-| Adversary/event | Required behavior or bounded claim |
+Each local device maintains one active and up to four inactive sessions per
+remote device, following Sesame-style convergence:
+
+- a successfully decrypted initiation becomes active;
+- the former active session moves to inactive;
+- receiving a valid message on an inactive session reactivates it;
+- identical simultaneous initiations converge by lexicographically comparing
+  authenticated 32-byte session IDs; the lower ID is canonical;
+- the non-canonical session remains decrypt-only until the mailbox retention
+  horizon passes, then is destroyed;
+- a changed device key or revoked device never silently creates a replacement
+  session.
+
+All state changes are transactional. Failure leaves ratchet state, dedup and
+outbox byte-equivalent to their prior committed state.
+
+The initiator retransmits byte-identical DPH2 with the same logical/pre-key
+claim operation until authenticated `SessionAck` or signed expiry; transport
+retries change only outer attempt IDs. A recipient receiving DPE2 before DPH2
+may hold at most two opaque envelopes and 128 KiB per unknown session for ten
+minutes. It performs no trial decryption, fetches/reconciles exact DPH2, then
+processes canonical order. Overflow, expiry or changed DPH2 bytes reject
+without session state.
+
+## 10. `DPE2` pairwise envelope
+
+`DPE2`, version 1, suite `0x0201`, has:
+
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2 | session ID | 32 |
+| 3 | sender device ID | 32 |
+| 4 | recipient device ID | 32 |
+| 5 | operation ID | 32 |
+| 6 | ratchet header | `1..8192` |
+| 7 | padded ciphertext | `32..49152` |
+
+`operationId` is a random idempotency identifier and not a content hash. The
+ratchet header is the canonical Deep encoding of the exact Double Ratchet and
+SPQR public header for one step. Its codec is part of the required machine
+registry; opaque upstream serialization is forbidden.
+
+Associated data is canonical DPE2 with tag 7 omitted plus
+`SHA256-D("Deep/Messaging/V2/ratchet-header", tag6)`. Tag 7 is
+XChaCha20-Poly1305-IETF ciphertext under the combined message key; the nonce is
+derived by the frozen ratchet codec from session ID and message number and can
+never repeat under one key.
+
+DPE2 has no Ed25519 or account signature. Authentication comes from the
+authenticated handshake and evolving ratchet state. Ordinary content therefore
+does not create a transferable long-term signature. Explicit signed documents,
+device directories and group governance use separate content types and domains.
+
+The precise deniability claim is limited: an online peer authenticates ordinary
+content inside its session, but a stored DPE2 is not a third-party-verifiable
+long-term signature by the account/device authority. Signed DPA1/DPD1/DMD1/DCB1/
+group governance records are intentionally non-deniable. PQXDH/Triple Ratchet do
+not claim deniability against an active quantum adversary or a compromised
+endpoint, and service timing/metadata may still be evidence independent of
+message cryptography.
+
+## 11. Payload and padding boundary
+
+The DPE2 plaintext is exactly one canonical `DMC2` defined by the companion
+contact/group specification, followed by random padding and a final `u32be`
+unpadded length. The total plaintext uses the smallest permitted bucket:
+
+`4096`, `16384`, `32768` or `49136` bytes.
+
+Content larger than the largest bucket is an encrypted attachment and DMC2
+carries only its bounded descriptor. Implementations SHOULD batch acknowledgments
+and apply transport-level jitter; crypto padding alone does not prevent timing
+correlation.
+
+Padding is generated by the OS CSPRNG and authenticated. Parsers verify the
+bucket, length trailer and exact inner DMC2 before application callbacks.
+
+## 12. Multi-device fanout
+
+One logical user message has one 32-byte `logicalMessageId` and one immutable
+canonical DMC2 plaintext. The sending device encrypts independent DPE2 copies
+to every active recipient device and every other active sender device. Ratchet
+state, envelope operation ID and ciphertext differ per destination.
+
+The receiver materializes a logical message at most once by
+`conversationId || logicalMessageId`, while retaining per-device delivery and
+receipt state. The guarantee is at-least-once transport attempts, idempotent
+mailbox storage and outbox retry, and at-most-once local materialization after
+successful authentication. The protocol does not claim exactly-once network
+delivery.
+
+## 13. Offline and retention semantics
+
+Cryptographic identity continuity is independent of message retention.
+
+- A fresh install can create an account without a network.
+- A returning device can reacquire signed current heads after any offline
+  period supported by the authority-history service.
+- Ordinary message retention is a signed policy with production default and
+  maximum `30 days`; disappearing-message policy may select a shorter value.
+- Expired ordinary ciphertext may be unavailable even though the account
+  reconnects successfully.
+- Device directory, revocation, contact-route and group state checkpoints are
+  retained for at least `400 days`, with root-anchored re-enrollment after that
+  horizon.
+- A durable outbox surfaces `pending`, `delivered`, `expired` and
+  `outcome-unknown`; it never reports failure merely because one attempt timed
+  out.
+
+After trust-history expiry, re-enrollment preserves the account only after
+recovery-root verification and a fresh externally witnessed current head. It
+does not reinterpret stale routing or ratchet state.
+
+## 14. Rollback, replay and compromise
+
+- Protected ratchet state includes session ID, suite, transcript hash, local
+  and remote device generations, directory heads, counters and a monotonic
+  storage generation.
+- Restoring older protected state while a newer external/device checkpoint
+  exists latches the session and requires a new handshake.
+- Duplicate exact DPE2 returns the prior result without advancing a ratchet.
+- Same operation ID with different bytes is a conflict.
+- Replayed DPH2 after a consumed one-time prekey exact-replays only if every
+  byte and committed session match; otherwise it rejects.
+- Account reset, changed DeepAccountId generation or device revocation cannot
+  be repaired by trying a legacy decoder. A fresh exact session is required.
+- Compromise of a current device exposes its local plaintext and active state.
+  It does not expose recovery roots or other devices by design. PCS begins only
+  after both sides contribute fresh uncompromised ratchet material.
+
+## 15. Post-quantum claim
+
+Suite `0x0201` targets hybrid confidentiality and FS/PCS: an attacker must
+break both the classical and ML-KEM ratchet components to recover combined
+message keys under the assumptions of the pinned construction.
+
+Authentication remains Ed25519. Therefore an active cryptographically relevant
+quantum attacker is outside the authentication claim. ML-DSA-65 is not placed
+into every message or activated merely to use a PQ label. It remains a future
+rare-certificate option after mobile provider, bandwidth, lifecycle and
+independent-review gates.
+
+FIPS 203 errata and SP 800-227 guidance are release inputs. A provider is pinned
+by source revision, build provenance, enabled algorithm set and KAT result.
+Custom ML-KEM, Ed25519, X25519, XChaCha20 or SPQR arithmetic is forbidden.
+
+## 16. Implementation source policy
+
+To reduce development time, the preferred evaluation order is:
+
+1. Signal's Rust `libsignal` PQXDH and
+   `signalapp/SparsePostQuantumRatchet` for 1:1 algorithm behavior;
+2. a thin memory-safe native boundary exposing Deep-owned canonical inputs and
+   outputs to .NET/Android/Windows;
+3. an independent implementation only for vectors and differential tests.
+
+Before adoption, engineering and legal review MUST approve license obligations,
+upstream support policy, platform ABI, reproducible builds and security-update
+ownership. The application MUST NOT depend on unversioned private libsignal
+wire bytes. A pinned fork may contain only reviewed portability, zeroization and
+Deep codec adapters; protocol changes require a new Deep suite/version.
+
+SimpleX PQ ratchet code is useful independent design evidence for recurrent
+KEM injection and transport separation, but it is not wire-compatible with
+Deep and must not be copied without license and cryptographic review.
+
+## 17. Threat and metadata boundary
+
+| Adversary/event | Required result or bounded claim |
 |---|---|
-| passive store-now/decrypt-later attacker | Initial confidentiality remains if at least one of X25519 or ML-KEM-768 and the combiner remain secure. |
-| active classical network or malicious prekey server | Signed account/device/prekey lineage, contact verification and the full transcript prevent substitution; denial and withholding remain possible. |
-| active quantum attacker | Suite `0x0101` does not claim PQ authentication. Suite `0x0102` is only a candidate until its hybrid certificate chain is reviewed. |
-| compromised last-resort PQ prekey | Bounded reuse, short expiry, public-key transcript binding and durable replay evidence limit scope; one-time PQ keys are preferred. |
-| weak initiator RNG | Both X25519 ephemeral and ML-KEM encapsulation security may fail; platform CSPRNG health is a release gate. |
-| compromised routine device | Device keys and conversations may be exposed; recovery roots and other devices must remain isolated, and revoke/rekey must fence future use. |
-| compromised recovery phrase | Account recovery authority is lost; the phrase cannot be remotely rate-limited, so physical secrecy and optional future split backup matter. |
-| metadata/traffic observer | This crypto profile does not hide timing, sizes, social graph or endpoints; padding and privacy routing are separate reviewed layers. |
+| passive network recorder | Cannot recover content; hybrid initial and ongoing secrets resist harvest-now/decrypt-later if either component and combiner remain secure. |
+| malicious prekey/directory service | Can withhold or equivocate; cannot mint valid signed lineage. Client detects stale, changed same-generation and conflicting heads. |
+| compromised old message key | Does not reveal later or earlier message keys after deletion. |
+| temporary device compromise | Exposes current device state; future secrecy recovers only after fresh uncompromised Double and SPQR contributions. |
+| compromised recovery phrase | Account authority and backup wrapping are lost; remote rate limiting cannot protect an offline mnemonic. |
+| revoked device while peers offline | Device may receive data sent before peers learn revocation; eventual update stops future fanout and triggers group rekey. |
+| recipient of a message | Can authenticate it within the session but ordinary content has no transferable long-term signature. |
+| XNode, Registry or mailbox operator | Sees only transport capabilities, timing, padded class and operational metadata assigned to its role; never DMC2 plaintext. |
+| global observer or colluding entry/exit | Traffic correlation remains possible; this profile makes no global-observer anonymity claim. |
 
-## 13. Mandatory vectors and tests
+Stable account/device IDs are inner-protocol values. Outer transports use
+random, rotatable capabilities. Logs contain no account, device, session,
+message, route, prekey or group identifier; approved diagnostics use local
+coarse counters or separately salted non-reversible labels.
 
-Before implementation GO:
+## 18. Mandatory implementation and release gates
 
-- BIP-39 official vectors plus Deep root/role derivation vectors for empty
-  passphrase, network and generation changes;
-- malformed word count, checksum, unknown word, NFKD, mixed profile and
-  wallet-reuse UX negatives;
-- FIPS 203 ML-KEM KATs and two-provider DPKB/DPHI transcript agreement;
-- all field length, order, reserved, duplicate, unknown, max+1, truncation and
-  trailing-byte cases before callbacks;
-- wrong account/device/certificate/prekey/suite/algorithm generation and
-  cross-role key mix with zero state mutation;
-- one-time key atomic claim, crash before/after KEM/sign/commit/send, exact
-  lost-response replay and same-ID fork;
-- passive and active quantum-adversary analysis, including the classical
-  authentication limitation of suite `0x0101`;
-- mobile/server/Nearby/BLE/LoRa resource measurements;
-- destructive recovery, device revoke, rollback and protected-state
-  corruption tests;
-- independent crypto/privacy review with P0=0/P1=0.
+Production GO requires all of the following:
 
-## 14. References
+1. New machine registry and schemas for DPK2, DPH2, DPE2, DMC2 and companion
+   records, with no retired alias.
+2. BIP-39 official vectors plus Deep Recovery role vectors for network and
+   account-generation changes.
+3. Exact DPA1/DPD1/DRS1 integration and cross-role-key negative tests.
+4. FIPS 203 KATs, current errata handling and two-provider ML-KEM agreement.
+5. Pinned Triple Ratchet source and Deep-owned canonical header vectors from
+   two independent implementations.
+6. Malformed tag/order/reserved/length/trailing/unknown/suite/version tests
+   proving rejection before callbacks and mutation.
+7. One-time-prekey atomic claim, lost response, crash-before/after commit,
+   replay and same-ID fork tests.
+8. Out-of-order, skipped-key, simultaneous-initiation, rollback, session
+   convergence and deterministic deletion tests at every limit.
+9. Android arm64, Windows x64/arm64 and server benchmarks for CPU, allocations,
+   storage, battery, thermal effect and cancellation.
+10. Destructive account creation/recovery/reset rehearsals proving no Session
+    or 13-word material remains in database, resources, packages or logs.
+11. Interoperability across at least two physical clients through XPoint and
+    one transport-independent loopback/P2P adapter.
+12. Independent cryptography and privacy review with P0=0 and P1=0.
 
-- BIP-39 mnemonic construction and normalization:
-  <https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki>
-- NIST FIPS 203 ML-KEM:
-  <https://csrc.nist.gov/pubs/fips/203/final>
-- NIST FIPS 204 ML-DSA:
-  <https://csrc.nist.gov/pubs/fips/204/final>
-- Signal PQXDH, used as a reference design rather than wire compatibility:
-  <https://signal.org/docs/specifications/pqxdh/>
-- Signal Double/Sparse-PQ/Triple Ratchet specification, used as a reference
-  design:
+No build flag, environment variable or server response may bypass these gates
+or activate a lower suite.
+
+## 19. Staged implementation plan
+
+The stages are implementation order, not compatibility eras. Only the final
+suite is releasable; intermediate formats are test-only and are deleted before
+cutover.
+
+1. **Identity cutover** — replace Session identity/recovery/database generation
+   with DeepRecoveryV1 plus exact DPA1/DPD1/DRS1; reset all UAT data.
+2. **Provider spike** — bind pinned ML-KEM and SPQR sources on Android and
+   Windows, run KAT/resource evidence, then freeze the provider.
+3. **Canonical codecs** — generate registry/codecs/vectors for DPK2, DPH2,
+   DPE2 and DMC2 with hostile-input tests.
+4. **Pairwise engine** — implement atomic prekeys, PQXDH, Triple Ratchet,
+   transactional persistence and Sesame-style session convergence.
+5. **Contact and multi-device** — implement the companion specification,
+   self-device fanout, recovery and eventual revocation.
+6. **Groups** — implement the bounded owner-sequenced `DeepSmallGroupV1`
+   pairwise-ratcheted fanout from the companion specification. Keep group
+   storage and transport interfaces independent so a later MLS engine replaces
+   it by a clean profile cutover, never by a silent fallback.
+7. **Transport integration** — carry identical envelopes over XPoint,
+   on-premise and test mesh adapters with no crypto branching.
+8. **Physical and adversarial gates** — complete device, crash, rollback,
+   retention, censor-network and independent-review evidence.
+9. **Single clean cutover** — reset all pre-production identities and stores,
+   remove dark/legacy readers and ship one generation.
+
+## 20. References
+
+- BIP-39: <https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki>
+- Signal PQXDH: <https://signal.org/docs/specifications/pqxdh/>
+- Signal Double and Triple Ratchet:
   <https://signal.org/docs/specifications/doubleratchet/>
-
-NIST currently publishes errata notices for FIPS 203 and FIPS 204. Provider
-selection and release gates must pin the exact standard revision, errata state,
-package provenance and known-answer self-tests.
+- Signal SPQR implementation evidence:
+  <https://github.com/signalapp/SparsePostQuantumRatchet>
+- Signal Sesame multi-device session management:
+  <https://signal.org/docs/specifications/sesame/>
+- NIST FIPS 203 ML-KEM: <https://csrc.nist.gov/pubs/fips/203/final>
+- NIST FIPS 204 ML-DSA (retained provider/vector oracle only):
+  <https://csrc.nist.gov/pubs/fips/204/final>
+- NIST SP 800-227 KEM guidance:
+  <https://csrc.nist.gov/pubs/sp/800/227/final>
+- SimpleX agent protocol, independent PQ ratchet and queue-rotation evidence:
+  <https://github.com/simplex-chat/simplexmq/blob/stable/protocol/agent-protocol.md>

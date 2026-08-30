@@ -155,7 +155,7 @@ Offline/local mesh поверх BLE, Wi-Fi Direct/LAN или последующ�
 | Attachments | masked blob | masked blob | operator blob/P2P | operator blob | operator blob | live chunks | bounded chunks |
 | Push | optional hint | optional hint | operator choice | operator choice | operator choice | нет | нет |
 | Call signaling | E2EE message plane | E2EE message plane | message plane | message plane | message plane | live link | eventual only |
-| Realtime call media | direct/relay/masked relay | direct/relay/masked relay | operator/direct | operator/direct | operator/direct | direct/relay | только при live path |
+| Realtime call media | RelayOnly: MasqueUdp/MaskedTcpCapsule | RelayOnly: MasqueUdp/MaskedTcpCapsule | operator policy | operator policy | operator policy | direct/relay | только при live path |
 | Первый релиз | **да** | нет | нет | нет | нет | нет | нет |
 
 `conditional` означает, что runtime выдаёт capability только после
@@ -194,9 +194,9 @@ XPoint transport и carrier — разные оси. Один exact MAU2/onion f
 проходить через:
 
 - `reality-xhttp-v1` — первый production TCP/443 carrier;
-- `webtunnel-h2-v1` — независимый HTTPS/WebTunnel-подобный TCP/443 carrier;
+- `https-stream-v1` — независимый HTTPS/WebTunnel-подобный TCP/443 carrier;
 - `masque-h3-v1` — дополнительный QUIC/UDP carrier;
-- `capsule-over-masked-tcp-v1` — обязательный real-time fallback без UDP;
+- `masked-tcp-capsule-v1` — обязательный real-time fallback без UDP;
 - `DirectTls` — допустим только для explicit on-prem/admin profile, не как
   hidden official fallback.
 
@@ -318,10 +318,10 @@ FCM/APNs/WNS остаются optional wake optimization. Official profile MUST
 
 Signaling следует message profile. Media использует отдельную policy:
 
-- `RelayPrivacy` — default relay-only;
-- `DirectFast`/direct ICE — opt-in/explicit policy из-за раскрытия IP peer и
+- `RelayOnly` — единственный official V1 `CallPrivacyProfile`;
+- `DirectPeer`/direct ICE — будущая opt-in policy из-за раскрытия IP peer и
   не входит в official V1;
-- `RestrictedNetwork` использует masked UDP или TCP carrier без peer-IP
+- `NetworkCondition=Restricted` выбирает `MaskedTcpCapsule` без peer-IP
   downgrade;
 - official call relay catalog ротируется и доступен через TCP/TLS 443 и
   UDP/443 families;
@@ -367,3 +367,19 @@ P2P/on-prem не входят в первый релиз, но target architectu
 - один semantic event дедуплицируется после доставки XPoint+mesh;
 - добавление profile не требует DB rewrite application history или crypto
   session migration.
+
+## 11. Ingress implementation boundary
+
+HAProxy is not a protocol or application dependency. It is the current
+production implementation for sharing TCP/443 between exact-host HTTPS and
+Reality SNI, suppressing headers and keeping internal services unpublished.
+
+- A fast developer lane MAY connect directly to container-private Xray and
+  managed-ingress listeners and omit HAProxy.
+- A production-representative UAT lane MUST exercise the selected shared-port
+  ingress, Docker DNS re-resolution, certificate rotation and SNI separation.
+- Passing the direct developer lane cannot satisfy censorship, TLS, public
+  exposure or production ingress evidence.
+- A later Envoy/Nginx/custom ingress MAY replace HAProxy if the same closed
+  listener/routes/header/re-resolution gates pass; no client or wire record
+  contains `HAProxy`.
