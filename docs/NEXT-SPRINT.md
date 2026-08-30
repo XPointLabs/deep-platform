@@ -8,11 +8,10 @@
 XPoint с маскированным anti-blocking carrier и трёхузловой
 privacy-маршрутизацией.
 
-Direct P2P перенесён в следующий спринт после первого production deployment и
-не блокирует этот релиз. On-prem выполняется ещё позднее. Текущие изменения не
-должны связывать общие transport/domain contracts только с
-`official-managed` инфраструктурой или удалять зарезервированные P2P/on-prem
-seams.
+Direct P2P mesh и on-prem реализуются позднее и не блокируют этот релиз. Сейчас
+они являются архитектурными требованиями: текущие изменения не должны
+связывать общие transport/domain contracts только с `official-managed`
+инфраструктурой или удалять зарезервированные P2P/on-prem seams.
 
 ## P0 — XPoint anti-blocking message path
 
@@ -24,21 +23,23 @@ seams.
 - На одной production-bound commit matrix подтвердить Android ↔ Windows: добавление произвольного контакта, direct text в обе стороны, exactly-once, cold restart и отсутствие direct MAU2 endpoint.
 - Подтвердить группы через тот же XPoint path: создание группы с произвольным участником, state/message/reply/reaction в обе стороны, exactly-once и cold restart обоих клиентов. Отдельная ранняя `GroupText` physical-фаза уже существует, но успешного device evidence ещё нет.
 
-## Следующий post-production спринт — Direct P2P
+## Будущее архитектурное требование — Direct P2P mesh
 
 Эта секция не входит в Definition of Done первого production-релиза. До её
 реализации Direct P2P остаётся скрытым/fail-closed и не рекламируется как
-доступный режим.
+доступный режим. `Direct` здесь означает отсутствие обязательного центрального
+mailbox/control plane, а не требование одношагового соединения: доставка должна
+поддерживать как direct peer link, так и multi-hop mesh.
 
-- Принять отдельный protocol/crypto/privacy ADR для peer authentication, session establishment, replay protection, address/metadata exposure, key continuity и transport downgrade. Immutable Session-reference и Nearby scaffolding не являются production protocol.
-- Реализовать настоящий `IDirectP2pSessionMessageTransport`; текущий Release composition намеренно fail-closed, потому что такого адаптера нет.
-- Реализовать как минимум два discovery/connectivity пути:
-  - полностью локальный offline rendezvous между устройствами без Registry/Internet;
-  - Internet P2P с authenticated rendezvous и ICE/STUN, где это возможно, с явным состоянием direct/relay. TURN relay не должен называться Direct P2P.
-- Подключить P2P к существующим E2EE envelopes, durable logical outbox, receive/dedup/ACK и cold-restart recovery. Нельзя отправлять P2P-сообщение в official mailbox как скрытый fallback без явной пользовательской политики.
-- Добавить UI выбора/состояния транспорта и безопасное переключение. Account и recovery phrase создаются локально и не должны зависеть от сети или выбранного транспорта.
-- Получить второй Android API 28+ и подтвердить на двух физических устройствах: offline account creation, arbitrary contact pairing, text в обе стороны, reconnect, exactly-once и cold restart. Подключённый Galaxy A5 API 26 ниже `minSdk 28` и не закрывает gate.
-- Явно определить post-production scope P2P для групп, attachments и calls. До реализации соответствующая функция должна быть скрыта или показывать точное `unavailable`, а не использовать другой transport неявно.
+- Принять отдельный protocol/crypto/privacy ADR для peer и relay authentication, session establishment, replay protection, key continuity, routing metadata, downgrade и malicious-relay model. Immutable Session-reference и Nearby scaffolding не являются production protocol.
+- Сохранить transport boundary так, чтобы будущий `IDirectP2pSessionMessageTransport` поддерживал одношаговую и multi-hop доставку без изменения E2EE message/group contracts.
+- Поддержать локальную offline mesh через доступные peer links (например, Wi‑Fi/BLE) без Registry/Internet и Internet P2P с authenticated rendezvous/ICE там, где это возможно. TURN relay не должен называться mesh/direct P2P.
+- Для multi-hop задать authenticated neighbor discovery, route selection, hop limit/TTL, loop suppression, duplicate/replay protection, partition healing и store-and-forward для временно недоступного следующего hop.
+- Промежуточный peer не должен получать plaintext, conversation keys или право выдать себя за origin/destination. Метаданные, relay consent, quotas, battery/storage limits и защита от flooding должны входить в threat model.
+- Подключить mesh к существующим E2EE envelopes, durable logical outbox, receive/dedup/ACK и cold-restart recovery. Нельзя отправлять P2P-сообщение в official mailbox как скрытый fallback без явной пользовательской политики.
+- Добавить UI фактического пути: direct one-hop, mesh multi-hop, недоступен/partitioned; безопасное переключение не должно менять identity. Account и recovery phrase создаются локально.
+- Для будущего mesh gate использовать минимум три поддерживаемых физических устройства: крайние peers без прямого канала обмениваются сообщениями через промежуточный, переживают исчезновение/возврат relay, partition merge, exactly-once и cold restart.
+- Явно определить будущий scope mesh для групп, attachments и calls. До реализации соответствующая функция должна быть скрыта или показывать точное `unavailable`, а не использовать другой transport неявно.
 
 ## P0 — production liveness и широкий круг пользователей
 
@@ -50,7 +51,7 @@ seams.
 - Registry должен хранить точную predecessor/closure history на поддерживаемый offline horizon, а запрос клиента — криптографически связывать нужного predecessor. Не заменять историю одним latest bundle.
 - Добавить proactive authority/revocation refresh на resume/foreground и перед сетевой операцией, с expiry margin, jitter/backoff и продолжением durable outbox.
 - Проверить reconnect после 30/180/365 дней offline и безопасный re-enrollment за пределами поддерживаемого окна.
-- Убрать release-заглушку `production-credentials-unavailable`: clean install должен получать production trust/runtime через публичный control plane. Ошибка сети не должна блокировать локальное создание account; P2P остаётся отдельной post-production работой.
+- Убрать release-заглушку `production-credentials-unavailable`: clean install должен получать production trust/runtime через публичный control plane. Ошибка сети не должна блокировать локальное создание account; P2P mesh остаётся будущим архитектурным требованием.
 
 ## Release evidence после закрытия P0
 
