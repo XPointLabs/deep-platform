@@ -1,5 +1,58 @@
 # История спринтов
 
+## 2026-08-30 — аудит release transport целей
+
+Статус: завершён документарный и code-path аудит без production deployment и без новых physical claims.
+
+### Подтверждено
+
+- Exact MAU2, durable outbox/inbox, authenticated receipts и трёхузловая бинарная privacy-маршрутизация с полностью непересекающимся fallback реализованы и покрыты автоматическими тестами.
+- XNode реализует managed HTTP/2 ingress и серверный Xray/VLESS Reality ingress; production profile fail-closed запрещает mock Xray.
+- Arbitrary-contact PeerDeposit, group fanout/state/message и отдельная ранняя physical-фаза `GroupText` реализованы в коде/тестовом harness.
+- Account/recovery phrase создаются локально без сетевого вызова; startup больше не обязан синхронизировать inbox до показа onboarding.
+- Portable contracts различают `DirectP2p`, `UserManaged` и `OfficialManaged`; self-hosted SHR1 activation принят как dormant protocol capability.
+
+### Не выдано за готовность
+
+- Клиентский mailbox path пока создаёт прямой HTTPS transport к signed `entryOrigin`; локальный Reality/Xray runtime не включён в отправку message frame. Поэтому anti-blocking XPoint carrier ещё не реализован end-to-end.
+- Direct P2P имеет policy/interface и platform scaffolding, но не имеет production peer transport, discovery/handshake/NAT path или release composition.
+- Последний физический сценарий на телефоне не подтвердил arbitrary-contact delivery, а новый APK с mailbox fixes не устанавливался. Предыдущие частичные прогоны не считаются актуальным release evidence.
+- Group `GroupText` harness отделён от file picker, но успешного Android ↔ Windows physical roundtrip/cold-restart evidence ещё нет.
+- Долгий offline/rotation, production clean-install control plane и два finding reactive refresh остаются release blockers.
+
+## 2026-08-28 — authenticated contacts and groups
+
+Статус: код и локальные автоматические тесты реализованы. Актуальный physical e2e для произвольных контактов, direct text и групп не закрыт; push и production deployment не выполнялись.
+
+### Реализовано
+
+- Произвольные контакты переведены на authenticated mailbox invitations и peer-deposit routes: `fa3a130`, `a27fa8c`, `0082721`, `8bac84d`, `7e1cea6`.
+- Добавление контакта сначала завершает cryptographic onboarding и только затем изменяет локальную книгу контактов; peer selector сохраняется и восстанавливается после restart/offline.
+- Группы используют проверенные `GroupState`/`GroupMessage` selectors; участники проходят onboarding до изменения group state: `83e8eca`, `7e1cea6`.
+- Исправлена first-use/lifecycle композиция production coordinator, account release/rebind и production privacy route bootstrap.
+- Добавлен Mr. X-signed DEV/UAT pair rebind на том же epoch только для `android-windows-pair/UserManaged`; production anti-rollback не ослаблен: `ade6a37`.
+- Mailbox persisted-scope conflict в physical Debug преобразуется в типизированный app-owned clean-break reset: `eeb5b29`.
+- Android lab policy проверяет точную версию runner: `ded889e`.
+
+### Локальные проверки
+
+- Shared после mailbox-liveness изменений: `1040/1040`.
+- MAUI ViewModels после reactive-refresh patch: `622/622`.
+- MAUI UI: `83 passed` и три opt-in physical skip; `GroupText` contract: `32/32`.
+- Последний полный Smoke: `179/180`; остаётся один PowerShell 7 harness failure.
+- Release DI composition: `69` app-owned descriptors.
+- Android и Windows physical Debug builds: `0 warnings / 0 errors`; E2E APK установлен без изменения production package.
+- Подписанная physical фаза `Attach` прошла без skipped tests после смены Android holder и перевыпуска credential pair.
+- Предыдущие physical прогоны дали частичное evidence до Windows file-picker barrier, но последующая ошибка доставки на телефоне и отсутствие установки нового APK не позволяют считать contacts/direct text закрытым release gate.
+
+### Найдено и перенесено дальше
+
+- Windows UIA foreground limitation перед owned file picker; диагностические foreground-эксперименты откатаны и не оставлены в runtime/test policy.
+- Android startup после forced cold-stop может встретить живой durable retrieve lease и показать generic retryable startup error; штатный Retry после `NotBefore` восстановил Conversations без reset.
+- Один оставшийся PowerShell 7 smoke incompatibility, production offline/rotation/clean-install и Android ↔ Android на втором поддерживаемом устройстве.
+- Client-to-entry Reality/VLESS не подключён к MAU2 message path; Direct P2P transport отсутствует.
+- Reactive refresh commit `d488cd8` требует исправить independent trust-tuple transition и bounded lifecycle cancellation до установки на устройства.
+
 ## 2026-08-26 — release-candidate closure
 
 Статус: завершён локально. Push, публикация и первый production deployment в этот спринт не входили. Отложенные production-bound проверки и замечания финального независимого review перенесены в [NEXT-SPRINT.md](NEXT-SPRINT.md).
