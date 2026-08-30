@@ -1,15 +1,18 @@
-# Текущий спринт: XPoint transport и P2P до первого релиза
+# Текущий спринт: XPoint transport до первого production-релиза
 
 В этом файле перечислено только то, что ещё не выполнено или не подтверждено. Завершённая работа и результаты аудита находятся в [SPRINT-HISTORY.md](SPRINT-HISTORY.md).
 
 ## Приоритет продукта
 
-До первого релиза обязательны два независимых режима:
+До первого production-релиза обязателен один transport scope: сообщения через
+XPoint с маскированным anti-blocking carrier и трёхузловой
+privacy-маршрутизацией.
 
-1. сообщения через XPoint с маскированным anti-blocking carrier и трёхузловой privacy-маршрутизацией;
-2. Direct P2P без зависимости от official mailbox/control plane.
-
-Будущий on-prem режим не входит в первый релиз, но текущие изменения не должны связывать общие transport/domain contracts только с `official-managed` инфраструктурой.
+Direct P2P перенесён в следующий спринт после первого production deployment и
+не блокирует этот релиз. On-prem выполняется ещё позднее. Текущие изменения не
+должны связывать общие transport/domain contracts только с
+`official-managed` инфраструктурой или удалять зарезервированные P2P/on-prem
+seams.
 
 ## P0 — XPoint anti-blocking message path
 
@@ -21,7 +24,11 @@
 - На одной production-bound commit matrix подтвердить Android ↔ Windows: добавление произвольного контакта, direct text в обе стороны, exactly-once, cold restart и отсутствие direct MAU2 endpoint.
 - Подтвердить группы через тот же XPoint path: создание группы с произвольным участником, state/message/reply/reaction в обе стороны, exactly-once и cold restart обоих клиентов. Отдельная ранняя `GroupText` physical-фаза уже существует, но успешного device evidence ещё нет.
 
-## P0 — Direct P2P
+## Следующий post-production спринт — Direct P2P
+
+Эта секция не входит в Definition of Done первого production-релиза. До её
+реализации Direct P2P остаётся скрытым/fail-closed и не рекламируется как
+доступный режим.
 
 - Принять отдельный protocol/crypto/privacy ADR для peer authentication, session establishment, replay protection, address/metadata exposure, key continuity и transport downgrade. Immutable Session-reference и Nearby scaffolding не являются production protocol.
 - Реализовать настоящий `IDirectP2pSessionMessageTransport`; текущий Release composition намеренно fail-closed, потому что такого адаптера нет.
@@ -31,7 +38,7 @@
 - Подключить P2P к существующим E2EE envelopes, durable logical outbox, receive/dedup/ACK и cold-restart recovery. Нельзя отправлять P2P-сообщение в official mailbox как скрытый fallback без явной пользовательской политики.
 - Добавить UI выбора/состояния транспорта и безопасное переключение. Account и recovery phrase создаются локально и не должны зависеть от сети или выбранного транспорта.
 - Получить второй Android API 28+ и подтвердить на двух физических устройствах: offline account creation, arbitrary contact pairing, text в обе стороны, reconnect, exactly-once и cold restart. Подключённый Galaxy A5 API 26 ниже `minSdk 28` и не закрывает gate.
-- Явно определить release scope P2P для групп, attachments и calls. До реализации соответствующая функция должна быть скрыта или показывать точное `unavailable`, а не использовать другой transport неявно.
+- Явно определить post-production scope P2P для групп, attachments и calls. До реализации соответствующая функция должна быть скрыта или показывать точное `unavailable`, а не использовать другой transport неявно.
 
 ## P0 — production liveness и широкий круг пользователей
 
@@ -43,7 +50,7 @@
 - Registry должен хранить точную predecessor/closure history на поддерживаемый offline horizon, а запрос клиента — криптографически связывать нужного predecessor. Не заменять историю одним latest bundle.
 - Добавить proactive authority/revocation refresh на resume/foreground и перед сетевой операцией, с expiry margin, jitter/backoff и продолжением durable outbox.
 - Проверить reconnect после 30/180/365 дней offline и безопасный re-enrollment за пределами поддерживаемого окна.
-- Убрать release-заглушку `production-credentials-unavailable`: clean install должен получать production trust/runtime через публичный control plane. Ошибка сети не должна блокировать локальное создание account или локальный P2P.
+- Убрать release-заглушку `production-credentials-unavailable`: clean install должен получать production trust/runtime через публичный control plane. Ошибка сети не должна блокировать локальное создание account; P2P остаётся отдельной post-production работой.
 
 ## Release evidence после закрытия P0
 
@@ -82,7 +89,6 @@
 
 - На чистой установке account создаётся без сети; после появления сети arbitrary contacts и группы работают без DEV secrets.
 - При заблокированном direct managed-ingress HTTPS сообщения проходят через реальный masked XPoint carrier и exact three-hop privacy route; немаскированного fallback нет.
-- Direct P2P работает на двух поддерживаемых физических устройствах без official mailbox и подтверждает authentication, reconnect, exactly-once и cold restart.
 - Authority/revocation rotation и длительный offline не требуют сброса identity, истории или queued messages.
 - Все заявленные v1 функции имеют physical evidence на одной signed commit matrix; compile/unit tests не выдаются за e2e.
 - On-prem ещё не заявлен готовым, но перечисленные architecture guards проходят.

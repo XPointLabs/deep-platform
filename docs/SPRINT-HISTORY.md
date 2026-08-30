@@ -4,6 +4,12 @@
 
 Статус: завершён документарный и code-path аудит без production deployment и без новых physical claims.
 
+Последующее product-scope решение: первый production-релиз включает только
+маскированный XPoint transport. Direct P2P перенесён в следующий спринт после
+production deployment и больше не является gate этого релиза; on-prem остаётся
+более поздней целью. Отсутствие P2P реализации ниже сохранено как результат
+аудита, а не как release blocker текущего спринта.
+
 ### Подтверждено
 
 - Exact MAU2, durable outbox/inbox, authenticated receipts и трёхузловая бинарная privacy-маршрутизация с полностью непересекающимся fallback реализованы и покрыты автоматическими тестами.
