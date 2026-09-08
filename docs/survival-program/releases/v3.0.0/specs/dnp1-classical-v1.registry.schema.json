@@ -46,7 +46,7 @@
     },
     "artifactHashDomains": { "type": "object", "minProperties": 34, "maxProperties": 34, "additionalProperties": { "type": "string", "pattern": "^Deep/Artifact/V1/[A-Z0-9]+$" } },
     "retainedArtifactHashRules": { "type": "object", "minProperties": 10, "maxProperties": 10, "additionalProperties": { "enum": ["unchanged-reviewed-canonical-hash", "unchanged-reviewed-source-hash"] } },
-    "domains": { "type": "array", "minItems": 158, "maxItems": 158, "uniqueItems": true, "items": { "type": "string", "pattern": "^Deep/[A-Za-z0-9/-]+$" } },
+    "domains": { "type": "array", "minItems": 161, "maxItems": 161, "uniqueItems": true, "items": { "type": "string", "pattern": "^Deep/[A-Za-z0-9/-]+$" } },
     "substructures": { "type": "object" },
     "componentKinds": {
       "type": "array",
@@ -101,7 +101,7 @@
     "wireEnums": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["dpaMinimumSuite", "dpdSuite", "dpdCapabilities", "dpmCapabilities", "drtTargetKind", "drsReason", "draReason", "keyScope", "keyAction", "dxpRole", "routerRoles", "routerCapabilities", "dpcEndpointKind", "dpcFlags", "witnessEndpointKind", "dcnDurabilityClass", "componentMask", "outerPeerOperation", "innerPrq2Operation", "dpjPhase", "dxrPhase", "booleanByte", "rip2ProtocolVersion", "unknownPolicy", "drtTargetPolicy", "keyPolicy", "dxpPolicy", "routerPolicy", "dpcPolicy", "reasonPolicy", "phasePolicy", "reservedPolicy"],
+      "required": ["dpaMinimumSuite", "dpdSuite", "dpdCapabilities", "dpmCapabilities", "drtTargetKind", "drsReason", "draReason", "keyScope", "keyAction", "dxpRole", "dxpIdentityIssuanceSourceKind", "routerRoles", "routerCapabilities", "dpcEndpointKind", "dpcFlags", "witnessEndpointKind", "dcnDurabilityClass", "componentMask", "outerPeerOperation", "innerPrq2Operation", "dpjPhase", "dxrPhase", "booleanByte", "rip2ProtocolVersion", "unknownPolicy", "drtTargetPolicy", "keyPolicy", "dxpPolicy", "routerPolicy", "dpcPolicy", "reasonPolicy", "phasePolicy", "reservedPolicy"],
       "properties": {
         "dpaMinimumSuite": { "const": 1 },
         "dpdSuite": { "const": 1 },
@@ -113,6 +113,7 @@
         "keyScope": { "const": ["ReleaseRoot=1", "DeviceCertificateIssuer=2", "AccountRevocation=3", "ResetControl=4"] },
         "keyAction": { "const": ["Rotate=1", "Revoke=2"] },
         "dxpRole": { "const": ["Device=1", "Router=2"] },
+        "dxpIdentityIssuanceSourceKind": { "const": ["OfflineAccountDeviceGenesis=1", "CurrentCutoverRouter=2"] },
         "routerRoles": { "const": { "PeerIngress": 1, "PeerCore": 2, "MailboxReplica": 4, "allowedMask": 7, "requiredNonzero": true } },
         "routerCapabilities": { "const": { "NativePeerMailboxV2": 1, "ClientMailboxIngressV2": 2, "ProductionMailboxCacheV2": 4, "ProductionMailboxCapacityV1": 8, "MembershipCatalogV2": 16, "allowedMask": 31, "requiredNonzero": true } },
         "dpcEndpointKind": { "const": ["IPv4=1", "IPv6=2", "DNS=3"] },

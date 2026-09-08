@@ -370,7 +370,10 @@
                     "Deep/IdentityAuth/V1/x25519-pop-key/router",
                     "Deep/IdentityAuth/V1/x25519-pop-transcript-hash",
                     "Deep/IdentityAuth/V1/x25519-pop-subject",
-                    "Deep/IdentityAuth/V1/dxp-operation-source",
+                    "Deep/IdentityAuth/V2/offline-genesis-identity-issuance-source",
+                    "Deep/IdentityAuth/V2/account-device-issuance-scope",
+                    "Deep/IdentityAuth/V2/current-cutover-router-issuance-scope",
+                    "Deep/IdentityAuth/V2/dxp-operation-source",
                     "Deep/IdentityAuth/V1/mailbox-owner-id",
                     "Deep/Artifact/V1/RRM1",
                     "Deep/Artifact/V1/RRL1",
@@ -511,8 +514,8 @@
                     "Deep/ProtectedState/V1/DPJ1",
                     "Deep/ProtectedState/V1/RRL1",
                     "Deep/ProtectedState/V1/DXP1-verified-receipt",
-                    "Deep/ProtectedState/V1/DXP1-nonce-ledger-key",
-                    "Deep/ProtectedState/V1/DXP1-nonce-index-key-id"
+                    "Deep/ProtectedState/V2/DXP1-nonce-ledger-key",
+                    "Deep/ProtectedState/V2/DXP1-nonce-index-key-id"
                 ],
     "substructures":  {
                           "dcmComponentRow":  {
@@ -700,6 +703,10 @@
                                       "Device=1",
                                       "Router=2"
                                   ],
+                      "dxpIdentityIssuanceSourceKind":  [
+                                                            "OfflineAccountDeviceGenesis=1",
+                                                            "CurrentCutoverRouter=2"
+                                                        ],
                       "routerRoles":  {
                                           "PeerIngress":  1,
                                           "PeerCore":  2,
@@ -1804,9 +1811,12 @@
                             "catalogHash":  "sha256-d(Deep/NativeRouting/V2/catalog-hash, artifact-entry-count4|catalog-length8|catalog-bytes)",
                             "outerJournalKey":  "hmac-sha256(journal-index-key, u16-domain-length|Deep/NativeRouting/V1/outer-journal-key|network16|sender32|recipient32|request-id32)",
                             "dxpSubjectProjection":  "sha256-d(Deep/IdentityAuth/V1/x25519-pop-subject,role1|u32be-projection-length|canonical-DPD1-or-DNR1-unsigned-projection-with-signature-and-PoP-signature-TLVs-omitted-and-x25519PoPTranscriptHash-value-zero32)",
-                            "dxpNonceIndexKeyId":  "sha256-d(Deep/ProtectedState/V1/DXP1-nonce-index-key-id,network16|reset-id32|dxp-nonce-index-key32)",
-                            "dxpNonceLedgerKey":  "hmac-sha256(dxp-nonce-index-key32,u16be-domain-length|Deep/ProtectedState/V1/DXP1-nonce-ledger-key|network16|reset-id32|role1|nonce32)",
-                            "dxpOperationSource":  "sha256-d(Deep/IdentityAuth/V1/dxp-operation-source,role1|stage1|cutover-source32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|subject-projection-hash32|prior-subject-LKG-ref38|transcript-hash32|subject-artifact-ref38|identity-catalog-key-id32|DXR-key-id32|nonce-index-key-id32)",
+                            "dxpOfflineGenesisIdentityIssuanceSource":  "sha256-d(Deep/IdentityAuth/V2/offline-genesis-identity-issuance-source,network16|account-hash32|account-generation8=1|DPA1-ref38|DRS-revision8=1|DRS-count8=0|zero-DRS-head32|DRS1-ref38)",
+                            "dxpAccountDeviceIssuanceScope":  "sha256-d(Deep/IdentityAuth/V2/account-device-issuance-scope,network16|account-hash32|account-generation8=1|DPA1-ref38)",
+                            "dxpCurrentCutoverRouterIssuanceScope":  "sha256-d(Deep/IdentityAuth/V2/current-cutover-router-issuance-scope,network16|reset-id32|component-kind2|account-hash32|account-generation8)",
+                            "dxpNonceIndexKeyId":  "sha256-d(Deep/ProtectedState/V2/DXP1-nonce-index-key-id,source-kind1|network16|issuance-scope32|dxp-nonce-index-key32)",
+                            "dxpNonceLedgerKey":  "hmac-sha256(dxp-nonce-index-key32,u16be-domain-length|Deep/ProtectedState/V2/DXP1-nonce-ledger-key|source-kind1|network16|issuance-scope32|role1|nonce32)",
+                            "dxpOperationSource":  "sha256-d(Deep/IdentityAuth/V2/dxp-operation-source,source-kind1|role1|stage1|identity-issuance-source32|issuance-scope32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|subject-projection-hash32|prior-subject-LKG-ref38|transcript-hash32|subject-artifact-ref38|identity-catalog-key-id32|DXR-key-id32|nonce-index-key-id32)",
                             "outerRequestHash":  "sha256-d(Deep/NativeRouting/V1/outer-request-hash,u32be-408|exact-DPR1-408|u32be-PRQ2-length|exact-PRQ2)",
                             "outerOutcomeHash":  "sha256-d(Deep/NativeRouting/V1/outer-outcome-hash,u32be-296|exact-MRR2-296|u32be-444|exact-DPS1-444)",
                             "currentCutoverSource":  "sha256-d(Deep/NativeRouting/V2/current-cutover-source,network16|reset-id32|component-kind2|account-hash32|account-generation8|DCM-generation8|DCM-ref38|DCP-ref38|DCS-ref38|DCQ-ref38|DWL-ref38|DCL-ref38|DPL-ref38|release-root-authority-head32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|lease-expires8|DPL-key-id32|DWL-key-id32|RRL-key-id32|RIB-key-id32|MRLC-key-id32|DXR-key-id32)",
@@ -2115,8 +2125,8 @@
                           "mrlCacheIdentity":  "every-cache-and-index-key-retains-projected-leaf32-projected-root32-and-full-MRL2-ref38-and-exact-prior-full-MRL2-LKG",
                           "dxpProjection":  "internal-non-artifact-only; DPD1 projection is final-unsigned-632 with tag21 value zero32 and tags22-23 omitted; DNR1 projection is final-unsigned-612 with tag19 value zero32 and tags20-21 omitted; order projection-hash then DXP1-and-proof then transcript-hash insertion then final Ed25519 PoP-and-issuer signatures; no public projection parser-model-or-authority",
                           "dxpReceipt":  "DXR1 protected non-artifact; core239 is role1|network16|subjectProjectionHash32|holderX25519Public32|transcriptHash32|nonceLedgerKey32|issuedAt8|expiresAt8|verifiedAt8|subjectArtifactRef38|currentSourceFingerprint32; full fixed573 row adds exact phase-operation-challenge-key-latch-retention-and-HMAC framing",
-                          "dxpNonce":  "operationId32 is consumer-internal CSPRNG nonzero unique issuance authority-correlation persisted before challenge and stable across exact replay; nonceLedgerKey is derived only by dxpNonceLedgerKey with resetId-bound non-DB index key; nonce index key and its nonzero dxpNonceIndexKeyId are immutable and nonrotating for network-resetId until every authenticated DXR-and-nonce-tombstone retainedUntil has passed and bounded GC proves zero rows; missing-wrong-retired-early key fails closed and disables issuance-replay; new resetId is a clean key scope; authenticated Pending CAS precedes challenge or issuer-ephemeral-public issuance; private ephemeral is never persisted; crash cannot regenerate or reuse nonce; Pending-or-Aborted retains consumed nonce through max-DXP-expiry-plus-rollback-horizon; orphan cleanup is bounded-HMAC-first and never mints authority",
-                          "dxpFinalCas":  "Pending stores exact stage0 dxpOperationSource with zero transcript-hash-and-subject-ref; Verified DXR1 writes stage1 dxpOperationSource with exact final transcript-hash-and-subject-ref only while exact Pending identity raw source tuple prior-LKG key-ids and stage0 fingerprint still match; same atomic CAS installs subject head and for router DXP the MRLC-old-new-head plan; fork permanently latches; HMAC authored last and verified first",
+                          "dxpNonce":  "operationId32 is consumer-internal CSPRNG nonzero unique issuance authority-correlation persisted before challenge and stable across exact replay; source kinds are closed OfflineAccountDeviceGenesis=1 and CurrentCutoverRouter=2; nonceLedgerKey is derived only by dxpNonceLedgerKey with source-kind-network-issuanceScope-bound non-DB index key; nonce index key and its nonzero dxpNonceIndexKeyId are immutable and nonrotating for that sealed issuance scope until every authenticated DXR-and-nonce-tombstone retainedUntil has passed and bounded GC proves zero rows; authenticated restart rederives the same selector; missing-wrong-retired-early key fails closed and disables issuance-replay; authenticated Pending CAS precedes challenge or issuer-ephemeral-public issuance; private ephemeral is never persisted; crash cannot regenerate or reuse nonce; Pending-or-Aborted retains consumed nonce through max-DXP-expiry-plus-rollback-horizon; orphan cleanup is bounded-HMAC-first and never mints authority; retired V1 cutover-only/reset-bound derivations have no reader or dual interpretation",
+                          "dxpFinalCas":  "Pending stores exact389 stage0 dxpOperationSource with zero transcript-hash-and-subject-ref; Verified DXR1 writes stage1 dxpOperationSource with exact final transcript-hash-and-subject-ref only while exact Pending source-kind identityIssuanceSource issuanceScope role network DRS raw source tuple prior-LKG key-ids and stage0 fingerprint still match; OfflineAccountDeviceGenesis is Device-only and derives entirely offline from sealed exact generation1 DPA1 with zero key transitions plus empty revision1 DRS1; CurrentCutoverRouter is Router-only and binds the exact current-cutover source with no fallback or cross-feed; same atomic CAS installs subject head and for router DXP the MRLC-old-new-head plan; fork permanently latches; HMAC authored last and verified first",
                           "mrlCurrentInputs":  "MRLC accepts only sealed current cutover-current mailbox-role-and-per-DNR-current-router-possession facts; bounded owned snapshots before await; fields3-through8 full catalog exact DNR-DPC tuple and both signatures are reverified before final plan",
                           "mrlContinuity":  "separate RestoreCurrentCompositeLkg and VerifyNextCompositeLkg; sealed prior membership and separate sealed prior PMA-PMR heads are mandatory; first uses sealed genesis baselines; successor exact plus-one-previous-hash rules; no verifier synthesizes prior state from candidate",
                           "mrlSourceCas":  "final defensive plan carries raw old-new membership-PMA-PMR-cutover-DRS tuples plus their domain-separated fingerprints and all protected key ids; fixed-time full tuple CAS with Verified DXR1 and MRLC precedes publication",

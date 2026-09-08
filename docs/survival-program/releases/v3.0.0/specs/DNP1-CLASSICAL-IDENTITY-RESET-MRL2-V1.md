@@ -614,27 +614,63 @@ bytes; same ID with changed bytes latches. The ledger key is not caller data:
 
 ```text
 nonceLedgerKey32 = HMAC-SHA-256(dxpNonceIndexKey32,
-  U16BE(len("Deep/ProtectedState/V1/DXP1-nonce-ledger-key")) ||
-  ASCII("Deep/ProtectedState/V1/DXP1-nonce-ledger-key") ||
-  network16 || resetId32 || role1 || nonce32)
-nonceIndexKeyId32 = SHA256-D(Deep/ProtectedState/V1/DXP1-nonce-index-key-id,
-  network16 || resetId32 || dxpNonceIndexKey32)
+  U16BE(len("Deep/ProtectedState/V2/DXP1-nonce-ledger-key")) ||
+  ASCII("Deep/ProtectedState/V2/DXP1-nonce-ledger-key") ||
+  sourceKind1 || network16 || issuanceScope32 || role1 || nonce32)
+nonceIndexKeyId32 = SHA256-D(Deep/ProtectedState/V2/DXP1-nonce-index-key-id,
+  sourceKind1 || network16 || issuanceScope32 || dxpNonceIndexKey32)
 ```
 
 The non-DB index key is selected by protected configuration and never appears
 in the row. The unique ledger constraint therefore cannot be bypassed by
-supplying another key for the same network/reset/role/nonce. The key and its
-nonzero ID are immutable for that network/reset ID until every authenticated
+supplying another key for the same source kind/network/issuance scope/role/nonce.
+The key and its nonzero ID are immutable for that issuance scope until every authenticated
 DXR and compact nonce tombstone has passed retainedUntil and bounded HMAC-first
 GC proves zero remaining rows. Restart with a missing/wrong key, or attempted
-early rotation, disables issuance and replay. A new reset ID is a clean key
-scope; ordinary software/key-store rotation is not.
+early rotation, disables issuance and replay. An authenticated database restore
+reuses the same sealed scope and therefore derives the same unique selector.
+Ordinary software/key-store rotation does not create a new scope.
 
-Pending and Verified use distinct noncircular source fingerprints:
+The closed source-kind registry is `OfflineAccountDeviceGenesis=1` and
+`CurrentCutoverRouter=2`. There is no unknown-kind acceptance. An offline
+genesis source is minted only from one sealed, nonterminal, non-forked exact
+generation-1/certificate-generation-1 DPA1, zero key transitions, and its exact
+empty revision-1 DRS1:
 
 ```text
-SHA256-D(Deep/IdentityAuth/V1/dxp-operation-source,
-  role1 || stage1 || cutoverSource32 || DRSRevision8 || DRSCount8 ||
+identityIssuanceSource32 = SHA256-D(
+  Deep/IdentityAuth/V2/offline-genesis-identity-issuance-source,
+  network16 || accountHash32 || accountGeneration8=1 || DPA1Ref38 ||
+  DRSRevision8=1 || DRSCount8=0 || zeroDRSHead32 || DRS1Ref38)
+accountDeviceIssuanceScope32 = SHA256-D(
+  Deep/IdentityAuth/V2/account-device-issuance-scope,
+  network16 || accountHash32 || accountGeneration8=1 || DPA1Ref38)
+```
+
+It is Device-only and requires no reset ID, cutover, ReleaseRoot, witness,
+directory, transport or network callback. Thus exact initial DPA1 -> DRS1 ->
+DXP1/DXR1 -> DPD1 issuance is completely offline. Recovery/current-account
+device issuance is a separate sealed source capability and must not be
+interpreted as genesis. It is intentionally not opened by this source kind.
+
+The existing router flow is a distinct Router-only source. Its
+`identityIssuanceSource32` is the exact verified current-cutover source
+fingerprint, and its scope is:
+
+```text
+issuanceScope32 = SHA256-D(
+  Deep/IdentityAuth/V2/current-cutover-router-issuance-scope,
+  network16 || resetId32 || componentKind2 || accountHash32 ||
+  accountGeneration8)
+```
+
+Pending and Verified use distinct noncircular fingerprints over this exact
+389-byte operation-source tuple:
+
+```text
+SHA256-D(Deep/IdentityAuth/V2/dxp-operation-source,
+  sourceKind1 || role1 || stage1 || identityIssuanceSource32 ||
+  issuanceScope32 || DRSRevision8 || DRSCount8 ||
   DRSHead32 || DRSRef38 || subjectProjectionHash32 || priorSubjectLKGRef38 ||
   transcriptHash32 || subjectArtifactRef38 || identityCatalogKeyId32 ||
   DXRKeyId32 || nonceIndexKeyId32)
@@ -644,9 +680,12 @@ Stage is exactly 0 for Pending, with zero transcript hash and subject ref, and
 exactly 1 for Verified, with both exact final values. Device prior LKG is the
 exact predecessor DPDC ref; Router prior LKG is the exact predecessor DNRC
 ref; only their reviewed genesis rule permits zero. Final CAS recomputes both
-fingerprints, fixed-time compares stage 0 and every raw source value, then
-writes stage 1. DRS, cutover, prior LKG or key-ID movement makes the operation
-stale before final subject/MRLC mutation.
+fingerprints, fixed-time compares source kind, identity source, issuance scope,
+role, network, stage 0 and every remaining raw source value, then writes stage
+1. DRS, issuance source/scope, prior LKG or key-ID movement makes the operation
+stale before final subject/MRLC mutation. The retired V1 cutover-only operation
+source and reset-bound nonce derivations are never read or dual-interpreted;
+their rows fail source/ledger verification after this pre-production clean break.
 
 ## 4. Revocation and account reset
 
