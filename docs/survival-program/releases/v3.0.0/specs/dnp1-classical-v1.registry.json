@@ -2156,7 +2156,7 @@
                      },
     "evidenceOwnership":  {
                               "classificationPath":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.json",
-                              "classificationSha256":  "3ac963425f17b4511e6def608266fd651e968230945002a8a505e4fbcd8be18f",
+                              "classificationSha256":  "ce90f8412da84ea908cd9b494dfff900d02ddbc52802affcf0d3df605f930eb4",
                               "classificationSchemaPath":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-ownership.schema.json",
                               "evidenceManifestSchemaPath":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-manifest.schema.json",
                               "evidenceAttestationSchemaPath":  "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-attestation.schema.json",

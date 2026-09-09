@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "vectorFile": "group-codec-v1.vectors.json",
-  "sha256": "84c5726678552194af3983520ca80f5f6f49eb8e16dc456e142806f95f275133",
+  "sha256": "dca069d80c506c2fe5da5b1c14073d784a875666484f83f7deb13662dd60147e",
   "recordCount": 12,
   "hostileCaseCount": 14,
   "runtimeActivation": false,
