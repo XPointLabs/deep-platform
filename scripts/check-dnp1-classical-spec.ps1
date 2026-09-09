@@ -22,6 +22,21 @@ function Fail([string]$Message) {
     throw "DNP1 classical specification check failed: $Message"
 }
 
+function Get-CanonicalTextSha256([string]$Path) {
+    $bytes = [IO.File]::ReadAllBytes($Path)
+    $text = [Text.Encoding]::UTF8.GetString($bytes)
+    $canonical = $text.Replace("`r`n", "`n").Replace("`r", "`n")
+    $algorithm = [Security.Cryptography.SHA256]::Create()
+    try {
+        $digest = [BitConverter]::ToString(
+            $algorithm.ComputeHash([Text.Encoding]::UTF8.GetBytes($canonical)))
+        return $digest.Replace('-', '').ToLowerInvariant()
+    }
+    finally {
+        $algorithm.Dispose()
+    }
+}
+
 foreach ($path in @($specPath, $registryPath, $registrySchemaPath, $vectorSchemaPath, $vectorPath, $ownershipPath, $ownershipSchemaPath, $evidenceSchemaPath, $attestationSchemaPath, $programManifestPath)) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { Fail "missing artifact: $path" }
 }
@@ -2052,8 +2067,8 @@ foreach ($sourceRow in @($negativeSource.rows)) {
         ($sourceRow.executableOwner -ne $normativeRow.executableOwner -or $sourceRow.gate -ne $normativeRow.gate)) { $negativeDetected = $true; break }
 }
 if (-not $negativeDetected) { Fail 'source-snapshot negative self-test accepted fake owner mapping' }
-$ownershipSha = (Get-FileHash -LiteralPath $ownershipPath -Algorithm SHA256).Hash.ToLowerInvariant()
-$vectorSha = (Get-FileHash -LiteralPath $vectorPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$ownershipSha = Get-CanonicalTextSha256 $ownershipPath
+$vectorSha = Get-CanonicalTextSha256 $vectorPath
 $evidenceNames = @('classificationPath','classificationSha256','classificationSchemaPath','evidenceManifestSchemaPath','evidenceAttestationSchemaPath','owners','gates','ownerCounts','gateCounts','allowedMatrix','protocolPackageRule','cutoverFinalRule','repositoryBindings','currentClaim','evidenceManifestPaths','machineBinding','evidenceDigestRule','provenanceRule','noEarlyGreen')
 Assert-ExactProperties $registry.evidenceOwnership $evidenceNames $evidenceNames 'evidence ownership policy'
 $evidenceSchemaNames = @($registrySchema.properties.evidenceOwnership.properties.PSObject.Properties | ForEach-Object { [string]$_.Name })
@@ -2150,16 +2165,22 @@ $artifactByPath = @{}
 foreach ($path in @($runnerPath,$runnerOutputPath,$packagePath,$deploymentPath,$outputPath)) { $artifactByPath[$path] = [pscustomobject]@{ sha256=(Get-FileHash (Join-Path $repoRoot $path.Replace('/', '\')) -Algorithm SHA256).Hash.ToLowerInvariant() } }
 $ownedArtifactByPath = @{}
 foreach ($path in @($artifactByPath.Keys)) { $item=Get-Item (Join-Path $repoRoot $path.Replace('/', '\')); $ownedArtifactByPath[$path]=Read-OwnedEvidenceArtifact $repoRoot $path ([long]$item.Length) ([string]$artifactByPath[$path].sha256) }
-$toolchainCommand = Get-Command powershell -CommandType Application | Select-Object -First 1
+$toolchainCommand = Get-Command pwsh -CommandType Application -ErrorAction SilentlyContinue |
+    Select-Object -First 1
+if ($null -eq $toolchainCommand) {
+    $toolchainCommand = Get-Command powershell -CommandType Application -ErrorAction Stop |
+        Select-Object -First 1
+}
+$toolchainExecutableName = [IO.Path]::GetFileNameWithoutExtension($toolchainCommand.Source)
 $toolchainSha = (Get-FileHash $toolchainCommand.Source -Algorithm SHA256).Hash.ToLowerInvariant()
-$syntheticManifest = [pscustomobject]@{ repository='deep-protocol'; revision=('a'*40); gitTree=('b'*40); worktreeClean=$true; configuration='Release'; toolchainExecutableName='powershell'; toolchainVersion=[string]$PSVersionTable.PSVersion; toolchainSha256=$toolchainSha }
+$syntheticManifest = [pscustomobject]@{ repository='deep-protocol'; revision=('a'*40); gitTree=('b'*40); worktreeClean=$true; configuration='Release'; toolchainExecutableName=$toolchainExecutableName; toolchainVersion=[string]$PSVersionTable.PSVersion; toolchainSha256=$toolchainSha }
 $syntheticAttestation = [pscustomobject][ordered]@{
     '$schema'='dnp1-classical-v1.evidence-attestation.schema.json'; schemaVersion='1.0.0'; caseId=[string]$syntheticRow.id; executableOwner='Protocol'; gate=[string]$syntheticRow.gate;
     expectedOutcome=[string]$syntheticVector.outcome; expectedCallbacks=($syntheticVector.callbacks | ConvertTo-Json -Compress | ConvertFrom-Json);
     observed=[pscustomobject][ordered]@{ runnerOutputPath=$runnerOutputPath; runnerOutputSha256=$artifactByPath[$runnerOutputPath].sha256; result='Passed'; outcome=[string]$syntheticVector.outcome; callbacks=($syntheticVector.callbacks | ConvertTo-Json -Compress | ConvertFrom-Json); exitCode=0; testIds=@([string]$syntheticRow.id) };
     result='Passed';
     runner=[pscustomobject][ordered]@{ id='dnp1-evidence-selftest'; version='1.0.0'; artifactPath=$runnerPath; sha256=$artifactByPath[$runnerPath].sha256; arguments=@('-NoProfile','-ExecutionPolicy','Bypass','-File',$runnerPath,'-CaseId',[string]$syntheticRow.id) };
-    configuration='Release'; toolchain=[pscustomobject][ordered]@{ executableName='powershell'; version=[string]$PSVersionTable.PSVersion; executableSha256=$toolchainSha };
+    configuration='Release'; toolchain=[pscustomobject][ordered]@{ executableName=$toolchainExecutableName; version=[string]$PSVersionTable.PSVersion; executableSha256=$toolchainSha };
     source=[pscustomobject][ordered]@{ mode='FrozenArchive'; repository='deep-protocol'; revision=('a'*40); gitTree=('b'*40); clean=$true; archiveArtifactSetSha256=('c'*64) };
     packageClosure=[pscustomobject][ordered]@{ artifactPath=$packagePath; sha256=$artifactByPath[$packagePath].sha256 };
     deployment=[pscustomobject][ordered]@{ artifactPath=$deploymentPath; sha256=$artifactByPath[$deploymentPath].sha256 };
