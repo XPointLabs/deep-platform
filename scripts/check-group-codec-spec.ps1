@@ -65,6 +65,10 @@ foreach ($magic in @('GSR1','GSW1','GSQ1','GSS1')) {
     }
 }
 
+dotnet restore $vectorTool --locked-mode
+if ($LASTEXITCODE -ne 0) { throw 'GROUP-CODEC-01 vector tool locked restore failed.' }
+dotnet restore $testProject
+if ($LASTEXITCODE -ne 0) { throw 'GROUP-CODEC-01 test project restore failed.' }
 dotnet run --project $vectorTool -c Release --no-restore -- check $vectorPath
 if ($LASTEXITCODE -ne 0) { throw 'GROUP-CODEC-01 executable vector verification failed.' }
 dotnet test $testProject -c Release --no-restore --filter 'FullyQualifiedName~GroupV1'
