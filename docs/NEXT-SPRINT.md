@@ -17,6 +17,9 @@
 - отсутствие Session runtime, DEV secrets, direct-MAU2 downgrade и
   неподтверждённых security claims.
 
+Apple-клиенты не входят в этот спринт. macOS, iOS и Mac Catalyst CI/build
+остаются отключёнными до отдельной явной команды Mr. X.
+
 Первый production profile использует три разных XNode внутри одного маршрута.
 Он не заявляет полностью disjoint fallback, независимых операторов или защиту
 от общего ASN/provider failure. Direct P2P mesh и on-prem runtime выполняются
@@ -53,32 +56,37 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ## WP0 — dependency и implementation decision gate
 
-- Подтвердить выбранную provider strategy: existing libsodium для
-  X25519/Ed25519/XChaCha20-Poly1305, narrow Rust ABI вокруг RustCrypto `ml-kem`
-  для ML-KEM-768, Deep-owned/pinned Triple Ratchet codec/state; зафиксировать
-  Android arm64 и Windows x64/arm64 commit/package hashes, license,
-  provenance, reproducible native builds, SBOM и two-provider vectors.
-- Отдельно оценить `signalapp/libsignal`, OpenMLS и Rust FFI. AGPL/GPL код не
-  включать до принятого legal/distribution decision; upstream protocol ideas
-  не означают wire compatibility.
-- Зафиксировать release crypto suite и resource budgets после реальных
-  Android/Windows benchmarks. Classical-only/PQ-only silent fallback запрещён.
+- Завершить production gate отдельного минимального incremental ML-KEM-768
+  provider для Android Braid. Windows x64/ARM64 Whole ML-KEM и Braid уже
+  приняты из immutable official CI artifact, hash-allowlisted, физически
+  проверены и упакованы; повторять их без изменения approved bytes не нужно.
+  Android arm64 native compatibility, hardening и physical probe закрыты, но
+  Android production package/allowlist ещё должны быть привязаны к итоговому
+  release artifact и signing evidence.
+  Текущий `mlkem-native` умеет только монолитный Encapsulate и не предоставляет
+  требуемые `Encaps1(ct1,state)`/`Encaps2(state,ct2,secret)` primitives. Не
+  переносить внутреннюю полиномиальную арифметику вручную. Предпочтительный
+  gate — pinned dual-licensed `libcrux-ml-kem` через узкий panic-safe C ABI,
+  interop с обычным ML-KEM ciphertext, zeroization и Android/Windows evidence;
+  AGPL Signal SPQR crate не добавляется в production dependency graph.
+- Зафиксировать Windows/Android resource budgets и итоговый release suite `0x0201`.
+  Classical-only/PQ-only silent fallback запрещён. Отсутствие локального VS C++
+  ARM64 toolchain не является release prerequisite: release потребляет только
+  exact approved binaries.
 Gate: подписанный dependency decision, воспроизводимая minimal native test app
 на обеих платформах, KAT/vector agreement и отсутствие unresolved license P0.
 
 ## WP1 — destructive identity/database clean break
 
-- Заменить 13-word/Session-derived identity на `DeepRecoveryV1`: 24 слова,
-  256-bit OS CSPRNG entropy, canonical BIP-39 checksum/NFKD и Deep-domain HKDF.
-- Разделить account/recovery authority и independently generated device
-  signing/agreement/prekey/database/push keys. Удалить Ed25519↔X25519
-  conversion и загрузку recovery phrase при routine messaging.
-- Ввести новые `DeepAccountId`, `DeviceId`, certificates, magic/version,
-  database schema generation и secure-storage slots.
-- Выполнить один destructive reset: старые account/database/wire bytes
-  детерминированно отклоняются; migration, dual reader и legacy fallback нет.
-- Реализовать offline create-account: до локального success ни один network,
-  Registry, XPoint, DNS, certificate или bootstrap callback не вызывается.
+- Подключить `DeepRecoveryV1`/account/device/store primitives к новому
+  production `DeepClientRuntime`, затем выполнить один destructive reset:
+  удалить старые Session identity/database/secure-storage slots и production
+  registrations без migration, dual reader или legacy fallback.
+- Закрыть airplane-mode create/restore и crash-safe reset на итоговой MAUI
+  composition; до локального account success ни один network/bootstrap callback
+  не должен создаваться или вызываться.
+- Завершить production dependency/runtime scan: ноль Session identity,
+  Ed25519↔X25519 conversion и routine recovery-phrase loading.
 
 Gate: golden/negative recovery vectors, airplane-mode create/restore,
 wrong-generation rejection, key-role tests, crash-safe reset и zero Session
@@ -91,16 +99,27 @@ Gate каждого WP создаёт переиспользуемый black-box
 commit matrix и проверяет композицию; отдельные копии harness/tests для WP9 не
 создаются.
 
-- Реализовать exact hybrid asynchronous AKE, signed prekey bundles, atomic
-  one-time-key claim и transcript binding по crypto spec.
-- Реализовать reviewed ratchet со skipped-key bounds, out-of-order delivery,
-  replay rejection, message-key deletion, periodic PQ secret injection и
-  crash-atomic state transition.
+- Подключить production genesis/account/device authoring к новому opaque
+  `AuthorGenesisDmd1`, зафиксировать verifier-minted current DMD1 в уже готовом
+  account-scoped protected store и передать готовый одноразовый Protocol
+  agreement lease production caller. Public-forgeable provider и raw keys
+  запрещены. Готовые account-wide DPK2 prekey owner,
+  per-session DPE2 stores, durable session catalog, Protocol one-shot DPH2/TRS1
+  capability и atomic initial-session transaction уже связаны внутри MAUI
+  runtime owner; осталось подключить production caller после current-DMD1,
+  отправить
+  durable pending DPH2 через verified privacy path и активировать DPE2 только
+  после exact delivery receipt. Raw keys, caller-provided providers и частичная
+  фиксация запрещены.
+- Реализовать handshake initialization/runtime composition и безопасный session
+  rollover до лимита журнала, чтобы не оставлять пользовательский диалог в
+  `CapacityExceeded`.
 - Ввести account-authorized device list, enrollment, device fanout,
   revocation/rekey и explicit history-sharing policy. Restore создаёт новое
   устройство, а не копирует ключи старого.
-- Сохранить logical message/operation ID независимо от transport attempt.
-  Delivery: at-least-once retry; local materialization и receipts идемпотентны.
+- Подключить MSG-01 logical outbox/inbox к DPE2 и реальному transport:
+  один logical message/operation ID переживает attempts, at-least-once retry,
+  restart; materialization и receipts остаются идемпотентными.
 - Связать attachments, reactions, replies, edits, deletes и call signaling с
   exact conversation/device/ratchet context.
 
@@ -110,20 +129,30 @@ Android↔Windows interoperability и независимый crypto review P0/P1
 
 ## WP3 — arbitrary contact bootstrap
 
-- Реализовать бессрочный transport-neutral `DID1`/Deep ID, восстанавливаемый из
-  recovery phrase, dual-signed `DAB1` account binding и детерминированные
-  domain-separated locator/read-key для каждого transport. Истечение DCB/XIR/
-  XPS означает только `TemporarilyUnavailable`, но не истечение или смену ID.
-- Реализовать отдельный expiring one-time `DIA1`/QR. Один старый `05...` ID,
-  display name или текущий mailbox route не является допустимым Deep ID.
-- Заморозить `DCR1` resolver closure: exact DCB1, ровно один referenced DRS1 и
-  все referenced DPD1, sorted/hash-closed, без unauthenticated pagination.
-- Реализовать oblivious ADC1/ADH1/ADP1/ADL1 account-directory freshness и
-  XPS1→XPK1/XPC1 atomic fresh DPK2 claim; public-address DCB1 не содержит
-  consumable prekey bytes.
-- Реализовать directory-threshold `XPA1`: XNode invite store проверяет право
-  одной opaque publication, не получая DID1/account/device или DCR plaintext.
-- Реализовать отдельный distributed encrypted contact-request mailbox,
+- Реализовать AppShell activation для готового account-scoped DID1/DIA1 entry
+  flow: по verifier-minted relationship/conversation ID повторно проверить
+  durable peer package, создать DPH2/TRS1 session и открыть новый direct chat;
+  добавить physical UI/restart evidence и QR-import.
+  Старый `05...` ID, display name, CMI1, route или DCR1 не являются адресом.
+  Истечение DCB/XIR/XPS даёт только `TemporarilyUnavailable`, не меняет Deep ID.
+- Подключить MAUI client LKG/entry-guard stores и
+  fork/freshness ADC1/ADH1/ADP1/ADL1 к production authority fetch/runtime и
+  запустить publication/replenishment scheduler поверх уже готовых durable
+  XPK1/XPC1 journal и bounded two-replica XPP1/XIC1 transport. Atomic
+  activation выполняется только после двух verified final XIC1; public DCB1
+  не содержит consumable prekey bytes.
+- Выпустить и смонтировать через готовые Registry production trusted-time,
+  one-use-ledger, DTT1 custody и operator authoring полный подписанный authority
+  package; готовый durable verified permanent/one-time resolve evidence owner
+  подключить к production issuer/
+  client flow и locator-keyed XNode recipient-authority source через
+  privacy-routed authenticated ingestion. Затем активировать durable consume
+  saga, authenticated two-replica transport и endpoint; unknown locator до
+  независимо проверенного evidence остаётся unavailable. Invite store не
+  получает DID1/account/device или DCR plaintext.
+- Подключить exact XPU/XIQ/XPK/XUW wire к production two-replica Contact
+  Resolver runtime и реализовать
+  отдельный distributed encrypted contact-request mailbox,
   доступный без существующего E2EE channel или live PRA.
 - После acceptance создать pairwise session и обменяться короткоживущими
   deposit routes внутри E2EE. Initial discovery получает XRA1/XRC1/XRR1/XSS1
@@ -139,13 +168,21 @@ cold restart обоих клиентов и отсутствие публичн�
 
 ## WP4 — малые закрытые группы v1
 
-- Заменить текущий revision-only group state на owner-sequenced signed
-  membership hash-chain с predecessor hash, group epoch и exact policy.
+- Подключить `GROUP-CODEC-01` membership chain и durable per-recipient opaque
+  group-control service к новому client runtime;
+  добавить GSS wire/client state и удалить старый revision-only state из
+  production composition.
+- Подключить готовый clean-break MAUI GroupV1 composer и уже смонтированный
+  account-scoped activation store к production acceptance dispatcher: verified
+  contact drafts проходят exact GCF1/GSW1 plan и privacy-routed GroupControl;
+  только verified GSS1 commit делает участника active.
 - Один owner сериализует add/remove/promote. Concurrent multi-admin membership
   mutation и membership change во время disconnected mesh partition в v1
   запрещены.
-- Message payload доставляется каждому активному device участника через его
-  pairwise ratcheted session. Удалённый member/device не получает новый epoch.
+- Подключить готовую account-scoped GROUP-CLIENT-01 first-dispatch/terminal
+  composition и узкий `GroupMessageFirstDispatchContext` к реальному per-device
+  DPE2/ratchet dispatcher; legacy transport payload
+  не является допустимым evidence source.
 - Зафиксировать history policy, invitation/acceptance, owner recovery/transfer,
   tombstones, fork detection и cold-restart state.
 - Поддержать до 100 members и 500 active target devices одной bounded durable
@@ -165,9 +202,13 @@ load test на принятом максимуме.
   единственным источником truth или клиентским path selector.
 - Публиковать threshold-signed topology/checkpoints с append-only consistency
   proofs. Клиент локально выбирает route из полной проверенной roster.
-- Реализовать persistent entry guards, distinct routers внутри exact 3-hop,
-  subnet/ASN/provider constraints там, где roster позволяет, health scoring и
-  bounded route churn.
+- Расширить exact-three ContactResolve provider/persistent entry guards
+  на mailbox/blob/control paths; подключить liveness/health scoring и применять
+  subnet/ASN/provider constraints там, где verified roster это позволяет.
+- Подключить first-release topology к готовой XNode production ONION runtime
+  closure: готовые отдельные state-protection secrets, replay/entropy/vault
+  paths и exact Ingress/Core/Exit positions дополнить current verified
+  XNA1/XVP1/XNV1/XNH1/XND1/PMT2/DTT1 authority package для каждого узла.
 - Первые три XNode дают один privacy route; fallback может переиспользовать
   узлы и называется best-effort. Capability `DisjointFallback` запрещён до
   6+ nodes и отдельного diversity/evidence gate.
@@ -175,6 +216,13 @@ load test на принятом максимуме.
   безопасно уничтожать retired traffic keys после bounded overlap.
 - Зафиксировать mailbox swarm/replication, consistency, retention, quotas,
   repair и node join/drain/exit без привязки mailbox к account ID.
+- Реализовать checkpoint-authorized compaction готового production directory
+  HTTP/DI catalog. Compaction разрешается только когда
+  одновременно истекли 400 дней и сохранены не менее 2 048 поколений, а
+  root-signed XNF1 плюс source-specific NFP1 позволяют каждому допустимому
+  protected LKG перейти к оставленному target; локальный возраст файла или
+  один общий proof права удаления не дают. До compaction каталог должен
+  продолжать fail-closed на hard cap 4 096, а не удалять историю самовольно.
 - Реализовать DR-0004 clean-break `PMA2/PMT2/PMS2` и
   `XRA1/XRC1/XRR1/XSS1`; все pre-cutover PMA1/PMT1/PMS1/PRA/PSS/RCD/RCA bytes
   отклоняются без dual reader.
@@ -262,10 +310,10 @@ restricted-network relay, relay rotation и no silent downgrade.
 - Выполнить Android↔Windows physical matrix на одной signed commit matrix:
   account, restore/new device, contacts, 1:1, small groups, files/images/voice,
   push/no-push, calls, carrier blocking/rotation, restart и offline recovery.
-- Исправить оставшийся PowerShell smoke failure; заменить/изолировать HonKit
-  dependency с high-severity advisory и реализовать единственную
-  [documentation CI policy](architecture/README.md#documentation-ci-policy).
-  Устранить SQLite pool race и сузить UAT secret mounts.
+- Проверить переписанный DNP package witness на новом hermetic closure:
+  выполнить полный execution gate и обновить approved normative binding после
+  фиксации commit; подтвердить успешный GitHub run path-filtered documentation
+  CI на зафиксированной commit matrix.
 - Выпустить reproducible APK/MSIX, dependency lock, SBOM, signatures,
   sanitized evidence, backup/restore и rollback rehearsal.
 - После завершения провести независимые lead-developer, protocol/crypto,
@@ -293,6 +341,18 @@ restricted-network relay, relay rotation и no silent downgrade.
   зависимости от Deep-operated Registry, DNS, billing или signer;
 - explicit consent-bound profile switch; official public-address policy не
   ослабляется ради private/loopback on-prem endpoints.
+
+### Android 8 compatibility
+
+- Первый public profile пока честно требует Android 9 / API 28: обязательная
+  production signer-lineage attestation использует `SigningInfo`, signer
+  history и `longVersionCode`. Зависимости и local offline account совместимы
+  с API 26, но простая замена на deprecated `PackageInfo.Signatures` не
+  доказывает proof-of-rotation и split-APK lineage.
+- После первого релиза отдельно спроектировать и проверить API 26 signer
+  attestation либо оставить Android 9 публичным минимальным требованием. До
+  этого Galaxy A5/API 26 используется только для изолированных crypto probes,
+  не как evidence production transport.
 
 ## Definition of Done
 

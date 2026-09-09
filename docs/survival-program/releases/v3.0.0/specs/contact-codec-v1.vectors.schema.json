@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:contact-codec:v1:vectors",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "status", "canonicalBounds", "ed25519Fixtures", "primitives", "records", "hostileFixtures", "negativeCases"],
+  "properties": {
+    "$schema": { "const": "contact-codec-v1.vectors.schema.json" },
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
+    "canonicalBounds": {
+      "type": "object", "additionalProperties": false,
+      "required": ["XRA1", "DCB1", "DMC2/14"],
+      "properties": {
+        "XRA1": {
+          "type": "object", "additionalProperties": false,
+          "required": ["recordBytes", "signatureProjectionBytes"],
+          "properties": {
+            "recordBytes": { "const": 550 },
+            "signatureProjectionBytes": { "const": 478 }
+          }
+        },
+        "DCB1": {
+          "type": "object", "additionalProperties": false,
+          "required": ["minimumRecordBytes", "maximumRecordBytes", "exactAdl1Bytes"],
+          "properties": {
+            "minimumRecordBytes": { "const": 3757 },
+            "maximumRecordBytes": { "const": 10275 },
+            "exactAdl1Bytes": { "const": 228 }
+          }
+        },
+        "DMC2/14": {
+          "type": "object", "additionalProperties": false,
+          "required": ["minimumPayloadBytes", "maximumPayloadBytes", "minimumRecordBytes", "maximumRecordBytes", "closureOrder"],
+          "properties": {
+            "minimumPayloadBytes": { "const": 4215 },
+            "maximumPayloadBytes": { "const": 23367 },
+            "minimumRecordBytes": { "const": 4497 },
+            "maximumRecordBytes": { "const": 23649 },
+            "closureOrder": { "const": ["XRR1", "XRA1", "XRC1", "XSS1", "PMT2", "PMS2"] }
+          }
+        }
+      }
+    },
+    "ed25519Fixtures": {
+      "type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true,
+      "items": { "$ref": "#/$defs/ed25519Fixture" }
+    },
+    "primitives": {
+      "type": "array", "minItems": 15, "maxItems": 15, "uniqueItems": true,
+      "items": { "$ref": "#/$defs/primitive" }
+    },
+    "records": {
+      "type": "array", "minItems": 15, "uniqueItems": true,
+      "items": { "$ref": "#/$defs/record" }
+    },
+    "hostileFixtures": {
+      "type": "array", "minItems": 10, "uniqueItems": true,
+      "items": { "$ref": "#/$defs/hostile" }
+    },
+    "negativeCases": {
+      "type": "array", "minItems": 17, "uniqueItems": true,
+      "items": { "$ref": "#/$defs/negative" }
+    }
+  },
+  "$defs": {
+    "hex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})+$" },
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "ed25519Fixture": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "target", "projectionPrimitiveId", "signatureDomain", "signatureInputHex", "seedHex", "publicKeyHex", "signatureHex"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "target": { "enum": ["XIR1", "XRA1", "DCB1"] },
+        "projectionPrimitiveId": { "enum": ["xir1-signature-projection", "xra1-core-projection", "dcb1-signature-projection"] },
+        "signatureDomain": { "enum": ["Deep/ContactResolver/V1/XIR1", "Deep/XPoint/V1/XRA1", "Deep/Application/V1/contact-bundle"] },
+        "signatureInputHex": { "$ref": "#/$defs/hex" },
+        "seedHex": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "publicKeyHex": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "signatureHex": { "type": "string", "pattern": "^[0-9a-f]{128}$" }
+      }
+    },
+    "primitive": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "target", "fixtureBytesHex", "sha256", "purpose"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "target": { "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMT2|PMS2|XRC1|XSS1|XRR1|DCB1|DCR1|DIA1|DMC2/[2-4]|DMC2/14)$" },
+        "fixtureBytesHex": { "$ref": "#/$defs/hex" },
+        "sha256": { "$ref": "#/$defs/hash" },
+        "purpose": { "enum": ["signature-projection", "hash-projection", "canonical-grammar", "payload-grammar"] }
+      }
+    },
+    "record": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "target", "fixtureBytesHex", "sha256"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "target": { "$ref": "#/$defs/target" },
+        "fixtureBytesHex": { "$ref": "#/$defs/hex" },
+        "sha256": { "$ref": "#/$defs/hash" },
+        "artifactHash": { "$ref": "#/$defs/hash" },
+        "coreHash": { "$ref": "#/$defs/hash" },
+        "contentKind": { "type": "integer", "minimum": 2, "maximum": 14 }
+      },
+      "allOf": [
+        { "if": { "properties": { "target": { "pattern": "^DMC2/" } } }, "then": { "required": ["contentKind"] }, "else": { "required": ["artifactHash", "coreHash"] } }
+      ]
+    },
+    "hostile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "target", "fixtureBytesHex", "sha256", "api", "stage", "rejection"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "target": { "$ref": "#/$defs/target" },
+        "fixtureBytesHex": { "$ref": "#/$defs/hex" },
+        "sha256": { "$ref": "#/$defs/hash" },
+        "api": { "enum": ["Contact", "Application"] },
+        "stage": { "type": "string", "minLength": 1 },
+        "rejection": { "type": "string", "minLength": 1 }
+      }
+    },
+    "target": {
+      "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMT2|PMS2|XRC1|XSS1|XRR1|DCB1|DCR1|DIA1|DMC2/[2-4]|DMC2/14)$"
+    },
+    "negative": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "targets", "mutation", "stage", "callbacks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "targets": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 3 } },
+        "mutation": { "type": "string", "minLength": 12 },
+        "stage": { "enum": ["Header", "FieldScan", "Bounds", "Scalar", "Derived", "Reference", "Signature", "Closure", "Transition", "Payload"] },
+        "callbacks": { "const": { "hash": 0, "signature": 0, "resolver": 0, "mutation": 0 } }
+      }
+    }
+  }
+}

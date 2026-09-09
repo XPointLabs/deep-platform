@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:xpoint:onion-01:vectors",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "package", "status", "runtimeActivation", "terminalOperations", "wireContracts", "positiveCases", "negativeCases"],
+  "properties": {
+    "$schema": { "const": "onion-01.vectors.schema.json" },
+    "schemaVersion": { "const": "1.2.0" },
+    "package": { "const": "ONION-01" },
+    "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
+    "runtimeActivation": { "const": false },
+    "terminalOperations": {
+      "type": "array", "minItems": 5, "maxItems": 5,
+      "prefixItems": [
+        { "$ref": "#/$defs/storeOperation" },
+        { "$ref": "#/$defs/retrieveOperation" },
+        { "$ref": "#/$defs/acknowledgeOperation" },
+        { "$ref": "#/$defs/contactResolveOperation" },
+        { "$ref": "#/$defs/groupControlOperation" }
+      ],
+      "items": false
+    },
+    "wireContracts": { "type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": { "$ref": "#/$defs/wireContract" } },
+    "positiveCases": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "$ref": "#/$defs/positive" } },
+    "negativeCases": { "type": "array", "minItems": 18, "maxItems": 18, "uniqueItems": true, "items": { "$ref": "#/$defs/negative" } }
+  },
+  "$defs": {
+    "hex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})*$" },
+    "hex16": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
+    "hex24": { "type": "string", "pattern": "^[0-9a-f]{48}$" },
+    "hex32": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "storeOperation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
+      "properties": { "id": { "const": 1 }, "name": { "const": "Store" }, "requestMagic": { "const": ["MAU2"] }, "successMagic": { "const": ["MQR3"] }, "maxRequestBytes": { "const": 82344 }, "maxSuccessBytes": { "const": 776 } }
+    },
+    "retrieveOperation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
+      "properties": { "id": { "const": 2 }, "name": { "const": "Retrieve" }, "requestMagic": { "const": ["MAU2"] }, "successMagic": { "const": ["MRP1"] }, "maxRequestBytes": { "const": 792 }, "maxSuccessBytes": { "const": 1048556 } }
+    },
+    "acknowledgeOperation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
+      "properties": { "id": { "const": 3 }, "name": { "const": "Acknowledge" }, "requestMagic": { "const": ["MAU2"] }, "successMagic": { "const": ["MAR1"] }, "maxRequestBytes": { "const": 4792 }, "maxSuccessBytes": { "const": 77840 } }
+    },
+    "contactResolveOperation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
+      "properties": { "id": { "const": 4 }, "name": { "const": "ContactResolve" }, "requestMagic": { "const": ["XPU1", "XIQ1", "XPK1", "XUW1", "XUQ1"] }, "successMagic": { "const": ["XPO1", "XIS1", "XPC1", "XUS1"] }, "maxRequestBytes": { "const": 69649 }, "maxSuccessBytes": { "const": 131072 } }
+    },
+    "groupControlOperation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
+      "properties": { "id": { "const": 5 }, "name": { "const": "GroupControl" }, "requestMagic": { "const": ["GSW1", "GSQ1"] }, "successMagic": { "const": ["GSS1"] }, "maxRequestBytes": { "const": 33160 }, "maxSuccessBytes": { "const": 65535 } }
+    },
+    "wireContract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["magic", "fixedPrefixBytes", "maxBytes", "fields"],
+      "properties": {
+        "magic": { "enum": ["XRF1", "XRL1", "XRE1", "XPR1", "XRS1"] },
+        "fixedPrefixBytes": { "type": "integer", "minimum": 20, "maximum": 160 },
+        "maxBytes": { "type": "integer", "minimum": 20, "maximum": 1572864 },
+        "fields": { "type": "array", "minItems": 7, "items": { "$ref": "#/$defs/field" } }
+      }
+    },
+    "field": {
+      "type": "object", "additionalProperties": false,
+      "required": ["offset", "length", "name"],
+      "properties": { "offset": { "type": "integer", "minimum": 0, "maximum": 1572863 }, "length": { "type": "integer", "minimum": 1, "maximum": 1048576 }, "name": { "type": "string", "minLength": 2, "maxLength": 64 } }
+    },
+    "positive": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "testEntropyOnly", "paddingExponent", "networkIdHex", "operationIdDomain", "replyOwnerIdDomain", "replyKeyIdDomain", "entropy", "route", "expectedFrames"],
+      "properties": {
+        "id": { "const": "deterministic-three-hop-failure" },
+        "testEntropyOnly": { "const": true },
+        "paddingExponent": { "const": 8 },
+        "networkIdHex": { "$ref": "#/$defs/hex16" },
+        "operationIdDomain": { "const": "Deep/XPoint/V1/canonical-mailbox-operation-id" },
+        "replyOwnerIdDomain": { "const": "Deep/XPoint/V1/reply-owner" },
+        "replyKeyIdDomain": { "const": "Deep/XPoint/V1/reply-key" },
+        "entropy": { "$ref": "#/$defs/entropy" },
+        "route": { "$ref": "#/$defs/route" },
+        "expectedFrames": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/frame" } }
+      }
+    },
+    "entropy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["routerPrivateScalars", "replyPrivateScalar", "requestEphemeralPrivateScalars", "responseEphemeralPrivateScalar", "requestNonces", "responseNonce"],
+      "properties": {
+        "routerPrivateScalars": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/hex32" } },
+        "replyPrivateScalar": { "$ref": "#/$defs/hex32" },
+        "requestEphemeralPrivateScalars": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/hex32" } },
+        "responseEphemeralPrivateScalar": { "$ref": "#/$defs/hex32" },
+        "requestNonces": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/hex24" } },
+        "responseNonce": { "$ref": "#/$defs/hex24" }
+      }
+    },
+    "route": {
+      "type": "object", "additionalProperties": false,
+      "required": ["routerOwnerIds", "routerKeyIds", "epoch", "replayIds", "attemptIdHex", "canonicalRequestHex", "expectedOperationIdHex", "expectedReplyPublicHex", "expectedReplyOwnerIdHex", "expectedReplyKeyIdHex"],
+      "properties": {
+        "routerOwnerIds": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/hex32" } },
+        "routerKeyIds": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/hex32" } },
+        "epoch": { "const": 7 },
+        "replayIds": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/hex32" } },
+        "attemptIdHex": { "$ref": "#/$defs/hex32" },
+        "canonicalRequestHex": { "$ref": "#/$defs/hex" },
+        "expectedOperationIdHex": { "$ref": "#/$defs/hex32" },
+        "expectedReplyPublicHex": { "$ref": "#/$defs/hex32" },
+        "expectedReplyOwnerIdHex": { "$ref": "#/$defs/hex32" },
+        "expectedReplyKeyIdHex": { "$ref": "#/$defs/hex32" }
+      }
+    },
+    "frame": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "length", "sha256"],
+      "properties": { "name": { "enum": ["exit-request", "core-request", "ingress-request", "response"] }, "length": { "type": "integer", "minimum": 176, "maximum": 1572864 }, "sha256": { "$ref": "#/$defs/hash" } }
+    },
+    "negative": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "stage", "mutation", "callbacks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "stage": { "enum": ["Header", "KeyBinding", "Crypto", "Plaintext", "Padding", "NestedLength", "Replay", "Result", "TrustedTime", "Legacy"] },
+        "mutation": { "type": "string", "minLength": 12 },
+        "callbacks": { "const": { "forward": 0, "mailbox": 0, "stateMutation": 0 } }
+      }
+    }
+  }
+}

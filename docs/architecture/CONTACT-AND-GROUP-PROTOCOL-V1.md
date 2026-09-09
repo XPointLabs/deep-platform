@@ -62,7 +62,7 @@ Protocol maxima are security bounds, not dynamic server settings:
 | UTF-8 display name | 128 bytes |
 | UTF-8 text body | 16,384 bytes |
 | canonical application payload | 32,768 bytes |
-| attachment descriptors per event | 16 |
+| attachment manifests per DMC2 event | 1 exact DAM1 |
 | retained group commits | `RET-GROUP-CONTROL-V1` |
 
 A server cannot raise a client bound. A future larger group profile uses a new
@@ -86,6 +86,28 @@ No JSON, URI parser, protobuf unknown-field preservation or platform object
 serialization is a cryptographic record. Text/QR/deep-link encodings decode to
 one exact binary record before trust decisions.
 
+### 3.1 Application codec freeze boundary
+
+This document is the normative byte owner for application records. The machine
+mirror is `deep-crypto-v1.registry.json`; it MUST NOT broaden a table here.
+The first clean-break freeze is deliberately split so downstream producer bytes
+are never guessed:
+
+| Package | Records / accepted DMC2 kinds | Specification state |
+|---|---|---|
+| `APPLICATION-CORE-CODEC-01` | DID1, DAB1, DMD1, DCA1, DAO1, DMC2; kinds 1 and 5..13 | `FROZEN_CLEAN_BREAK` |
+| `ATTACHMENT-CODEC-01` | DAM1; DMC2 kinds 18 and 19 | `FROZEN_CLEAN_BREAK`, runtime inactive until BLOB-01 |
+| `CONTACT-CODEC-01` | DCB1, DCR1, DIA1; DMC2 kinds 2..4 and 14 | `FROZEN_TARGET_NOT_ACTIVE` |
+| `GROUP-CODEC-01` | DGP1/DGC1/DGM1/DGT1/GIV1/GIA1/GCP1/GCF1/GSR1/GSW1/GSQ1/GSS1 and DMC2 kinds 15..17 and 26..29 | `FROZEN_TARGET_NOT_ACTIVE` |
+| `CALL-CODEC-01` | DMC2 kinds 20..24 and their exact call payload records | `TARGET_UNFROZEN` |
+| `HISTORY-CODEC-01` | DMC2 kind 25 and its backup/history producer closure | `TARGET_UNFROZEN` |
+
+A DMC2 decoder knows the complete numeric registry, but kinds owned by an
+unfrozen package are `RESERVED_REJECT`: no payload, including an empty or
+opaque payload, is accepted for them. This is a closed enum, not an extension
+point. Activating a reserved kind requires freezing its exact producer package,
+updating the machine registry generation and adding cross-package vectors.
+
 ## 4. Device directory: `DMD1`
 
 `DMD1`, version 1, suite `0x0201`, is the authoritative messaging projection
@@ -98,8 +120,8 @@ of active DPD1 devices for one account:
 | 3 | account generation | 8 |
 | 4 | exact DPA1 ArtifactRef | 38 |
 | 5 | exact current DRS1 ArtifactRef | 38 |
-| 6 | directory generation | 8 |
-| 7 | predecessor DMD1 hash; zero only at generation 0 | 32 |
+| 6 | directory generation | 8; starts at 1 |
+| 7 | predecessor DMD1 hash; zero only at generation 1 | 32 |
 | 8 | active-device count | 2 |
 | 9 | sorted active entries | `70 * count` |
 | 10 | minimum messaging suite | 2 |
@@ -108,7 +130,9 @@ of active DPD1 devices for one account:
 
 Each entry is `deviceId32 || exactDPD1Ref38`, sorted lexicographically by
 device ID. Count is `1..16`; the public-release authoring UI enforces `1..5`.
-The signature covers
+The exact total size is `356 + 70*count` bytes (`426..1476`).
+`unsignedDMD1` is the canonical record rebuilt with tags 1..11 and field count
+11, exactly `284 + 70*count` bytes. The tag-12 signature covers
 `SIGINPUT("Deep/Application/V1/device-directory", 0x0201, unsignedDMD1)`.
 
 Validation resolves exact DPA1, DRS1 and every DPD1, proves that no listed
@@ -136,6 +160,17 @@ account hash, device, route, server, creation time or expiry. The same value is
 therefore used by XPoint, future P2P mesh and on-prem transports and is
 reconstructible from the Deep Recovery Phrase.
 
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | Ed25519 public address key | 32 |
+| 2 | resolver read capability | 16 |
+
+Canonical DID1 is exactly 76 bytes. Its exact record hash is the section 3
+`recordHash32` under magic `DID1`. The Bech32m payload is not a second wire
+record: it is exactly `0x01 || tag1 || tag2`; decode MUST reconstruct the
+76-byte canonical record and reject a non-lowercase HRP, mixed case, wrong
+variant, wrong payload length or non-canonical re-encoding.
+
 `DAB1`, version 1, suite `0x0201`, binds that permanent address to the current
 account lineage in one identity realm. The permanent DID is global, but account
 authority keys are network-scoped, so each realm has an independent binding
@@ -159,9 +194,13 @@ identityRealmId32 = SHA256-D(
 | 8 | DID1 address-key signature | 64 |
 | 9 | DPA1 account-role signature | 64 |
 
-Both signatures cover the same unsigned record in domains
+Canonical DAB1 is exactly 394 bytes. `unsignedDAB1` is the canonical record
+rebuilt with tags 1..7 and field count 7, exactly 250 bytes. Both signatures
+cover that same unsigned record in domains
 `Deep/Application/V1/address-binding/address` and
-`Deep/Application/V1/address-binding/account`. A recovery-authorized
+`Deep/Application/V1/address-binding/account` using `SIGINPUT` with suite
+`0x0201`; tag 8 is verified with DID1 tag 1 and tag 9 with the exact DPA1
+account-signing role. Neither signature covers the other signature. A recovery-authorized
 device/control-head replacement within the same recovery root advances the
 binding lineage without changing DID1. A future authenticated same-phrase
 account-generation advance has the same property. In public V1, a destructive
@@ -204,10 +243,20 @@ management:
 | 13 | exact DID1 hash | 32 |
 | 14 | exact current DAB1 ArtifactRef | 38 |
 
+The tag-14 reference uses application artifact type `0x1001` (`DAB1`), exact
+canonical length 394 and the exact DAB1 record hash. Application artifact type
+codes occupy the disjoint `0x1000..0x1fff` range; DNP1 type codes and every
+unallocated value reject before signature verification.
+
 The kind mask permits bit 0 permanent-address publication and bit 1 one-time
 invitation; all other bits reject.
+Canonical DCA1 is exactly 473 bytes. Its signing projection is the canonical
+record rebuilt with tags 1..11 and 13..14, field count 13, exactly 401 bytes;
+tag 12 is excluded and no placeholder is inserted. The signature is
+`SIGINPUT("Deep/Application/V1/contact-publication-authorization", 0x0201,
+projection)`.
 Lifetime cannot outlive `RET-DCR-PUBLICATION-V1`. The signature domain is
-`Deep/Application/V1/contact-publication-authorization`. The publisher must be
+the value above. The publisher must be
 active in the exact DMD1, and DID1/DAB1 must verify bidirectionally against the
 same DPA1/account generation. A successor DMD1 does not silently inherit DCA1; an
 enrollment/revocation ceremony issues a successor authorization for an active
@@ -222,7 +271,15 @@ current recipient devices, claim fresh one-time prekeys and reach a long-lived
 invite rendezvous
 without an existing E2EE channel.
 
-`DCB1`, version 1, suite `0x0201`, has:
+`DCB1`, version 1, suite `0x0201`, has exactly 24 fields in the generic
+tagged record grammar in [CONTACT-RESOLVER-V1](CONTACT-RESOLVER-V1.md#21-contact-codec-canonical-record-rule).
+Its complete length is exactly
+`2263 + exactDPA1Bytes + exactDMD1Bytes + 356*XPS1Count + profileNameBytes`
+where `XPS1Count=activeDMD1DeviceCount=1..16`,
+`exactDMD1Bytes=356+70*XPS1Count` and `profileNameBytes=0..128`; it is capped at
+24,576 bytes. No paged,
+compressed, JSON, CBOR or alternate wrapper is accepted. Tags 12 and 14 are each one count-prefixed list, not a sequence of
+repeated tags. `LP32` is a big-endian u32 followed by exactly that many bytes.
 
 | Tag | Value | Size |
 |---:|---|---:|
@@ -237,19 +294,23 @@ without an existing E2EE channel.
 | 9 | predecessor bundle hash; zero at generation 0 | 32 |
 | 10 | issuer device ID | 32 |
 | 11 | XPS1 pre-key-service descriptor count | 1 |
-| 12 | sorted length-prefixed XPS1 records | `1..8192` |
+| 12 | sorted `count:u8 || LP32(exactXPS1)[count]` | exactly `1+356*count`; count `1..16` |
 | 13 | reachability-descriptor count | 1 |
-| 14 | sorted length-prefixed reachability descriptors | `1..8192` |
+| 14 | sorted `count:u8 || ReachabilityEntry[count]` | `1..8192`; count exactly 1 for V1 |
 | 15 | optional UTF-8 profile name | `0..128` |
 | 16 | unsolicited policy | 4 |
 | 17 | issued-at Unix seconds | 8 |
 | 18 | expires-at Unix seconds | 8 |
 | 19 | issuer device signature | 64 |
-| 20 | exact ADL1 account-directory lookup capability | exact canonical size |
+| 20 | exact ADL1 account-directory lookup capability | exactly 228 |
 | 21 | minimum fresh ADH1 generation/hash | 40 |
 | 22 | exact DID1 hash | 32 |
 | 23 | DID1 address public key | 32 |
 | 24 | exact DAB1 | exact canonical size |
+
+With one active device and an empty profile name, canonical DCB1 is at least
+3,757 bytes; the V1 maximum is 10,275 bytes. These bounds include the complete
+228-byte ADL1 envelope, not only its 160 bytes of field values.
 
 XPS1 records are sorted by responder device ID and exactly cover active DMD1
 devices up to the product limit. They authorize atomic fetch/claim of a fresh
@@ -266,6 +327,13 @@ descriptorHash32
 LP32(exactDescriptorBytes)
 ```
 
+For V1 DCB1 tag 14 is exactly one 651-byte entry:
+`transportProfile:u16be(1) || descriptorType:u16be(1) || SHA256(exactXIR1)32 ||
+LP32(exactXIR1[611])`. The descriptor hash is recomputed before the nested
+record is parsed; type/profile mismatch, a second entry, nonzero unused bytes or
+an XIR1 whose XRA1 closure does not bind its placement and sealing-key fields
+reject before DCB1 signature verification.
+
 Registered V1 profiles are `1=OfficialXPoint3`, `2=UserManaged`,
 `3=DirectP2P`, `4=StoreCarryForwardMesh`. Only profile 1 is activated in the
 first release. Its descriptor is exact `XIR1`; current `XRR1` is resolved behind
@@ -280,12 +348,12 @@ independently from device, ratchet, mailbox-owner and onion keys.
 
 - bit 0: public reusable requests allowed;
 - bit 1: one-time invitations allowed;
-- bit 2: proof-of-work required;
+- bit 2: proof-of-work required (reserved/inactive in public V1);
 - bit 3: manual approval required.
 
-All other bits reject. Production defaults are bits 0, 1 and 3. Proof-of-work
-parameters are signed inside the reachability service policy, not caller
-supplied.
+All other bits reject. Production defaults are bits 0, 1 and 3. Public V1
+rejects bit 2 because XIQ1 registers only token type `0=None`; activating proof
+of work requires a new registered token type and its exact token/policy grammar.
 
 The canonical `DCR1` resolver response below supplies the exact DRS1 object
 referenced by tag 4 and every DPD1 referenced by DMD1. Support objects are
@@ -301,6 +369,21 @@ An expired bundle cannot authorize a new contact request, but it never expires
 or redirects DID1 itself. The same DID1 may resolve a current signed successor;
 an expired one-time invitation must be replaced by the recipient.
 
+The DCB1 signing projection is tags 1..18 and 20..24: rebuild the record with
+field count 23 and omit tag 19 only. Tag 7 is stable per DID1; tag 8 increments
+exactly; tag 9 is ZERO32 only at generation zero and otherwise equals
+`SHA256(exact predecessor DCB1)`. Tag 11 equals the active DMD1 device count and
+tag 12 contains one valid XPS1 per device, ordered by responder device ID. Tag 20
+is the exact ADL1 capability matching the signed identity closure; it is not a
+service-visible account lookup key. Tag 21 is the same signed minimum checkpoint
+as ADL1: `minimumADH1.generation:u64be || minimumADH1.coreHash32`. The resolver
+MUST reject when the two declarations differ, when the verified current ADH1
+generation is lower, or, at the same generation, when its core hash differs. A
+newer verified ADH1 is accepted so an offline publisher does not need to replace
+DCB1 after every normal directory-head rotation. DCR1 is the sole source of
+DRS1/DPD1 dependencies; no unsigned directory response changes DCB1
+interpretation.
+
 ### 5.2 Canonical resolver closure: `DCR1`
 
 `DCR1`, version 1, suite `0x0201`, is the only accepted resolver plaintext:
@@ -312,8 +395,9 @@ an expired one-time invitation must be replaced by the recipient.
 | 3 | support-object count | 2 |
 | 4 | sorted support entries | `1..16384` |
 
-Each support entry is `kind:u16 || length:u32 || exactCanonicalObject`. Kinds
-are closed: `1=DRS1`, `2=DPD1`. Entries sort by `(kind,
+Each support entry is `kind:u16be || length:u32be || exactCanonicalObject`. Kinds
+are closed: `1=DRS1`, `2=DPD1`; exactly one kind-1 entry and exactly one kind-2
+entry per DCB1 DMD1 device are required. Entries sort by `(kind,
 SHA-256(exactCanonicalObject))`; duplicates and unreferenced objects reject.
 The closure contains exactly one DRS1 matching DCB1 tag 4 and exactly one DPD1
 for every DMD1 device entry, with no missing or additional object. Every XPS1
@@ -332,6 +416,21 @@ and verifies current ADC1/ADP1 against a recent threshold-witnessed ADH1. The DC
 publisher cannot make an old but correctly signed directory current. Resolver
 publication, exact replay and pre-key claim use canonical XPU1, XIQ1/XIS1 and
 XPK1/XPC1, never an improvised JSON or Registry API.
+The public V1 XIQ1 profile uses only token type `0=None` with an empty token;
+manual approval and service quotas are the initial abuse controls. Unknown token
+types are not accepted as opaque extensions.
+
+DCR1 has exactly four fields and total
+`62 + exactDCB1Bytes + supportBytes`, where `supportBytes` is exactly the
+concatenation of the closed entries above. It must not exceed 65,535 bytes and
+has no continuation/pagination. The parser verifies outer fields, DCB1 canonical
+bytes, support ordering/reference closure, each nested signature and then the
+fresh directory closure. Storage holds only the encrypted `nonce24 ||
+ciphertext(DCR1)` wrapper. Its exact maximum is `24 + 65,535 + 16 = 65,575`
+bytes. XPU1 has the closed 69,649-byte request exception needed for this wrapper
+and a maximum 3,666-byte XPA1; XIS1 Success uses its 131,072-byte response class
+only when the exact encrypted DCR1 plus route closure exceeds class 3. A service
+cannot inspect or index DCR1 plaintext.
 
 ### 5.3 Metadata consequence
 
@@ -354,7 +453,14 @@ version 1, suite `0x0201`:
 | 3 | random deposit operation ID | 32 |
 | 4 | ephemeral X25519 public key | 32 |
 | 5 | nonce | 24 |
-| 6 | sealed DPH2 or DPE2 | `32..60000` |
+| 6 | sealed exact DPH2 or DPE2, including 16-byte AEAD tag | exact inner size + 16 |
+
+The exact DAO1 total size is `212 + innerRecordSize`. Allowed totals are
+`6129, 18417, 34801` for DPH2 and
+`4725, 4821, 4885, 5685, 5877, 17013, 17109, 17173, 17973, 18165, 33397,
+33493, 33557, 34357, 34549, 49765, 49861, 49925, 50725, 50917` for DPE2.
+All other sizes reject before X25519. `daoHeader` is the canonical record
+rebuilt with tags 1..5 and field count 5, exactly 188 bytes.
 
 The sender creates a fresh X25519 key pair, rejects an all-zero shared secret
 with the descriptor's exact sealing public key and derives:
@@ -371,7 +477,7 @@ key = HKDF-Expand-512(
 ```
 
 Tag 6 is XChaCha20-Poly1305-IETF with tag 5 and associated data equal to
-canonical DAO1 with tag 6 omitted. The plaintext is exactly one DPH2 or DPE2;
+`daoHeader`. The plaintext is exactly one DPH2 or DPE2;
 all other magics reject. The recipient opens DAO1 before selecting the
 handshake/session and deduplicates the deposit operation atomically with inner
 processing.
@@ -411,6 +517,12 @@ holder of the full Deep ID can intentionally read it. DCB1/DAB1 signatures provi
 transport adapters define separate domain labels and never reuse an XPoint
 locator.
 
+For `OfficialXPoint3`, the locator is also the only contact-specific input needed
+to select the first resolver shard. Exact current-view/PMT authority and shard
+derivation are owned by
+[CONTACT-RESOLVER-V1 §3.0](CONTACT-RESOLVER-V1.md#30-exact-current-view-and-service-shard-derivation);
+no XIR1 field or resolved DCR1 is a prerequisite.
+
 `DIA1` is now exclusively a one-time invitation. Its text/deep-link form is
 `deepinvite:` plus unpadded base64url of exact canonical DIA1; QR and binary
 file carry those exact bytes. It is not Bech32m because the bounded record can
@@ -432,6 +544,13 @@ DIA1 expiry follows the one-time bound of `RET-DCR-PUBLICATION-V1` and never
 exceeds its exact DCB1/XIR1 authorization
 closure. A zero hash, zero expiry, reusable flag or
 usage other than one rejects.
+
+DIA1 is exactly 225 bytes. Tag 4 is exactly
+`1=OfficialXPoint3OneTimeLocator`, tag 5 is exactly 16 random opaque bytes,
+tag 6 is a nonzero 32-byte decryption key, tag 8 is nonzero and tag 9 is exactly
+one. `DIA1Hash32 = SHA256(exactDIA1)`. No account/device/ref/route field exists;
+type 1 is the complete V1 locator-type registry and any other type rejects before
+resolver access.
 
 The locator identifies an opaque encrypted bundle object. It contains no
 account, device, mailbox, XNode or contact identifier. For one-time DIA1 the
@@ -519,111 +638,164 @@ unsolicited capabilities where needed.
 
 ## 8. `DMC2` canonical application event
 
-`DMC2`, version 1, suite `0x0201`, is the sole pairwise application plaintext:
+`DMC2`, version 1, suite `0x0201`, is the sole pairwise application plaintext.
+The clean-break record has exactly 12 fields; the earlier untyped attachment
+descriptor fields 13/14 do not exist. Attachments use typed kind 18 with exact
+DAM1.
 
 | Tag | Value | Size |
 |---:|---|---:|
 | 1 | network ID | 16 |
-| 2 | logical message ID | 32 |
-| 3 | conversation ID | 32 |
-| 4 | sender account hash | 32 |
-| 5 | sender device ID | 32 |
-| 6 | sender client sequence | 8 |
-| 7 | created-at Unix milliseconds | 8 |
-| 8 | expires-at Unix milliseconds | 8 |
-| 9 | content kind | 2 |
-| 10 | flags | 4 |
+| 2 | logical message ID | 32, nonzero CSPRNG |
+| 3 | conversation ID | 32, nonzero |
+| 4 | sender account hash | 32, nonzero |
+| 5 | sender device ID | 32, nonzero |
+| 6 | sender client sequence | 8; starts at 1, never wraps |
+| 7 | created-at Unix milliseconds | 8; nonzero |
+| 8 | expires-at Unix milliseconds | 8; zero or greater than tag 7 |
+| 9 | content kind | 2; closed registry below |
+| 10 | flags | 4; closed mask below |
 | 11 | reply-to logical message ID | 0 or 32 |
-| 12 | canonical kind-specific payload | `0..32768` |
-| 13 | attachment-descriptor count | 1 |
-| 14 | canonical attachment descriptors | `0..8192` |
+| 12 | canonical kind-specific payload | exact grammar below, maximum 32,768 |
 
-`logicalMessageId` is 32 random bytes generated once when the durable outbox
-operation is created. It survives retries, per-device fanout and transport
-switching. `sender client sequence` is monotonic per device and provides
-ordering evidence, not global delivery order. Clocks are presentation/expiry
-hints and never replace sequence or predecessor validation.
+For payload length `P` and reply length `R` in `{0,32}`, canonical DMC2 size is
+exactly `282 + R + P` bytes. `logicalMessageId` is generated once with the
+durable logical operation and survives retries, per-device fanout and transport
+switching. Sequence is monotonic per `(senderAccountId,senderDeviceId)` and is
+ordering evidence, not global delivery order. Timestamps are presentation and
+expiry inputs and never replace sequence, predecessor or retention checks.
 
-Flags are closed: bit 0 `silent`, bit 1 `disappearing`, bit 2
-`highPriority`, bit 3 `historyTransfer`. All other bits reject. The sender,
-conversation and kind are verified against the authenticated DPE2 session and
-local contact/group state before materialization.
+Flags are closed: bit 0 `Silent`, bit 1 `Disappearing`, bit 2 `HighPriority`.
+Bit 3 `HistoryTransfer` is allocated but `RESERVED_REJECT` until
+`HISTORY-CODEC-01`; bits 4..31 reject. Per-kind masks are stricter: kinds 1,
+6..10 and 12..13 require zero; kind 11 requires exactly `Silent`; kind 5 may
+use bits 0..2; kind 18 may use bits 0..2; kind 19 requires exactly `Silent`.
+Tag 11 is nonempty only for kinds 5 and 18. A zero reply ID rejects.
 
-### 8.1 Content registry
+Canonical application text means strict shortest-form UTF-8, valid Unicode
+scalar values, NFC, no U+0000, and byte length measured after NFC. Decoding a
+different normalization and normalizing it silently is forbidden. Message text
+may contain bidi characters; UI isolation is a presentation requirement and
+does not change authenticated bytes.
 
-| ID | Kind | Payload and expiry |
-|---:|---|---|
-| 1 | `SessionInit` | random handshake nonce, sender DMD1 hash/bytes and capabilities; <=24 h |
-| 2 | `ContactHello` | relationship ID, sender DCB1 hash, invite-specific reply XIR1/current XRR1 closure, optional profile; `RET-CONTACT-REQUEST-V1` |
-| 3 | `ContactAccept` | relationship ID, recipient current DCB1 hash and recipient XUR1; `RET-CONTACT-REQUEST-V1` |
-| 4 | `ContactReject` | relationship ID and closed reason; `RET-CONTACT-REQUEST-V1` |
-| 5 | `MessageCreate` | canonical UTF-8, `1..16384`; `RET-MAILBOX-CIPHERTEXT-V1` |
-| 6 | `MessageEdit` | target ID plus replacement UTF-8; `RET-MAILBOX-CIPHERTEXT-V1` |
-| 7 | `MessageDelete` | target ID plus scope (`local-request` or `conversation-tombstone`); `RET-MAILBOX-CIPHERTEXT-V1` |
-| 8 | `ReactionSet` | target ID, operation (`add/remove`), normalized emoji; `RET-MAILBOX-CIPHERTEXT-V1` |
-| 9 | `ReceiptDelivered` | `1..128` IDs and accepted/materialized/expired status; `RET-MAILBOX-CIPHERTEXT-V1` |
-| 10 | `ReceiptRead` | `1..128` IDs; `RET-MAILBOX-CIPHERTEXT-V1`, and only when user policy allows |
-| 11 | `Typing` | start/stop and random activity ID; <=120 s, never durable history |
-| 12 | `DeviceListUpdate` | exact DMD1 plus current DCB1/XPS1 service closure; event `RET-XUR-UPDATES-V1`, referenced history `RET-DEVICE-CONTROL-V1` |
-| 13 | `DeviceRevocation` | exact DRS1/DMD1 successor evidence; event `RET-XUR-UPDATES-V1`, referenced history `RET-DEVICE-CONTROL-V1` |
-| 14 | `ContactRouteUpdate` | successor reachability and XUR1 state; `RET-XUR-UPDATES-V1` |
-| 15 | `GroupProposal` | exact DGP1; DMC2 copy `RET-MAILBOX-CIPHERTEXT-V1`, control object `RET-GROUP-CONTROL-V1` |
-| 16 | `GroupCommit` | GCP1 hash/length/chunk manifest plus exact DGC1; DMC2 copy `RET-MAILBOX-CIPHERTEXT-V1`, control package `RET-GROUP-CONTROL-V1` |
-| 17 | `GroupApplicationMessage` | exact DGM1; `RET-MAILBOX-CIPHERTEXT-V1` |
-| 18 | `AttachmentOffer` | bounded encrypted manifest descriptor under `RET-MAILBOX-CIPHERTEXT-V1`; referenced ciphertext `RET-ATTACHMENT-V1` |
-| 19 | `AttachmentCancel` | object ID and closed reason; `RET-MAILBOX-CIPHERTEXT-V1` |
-| 20 | `CallOffer` | call ID, fresh binding secret and DTLS fingerprint; <=60 s |
-| 21 | `CallAnswer` | call ID, accept/reject and DTLS fingerprint; <=120 s |
-| 22 | `CallIceCandidate` | relay-only candidate/circuit descriptor; <=120 s |
-| 23 | `CallReconnect` | call ID, sequence and replacement relay/circuit binding; <=120 s |
-| 24 | `CallEnd` | call ID, sequence and closed reason; <=24 h |
-| 25 | `HistoryTransfer` | encrypted history chunk descriptor; <=7 d |
-| 26 | `GroupInvite` | exact pending GIV1; does not grant membership |
-| 27 | `GroupInviteAccept` | exact GIA1 consent; does not grant membership until DGC1 |
-| 28 | `GroupInviteDecline` | invitation ID and coarse reason; optional notification |
-| 29 | `GroupCommitChunk` | exact GCF1 chunk; materialization waits for complete GCP1 |
+### 8.1 Closed base event registry
 
-Unknown kinds reject rather than appear as generic messages. New kinds require a
-new registry generation and negative vectors.
+| ID | Kind | Codec state | Payload / expiry rule |
+|---:|---|---|---|
+| 1 | `SessionInit` | frozen | exact grammar below; nonzero expiry, at most 24 h after creation |
+| 2 | `ContactHello` | frozen target | exact grammar below; nonzero expiry, at most 7 days after creation |
+| 3 | `ContactAccept` | frozen target | exact grammar below; nonzero expiry, at most 7 days after creation |
+| 4 | `ContactReject` | frozen target | exact grammar below; nonzero expiry, at most 7 days after creation |
+| 5 | `MessageCreate` | frozen | canonical UTF-8 `1..16384`; tag 8 zero or policy expiry |
+| 6 | `MessageEdit` | frozen | target plus canonical UTF-8 `0..16384`; tag 8 zero or policy expiry |
+| 7 | `MessageDelete` | frozen | target plus closed scope; tag 8 zero or policy expiry |
+| 8 | `ReactionSet` | frozen | target, closed operation and one Unicode 15.1 extended grapheme cluster, `1..32` UTF-8 bytes |
+| 9 | `ReceiptDelivered` | frozen | `1..128` IDs and closed status |
+| 10 | `ReceiptRead` | frozen | `1..128` IDs; author only when user policy allows |
+| 11 | `Typing` | frozen | nonzero expiry, at most 120 s after creation; never durable history |
+| 12 | `DeviceListUpdate` | frozen | exact successor DMD1 |
+| 13 | `DeviceRevocation` | frozen | exact successor DRS1 and DMD1 |
+| 14 | `ContactRouteUpdate` | frozen target | exact successor route closure below; nonzero expiry, at most 7 days after creation |
+| 15 | `GroupProposal` | frozen target | exactly `LP32(DGP1)`; zero flags/reply and nonzero expiry at most seven days |
+| 16 | `GroupCommit` | frozen target | exactly `LP32(GCF1)`; a GCP1 is never placed directly in DMC2; zero flags/reply and nonzero expiry at most seven days |
+| 17 | `GroupApplicationMessage` | frozen target | exactly `LP32(DGM1)`; zero flags/reply; no shared group key is introduced |
+| 18 | `AttachmentOffer` | frozen | exact DAM1; runtime inactive until BLOB-01 |
+| 19 | `AttachmentCancel` | frozen | object ID and closed reason; runtime inactive until BLOB-01 |
+| 20..24 | call event allocation | `RESERVED_REJECT` | CALL-CODEC-01 owns exact call payload records |
+| 25 | `HistoryTransfer` | `RESERVED_REJECT` | HISTORY-CODEC-01 owns exact backup/history closure |
+| 26 | `GroupInvite` | frozen target | exactly `LP32(GIV1)`; zero flags/reply and nonzero expiry at most seven days |
+| 27 | `GroupInvitationAcceptance` | frozen target | exactly `LP32(GIA1)`; zero flags/reply and nonzero expiry at most seven days |
+| 28 | `GroupCommitChunk` | frozen target | exactly `LP32(GCF1)`; zero flags/reply and nonzero expiry at most seven days |
+| 29 | `GroupEmergencySequencerTransfer` | frozen target | exactly `LP32(DGT1)`; zero flags/reply and nonzero expiry at most seven days |
 
-### 8.2 Exact kind-payload grammar
+Unknown IDs and every reserved ID reject before payload allocation, crypto,
+mutation or callback. A reserved ID never carries a generic blob. New IDs
+require a registry-generation advance and negative cross-kind vectors.
 
-Every tag 12 payload is exactly one ordered grammar below; `LP16/LP32` are the
-canonical big-endian length prefixes from the crypto baseline. Empty optional
-values are encoded with a zero length, never by omitting bytes. Trailing bytes,
-alternate integer widths and embedded non-canonical records reject.
+### 8.2 Exact frozen payload grammar
 
-| Kind | Exact tag 12 bytes |
-|---|---|
-| SessionInit | `handshakeNonce32 || senderDMD1Hash32 || LP32(exactDMD1) || capabilityBits:u32` |
-| ContactHello | `relationshipId32 || senderDCB1Hash32 || LP32(exactReplyXIR1) || LP32(exactInitialDepositClosure) || LP16(profileUtf8[0..256])` |
-| ContactAccept | `relationshipId32 || recipientDCB1Hash32 || LP32(exactRecipientXUR1)` |
-| ContactReject | `relationshipId32 || reason:u16` |
-| MessageCreate | `LP16(canonicalUtf8[1..16384])` |
-| MessageEdit | `targetLogicalId32 || LP16(canonicalUtf8[0..16384])` |
-| MessageDelete | `targetLogicalId32 || scope:u8` where `1=LocalRequest`, `2=ConversationTombstone` |
-| ReactionSet | `targetLogicalId32 || operation:u8 || LP16(normalizedEmojiUtf8[1..32])`, operation `1=Add`, `2=Remove` |
-| ReceiptDelivered | `count:u8 || (logicalId32 || status:u8)[count]`, count `1..128`, status `1=StoreAccepted`, `2=Materialized`, `3=Expired`, `4=TerminalRejected` |
-| ReceiptRead | `count:u8 || logicalId32[count]`, count `1..128` |
-| Typing | `operation:u8 || activityId32`, operation `1=Start`, `2=Stop` |
-| DeviceListUpdate | `LP32(exactDMD1) || LP32(exactDCB1)` |
-| DeviceRevocation | `LP32(exactDRS1) || LP32(exactDMD1) || LP32(exactADC1)` |
-| ContactRouteUpdate | `LP32(exactXUR1) || LP32(exactXRR1Closure)` |
-| GroupProposal | `LP32(exactDGP1)` |
-| GroupCommit | `GCP1Hash32 || totalLength:u32 || chunkCount:u32 || LP32(exactDGC1)` |
-| GroupApplicationMessage | `LP32(exactDGM1)` |
-| AttachmentOffer | `LP32(exactDAM1)` |
-| AttachmentCancel | `objectId32 || reason:u16` |
-| CallOffer/CallAnswer/CallIceCandidate/CallReconnect/CallEnd | exact corresponding closed payload from `CALL-SESSION-V1.md`; no SDP JSON or platform-native object |
-| HistoryTransfer | `transferId32 || LP32(exactDAM1) || firstLogicalId32 || lastLogicalId32` |
-| GroupInvite | `LP32(exactGIV1)` |
-| GroupInviteAccept | `LP32(exactGIA1)` |
-| GroupInviteDecline | `invitationId32 || reason:u16` |
-| GroupCommitChunk | `LP32(exactGCF1)` |
+Every accepted tag-12 payload is exactly one ordered grammar below. `LP16` and
+`LP32` are the crypto baseline prefixes. Trailing bytes, alternate integer
+widths, unsorted lists and non-canonical embedded records reject.
 
-Payload closed enums are generated from the protocol registry. The DMC2
-authenticated sender/device/conversation must equal every duplicated inner
-identity; disagreement is a substitution failure, not an update hint.
+| Kind | Exact tag-12 bytes | Exact payload bytes |
+|---|---|---:|
+| SessionInit | `handshakeNonce32 || senderDMD1Hash32 || LP32(exactDMD1) || capabilityBits:u32be` | `428 + 70*N`, `N=1..16` |
+| MessageCreate | `LP16(canonicalUtf8)` | `3..16386` |
+| MessageEdit | `targetLogicalId32 || LP16(canonicalUtf8)` | `34..16418` |
+| MessageDelete | `targetLogicalId32 || scope:u8` | 33 |
+| ReactionSet | `targetLogicalId32 || operation:u8 || LP16(reactionUtf8)` | `36..67` |
+| ReceiptDelivered | `count:u8 || (logicalId32 || status:u8)[count]` | `34..4225` |
+| ReceiptRead | `count:u8 || logicalId32[count]` | `33..4097` |
+| Typing | `operation:u8 || activityId32` | 33 |
+| DeviceListUpdate | `LP32(exactDMD1)` | `360 + 70*N`, `N=1..16` |
+| DeviceRevocation | `LP32(exactDRS1) || LP32(exactDMD1)` | exact nested-size formula, maximum 32,768 |
+| AttachmentOffer | `LP32(exactDAM1)` | `4 + exactDAM1Size` |
+| AttachmentCancel | `objectId32 || reason:u16be` | 34 |
+| ContactHello | `relationshipId32 || initiatorDAB1Ref38 || initiatorDMD1Hash32 || safetyNumberHash32 || contactPolicy:u16be || LP32(exactInitiatorInboundXUR1)` | 678 exactly |
+| ContactAccept | `relationshipId32 || contactHelloHash32 || responderDAB1Ref38 || responderDMD1Hash32 || contactPolicy:u16be || LP32(exactResponderInboundXUR1)` | 678 exactly |
+| ContactReject | `relationshipId32 || contactHelloHash32 || reason:u16be` | 66 exactly |
+| ContactRouteUpdate | `relationshipId32 || routeGeneration:u64be || predecessorRouteUpdateHash32 || closureCount:u8(6) || LP32(XRR1[643]) || LP32(XRA1[550]) || LP32(XRC1[940..4012]) || LP32(XSS1[643..3523]) || LP32(PMT2[842..11066]) || LP32(PMS2[500..3476])` | `4,215..23,367` |
+
+`SessionInit.capabilityBits` is closed: bit 0 `TextCore`, bit 1
+`DeviceControl`, bit 2 `AttachmentCodec`; bits 3..31 reject. It MUST include
+bits 0 and 1. Advertising bit 2 means only that the frozen DAM1/kinds 18..19
+codec is understood, not that a blob transport is active. The exact DMD1 hash
+must equal the section 3 record hash of the embedded DMD1 and its account/device
+closure must equal the authenticated DPH2 endpoints.
+
+Closed payload enums are:
+
+- delete scope: `1=LocalRequest`, `2=ConversationTombstone`;
+- reaction operation: `1=Add`, `2=Remove`;
+- delivery status: `1=StoreAccepted`, `2=Materialized`, `3=Expired`,
+  `4=TerminalRejected`;
+- typing operation: `1=Start`, `2=Stop`;
+- attachment cancel reason: `1=SenderCancelled`, `2=Superseded`,
+  `3=LocalPolicy`.
+
+The four CONTACT-CODEC payloads are closed as follows. `relationshipId32`, every
+hash/ref and the inner XUR1 must be nonzero. `contactPolicy` is a closed u16 mask:
+bit 0=`ManualApproval`, bit 1=`AllowRouteUpdates`; all other bits reject. Hello
+and Accept require flags=0 and an empty DMC2 reply tag. Reject requires flags=0,
+an empty reply tag, and reason `1=UserDeclined`, `2=Policy`, `3=Expired`, or
+`4=AlreadyActive`; it carries no account, device, route, mailbox or diagnostic
+detail beyond the already authenticated DMC2 sender. RouteUpdate requires
+flags=0 and an empty reply tag. Its closure is serialized strictly in the listed
+magic order, each embedded record must be exact canonical bytes and independently
+verify, and it must contain the successor XRR1 plus the exact XRA1/XRC1/XSS1/
+PMT2/PMS2 objects named by that XRR1. A changed same `(relationshipId,
+routeGeneration)` closure, a non-successor generation, a changed predecessor or
+an unresolved/expired component permanently forks that route head and fences
+sending. None of these payloads is supplied to a resolver, mailbox, XNode or
+transport in plaintext: it exists only after DPE2/ratchet authentication.
+The five fixed prefix components are 73 bytes plus six LP32 prefixes (24 bytes),
+so the table's exact bounds are `97 + 4,118 = 4,215` and
+`97 + 23,270 = 23,367`; with the required empty DMC2 reply field this makes the
+complete DMC2 record `4,497..23,649` bytes. `routeGeneration` equals embedded
+XRR1 tag 3; `predecessorRouteUpdateHash32` is ZERO32 exactly at generation zero
+and otherwise nonzero. XRR1 tags 5..8 and 9 must bind the embedded XRA1/XRC1/
+XSS1/PMT2 and PMS2 hash; XRC1 and XSS1 must bind the same XRA1/PMT2/PMS2
+components, and PMS2 must bind the embedded PMT2. Every closure record's network
+ID must equal DMC2 tag 1.
+
+ContactHello's `initiatorDAB1Ref`, `initiatorDMD1Hash` and safety number must
+match the authenticated initiator endpoint and its verified directory closure.
+ContactAccept's corresponding values must match the authenticated responder;
+its `contactHelloHash32` is `SHA256(exact canonical DMC2 ContactHello)`. The
+embedded inbound XUR1 must be authored by the authenticated sender, permit all
+three contact-control event bits, and be valid at DMC2 creation. ContactReject
+may be materialized only for the exact authenticated pending Hello. These checks
+occur before any UI state or outbound acknowledgement; duplicate exact logical
+events are idempotent.
+
+Receipt IDs are strictly lexicographically sorted and unique. Every target,
+activity, object and handshake nonce is nonzero. DeviceListUpdate requires an
+exact next-generation DMD1. DeviceRevocation requires an exact next DRS1 and
+the DMD1 successor derived from it; both transitions commit atomically or the
+event is not materialized. The authenticated DMC2 sender/device/conversation
+must equal every duplicated inner identity. Disagreement is a substitution
+failure, never an update hint.
 
 Edits, deletes and reactions are immutable new events. They never rewrite a
 prior authenticated record. The materialized view applies them only if sender,
@@ -889,7 +1061,12 @@ User acceptance creates `GIA1`, version 1, suite `0x0201`:
 
 The signature domain is `Deep/Group/V1/invitation-acceptance`. The accepting
 device must be active in the referenced current directory closure; GIA1 matches
-the exact invitation, invitee and requested role and cannot outlive GIV1. It is
+the exact invitation, invitee and requested role and cannot outlive GIV1. Its
+ADC1/ADH1/ADP1/DMD1/DRS1 tuple must be byte-identical to GIV1; any directory
+advance invalidates the pending offer and requires a fresh invitation. This
+clean-break rule lets the activation verifier prove both signed records from one
+non-forgeable current directory capability instead of trusting historical raw
+support bytes. It is
 sent to inviter/owner through the pairwise ratchet. Only a later owner-signed
 DGC1 may activate the member. A declined/expired invitation remains absent from
 membership; optional decline notification is a DMC2 event, not a governance
@@ -1013,6 +1190,30 @@ signature.
   skip or reorder a listed proposal.
 - A verifier independently applies the same reducer and requires byte-identical
   tag 12 member entries, group profile fields and owner/sequencer result.
+- Successor verification accepts the prior non-forgeable
+  `VerifiedGroupTransition`, never caller-supplied predecessor bytes. Every
+  DGC1/GIV1/GIA1/DGP1/DGT1 signature key is selected from the exact verified
+  DPA1/DRS1/DPD1/DMD1 closure; a caller-supplied Ed25519 key is not an allowed
+  verification input. DMD1 and DNP1 support references retain their respective
+  domain-separated artifact-hash rules rather than being reinterpreted as raw
+  SHA-256.
+- The production Contact verifier output consumed by GROUP binds
+  `exactADC1Ref38`, `exactADH1CoreRef38`, `exactADP1Hash32`, current DMD1/DRS1
+  and one trusted time. Member entries and every activation/device action must
+  equal that tuple byte-for-byte. For an account present at both the base and
+  result side, changed DMD1 bytes must be the exact next generation naming the
+  base DMD1 hash as predecessor; an identical DMD1 is allowed. A removed/left
+  account still supplies its current verified tuple even though it is absent
+  from the resulting member table. Raw support bytes or caller keys cannot
+  construct this capability.
+- GROUP does not duplicate account-directory parsing, witness-policy, sparse-map,
+  history-proof or trusted-time verification. The production Contact verifier now
+  exposes the exact non-forgeable freshness output above, and GROUP consumes it
+  directly without caller keys or validation-only constructors. Historical base
+  tuples are accepted only when they byte-match the prior verified commit and its
+  authenticated commit time; resulting tuples must additionally be current in the
+  caller's boot-specific monotonic window. Runtime activation remains false until
+  the separate GROUP-CLIENT gate.
 - The sequencer revalidates current DMD1/DRS1 for every affected account.
 - Removal of an account removes all its devices.
 - Device revocation removes that leaf before future group events.
@@ -1020,11 +1221,25 @@ signature.
   commit signed by the prior sequencer.
 - If the sequencer is lost, an emergency transfer is authorized by exact DGT1
   recovery ceremony and DPA1 account signature in a separate recovery domain;
-  it is displayed to all members as a safety event.
+  the first successor commit is signed by the DGT1-authorized new active owner
+  device rather than the lost predecessor device, and it is displayed to all
+  members as a safety event.
 - Two distinct valid successors for the same `(groupId, epoch,
   predecessorHash)` permanently fork-latch the group. Clients stop group sends,
   retain both exact commits as evidence and require creation of a new group ID.
   They do not choose the lexicographically smaller attacker-controlled fork.
+  The latch snapshot is persisted with compare-and-swap before the in-memory
+  head advances, contains both conflicting successor hashes, and restores the
+  latched state after restart; a persistence conflict rejects the observation.
+
+The local snapshot is canonical `GLS1`, version 1, and is never a network
+record. Its exact size is `58 + 40*N`: magic4, version u16, fork flag u16,
+revision u64, head epoch u64 (`UInt64.MaxValue` only for an empty lineage), head
+hash32, entry count u16, then `N` lexicographically canonical `(epoch u64,
+commitHash32)` rows. Revision equals `N`; duplicate, zero, unsorted, rollback,
+non-canonical or head-not-in-rows state rejects before mutation. `GLS1` must be
+stored only inside the account-scoped authenticated durable store and updated
+by exact-byte compare-and-swap.
 
 Application events may merge after a network partition while every sender
 remained on the same commit. Membership mutation during an unresolved partition
@@ -1084,13 +1299,17 @@ Transport chunking uses canonical `GCF1`, version 1, suite `0x0201`:
 
 | Tag | Value | Size |
 |---:|---|---:|
-| 1 | SHA-256 of exact GCP1 | 32 |
+| 1 | `recordHash32` of exact GCP1 | 32 |
 | 2 | total GCP1 bytes | 4 |
 | 3 | fixed non-final chunk size (`24576`) | 4 |
 | 4 | chunk index | 4 |
 | 5 | chunk count | 4 |
 | 6 | SHA-256 of chunk bytes | 32 |
 | 7 | chunk bytes | `LP32`, `1..24576` |
+
+Tag 7's field value includes the four-byte LP32 length prefix. Hashing and
+chunk geometry use only the decoded `chunkBytes`; a raw unprefixed field or a
+prefix with trailing bytes is non-canonical and rejects.
 
 Chunk count is `ceil(total/24576)` and at most 342; all non-final chunks are
 exactly 24,576 bytes and the final length follows from total. This bound keeps
@@ -1181,23 +1400,37 @@ Long-offline group control does not rely on an online member or
 `RET-MAILBOX-CIPHERTEXT-V1`. For every active member account the Owner creates an
 independent random
 `GSR1`, version 1, suite `0x0201`, and shares it only through that member's pairwise
-E2EE:
+E2EE. Its exact canonical tags are:
 
-```text
-networkId16, randomServiceCapability32, randomDirectionId32
-serviceGeneration:u64, predecessorGSR1Hash32
-exactPMT2Ref38, randomPlacementInput32
-sealingKeyId32, sealingX25519Public32
-ownerDeviceId32, ownerDPD1Ref38, issuedAt:u64, expiresAt:u64
-ownerDeviceSignature64
-```
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2 | random service capability | 32 |
+| 3 | random direction ID | 32 |
+| 4 | service generation | 8 |
+| 5 | predecessor GSR1 record hash | 32; zero iff generation zero |
+| 6 | exact PMT2 ArtifactRef | 38 |
+| 7 | random placement input | 32 |
+| 8 | sealing key ID | 32 |
+| 9 | sealing X25519 public key | 32 |
+| 10 | owner device ID | 32 |
+| 11 | owner DPD1 ArtifactRef | 38 |
+| 12 | issued-at | 8 |
+| 13 | expires-at | 8; greater than tag 12 |
+| 14 | owner-device signature | 64 |
 
 The signature domain is `Deep/Group/V1/control-rendezvous`. Capability, direction,
 placement and sealing key are independently random per `(group, recipient account,
 generation)` and never contain/derive group/account/device IDs in service requests.
 The XNode store therefore cannot correlate two members as one group from GSR1.
 
-`GSW1` uses the common request tags from the resolver contract plus
+GSW1 and GSQ1 are legal terminal requests only under the distinct ONION-01
+operation `GroupControl=5`; GSS1 is its only success record. All three records
+are rejected under Store, Retrieve, Acknowledge and ContactResolve, and no direct
+group-control HTTP client fallback exists.
+
+`GSW1` uses exactly sparse tags `1..6,16..22`; tags `7..15` are absent. It uses the
+common request tags from the resolver contract plus
 `16=serviceCapability32`, `17=exactGSR1Hash32`, `18=controlSequence:u64`,
 `19=predecessorControlHash32`, `20=sealedGCF1Hash32`,
 `21=LP32(sealedExactGCF1[1..32768])`, `22=effectiveExpiresAt:u64`.
@@ -1205,17 +1438,22 @@ It is a two-replica CAS. Every exact GCP1/GCF1 chunk needed for the recipient's
 current membership lineage is written; owner commit becomes publish-complete only
 after every target's durable receipts are recorded in the local fanout plan.
 
-`GSQ1` uses common request tags plus `16=serviceCapability32`,
+`GSQ1` uses exactly sparse tags `1..6,16..20`; tags `7..15` are absent. It uses
+common request tags plus `16=serviceCapability32`,
 `17=exactGSR1Hash32`, `18=afterControlSequence:u64`, `19=maxRecords:u16(1..64)`
 and `20=responsePaddingClass:u16(0..4)`. Class 4 can carry at least one
-maximum-size sealed GCF1. `GSS1` uses the exact XUS1 common result,
+maximum-size sealed GCF1. `GSS1` uses exactly sparse tags `1..8,16..20`; absent
+status payload positions are encoded as canonical empty fields so every status has
+one field-count/tag shape. It otherwise uses the exact XUS1 common result,
 status/outcome/payload/receipt matrix with operation kinds `1=Write`, `2=Fetch`,
 but its committed tuple is
 `requestHash32 || controlSequence || sealedGCF1Hash32 || commitGeneration` in
 signature domain `Deep/Group/V1/control-store-commit`. Mixed XUS/GSS records reject.
 
-For GSS1, XUS1 `eventGeneration/eventHash` mean
-`controlSequence/sealedGCF1Hash`; an Events record is exactly
+For GSS1, XUS1 `eventGeneration/eventHash` field positions mean
+`controlSequence/sealedGCF1Hash` under the group-specific commit tuple above;
+GSS1 does not use the contact-only
+`Deep/ContactResolver/V1/update-event` derivation. An Events record is exactly
 `controlSequence:u64 || predecessorControlHash32 || sealedGCF1Hash32 ||
 expiresAt:u64 || LP32(sealedExactGCF1[1..32768])`.
 Pagination applies the XUS1 longest-prefix algorithm with GSQ1 tag 18 as the
@@ -1280,7 +1518,9 @@ fanout as silent fallbacks.
 
 ## 16. Attachments
 
-An attachment event contains canonical `DAM1`, version 1, suite `0x0201`:
+`ATTACHMENT-CODEC-01` freezes canonical `DAM1`, version 1, suite `0x0201`.
+This freezes authoring/parsing only; upload/download is not active until
+`BLOB-01` passes its storage, padding, resume and physical-network gates.
 
 | Tag | Value | Size |
 |---:|---|---:|
@@ -1294,7 +1534,7 @@ An attachment event contains canonical `DAM1`, version 1, suite `0x0201`:
 | 8 | final chunk plaintext bytes | 4; `1..262144` |
 | 9 | chunk-entry count | 4; equals tag 7 |
 | 10 | sorted chunk entries | `count * 40` |
-| 11 | size-bucket ID | 2 |
+| 11 | ciphertext-capacity bucket ID | 2; closed table below |
 | 12 | expires-at Unix seconds | 8 |
 | 13 | canonical UTF-8 filename | `0..255` |
 | 14 | canonical ASCII media type | `0..128` |
@@ -1303,11 +1543,32 @@ Each tag 10 entry is exactly
 `index:u32be || ciphertextLength:u32be || SHA256(ciphertext)32`; indexes are
 strictly `0..count-1`. `count = ceil(totalPlaintext/262144)`, final plaintext
 length is `total - 262144*(count-1)`, and each ciphertext length is its
-plaintext length plus the 16-byte XChaCha20-Poly1305 tag. Size-bucket mapping is
-registry-owned and MUST be at least the exact total ciphertext size. Unknown
-fields/buckets, duplicate/missing indexes, inconsistent totals and max+1 reject
+plaintext length plus the 16-byte XChaCha20-Poly1305 tag.
+
+Bucket ID is the smallest row whose chunk capacity is at least tag 7. Capacity
+is authenticated policy; it does not add fake entries to tag 10. BLOB-01 owns
+the separate opaque transport-padding object needed to fill that capacity.
+
+| ID | Maximum encrypted chunks | Ciphertext capacity bytes |
+|---:|---:|---:|
+| 1 | 1 | 262,160 |
+| 2 | 4 | 1,048,640 |
+| 3 | 16 | 4,194,560 |
+| 4 | 64 | 16,778,240 |
+| 5 | 100 | 26,216,000 |
+
+The capacity formula is `maximumChunks * (262144 + 16)`. Unknown/non-minimal
+buckets, unknown fields, duplicate/missing indexes, inconsistent totals and max+1 reject
 before allocation or blob access. The manifest identity is
 `SHA256-D("Deep/Attachment/V1/manifest", exactDAM1)`.
+
+For chunk count `N`, filename length `F` and media-type length `M`, exact DAM1
+size is `270 + 40*N + F + M` bytes (`N=1..100`, `F=0..255`, `M=0..128`), hence
+the complete allowed range is `310..4653` subject to the arithmetic constraints
+above. Filename is strict shortest-form UTF-8, NFC, contains no U+0000, control
+character, `/` or `\\`, and is either empty or contains at least one non-space
+scalar. Media type is empty or lowercase ASCII `type/subtype`, no parameters,
+using only letters, digits and `!#$&^_.+-`, total `3..128` bytes.
 
 The sender generates random object key32 and derives for every index:
 
@@ -1379,8 +1640,9 @@ contain stable hashes of the sensitive inner identifiers.
   than accepted contacts.
 - Size, canonical framing, capability, replay and cheap policy checks precede
   signature, KEM and storage allocation where safe.
-- Reusable public IDs support signed proof-of-work or unlinkable rate tokens;
-  one-time invites normally do not require proof-of-work.
+- Public V1 reusable IDs use manual approval plus service quotas and do not
+  require proof of work. Proof-of-work or unlinkable rate tokens remain a future
+  cleanly registered XIQ1 token profile, not an opaque V1 extension.
 - A blocked contact cannot use route-update or call allocation channels.
 - Group owner/admin operations are bounded separately from application sends.
 - A sender cannot force more than the local group/device maxima, skipped-key

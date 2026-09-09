@@ -145,13 +145,12 @@ because their target frameworks compile.
 
 ## Documentation toolchain
 
-`xpoint-docs` pins Node.js 24.13.0, npm 11.8.0 and HonKit 6.2.2 with an npm lockfile. HonKit is a
-local build-only development dependency and receives only reviewed repository Markdown; it is not a
-runtime service or production package. The current compatible HonKit release still depends on
-Immutable.js 3.8.2, for which npm reports two high-severity denial-of-service advisories and no
-compatible upstream fix. `npm audit --omit=dev` is clean, while the full development audit remains a
-recorded residual risk. Do not suppress it or force Immutable.js 4.x: that override breaks HonKit's
-Record and plugin APIs. Upgrade the pinned toolchain when HonKit publishes a compatible fix.
+`xpoint-docs` pins Node.js 24.13.0, npm 11.8.0 and `marked` 18.0.11 with an npm
+lockfile. The repository-owned static renderer emits no client JavaScript,
+escapes raw HTML and adds a restrictive CSP. HonKit and its vulnerable
+Immutable.js 3.x dependency were removed rather than overridden. The complete
+two-package development graph must pass `npm audit --audit-level=high`; package
+install runs with lifecycle scripts disabled.
 
 ## Evidence acceptance
 

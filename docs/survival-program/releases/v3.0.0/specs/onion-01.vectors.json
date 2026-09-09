@@ -1,0 +1,53 @@
+{
+  "$schema": "onion-01.vectors.schema.json",
+  "schemaVersion": "1.2.0",
+  "package": "ONION-01",
+  "status": "FROZEN_TARGET_NOT_ACTIVE",
+  "runtimeActivation": false,
+  "terminalOperations": [
+    { "id": 1, "name": "Store", "requestMagic": ["MAU2"], "successMagic": ["MQR3"], "maxRequestBytes": 82344, "maxSuccessBytes": 776 },
+    { "id": 2, "name": "Retrieve", "requestMagic": ["MAU2"], "successMagic": ["MRP1"], "maxRequestBytes": 792, "maxSuccessBytes": 1048556 },
+    { "id": 3, "name": "Acknowledge", "requestMagic": ["MAU2"], "successMagic": ["MAR1"], "maxRequestBytes": 4792, "maxSuccessBytes": 77840 },
+    { "id": 4, "name": "ContactResolve", "requestMagic": ["XPU1", "XIQ1", "XPK1", "XUW1", "XUQ1"], "successMagic": ["XPO1", "XIS1", "XPC1", "XUS1"], "maxRequestBytes": 69649, "maxSuccessBytes": 131072 },
+    { "id": 5, "name": "GroupControl", "requestMagic": ["GSW1", "GSQ1"], "successMagic": ["GSS1"], "maxRequestBytes": 33160, "maxSuccessBytes": 65535 }
+  ],
+  "wireContracts": [
+    { "magic": "XRF1", "fixedPrefixBytes": 160, "maxBytes": 1572864, "fields": [{ "offset": 0, "length": 4, "name": "magic" }, { "offset": 4, "length": 1, "name": "version" }, { "offset": 5, "length": 1, "name": "minimumReader" }, { "offset": 6, "length": 1, "name": "suite" }, { "offset": 7, "length": 1, "name": "purpose" }, { "offset": 8, "length": 1, "name": "layerKind" }, { "offset": 12, "length": 16, "name": "networkId" }, { "offset": 28, "length": 32, "name": "keyOwnerId" }, { "offset": 60, "length": 8, "name": "epoch" }, { "offset": 68, "length": 32, "name": "keyId" }, { "offset": 100, "length": 32, "name": "ephemeralPublic" }, { "offset": 132, "length": 24, "name": "nonce" }, { "offset": 156, "length": 4, "name": "ciphertextLength" }] },
+    { "magic": "XRL1", "fixedPrefixBytes": 80, "maxBytes": 1180046, "fields": [{ "offset": 0, "length": 4, "name": "magic" }, { "offset": 4, "length": 1, "name": "version" }, { "offset": 5, "length": 1, "name": "minimumReader" }, { "offset": 6, "length": 1, "name": "layerKind" }, { "offset": 8, "length": 32, "name": "replayId" }, { "offset": 40, "length": 32, "name": "nextRouterId" }, { "offset": 72, "length": 4, "name": "innerLength" }, { "offset": 76, "length": 1, "name": "paddingExponent" }, { "offset": 77, "length": 3, "name": "paddingLength" }] },
+    { "magic": "XRE1", "fixedPrefixBytes": 144, "maxBytes": 1114255, "fields": [{ "offset": 0, "length": 4, "name": "magic" }, { "offset": 4, "length": 1, "name": "version" }, { "offset": 5, "length": 1, "name": "minimumReader" }, { "offset": 6, "length": 1, "name": "layerKind" }, { "offset": 7, "length": 1, "name": "operation" }, { "offset": 8, "length": 32, "name": "replayId" }, { "offset": 40, "length": 32, "name": "operationId" }, { "offset": 72, "length": 32, "name": "attemptId" }, { "offset": 104, "length": 32, "name": "replyPublic" }, { "offset": 136, "length": 4, "name": "requestLength" }, { "offset": 140, "length": 1, "name": "paddingExponent" }, { "offset": 141, "length": 3, "name": "paddingLength" }] },
+    { "magic": "XPR1", "fixedPrefixBytes": 20, "maxBytes": 1048576, "fields": [{ "offset": 0, "length": 4, "name": "magic" }, { "offset": 4, "length": 1, "name": "version" }, { "offset": 5, "length": 1, "name": "minimumReader" }, { "offset": 6, "length": 1, "name": "kind" }, { "offset": 7, "length": 1, "name": "operation" }, { "offset": 8, "length": 2, "name": "failureCode" }, { "offset": 10, "length": 1, "name": "retryable" }, { "offset": 12, "length": 4, "name": "bodyLength" }, { "offset": 16, "length": 4, "name": "reserved" }] },
+    { "magic": "XRS1", "fixedPrefixBytes": 80, "maxBytes": 1114191, "fields": [{ "offset": 0, "length": 4, "name": "magic" }, { "offset": 4, "length": 1, "name": "version" }, { "offset": 5, "length": 1, "name": "minimumReader" }, { "offset": 6, "length": 1, "name": "operation" }, { "offset": 8, "length": 32, "name": "operationId" }, { "offset": 40, "length": 32, "name": "attemptId" }, { "offset": 72, "length": 4, "name": "resultLength" }, { "offset": 76, "length": 1, "name": "paddingExponent" }, { "offset": 77, "length": 3, "name": "paddingLength" }] }
+  ],
+  "positiveCases": [{
+    "id": "deterministic-three-hop-failure",
+    "testEntropyOnly": true,
+    "paddingExponent": 8,
+    "networkIdHex": "00112233445566778899aabbccddeeff",
+    "operationIdDomain": "Deep/XPoint/V1/canonical-mailbox-operation-id",
+    "replyOwnerIdDomain": "Deep/XPoint/V1/reply-owner",
+    "replyKeyIdDomain": "Deep/XPoint/V1/reply-key",
+    "entropy": { "routerPrivateScalars": ["3131313131313131313131313131313131313131313131313131313131313131", "3232323232323232323232323232323232323232323232323232323232323232", "3333333333333333333333333333333333333333333333333333333333333333"], "replyPrivateScalar": "3434343434343434343434343434343434343434343434343434343434343434", "requestEphemeralPrivateScalars": ["7171717171717171717171717171717171717171717171717171717171717171", "7272727272727272727272727272727272727272727272727272727272727272", "7373737373737373737373737373737373737373737373737373737373737373"], "responseEphemeralPrivateScalar": "7474747474747474747474747474747474747474747474747474747474747474", "requestNonces": ["818181818181818181818181818181818181818181818181", "828282828282828282828282828282828282828282828282", "838383838383838383838383838383838383838383838383"], "responseNonce": "848484848484848484848484848484848484848484848484" },
+    "route": { "routerOwnerIds": ["1111111111111111111111111111111111111111111111111111111111111111", "2222222222222222222222222222222222222222222222222222222222222222", "3333333333333333333333333333333333333333333333333333333333333333"], "routerKeyIds": ["a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1", "a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2", "a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3"], "epoch": 7, "replayIds": ["6363636363636363636363636363636363636363636363636363636363636363", "6262626262626262626262626262626262626262626262626262626262626262", "6161616161616161616161616161616161616161616161616161616161616161"], "attemptIdHex": "5555555555555555555555555555555555555555555555555555555555555555", "canonicalRequestHex": "", "expectedOperationIdHex": "d173eacebb01753f3b19d6cf1a5c6046b9449ed17fbaa9889766d9ed83b7d30f", "expectedReplyPublicHex": "ffc951aa6f2fa03096d1d1b579735b2f6f84019fe2f617aa65ff3d68705f2527", "expectedReplyOwnerIdHex": "02b200e2b1c2074143b5dd6ccd8eda258c42c6181e3c279f4b394196722d53d6", "expectedReplyKeyIdHex": "96764a2c33f0996845b73a13edd1045c3bfaa5e7659095ea5a575a76a1d6f6db" },
+    "expectedFrames": [{ "name": "exit-request", "length": 512, "sha256": "24787a0697601f4f449e0bfef3c377a9d2fa2690ba6c2459e3c5c4c4e8f52686" }, { "name": "core-request", "length": 768, "sha256": "9a18e3eea0c86428b8f39de4fd5c00f094fcf718e40dabc817e0595af13a7c84" }, { "name": "ingress-request", "length": 1024, "sha256": "edc09617cf81f4b21f9119d4d0eb91ff2316e6ad33c727c028617025e9241c96" }, { "name": "response", "length": 512, "sha256": "2ed416644ef1b390482c4466c720cafdacfe551ccba8670a7b1884eff5964199" }]
+  }],
+  "negativeCases": [
+    { "id": "legacy-drf1", "stage": "Legacy", "mutation": "DRF1 request frame magic", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "legacy-drl1", "stage": "Legacy", "mutation": "DRL1 relay plaintext magic", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "legacy-dre1", "stage": "Legacy", "mutation": "DRE1 exit plaintext magic", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "legacy-dpr1", "stage": "Legacy", "mutation": "DPR1 terminal result magic", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "legacy-drs1", "stage": "Legacy", "mutation": "DRS1 response plaintext magic", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "xrf1-header-version-suite-reserved", "stage": "Header", "mutation": "unknown header version suite or reserved byte", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "xrf1-purpose-layer-combination", "stage": "Header", "mutation": "purpose and layer kind contradiction", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "xrf1-ciphertext-length-trailing", "stage": "Header", "mutation": "ciphertext length mismatch or trailing bytes", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "xrf1-network-owner-epoch-key-substitution", "stage": "KeyBinding", "mutation": "network owner epoch or key id substitution", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "xrf1-zero-public-or-shared-secret", "stage": "Crypto", "mutation": "all-zero public key or X25519 shared secret", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "xrf1-associated-data-tamper", "stage": "Crypto", "mutation": "change authenticated header byte or length", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "xrl1-noncanonical-inner-owner", "stage": "NestedLength", "mutation": "inner length owner or request-purpose mismatch", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "xre1-operation-domain-attempt-substitution", "stage": "Plaintext", "mutation": "operation id domain or attempt id substitution", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "padding-exponent-length-or-nonzero", "stage": "Padding", "mutation": "invalid exponent nonminimal length or nonzero padding", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "fourth-nested-request-frame", "stage": "NestedLength", "mutation": "third relay layer or fourth nested frame", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "replay-before-forward-or-eviction", "stage": "Replay", "mutation": "replay id reused or saturated window eviction", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "reply-owner-key-operation-attempt-mismatch", "stage": "Result", "mutation": "reply owner key operation or attempt mismatch", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } },
+    { "id": "trusted-time-overlap-expiry-retirement", "stage": "TrustedTime", "mutation": "stale time invalid overlap expired or retired key", "callbacks": { "forward": 0, "mailbox": 0, "stateMutation": 0 } }
+  ]
+}

@@ -84,6 +84,28 @@ No XNode identity, witness, directory operator, DCA publisher device or DID1 add
 key may satisfy this field. Directory authorities validate the signature and exact
 closure before admission; they do not replace it with a service signature.
 
+The separately supplied ADC1 artifact closure contains the complete canonical list
+of revoked DCA authorization IDs committed by
+`revokedDCAAuthorizationIdsHash32`. The list has `0..4096` unique nonzero 32-byte
+IDs in strict unsigned-byte lexicographic order, and its commitment is exactly:
+
+```text
+preimage = U32BE(count) || authorizationId32[0] || ... || authorizationId32[count-1]
+revokedDCAAuthorizationIdsHash32 = SHA256-D(
+  "Deep/AccountDirectory/V1/revoked-DCA-authorization-ids", preimage)
+```
+
+The empty list is valid and commits to the nonzero domain-separated hash of
+`U32BE(0)`; it is never encoded as `ZERO32`.
+
+`ADC1ArtifactHash32 = SHA256(exact canonical ADC1)` and
+`ADC1ArtifactRef38 = ASCII("ADC1") || U16BE(1) || ADC1ArtifactHash32`.
+`predecessorCheckpointHash32` is zero exactly at checkpoint generation zero;
+otherwise it equals the prior `ADC1ArtifactHash32`, and checkpoint generation is
+the prior generation plus one. Every unqualified `ADC1Ref38` in the Deep v1
+specification is this artifact reference, never a receipt-independent core
+reference.
+
 ### 2.2 `ADH1` witnessed log head
 
 `ADH1`, version 1, suite `0x0201`, has exact canonical tags:
@@ -225,8 +247,8 @@ tags are:
 | 2 | result kind | `u8`: `1=CurrentValue`, `2=NonMembership` |
 | 3 | queried directory leaf key | 32 |
 | 4 | exact ADH1 | canonical bytes |
-| 5 | caller LKG tree size | `u64`; zero iff tag 12 is 0 |
-| 6 | caller LKG ADH1 core hash | 32; `ZERO32` iff tag 12 is 0 |
+| 5 | caller LKG tree size | `u64`; zero when tag 12 is 0 and also allowed for an authenticated empty-tree LKG |
+| 6 | caller LKG ADH1 core hash | 32; `ZERO32` iff tag 12 is 0; nonzero when tag 12 is 1 |
 | 7 | consistency-proof node count | `u8`, `0..64` |
 | 8 | consistency-proof nodes | exactly `32 * tag7` bytes |
 | 9 | sparse-map bitmap | 32 |
@@ -256,6 +278,10 @@ device ID and must close the DMD1 active-device set without omission or addition
 ADC1. `NonMembership` omits every tag 16..28 and proves the empty leaf against the
 same map root. Supplying a present leaf under kind 2, an empty leaf under kind 1,
 duplicate/unsorted DPD1, or a present-only tag under kind 2 rejects.
+The separately supplied artifact closure of every `CurrentValue` response also
+contains the complete exact revoked-DCA-authorization-ID list for tag 16 ADC1;
+clients recompute the bounded commitment above and reject an omitted, partial,
+reordered, duplicated or substituted list.
 
 A sparse-map proof is exactly ADP1 tags 9..11.
 Bitmap bit `i` (MSB first in each byte) corresponds to level `i`, from leaf sibling
@@ -268,6 +294,10 @@ MUST equal ADH1 `currentValueMapRoot32`.
 In mode 0 with `hasLkg=1`, both result kinds contain an RFC-6962 consistency proof
 from exact caller LKG `treeSize/appendLogMerkleRoot32` to returned ADH1. A caller
 without LKG uses pinned genesis plus live DTT1 and has zero consistency nodes. In
+the valid empty-tree LKG case, tag 5 is zero, tag 6 is the nonzero protected ADH1
+core hash, the protected append-log root is the RFC-6962 empty-tree hash and the
+old-to-current proof follows the same RFC-6962 rules; `hasLkg=0` remains the only
+encoding with both tags 5/6 zero. In
 mode 1, tags 7/8 are zero/empty and exact AFP1 supplies the forward proof from a
 present LKG. Append-log proof nodes
 are exactly 32 bytes, ordered by RFC-6962, count-prefixed and bounded to 64 nodes per
@@ -277,13 +307,24 @@ No unauthenticated pagination or “latest” pointer is accepted. ADL1 has no w
 expiry; its generation/hash is a rollback floor. A current ADH1 and one of the two
 current-map result kinds are still mandatory and cannot be replaced by the floor.
 
+ADP1/DTT1 authenticates current account and network heads, but neither a directory
+gateway nor a lookup response selects the contact-resolver shard. After validating
+the DTT1-linked XNV1, the client combines that independently verified network/PMT
+context with the opaque locator or service capability using the sole derivation in
+[CONTACT-RESOLVER-V1 §3.0](CONTACT-RESOLVER-V1.md#30-exact-current-view-and-service-shard-derivation).
+A server-returned view hash can only be a refresh hint and cannot advance the
+protected LKG; a server-returned or configured placement hash never authorizes
+routing.
+
 ## 3. Validation and freshness
 
 For first contact the client obtains ADH1 from at least two acquisition paths when
 available, verifies threshold signatures, requires `validUntil` to be current under
 the secure-time rules below, then validates ADP1 and exact artifact closure. DCB1's
 DPA/DRS/DMD/DAB and DCA publisher MUST match the current ADC1 exactly. A revoked DCA ID
-or stale device fails before ML-KEM, storage or UI mutation.
+or stale device fails before ML-KEM, storage or UI mutation. The complete ADC1
+closure, including the exact revoked-DCA-authorization-ID list and its commitment,
+is verified before any ML-KEM operation.
 
 An established contact verifies monotonic ADC1/ADH1 against protected LKG. Gossip
 piggybacks `(generation, treeSize, headHash)` in ratcheted control events; a mismatch
@@ -348,6 +389,14 @@ policy contains at least tag-7 distinct nonzero failure-family hashes. Unknown
 protocol, Unicode/noncanonical host, IP-literal host, shared failure family presented
 as two families or an expired/predecessor-forked policy rejects.
 
+`hostAscii` is the wire DNS name, not a URI: bytes are lowercase ASCII, total length
+is `1..253`, there is no terminal dot, and dot-separated labels are `1..63` bytes.
+Each label begins and ends with `[a-z0-9]` and otherwise contains only
+`[a-z0-9-]`. An IDN is accepted only in its already converted lowercase A-label
+form. IPv4/IPv6 literals, bracket syntax, ports, percent escapes, underscores,
+empty labels and any alternative textual spelling reject; implementations do not
+perform IDNA conversion while decoding canonical bytes.
+
 Every root signer signs identical unsigned DTS1 tags 1..13 with
 `SIGINPUT("Deep/AccountDirectory/V1/DTS1/root", 0x0001, unsignedDTS1)` using the
 exact tag-13 XNA1 root key generation. `timeSourcePolicyHash32` is exactly
@@ -379,19 +428,43 @@ It is a nonce-bound threshold response, never a cacheable “latest” object:
 | 10 | witness-policy hash | 32 |
 | 11 | issued-at | `u64`; equals tag 3 within tag 4 uncertainty |
 | 12 | expires-at | `u64`; `issuedAt < expiresAt <= issuedAt+60` |
-| 13 | witness count | `u8`; policy threshold..witness count |
-| 14 | sorted witness receipts | exactly `96 * tag13` bytes |
+| 13 | authority-bound issuance epoch ID | 32 |
+| 14 | witness count | `u8`; policy threshold..witness count |
+| 15 | sorted witness receipts | exactly `96 * tag14` bytes |
 
 Each receipt is `witnessId32 || signature64`, sorted by witness ID, and signs
 `SIGINPUT("Deep/AccountDirectory/V1/DTT1/live-time", 0x0201,
-unsignedDTT1 tags 1..12)`. Witnesses issue it only for a just-received unique nonce
+unsignedDTT1 tags 1..13)`. Witnesses issue it only for a just-received unique nonce
 and exact currently committed ADH1/XNV1 under tag 9 policy. A nonce is never reused
 by a client; another nonce, expired response, changed same-generation head, unknown
 policy/key generation or non-current linked head rejects.
 
 `DTT1CoreHash32 = SHA256-D("Deep/AccountDirectory/V1/DTT1/core", exact
-unsigned tags 1..12)`. Every field named DTT1 hash uses this core; valid witness
+unsigned tags 1..13)`. Every field named DTT1 hash uses this core; valid witness
 receipt subsets may aggregate without changing the attested time/head tuple.
+
+The issuance epoch is a deterministic UTC-day replay namespace. Let
+`epochNumber = floor(observedUnixTime / 86400)`, `epochFrom =
+epochNumber*86400`, and `epochUntil = epochFrom+86399`. The complete trusted
+interval `[observedUnixTime-uncertainty, observedUnixTime+uncertainty]` MUST be
+inside both `[epochFrom,epochUntil]` and the exact DTS1 policy validity window.
+Tag 13 is exactly `SHA256-D("Deep/AccountDirectory/V1/DTT1/issuance-epoch",
+XNAAuthorityCoreRef38 || DTS1PolicyCoreRef38 || U64BE(epochNumber))`. Therefore
+an XNA1 or DTS1 policy change creates a different replay namespace even inside
+the same UTC day. The predecessor of epoch `E>0` is deterministically `E-1`;
+a durable issuer may advance over missed days, but it MUST only increase the
+stored epoch number and MUST reject same-number changed IDs, rollback, or a
+future marker observed while recovering an older state.
+
+The one-use issuer ledger keys each marker by
+`HMAC-SHA256(ledgerKey, networkId16 || U64BE(epochNumber) || epochId32 ||
+nonce32)`, authenticates the epoch number and ID in every marker and quota
+state, and durably consumes it before witness access. On monotonic epoch
+advance it verifies every bounded old marker before deleting it; corruption,
+fork, rollback, incomplete scan or capacity exhaustion fails closed. A nonce
+may be admitted again only in a strictly later authenticated epoch, where the
+signed DTT1 core and every receipt are necessarily different. Pre-clean-break
+DTT1 bytes with the old 14-field layout are rejected; there is no dual reader.
 
 The witness policy contains the exact current DTS1-derived
 `timeSourcePolicyHash32`. Every witness maintains
@@ -416,9 +489,11 @@ non-empty subset of its own `[WL,WU]`. It also requires `issuedAt` inside `propo
 the exact nonce to be outstanding and unused, and both linked heads to equal its
 locally committed current heads. It signs no coordinator-supplied time/source fact
 that was not independently checked. All threshold witnesses sign byte-identical tags
-1..12; if no common proposed interval satisfies every signer, no DTT1 exists and the
-request fails closed. A witness durably consumes `(policyHash, nonce)` before
+1..13; if no common proposed interval satisfies every signer, no DTT1 exists and the
+request fails closed. A witness durably consumes `(epochId, nonce)` before
 returning its signature, so crash/retry returns only the byte-identical signature.
+It may compact that replay key only under the same authenticated monotonic
+rotation rule as the coordinator ledger.
 
 The client records monotonic `nonceCreatedAt` before dispatch and accepts the first
 valid response only by `nonceCreatedAt+30s`; later responses for that nonce are
@@ -517,6 +592,7 @@ account-directory forward checkpoint:
 | 9 | source-membership node count | `u8`, `0..64` |
 | 10 | RFC-6962 membership nodes | exactly `32 * tag9` bytes |
 | 11 | exact live DTT1 core hash | 32; equals ADP1 tag 15 |
+| 12 | ordered exact target ADH1 chain | repeated `LP32(record)`; exactly one threshold-complete ADH1 per tag-7 ADF1, in the same order |
 
 The source tuple exactly equals protected LKG. The authority chain begins at the
 pinned/protected XNA1 and continues through the authority referenced by the last
@@ -549,8 +625,15 @@ target ADH1 tag 7, and the ADH1 policy hash must equal that XNA1 policy derivati
 `ADF1CoreHash32 = SHA256-D("Deep/AccountDirectory/V1/ADF1/core", exact
 unsigned tags 1..14)`; tag 3 and AFP predecessor verification use this core. Root
 receipt subsets may aggregate without changing checkpoint identity.
-AFP1
-contains the exact XNA1 authority-successor chain from the client's pinned or
+AFP1 tag 12 closes the otherwise-unresolvable intermediate targets: each entry is
+positionally paired with one tag-7 ADF1, its ADH1 core reference, generation, tree
+size, append-log root, current-value map root, authority reference and witness-policy
+hash equal that ADF1 and its exact tag-5 XNA1, its witness threshold verifies under
+that authority, and its generation is greater than the ADF1 covered-last generation.
+The final tag-12 entry is byte-identical to ADP1 tag 4. Missing, extra, reordered or
+receipt-only target heads reject.
+
+AFP1 contains the exact XNA1 authority-successor chain from the client's pinned or
 protected authority through every authority referenced by the complete ADF chain,
 an RFC-6962 membership proof for the client's exact
 LKG ADH1 tuple in the first applicable ADF1, and the exact predecessor-linked ADF1

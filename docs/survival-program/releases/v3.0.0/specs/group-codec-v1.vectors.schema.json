@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:group-codec:v1:vectors",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "status", "records", "hostileCases"],
+  "properties": {
+    "$schema": { "const": "group-codec-v1.vectors.schema.json" },
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
+    "records": {
+      "type": "array", "minItems": 12, "maxItems": 12,
+      "items": { "type": "object", "additionalProperties": false,
+        "required": ["id", "target", "fixtureBytesHex", "recordHash32", "signerPublicKeyHex"],
+        "properties": {
+          "id": { "type": "string" },
+          "target": { "enum": ["GIV1", "GIA1", "DGP1", "DGC1", "DGT1", "DGM1", "GCP1", "GCF1", "GSR1", "GSW1", "GSQ1", "GSS1"] },
+          "fixtureBytesHex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})+$" },
+          "recordHash32": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "signerPublicKeyHex": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
+        }
+      }
+    },
+    "hostileCases": {
+      "type": "array", "minItems": 14,
+      "items": { "type": "object", "additionalProperties": false,
+        "required": ["id", "target", "fixtureBytesHex", "expectedCode", "signerPublicKeyHex"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "target": { "enum": ["GIV1", "GIA1", "DGP1", "DGC1", "DGT1", "DGM1", "GCP1", "GCF1", "GSR1", "GSW1", "GSQ1", "GSS1"] },
+          "fixtureBytesHex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})+$" },
+          "expectedCode": { "enum": ["NonCanonicalReserved", "DeviceSignatureVerificationFailed"] },
+          "signerPublicKeyHex": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
+        }
+      }
+    }
+  }
+}

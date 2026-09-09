@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:crypto:v1:registry:generation-3",
+  "title": "Deep messaging codec registry generation 3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema", "schemaVersion", "registryGeneration", "codecFamily",
+    "packages", "decision", "codecStatus", "productionActivation",
+    "normativeSources", "contactCodec", "canonicalGrammar", "identityReferences", "applicationArtifactTypes",
+    "primitives", "sizes", "suites", "domains", "records",
+    "parserPrevalidationOrder", "resourceLimits", "consumerBindings",
+    "vectorSkeleton", "activationGates", "retiredReject", "provider"
+  ],
+  "properties": {
+    "$schema": { "const": "deep-crypto-v1.registry.schema.json" },
+    "schemaVersion": { "const": "3.0.0" },
+    "registryGeneration": { "const": 3 },
+    "codecFamily": { "const": "DEEP-MESSAGING-CODEC-V1" },
+    "packages": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": { "$ref": "#/$defs/package" }
+    },
+    "decision": { "const": "DR-0003" },
+    "codecStatus": { "const": "PACKAGE_SPLIT" },
+    "productionActivation": { "const": "NOT_ACTIVE" },
+    "normativeSources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["crypto", "applicationBytes", "lifecycle"],
+      "properties": {
+        "crypto": { "const": "DEEP-CRYPTO-V1-DRAFT.md" },
+        "applicationBytes": { "const": "../../../../architecture/CONTACT-AND-GROUP-PROTOCOL-V1.md" },
+        "lifecycle": { "const": "../../../../architecture/PROTOCOL-REGISTRY-V1.md" }
+      }
+    },
+    "contactCodec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "canonicalGrammarSource", "vectors", "vectorSchema", "records", "dmc2Kinds", "servicePrivacyRule", "activationRule"],
+      "properties": {
+        "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
+        "canonicalGrammarSource": { "const": "../../../../architecture/CONTACT-RESOLVER-V1.md#21-contact-codec-canonical-record-rule" },
+        "vectors": { "const": "contact-codec-v1.vectors.json" },
+        "vectorSchema": { "const": "contact-codec-v1.vectors.schema.json" },
+        "records": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z0-9]{4}$" } },
+        "dmc2Kinds": { "const": [2, 3, 4, 14] },
+        "servicePrivacyRule": { "type": "string", "minLength": 80 },
+        "activationRule": { "const": "frozen bytes do not authorize runtime/service emission" }
+      }
+    },
+    "canonicalGrammar": { "type": "object", "minProperties": 10 },
+    "identityReferences": { "type": "object", "minProperties": 5 },
+    "applicationArtifactTypes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["range", "DAB1", "rule"],
+      "properties": {
+        "range": { "const": "0x1000-0x1fff" },
+        "DAB1": { "const": 4097 },
+        "rule": { "type": "string", "minLength": 64 }
+      }
+    },
+    "primitives": { "type": "object", "minProperties": 8 },
+    "sizes": { "type": "object", "minProperties": 10 },
+    "suites": { "type": "array", "minItems": 2, "maxItems": 2 },
+    "domains": { "type": "array", "minItems": 30 },
+    "records": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": { "$ref": "#/$defs/record" }
+    },
+    "parserPrevalidationOrder": { "type": "array", "minItems": 9, "uniqueItems": true },
+    "resourceLimits": { "type": "object", "minProperties": 8 },
+    "consumerBindings": { "type": "object", "minProperties": 5 },
+    "vectorSkeleton": { "type": "object", "required": ["positive", "negative", "requiredObservation"] },
+    "activationGates": {
+      "type": "object",
+      "required": [
+        "umbrellaApplicationCodecComplete", "e2eeCodecFieldsClosed",
+        "applicationCoreCodecFieldsClosed", "attachmentCodecFieldsClosed",
+        "contactCodecFieldsClosed", "groupCodecFieldsClosed",
+        "callCodecFieldsClosed", "historyCodecFieldsClosed"
+      ],
+      "properties": {
+        "umbrellaApplicationCodecComplete": { "const": false },
+        "e2eeCodecFieldsClosed": { "const": true },
+        "applicationCoreCodecFieldsClosed": { "const": true },
+        "attachmentCodecFieldsClosed": { "const": true },
+        "contactCodecFieldsClosed": { "const": true },
+        "groupCodecFieldsClosed": { "const": true },
+        "callCodecFieldsClosed": { "const": false },
+        "historyCodecFieldsClosed": { "const": false }
+      },
+      "additionalProperties": { "type": "boolean" }
+    },
+    "retiredReject": { "type": "object", "required": ["suites", "magics", "domains", "fallbackOrDualReader"] },
+    "provider": { "type": "object", "minProperties": 5 }
+  },
+  "$defs": {
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status"],
+      "properties": {
+        "id": {
+          "enum": [
+            "E2EE-01", "APPLICATION-CORE-CODEC-01", "ATTACHMENT-CODEC-01",
+            "CONTACT-CODEC-01", "GROUP-CODEC-01", "CALL-CODEC-01",
+            "HISTORY-CODEC-01"
+          ]
+        },
+        "status": { "enum": ["FROZEN_CLEAN_BREAK", "FROZEN_TARGET_NOT_ACTIVE", "TARGET_UNFROZEN"] },
+        "records": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z0-9]{4}$" },
+          "uniqueItems": true
+        },
+        "dmc2Kinds": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1, "maximum": 29 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "record": {
+      "type": "object",
+      "required": ["magic", "version", "suite", "package", "purpose", "status"],
+      "properties": {
+        "magic": { "type": "string", "pattern": "^[A-Z0-9]{4}$" },
+        "version": { "const": 1 },
+        "suite": { "const": 513 },
+        "package": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["FROZEN_TARGET_NOT_ACTIVE", "TARGET_UNFROZEN"] },
+        "fieldCount": { "type": "integer", "minimum": 1, "maximum": 255 },
+        "exactTotalBytes": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "projection": { "type": "object", "additionalProperties": false, "required": ["tags", "signatureTag", "domain"], "properties": { "name": { "type": "string", "minLength": 1 }, "tags": { "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "array", "minItems": 1, "items": { "type": "integer", "minimum": 1, "maximum": 255 } }] }, "signatureTag": { "type": "integer", "minimum": 1, "maximum": 255 }, "domain": { "type": "string", "pattern": "^Deep/" }, "totalBytes": { "type": "integer", "minimum": 1, "maximum": 65535 }, "totalBytesFormula": { "type": "string", "minLength": 1 } } },
+        "dependencies": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z0-9]{4}$" }, "uniqueItems": true },
+        "freezeBlockers": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    }
+  }
+}

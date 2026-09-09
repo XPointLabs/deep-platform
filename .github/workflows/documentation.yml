@@ -1,0 +1,55 @@
+name: Documentation
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'xpoint-docs/**'
+      - 'scripts/check-*-spec.ps1'
+      - 'scripts/Test-XPointDocumentation.ps1'
+      - '.github/workflows/documentation.yml'
+  push:
+    paths:
+      - 'docs/**'
+      - 'xpoint-docs/**'
+      - 'scripts/check-*-spec.ps1'
+      - 'scripts/Test-XPointDocumentation.ps1'
+      - '.github/workflows/documentation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: xpoint-docs/.nvmrc
+          cache: npm
+          cache-dependency-path: xpoint-docs/package-lock.json
+      - name: Install isolated renderer
+        working-directory: xpoint-docs
+        run: npm ci --ignore-scripts
+      - name: Reject vulnerable renderer graph
+        working-directory: xpoint-docs
+        run: npm audit --audit-level=high
+      - name: Render and verify public documentation
+        working-directory: xpoint-docs
+        shell: pwsh
+        run: |
+          npm run build
+          ../scripts/Test-XPointDocumentation.ps1 -RenderedOutput
+      - name: Verify machine-readable normative contracts
+        shell: pwsh
+        run: |
+          ./scripts/check-deep-crypto-spec.ps1
+          ./scripts/check-dnp1-classical-spec.ps1
+          ./scripts/check-contact-codec-spec.ps1
+          ./scripts/check-group-codec-spec.ps1
+          ./scripts/check-onion-01-spec.ps1

@@ -1,0 +1,1655 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:xpoint:network:v1:vectors:manifest-1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "registry",
+    "status",
+    "independence",
+    "primitiveVectors",
+    "recordCases",
+    "negativeCases",
+    "activationRequirements"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "xpoint-network-v1.vectors.schema.json"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "registry": {
+      "const": "xpoint-network-v1.registry.json"
+    },
+    "status": {
+      "const": "INDEPENDENT_MANIFEST_SKELETON_NOT_ACTIVATION_EVIDENCE"
+    },
+    "independence": {
+      "const": {
+        "producer": "implementation-independent fixture author",
+        "rule": "full activation corpus must be generated without production codecs and compared byte-for-byte in two implementations",
+        "seedPolicy": "fixed public non-secret seeds only; no production or UAT keys",
+        "fullCanonicalRecordsPresent": false
+      }
+    },
+    "primitiveVectors": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/primitive01"
+        },
+        {
+          "$ref": "#/$defs/primitive02"
+        },
+        {
+          "$ref": "#/$defs/primitive03"
+        },
+        {
+          "$ref": "#/$defs/primitive04"
+        },
+        {
+          "$ref": "#/$defs/primitive05"
+        },
+        {
+          "$ref": "#/$defs/primitive06"
+        },
+        {
+          "$ref": "#/$defs/primitive07"
+        }
+      ],
+      "items": false
+    },
+    "recordCases": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "uniqueItems": true,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/xnaRecordCase"
+        },
+        {
+          "$ref": "#/$defs/xvpRecordCase"
+        },
+        {
+          "$ref": "#/$defs/xndRecordCase"
+        },
+        {
+          "$ref": "#/$defs/xnvRecordCase"
+        },
+        {
+          "$ref": "#/$defs/xnhRecordCase"
+        },
+        {
+          "$ref": "#/$defs/xnpRecordCase"
+        },
+        {
+          "$ref": "#/$defs/xnfRecordCase"
+        },
+        {
+          "$ref": "#/$defs/nfpRecordCase"
+        },
+        {
+          "$ref": "#/$defs/xcdRecordCase"
+        }
+      ],
+      "items": false
+    },
+    "negativeCases": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "uniqueItems": true,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/negative01"
+        },
+        {
+          "$ref": "#/$defs/negative02"
+        },
+        {
+          "$ref": "#/$defs/negative03"
+        },
+        {
+          "$ref": "#/$defs/negative04"
+        },
+        {
+          "$ref": "#/$defs/negative05"
+        },
+        {
+          "$ref": "#/$defs/negative06"
+        },
+        {
+          "$ref": "#/$defs/negative07"
+        },
+        {
+          "$ref": "#/$defs/negative08"
+        },
+        {
+          "$ref": "#/$defs/negative09"
+        },
+        {
+          "$ref": "#/$defs/negative10"
+        },
+        {
+          "$ref": "#/$defs/negative11"
+        },
+        {
+          "$ref": "#/$defs/negative12"
+        },
+        {
+          "$ref": "#/$defs/negative13"
+        },
+        {
+          "$ref": "#/$defs/negative14"
+        },
+        {
+          "$ref": "#/$defs/negative15"
+        },
+        {
+          "$ref": "#/$defs/negative16"
+        },
+        {
+          "$ref": "#/$defs/negative17"
+        },
+        {
+          "$ref": "#/$defs/negative18"
+        },
+        {
+          "$ref": "#/$defs/negative19"
+        },
+        {
+          "$ref": "#/$defs/negative20"
+        },
+        {
+          "$ref": "#/$defs/negative21"
+        },
+        {
+          "$ref": "#/$defs/negative22"
+        },
+        {
+          "$ref": "#/$defs/negative23"
+        },
+        {
+          "$ref": "#/$defs/negative24"
+        },
+        {
+          "$ref": "#/$defs/negative25"
+        },
+        {
+          "$ref": "#/$defs/negative26"
+        },
+        {
+          "$ref": "#/$defs/negative27"
+        },
+        {
+          "$ref": "#/$defs/negative28"
+        },
+        {
+          "$ref": "#/$defs/negative29"
+        },
+        {
+          "$ref": "#/$defs/negative30"
+        }
+      ],
+      "items": false
+    },
+    "activationRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fullCanonicalPositiveRecords",
+        "minimumPositivePerRecord",
+        "everyScalarBoundary",
+        "everyCountAndListBoundary",
+        "everySignatureProjection",
+        "everySuccessorForkAxis",
+        "crossNetworkAndCrossType",
+        "twoIndependentImplementations",
+        "deterministicMembershipProjectionFrozen",
+        "runtimeActivationAllowed"
+      ],
+      "properties": {
+        "fullCanonicalPositiveRecords": {
+          "const": 9
+        },
+        "minimumPositivePerRecord": {
+          "const": 4
+        },
+        "everyScalarBoundary": {
+          "const": true
+        },
+        "everyCountAndListBoundary": {
+          "const": true
+        },
+        "everySignatureProjection": {
+          "const": true
+        },
+        "everySuccessorForkAxis": {
+          "const": true
+        },
+        "crossNetworkAndCrossType": {
+          "const": true
+        },
+        "twoIndependentImplementations": {
+          "const": true
+        },
+        "deterministicMembershipProjectionFrozen": {
+          "const": false
+        },
+        "runtimeActivationAllowed": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$defs": {
+    "magic": {
+      "enum": [
+        "XNA1",
+        "XVP1",
+        "XND1",
+        "XNV1",
+        "XNH1",
+        "XNP1",
+        "XNF1",
+        "NFP1",
+        "XCD1"
+      ]
+    },
+    "hex": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{2})+$"
+    },
+    "primitive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "operation",
+        "domain",
+        "inputHex",
+        "preimageHex",
+        "expectedHex"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "operation": {
+          "enum": [
+            "SHA256-D",
+            "SIGINPUT",
+            "ArtifactRef38",
+            "SHA256"
+          ]
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputHex": {
+          "$ref": "#/$defs/hex"
+        },
+        "preimageHex": {
+          "$ref": "#/$defs/hex"
+        },
+        "expectedHex": {
+          "$ref": "#/$defs/hex"
+        }
+      }
+    },
+    "recordCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "magic",
+        "headerHex",
+        "headerSha256",
+        "fieldCount",
+        "minBytes",
+        "maxBytes",
+        "requiredPositiveCases"
+      ],
+      "properties": {
+        "magic": {
+          "$ref": "#/$defs/magic"
+        },
+        "headerHex": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{24}$"
+        },
+        "headerSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "fieldCount": {
+          "type": "integer",
+          "minimum": 15,
+          "maximum": 37
+        },
+        "minBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "maxBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "requiredPositiveCases": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          }
+        }
+      }
+    },
+    "xnaRecordCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/recordCase"
+        },
+        {
+          "const": {
+            "magic": "XNA1",
+            "headerHex": "584e41310001000100140000",
+            "headerSha256": "7c42f60a4305401a9081dc45d00043d0a47547bbd31a20b523708c2f647d3d09",
+            "fieldCount": 20,
+            "minBytes": 829,
+            "maxBytes": 5021,
+            "requiredPositiveCases": [
+              "genesis-minimum-threshold",
+              "successor-predecessor-threshold",
+              "receipt-subset-aggregation",
+              "maximum-root-witness-signature-counts",
+              "rotation-1of1-to-2of3-uses-one-predecessor-receipt",
+              "rotation-5of8-to-1of1-uses-five-predecessor-receipts"
+            ]
+          }
+        }
+      ]
+    },
+    "xvpRecordCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/recordCase"
+        },
+        {
+          "const": {
+            "magic": "XVP1",
+            "headerHex": "585650310001000100140000",
+            "headerSha256": "db50b3f1545ebce01da368686c571d55dd7dc354aeee13f22dbc99c6f0ebd812",
+            "fieldCount": 20,
+            "minBytes": 450,
+            "maxBytes": 1122,
+            "requiredPositiveCases": [
+              "genesis-d0-policy",
+              "successor-exact-predecessor",
+              "maximum-root-signature-count",
+              "maturity-policy-with-five-mailbox-replicas"
+            ]
+          }
+        }
+      ]
+    },
+    "xndRecordCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/recordCase"
+        },
+        {
+          "const": {
+            "magic": "XND1",
+            "headerHex": "584e44310001020100250000",
+            "headerSha256": "835f49e3fc0b6696daebd0642e0d21088ac2a66f7713e9ba12964f51c61636ca",
+            "fieldCount": 37,
+            "minBytes": 1025,
+            "maxBytes": 3409,
+            "requiredPositiveCases": [
+              "one-role-one-origin-minimum",
+              "all-roles-sixteen-origins-maximum",
+              "current-next-onion-overlap",
+              "descriptor-successor"
+            ]
+          }
+        }
+      ]
+    },
+    "xnvRecordCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/recordCase"
+        },
+        {
+          "const": {
+            "magic": "XNV1",
+            "headerHex": "584e56310001020100180000",
+            "headerSha256": "020a70d98a4454dfdd0e622e5efeee01b93805612da0a6f2e9b31d00b1f34f9b",
+            "fieldCount": 24,
+            "minBytes": 821,
+            "maxBytes": 63709,
+            "requiredPositiveCases": [
+              "d0-three-node-view",
+              "all-list-maxima-under-65535",
+              "receipt-subset-aggregation",
+              "one-view-successor"
+            ]
+          }
+        }
+      ]
+    },
+    "xnhRecordCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/recordCase"
+        },
+        {
+          "const": {
+            "magic": "XNH1",
+            "headerHex": "584e48310001020100100000",
+            "headerSha256": "ddb1e526af51fe5a03e03fadd8a1e48e256e8fab7af056371e44f14e5b49f79b",
+            "fieldCount": 16,
+            "minBytes": 564,
+            "maxBytes": 5492,
+            "requiredPositiveCases": [
+              "genesis-one-leaf",
+              "one-leaf-successor",
+              "maximum-consistency-proof",
+              "receipt-subset-aggregation"
+            ]
+          }
+        }
+      ]
+    },
+    "xnpRecordCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/recordCase"
+        },
+        {
+          "const": {
+            "magic": "XNP1",
+            "headerHex": "584e50310001020100110000",
+            "headerSha256": "450c3f6e4243a676bb2d824cf888583016b42e2abf74f13c8368cfc5fee582c6",
+            "fieldCount": 17,
+            "minBytes": 424,
+            "maxBytes": 4520,
+            "requiredPositiveCases": [
+              "identical-source-target-zero-proofs",
+              "one-view-successor",
+              "maximum-inclusion-and-consistency-proofs",
+              "separate-ref-keyed-target-closure"
+            ]
+          }
+        }
+      ]
+    },
+    "xnfRecordCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/recordCase"
+        },
+        {
+          "const": {
+            "magic": "XNF1",
+            "headerHex": "584e463100010001000f0000",
+            "headerSha256": "f8294eb7fe993ddcbf1a9838de117601eaba1a9904f1d8ab4c10bca3f4af10de",
+            "fieldCount": 15,
+            "minBytes": 545,
+            "maxBytes": 1217,
+            "requiredPositiveCases": [
+              "genesis-single-covered-head",
+              "checkpoint-successor",
+              "maximum-root-signature-count",
+              "authority-rotation-target-closure"
+            ]
+          }
+        }
+      ]
+    },
+    "nfpRecordCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/recordCase"
+        },
+        {
+          "const": {
+            "magic": "NFP1",
+            "headerHex": "4e4650310001020100100000",
+            "headerSha256": "ca038fa6ee2527780f9d2348b6d94881d23cad2615059079bd7c6ba9a5b84781",
+            "fieldCount": 16,
+            "minBytes": 445,
+            "maxBytes": 7281,
+            "requiredPositiveCases": [
+              "one-authority-one-checkpoint-zero-node-proof",
+              "rotated-authority-chain",
+              "maximum-ref-and-proof-counts",
+              "atomic-lkg-forward-merge"
+            ]
+          }
+        }
+      ]
+    },
+    "xcdRecordCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/recordCase"
+        },
+        {
+          "const": {
+            "magic": "XCD1",
+            "headerHex": "584344310001020100150000",
+            "headerSha256": "d8f3b09e41376ab4cf2f40e4741896c62b204f81061a38e0083b600dbd24237f",
+            "fieldCount": 21,
+            "minBytes": 818,
+            "maxBytes": 2018,
+            "requiredPositiveCases": [
+              "two-replica-v1-quorum-with-role-key-pop",
+              "eight-replica-maximum-with-role-key-pop",
+              "descriptor-successor",
+              "xnv-service-core-binding"
+            ]
+          }
+        }
+      ]
+    },
+    "negative01": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-header-reserved-nonzero-xna1",
+            "records": [
+              "XNA1"
+            ],
+            "mutation": "set record-header reserved to 1",
+            "inputHex": "584e41310001000100140001",
+            "expectedStage": "Header",
+            "expectedError": "NonCanonicalReserved",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative02": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-unknown-suite-xnd1",
+            "records": [
+              "XND1"
+            ],
+            "mutation": "replace suite 0x0201 with reserved 0x0202",
+            "inputHex": "584e44310001020200250000",
+            "expectedStage": "Header",
+            "expectedError": "UnknownSuite",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative03": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-wrong-field-count-xnp1",
+            "records": [
+              "XNP1"
+            ],
+            "mutation": "replace fieldCount 17 with 16",
+            "inputHex": "584e50310001020100100000",
+            "expectedStage": "Header",
+            "expectedError": "WrongFieldCount",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative04": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-record-min-minus-one",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNP1",
+              "XNF1",
+              "NFP1",
+              "XCD1"
+            ],
+            "mutation": "truncate an otherwise minimum canonical fixture by one byte",
+            "inputHex": null,
+            "expectedStage": "Length",
+            "expectedError": "RecordLengthOutOfRange",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative05": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-record-max-plus-one",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNP1",
+              "XNF1",
+              "NFP1",
+              "XCD1"
+            ],
+            "mutation": "append one byte to an otherwise maximum canonical fixture",
+            "inputHex": null,
+            "expectedStage": "Length",
+            "expectedError": "RecordLengthOutOfRange",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative06": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-zero-network-id",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNP1",
+              "XNF1",
+              "NFP1",
+              "XCD1"
+            ],
+            "mutation": "replace tag1 value with ZERO16 and keep lengths canonical",
+            "inputHex": null,
+            "expectedStage": "Scalar",
+            "expectedError": "ZeroForbidden",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative07": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-count-list-mismatch",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNP1",
+              "XNF1",
+              "NFP1",
+              "XCD1"
+            ],
+            "mutation": "increment a count without adding entryBytes",
+            "inputHex": null,
+            "expectedStage": "ListArithmetic",
+            "expectedError": "CountLengthMismatch",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative08": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-unsorted-or-duplicate-list",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNF1",
+              "NFP1",
+              "XCD1"
+            ],
+            "mutation": "swap adjacent sorted entries or duplicate one unique key",
+            "inputHex": null,
+            "expectedStage": "CanonicalList",
+            "expectedError": "NonCanonicalList",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative09": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-cross-type-ref",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XNV1",
+              "XNH1",
+              "XNP1",
+              "XNF1",
+              "NFP1"
+            ],
+            "mutation": "preserve hash bytes but replace typed ref magic or version",
+            "inputHex": null,
+            "expectedStage": "Reference",
+            "expectedError": "ReferenceTypeMismatch",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative10": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-same-generation-different-core",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNF1",
+              "XCD1"
+            ],
+            "mutation": "present different valid core bytes at an already accepted lineage generation",
+            "inputHex": null,
+            "expectedStage": "Transition",
+            "expectedError": "ForkDetected",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 1,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative11": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-successor-generation-gap",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNF1",
+              "XCD1"
+            ],
+            "mutation": "advance lineage generation by two while naming current predecessor",
+            "inputHex": null,
+            "expectedStage": "Transition",
+            "expectedError": "GenerationGap",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 1,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative12": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xnd-failure-domain-substitution",
+            "records": [
+              "XND1",
+              "XNV1",
+              "XCD1"
+            ],
+            "mutation": "change operator/host/provider/ASN/jurisdiction without recomputing exact failureDomainHash",
+            "inputHex": null,
+            "expectedStage": "DerivedValue",
+            "expectedError": "FailureDomainMismatch",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative13": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xnd-role-capacity-or-key-mismatch",
+            "records": [
+              "XND1",
+              "XNV1"
+            ],
+            "mutation": "set role capacity/key for absent role or omit capacity/key for present role",
+            "inputHex": null,
+            "expectedStage": "CrossField",
+            "expectedError": "RoleProjectionMismatch",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative14": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xnd-onion-epoch-overlap",
+            "records": [
+              "XND1",
+              "XNV1"
+            ],
+            "mutation": "reuse current key, skip epoch or create a gap after current expiry",
+            "inputHex": null,
+            "expectedStage": "CrossField",
+            "expectedError": "InvalidKeyEpoch",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative15": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xnv-revoked-or-role-closure",
+            "records": [
+              "XNV1"
+            ],
+            "mutation": "retain an ID in both active and revoked sets or remove the last descriptor required for an XVP-enabled role; deterministic no-omission membership is an activation-gated future corpus axis",
+            "inputHex": null,
+            "expectedStage": "Closure",
+            "expectedError": "InvalidViewProjection",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative16": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xnh-second-leaf-or-wrong-consistency",
+            "records": [
+              "XNH1",
+              "XNP1"
+            ],
+            "mutation": "advance tree size by two or change one consistency node",
+            "inputHex": null,
+            "expectedStage": "Proof",
+            "expectedError": "InvalidConsistencyProof",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 1,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative17": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xnp-nonminimal-or-extra-proof",
+            "records": [
+              "XNP1"
+            ],
+            "mutation": "append an unused node or provide nonzero proof for identical source/target",
+            "inputHex": null,
+            "expectedStage": "Proof",
+            "expectedError": "NonCanonicalProof",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 1,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative18": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xnf-target-authority-or-range-mismatch",
+            "records": [
+              "XNF1",
+              "NFP1"
+            ],
+            "mutation": "change target authority, duplicate generation or make count differ from inclusive range",
+            "inputHex": null,
+            "expectedStage": "Closure",
+            "expectedError": "InvalidForwardCheckpoint",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative19": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-nfp-unused-or-missing-authority",
+            "records": [
+              "NFP1"
+            ],
+            "mutation": "omit a required XNA core ref or append an unused authority ref",
+            "inputHex": null,
+            "expectedStage": "Closure",
+            "expectedError": "NonExactAuthorityChain",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative20": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xcd-replica-domain-or-xnv-substitution",
+            "records": [
+              "XCD1",
+              "XNV1"
+            ],
+            "mutation": "substitute a replica failure domain/XND1 or omit exact XCD1 core from XNV1",
+            "inputHex": null,
+            "expectedStage": "Closure",
+            "expectedError": "InvalidCallRelayAuthority",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative21": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-successor-predecessor-core-mismatch",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNF1",
+              "XCD1"
+            ],
+            "mutation": "increment generation exactly but name a nonzero core other than the exact accepted predecessor",
+            "inputHex": null,
+            "expectedStage": "Transition",
+            "expectedError": "PredecessorMismatch",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 1,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative22": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-successor-checked-arithmetic-overflow",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNF1",
+              "XCD1"
+            ],
+            "mutation": "attempt generation, tree-size or epoch successor from UINT64_MAX",
+            "inputHex": null,
+            "expectedStage": "Transition",
+            "expectedError": "ArithmeticOverflow",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative23": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-authority-or-effective-time-closure",
+            "records": [
+              "XNA1",
+              "XVP1",
+              "XND1",
+              "XNV1",
+              "XNH1",
+              "XNF1",
+              "XCD1"
+            ],
+            "mutation": "place child issuance outside authorizing authority validity or leave XNV effective interval uncovered by policy, descriptor, service, origin or onion-key windows",
+            "inputHex": null,
+            "expectedStage": "Closure",
+            "expectedError": "InvalidEffectiveTimeClosure",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative24": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xnh-xnv-authority-equality",
+            "records": [
+              "XNH1",
+              "XNP1"
+            ],
+            "mutation": "substitute network, XNV generation, authorizing XNA, witness policy or latest-leaf position while preserving individually valid referenced records",
+            "inputHex": null,
+            "expectedStage": "Closure",
+            "expectedError": "HeadViewMismatch",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative25": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-nfp-source-index-or-dtt-target-head",
+            "records": [
+              "NFP1"
+            ],
+            "mutation": "use an in-range source index unequal to sourceGeneration-firstCoveredGeneration, or bind fresh DTT1 to a target XNV different from the target XNH latest view",
+            "inputHex": null,
+            "expectedStage": "Proof",
+            "expectedError": "InvalidForwardProofClosure",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 1,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative26": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xcd-replica-role-or-validity",
+            "records": [
+              "XCD1",
+              "XNV1"
+            ],
+            "mutation": "use an unrevoked replica lacking the existing CallRelay role or an XCD/XND validity interval that does not cover the XNV effective interval",
+            "inputHex": null,
+            "expectedStage": "Closure",
+            "expectedError": "InvalidCallRelayReplicaClosure",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "callbacks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hash",
+        "signature",
+        "proof",
+        "resolver",
+        "mutation"
+      ],
+      "properties": {
+        "hash": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "signature": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "proof": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "resolver": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "mutation": {
+          "const": 0
+        }
+      }
+    },
+    "negativeCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "records",
+        "mutation",
+        "inputHex",
+        "expectedStage",
+        "expectedError",
+        "expectedCallbacks"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^negative-[a-z0-9-]+$"
+        },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/magic"
+          }
+        },
+        "mutation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputHex": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hex"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expectedStage": {
+          "enum": [
+            "Length",
+            "Header",
+            "Scalar",
+            "ListArithmetic",
+            "CanonicalList",
+            "Reference",
+            "Transition",
+            "DerivedValue",
+            "CrossField",
+            "Closure",
+            "Proof",
+            "Signature"
+          ]
+        },
+        "expectedError": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9]+$"
+        },
+        "expectedCallbacks": {
+          "$ref": "#/$defs/callbacks"
+        }
+      }
+    },
+    "primitive01": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/primitive"
+        },
+        {
+          "const": {
+            "id": "primitive-sha256-d-xnd1-core",
+            "operation": "SHA256-D",
+            "domain": "Deep/XPoint/V1/XND1/core",
+            "inputHex": "00010203",
+            "preimageHex": "446565702f58506f696e742f56312f584e44312f636f7265000000000400010203",
+            "expectedHex": "eeb3d557abbd1da2543c71527f9ec5dcaf004d2fe55edf9b0042a8975ba65ff7"
+          }
+        }
+      ]
+    },
+    "primitive02": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/primitive"
+        },
+        {
+          "const": {
+            "id": "primitive-siginput-xnd1",
+            "operation": "SIGINPUT",
+            "domain": "Deep/XPoint/V1/XND1",
+            "inputHex": "00010203",
+            "preimageHex": "446565702f58506f696e742f56312f584e44310002010000000400010203",
+            "expectedHex": "922d1cb323a51fd1492eb633634a17f8f29d726200d40b77abcbe4177b1d18ec"
+          }
+        }
+      ]
+    },
+    "primitive03": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/primitive"
+        },
+        {
+          "const": {
+            "id": "primitive-artifact-ref-xnd1",
+            "operation": "ArtifactRef38",
+            "domain": "none",
+            "inputHex": "00010203",
+            "preimageHex": "00010203",
+            "expectedHex": "584e44310001054edec1d0211f624fed0cbca9d4f9400b0e491c43742af2c5b0abebf0c990d8"
+          }
+        }
+      ]
+    },
+    "primitive04": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/primitive"
+        },
+        {
+          "const": {
+            "id": "primitive-xnh-leaf-genesis",
+            "operation": "SHA256",
+            "domain": "RFC6962-XNV-leaf",
+            "inputHex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010101",
+            "preimageHex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010101",
+            "expectedHex": "a100dafcfd140d3e26d039e97131ebaca4079c83d649654a1d8e5e23497d844c"
+          }
+        }
+      ]
+    },
+    "primitive05": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/primitive"
+        },
+        {
+          "const": {
+            "id": "primitive-rfc6962-inner",
+            "operation": "SHA256",
+            "domain": "RFC6962-inner",
+            "inputHex": "0111111111111111111111111111111111111111111111111111111111111111112222222222222222222222222222222222222222222222222222222222222222",
+            "preimageHex": "0111111111111111111111111111111111111111111111111111111111111111112222222222222222222222222222222222222222222222222222222222222222",
+            "expectedHex": "1d8f52d3ec81ac02cd97cb3281523be47af850c0f0295af866f04bc245f46bbf"
+          }
+        }
+      ]
+    },
+    "primitive06": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/primitive"
+        },
+        {
+          "const": {
+            "id": "primitive-xnf-covered-head-leaf",
+            "operation": "SHA256",
+            "domain": "XNF1-covered-head-leaf",
+            "inputHex": "000000000000000000010101010101010101010101010101010101010101010101010101010101010100000000000000010202020202020202020202020202020202020202020202020202020202020202",
+            "preimageHex": "000000000000000000010101010101010101010101010101010101010101010101010101010101010100000000000000010202020202020202020202020202020202020202020202020202020202020202",
+            "expectedHex": "f05a759867eef6ba2e72af625516a4912856e31939c5991e82871131f6c3c42c"
+          }
+        }
+      ]
+    },
+    "primitive07": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/primitive"
+        },
+        {
+          "const": {
+            "id": "primitive-siginput-xcd1-replica-pop",
+            "operation": "SIGINPUT",
+            "domain": "Deep/XPoint/V1/XCD1/replica-pop",
+            "inputHex": "00010203",
+            "preimageHex": "446565702f58506f696e742f56312f584344312f7265706c6963612d706f700002010000000400010203",
+            "expectedHex": "eb375b28ca64de6601dddfda71228bd120d2ce4a011de8bf97f7cb527e0350fc"
+          }
+        }
+      ]
+    },
+    "negative27": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xna-root-signature-count-wire-range",
+            "records": [
+              "XNA1"
+            ],
+            "mutation": "set tag19 to 0 or 9 before resolving any authority",
+            "inputHex": null,
+            "expectedStage": "Scalar",
+            "expectedError": "RootSignatureCountOutOfRange",
+            "expectedCallbacks": {
+              "hash": 0,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 0,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative28": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xna-successor-under-predecessor-threshold",
+            "records": [
+              "XNA1"
+            ],
+            "mutation": "for a 5-of-8 to 1-of-1 rotation, carry only the one receipt required by successor tag6 instead of at least five receipts from the accepted predecessor authority",
+            "inputHex": null,
+            "expectedStage": "Closure",
+            "expectedError": "WrongAuthorizingThreshold",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative29": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xcd-role-key-binding",
+            "records": [
+              "XCD1",
+              "XND1"
+            ],
+            "mutation": "substitute target tag5/tag6 or any replica entry keyGeneration/publicKey with a value other than the exact resolved XND1 CallRelay role-key entry",
+            "inputHex": null,
+            "expectedStage": "Closure",
+            "expectedError": "CallRelayRoleKeyMismatch",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 0,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    },
+    "negative30": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/negativeCase"
+        },
+        {
+          "const": {
+            "id": "negative-xcd-role-key-proof-of-possession",
+            "records": [
+              "XCD1",
+              "XND1"
+            ],
+            "mutation": "replace target tag21 or one replica trailing proof signature while preserving exact XND1 role-key closure",
+            "inputHex": null,
+            "expectedStage": "Signature",
+            "expectedError": "InvalidCallRelayProofOfPossession",
+            "expectedCallbacks": {
+              "hash": 1,
+              "signature": 1,
+              "proof": 0,
+              "resolver": 1,
+              "mutation": 0
+            }
+          }
+        }
+      ]
+    }
+  }
+}

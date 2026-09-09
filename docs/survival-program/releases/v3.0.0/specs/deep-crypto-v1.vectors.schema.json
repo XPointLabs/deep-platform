@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:deep:crypto:v1:vectors",
-  "title": "Deep crypto v1 vector set",
+  "title": "Deep messaging codec generation 3 vector set",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "specRevision", "providers", "recovery", "handshake"],
+  "required": ["schemaVersion", "specRevision", "providers", "recovery", "handshake", "application"],
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "const": "3.0.0" },
     "specRevision": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
     "providers": {
       "type": "array",
@@ -23,6 +23,11 @@
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/$defs/handshakeVector" }
+    },
+    "application": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/applicationVector" }
     }
   },
   "$defs": {
@@ -68,7 +73,7 @@
       "required": ["id", "suite", "outcome", "prekeyBundle", "initialHeader"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-        "suite": { "enum": [257, 258] },
+        "suite": { "const": 513 },
         "outcome": { "enum": ["valid", "invalid-before-crypto", "invalid-after-decap"] },
         "prekeyBundle": { "$ref": "#/$defs/hex" },
         "initialHeader": { "$ref": "#/$defs/hex" },
@@ -96,6 +101,49 @@
             "required": ["transcriptHash", "ecRoot", "pqRoot", "initialAeadKey", "callbacks"]
           },
           "else": { "required": ["failure", "callbacks"] }
+        }
+      ]
+    },
+    "applicationVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "magic", "suite", "outcome", "record", "callbacks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "magic": { "enum": ["DID1", "DAB1", "DMD1", "DCA1", "DAO1", "DMC2", "DAM1"] },
+        "suite": { "const": 513 },
+        "outcome": { "enum": ["valid", "invalid-before-crypto", "invalid-after-authentication"] },
+        "record": { "$ref": "#/$defs/hex" },
+        "dmc2Kind": { "type": "integer", "minimum": 1, "maximum": 29 },
+        "failure": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "rejectionStage": {
+          "enum": [
+            "exact-total-size", "fixed-header", "field-scan", "field-bounds",
+            "closed-enum", "canonical-text", "nested-record", "signature",
+            "aead", "semantic-binding"
+          ]
+        },
+        "callbacks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["signature", "agreement", "aead", "mutation", "application"],
+          "properties": {
+            "signature": { "type": "integer", "minimum": 0 },
+            "agreement": { "type": "integer", "minimum": 0 },
+            "aead": { "type": "integer", "minimum": 0 },
+            "mutation": { "type": "integer", "minimum": 0 },
+            "application": { "type": "integer", "minimum": 0 }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "magic": { "const": "DMC2" } } },
+          "then": { "required": ["dmc2Kind"] }
+        },
+        {
+          "if": { "properties": { "outcome": { "const": "valid" } } },
+          "else": { "required": ["failure", "rejectionStage"] }
         }
       ]
     }

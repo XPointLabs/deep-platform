@@ -117,14 +117,15 @@ foreach ($text in @($readme, $gettingStarted, $releaseReadiness)) {
 Assert-Contract ($releaseReadiness.Contains('release-supported')) 'Apple support claim boundary is missing'
 
 $package = Get-Content -Raw -Encoding UTF8 (Join-Path $publishedRoot 'package.json') | ConvertFrom-Json
-Assert-Contract ($package.devDependencies.honkit -eq '6.2.2') 'HonKit must be pinned exactly'
+Assert-Contract ($package.devDependencies.marked -eq '18.0.11') 'marked must be pinned exactly'
+Assert-Contract (-not ($package.devDependencies.PSObject.Properties.Name -contains 'honkit')) 'HonKit must be absent'
 Assert-Contract ($package.packageManager -eq 'npm@11.8.0') 'npm must be pinned exactly'
 Assert-Contract ($package.engines.node -eq '24.13.0') 'Node.js must be pinned exactly'
 Assert-Contract ((Read-StrictUtf8 (Join-Path $publishedRoot '.nvmrc')).Trim() -eq '24.13.0') '.nvmrc must match package engines'
 
 $lockPath = Join-Path $publishedRoot 'package-lock.json'
 Assert-Contract (Test-Path -LiteralPath $lockPath -PathType Leaf) 'package-lock.json is missing'
-$lockCheck = @(& node -e "const fs=require('node:fs');const p=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));process.exit(p.lockfileVersion===3&&p.packages?.['']?.devDependencies?.honkit==='6.2.2'?0:1)" $lockPath 2>$null)
+$lockCheck = @(& node -e "const fs=require('node:fs');const p=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));const names=Object.keys(p.packages||{});process.exit(p.lockfileVersion===3&&p.packages?.['']?.devDependencies?.marked==='18.0.11'&&!names.includes('node_modules/honkit')&&!names.includes('node_modules/immutable')?0:1)" $lockPath 2>$null)
 Assert-Contract ($LASTEXITCODE -eq 0) 'npm lockfile pins drifted'
 
 $tokens = $null

@@ -710,7 +710,7 @@ foreach ($className in $expectedRecordClasses.Keys) {
 }
 if (-not $classifiedRecords.SetEquals([string[]]@($recordMagics))) { Fail 'record class table is not a complete exact partition' }
 
-$expectedTranscriptNames = @('artifactRef','releaseRootGenesis','releaseManifestKeyId','releaseRootKeyHash','releaseRootChain','releaseRootAuthorityHead','witnessTerminalQuorum','witnessTerminalReceiptSigningInput','dxpSalt','dxpKeyDevice','dxpKeyRouter','dxpTranscriptHash','deepAccountId','componentSubject','deploymentSubject','witnessSetRoot','witnessDelegationSigningInput','witnessSetSuccessorSigningInput','subjectPolicy','witnessFinalHeads','witnessLeaf','witnessNode','witnessHead','witnessEmptyRoot','quorumDigest','leaseDigest','mrlRealLeaf','mrlEmptyLeaf','mrlNode','mrlRoot','membershipClosure','membershipTransitionContainer','compositeSelection','catalogHash','outerJournalKey','dxpSubjectProjection','dxpNonceIndexKeyId','dxpNonceLedgerKey','dxpOperationSource','outerRequestHash','outerOutcomeHash','currentCutoverSource','dnrcSource','membershipHeadSource','mailboxAuthorityHeadSource','mrlcSource','recoveryArtifactInventory','recoveryCapsuleSource','recoveryFrontierCheckpoint','recoverySchemaFingerprint','recoveryReleaseContext','recoveryGenesisReleaseContext','recoveryIdentityContext','recoveryIdentityCatalog','recoveryOldProtectedSource','recoveryGenesisCutoverSource','recoveryGenesisCutoverAnchor','recoveryFrontierSubjects','recoveryTargetSubjects','recoveryPredecessorFrontier','recoveryDrtCatalog','recoveryWitnessHeadHistory','recoveryResetAuthorityHead','recoveryGenesisResetLogicalScope','recoveryGenesisResetIntent','recoveryGenesisQuorumPendingOperation','recoveryGenesisQuorumPending','recoveryGenesisQuorumSelection','recoveryGenesisTransactionLogicalScope','recoveryGenesisReplayForkEvidence','recoveryGenesisAuthorJournal','deploymentGovernanceOrigin','deploymentGovernanceBootstrap','deploymentGovernanceEnvironmentIndex','firstDeploymentCutoverBranch','sameAccountCutoverBranch','accountResetCutoverBranch','accountResetOrigin','deploymentGovernanceIndex','accountResetOriginReceipt','genesisDcmAuthoringRecord','genesisResetAuthoringRecord','genesisAuthorSet')
+$expectedTranscriptNames = @('artifactRef','releaseRootGenesis','releaseManifestKeyId','releaseRootKeyHash','releaseRootChain','releaseRootAuthorityHead','witnessTerminalQuorum','witnessTerminalReceiptSigningInput','dxpSalt','dxpKeyDevice','dxpKeyRouter','dxpTranscriptHash','deepAccountId','componentSubject','deploymentSubject','witnessSetRoot','witnessDelegationSigningInput','witnessSetSuccessorSigningInput','subjectPolicy','witnessFinalHeads','witnessLeaf','witnessNode','witnessHead','witnessEmptyRoot','quorumDigest','leaseDigest','mrlRealLeaf','mrlEmptyLeaf','mrlNode','mrlRoot','membershipClosure','membershipTransitionContainer','compositeSelection','catalogHash','outerJournalKey','dxpSubjectProjection','dxpOfflineGenesisIdentityIssuanceSource','dxpAccountDeviceIssuanceScope','dxpCurrentCutoverRouterIssuanceScope','dxpNonceIndexKeyId','dxpNonceLedgerKey','dxpOperationSource','outerRequestHash','outerOutcomeHash','currentCutoverSource','dnrcSource','membershipHeadSource','mailboxAuthorityHeadSource','mrlcSource','recoveryArtifactInventory','recoveryCapsuleSource','recoveryFrontierCheckpoint','recoverySchemaFingerprint','recoveryReleaseContext','recoveryGenesisReleaseContext','recoveryIdentityContext','recoveryIdentityCatalog','recoveryOldProtectedSource','recoveryGenesisCutoverSource','recoveryGenesisCutoverAnchor','recoveryFrontierSubjects','recoveryTargetSubjects','recoveryPredecessorFrontier','recoveryDrtCatalog','recoveryWitnessHeadHistory','recoveryResetAuthorityHead','recoveryGenesisResetLogicalScope','recoveryGenesisResetIntent','recoveryGenesisQuorumPendingOperation','recoveryGenesisQuorumPending','recoveryGenesisQuorumSelection','recoveryGenesisTransactionLogicalScope','recoveryGenesisReplayForkEvidence','recoveryGenesisAuthorJournal','deploymentGovernanceOrigin','deploymentGovernanceBootstrap','deploymentGovernanceEnvironmentIndex','firstDeploymentCutoverBranch','sameAccountCutoverBranch','accountResetCutoverBranch','accountResetOrigin','deploymentGovernanceIndex','accountResetOriginReceipt','genesisDcmAuthoringRecord','genesisResetAuthoringRecord','genesisAuthorSet')
 $transcriptNames = @($registry.hashTranscripts.PSObject.Properties | ForEach-Object { [string]$_.Name })
 if (($transcriptNames -join '|') -ne ($expectedTranscriptNames -join '|')) { Fail 'hash transcript inventory drifted' }
 $expectedTranscripts = [ordered]@{
@@ -750,9 +750,12 @@ $expectedTranscripts = [ordered]@{
     catalogHash = 'sha256-d(Deep/NativeRouting/V2/catalog-hash, artifact-entry-count4|catalog-length8|catalog-bytes)'
     outerJournalKey = 'hmac-sha256(journal-index-key, u16-domain-length|Deep/NativeRouting/V1/outer-journal-key|network16|sender32|recipient32|request-id32)'
     dxpSubjectProjection = 'sha256-d(Deep/IdentityAuth/V1/x25519-pop-subject,role1|u32be-projection-length|canonical-DPD1-or-DNR1-unsigned-projection-with-signature-and-PoP-signature-TLVs-omitted-and-x25519PoPTranscriptHash-value-zero32)'
-    dxpNonceIndexKeyId = 'sha256-d(Deep/ProtectedState/V1/DXP1-nonce-index-key-id,network16|reset-id32|dxp-nonce-index-key32)'
-    dxpNonceLedgerKey = 'hmac-sha256(dxp-nonce-index-key32,u16be-domain-length|Deep/ProtectedState/V1/DXP1-nonce-ledger-key|network16|reset-id32|role1|nonce32)'
-    dxpOperationSource = 'sha256-d(Deep/IdentityAuth/V1/dxp-operation-source,role1|stage1|cutover-source32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|subject-projection-hash32|prior-subject-LKG-ref38|transcript-hash32|subject-artifact-ref38|identity-catalog-key-id32|DXR-key-id32|nonce-index-key-id32)'
+    dxpOfflineGenesisIdentityIssuanceSource = 'sha256-d(Deep/IdentityAuth/V2/offline-genesis-identity-issuance-source,network16|account-hash32|account-generation8=1|DPA1-ref38|DRS-revision8=1|DRS-count8=0|zero-DRS-head32|DRS1-ref38)'
+    dxpAccountDeviceIssuanceScope = 'sha256-d(Deep/IdentityAuth/V2/account-device-issuance-scope,network16|account-hash32|account-generation8=1|DPA1-ref38)'
+    dxpCurrentCutoverRouterIssuanceScope = 'sha256-d(Deep/IdentityAuth/V2/current-cutover-router-issuance-scope,network16|reset-id32|component-kind2|account-hash32|account-generation8)'
+    dxpNonceIndexKeyId = 'sha256-d(Deep/ProtectedState/V2/DXP1-nonce-index-key-id,source-kind1|network16|issuance-scope32|dxp-nonce-index-key32)'
+    dxpNonceLedgerKey = 'hmac-sha256(dxp-nonce-index-key32,u16be-domain-length|Deep/ProtectedState/V2/DXP1-nonce-ledger-key|source-kind1|network16|issuance-scope32|role1|nonce32)'
+    dxpOperationSource = 'sha256-d(Deep/IdentityAuth/V2/dxp-operation-source,source-kind1|role1|stage1|identity-issuance-source32|issuance-scope32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|subject-projection-hash32|prior-subject-LKG-ref38|transcript-hash32|subject-artifact-ref38|identity-catalog-key-id32|DXR-key-id32|nonce-index-key-id32)'
     outerRequestHash = 'sha256-d(Deep/NativeRouting/V1/outer-request-hash,u32be-408|exact-DPR1-408|u32be-PRQ2-length|exact-PRQ2)'
     outerOutcomeHash = 'sha256-d(Deep/NativeRouting/V1/outer-outcome-hash,u32be-296|exact-MRR2-296|u32be-444|exact-DPS1-444)'
     currentCutoverSource = 'sha256-d(Deep/NativeRouting/V2/current-cutover-source,network16|reset-id32|component-kind2|account-hash32|account-generation8|DCM-generation8|DCM-ref38|DCP-ref38|DCS-ref38|DCQ-ref38|DWL-ref38|DCL-ref38|DPL-ref38|release-root-authority-head32|DRS-revision8|DRS-count8|DRS-head32|DRS-ref38|lease-expires8|DPL-key-id32|DWL-key-id32|RRL-key-id32|RIB-key-id32|MRLC-key-id32|DXR-key-id32)'
@@ -1191,7 +1194,7 @@ if ($registry.releaseRootTrust.carrier -ne 'RRM1-signed-release-root-manifest' -
 $wireEnumNames = @($registry.wireEnums.PSObject.Properties | ForEach-Object { [string]$_.Name })
 $expectedWireEnumNames = @(
     'dpaMinimumSuite','dpdSuite','dpdCapabilities','dpmCapabilities','drtTargetKind','drsReason','draReason',
-    'keyScope','keyAction','dxpRole','routerRoles','routerCapabilities','dpcEndpointKind','dpcFlags',
+    'keyScope','keyAction','dxpRole','dxpIdentityIssuanceSourceKind','routerRoles','routerCapabilities','dpcEndpointKind','dpcFlags',
     'witnessEndpointKind','dcnDurabilityClass','componentMask','outerPeerOperation','innerPrq2Operation',
     'dpjPhase','dxrPhase','booleanByte','rip2ProtocolVersion','unknownPolicy','drtTargetPolicy','keyPolicy','dxpPolicy',
     'routerPolicy','dpcPolicy','reasonPolicy','phasePolicy','reservedPolicy'
@@ -1203,7 +1206,7 @@ if ($registrySchema.properties.wireEnums.additionalProperties -ne $false -or
     ($schemaWireRequired -join '|') -ne ($expectedWireEnumNames -join '|')) {
     Fail 'wire enum schema property set/order is not exact and closed'
 }
-$constWireEnumNames = @('dpaMinimumSuite','dpdSuite','dpdCapabilities','dpmCapabilities','drtTargetKind','drsReason','draReason','keyScope','keyAction','dxpRole','routerRoles','routerCapabilities','dpcEndpointKind','dpcFlags','witnessEndpointKind','dcnDurabilityClass','componentMask','outerPeerOperation','innerPrq2Operation','dpjPhase','dxrPhase','booleanByte','rip2ProtocolVersion')
+$constWireEnumNames = @('dpaMinimumSuite','dpdSuite','dpdCapabilities','dpmCapabilities','drtTargetKind','drsReason','draReason','keyScope','keyAction','dxpRole','dxpIdentityIssuanceSourceKind','routerRoles','routerCapabilities','dpcEndpointKind','dpcFlags','witnessEndpointKind','dcnDurabilityClass','componentMask','outerPeerOperation','innerPrq2Operation','dpjPhase','dxrPhase','booleanByte','rip2ProtocolVersion')
 foreach ($name in $constWireEnumNames) {
     if (($registry.wireEnums.$name | ConvertTo-Json -Compress) -ne ($registrySchema.properties.wireEnums.properties.$name.const | ConvertTo-Json -Compress)) {
         Fail "wire enum schema const drifted: $name"
@@ -1225,6 +1228,7 @@ if (($wireEnumNames -join '|') -ne ($expectedWireEnumNames -join '|') -or
     (@($registry.wireEnums.keyScope) -join '|') -ne 'ReleaseRoot=1|DeviceCertificateIssuer=2|AccountRevocation=3|ResetControl=4' -or
     (@($registry.wireEnums.keyAction) -join '|') -ne 'Rotate=1|Revoke=2' -or
     (@($registry.wireEnums.dxpRole) -join '|') -ne 'Device=1|Router=2' -or
+    (@($registry.wireEnums.dxpIdentityIssuanceSourceKind) -join '|') -ne 'OfflineAccountDeviceGenesis=1|CurrentCutoverRouter=2' -or
     (@($registry.wireEnums.dpcEndpointKind) -join '|') -ne 'IPv4=1|IPv6=2|DNS=3' -or
     [uint64]$registry.wireEnums.routerRoles.PeerIngress -ne 1 -or
     [uint64]$registry.wireEnums.routerRoles.PeerCore -ne 2 -or
@@ -1432,12 +1436,17 @@ if ($registry.apiInvariants.rrmPreflight -ne 'freeze-exact-canonical-RRM1-332-an
     $registry.apiInvariants.dxpReceipt -notmatch 'core239' -or
     $registry.apiInvariants.dxpReceipt -notmatch 'fixed573' -or
     $registry.apiInvariants.dxpNonce -notmatch 'operationId32 is consumer-internal CSPRNG nonzero' -or
+    $registry.apiInvariants.dxpNonce -notmatch 'source kinds are closed OfflineAccountDeviceGenesis=1 and CurrentCutoverRouter=2' -or
     $registry.apiInvariants.dxpNonce -notmatch 'nonceLedgerKey is derived only by dxpNonceLedgerKey' -or
-    $registry.apiInvariants.dxpNonce -notmatch 'immutable and nonrotating for network-resetId' -or
+    $registry.apiInvariants.dxpNonce -notmatch 'source-kind-network-issuanceScope-bound non-DB index key' -or
+    $registry.apiInvariants.dxpNonce -notmatch 'immutable and nonrotating for that sealed issuance scope' -or
+    $registry.apiInvariants.dxpNonce -notmatch 'retired V1 cutover-only/reset-bound derivations have no reader or dual interpretation' -or
     $registry.apiInvariants.dxpNonce -notmatch 'missing-wrong-retired-early key fails closed' -or
     $registry.apiInvariants.dxpNonce -notmatch 'Pending CAS precedes challenge' -or
-    $registry.apiInvariants.dxpFinalCas -notmatch 'stage0 dxpOperationSource' -or
+    $registry.apiInvariants.dxpFinalCas -notmatch 'exact389 stage0 dxpOperationSource' -or
     $registry.apiInvariants.dxpFinalCas -notmatch 'stage1 dxpOperationSource' -or
+    $registry.apiInvariants.dxpFinalCas -notmatch 'OfflineAccountDeviceGenesis is Device-only and derives entirely offline' -or
+    $registry.apiInvariants.dxpFinalCas -notmatch 'CurrentCutoverRouter is Router-only and binds the exact current-cutover source' -or
     $registry.apiInvariants.dxpFinalCas -notmatch 'same atomic CAS installs subject head' -or
     $registry.apiInvariants.mrlCurrentInputs -notmatch 'fields3-through8' -or
     $registry.apiInvariants.mrlContinuity -notmatch 'separate RestoreCurrentCompositeLkg and VerifyNextCompositeLkg' -or
