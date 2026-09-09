@@ -12,7 +12,7 @@ $protocolRegistryPath = Join-Path $PSScriptRoot '..\deep-protocol\registry\deep-
 $generatedRegistryPath = Join-Path $PSScriptRoot '..\deep-protocol\src\Deep.Protocol\Generated\DeepProtocolRegistry.Generated.cs'
 $vectorTool = Join-Path $PSScriptRoot '..\deep-protocol\eng\GroupCodecVectors\GroupCodecVectors.csproj'
 $testProject = Join-Path $PSScriptRoot '..\deep-protocol\tests\Deep.Protocol.Tests\Deep.Protocol.Tests.csproj'
-$expectedDigest = '84c5726678552194af3983520ca80f5f6f49eb8e16dc456e142806f95f275133'
+$expectedDigest = 'dca069d80c506c2fe5da5b1c14073d784a875666484f83f7deb13662dd60147e'
 
 foreach ($path in @($vectorPath, $anchorPath, $schemaPath, $codecPath, $transitionVerifierPath, $protocolRegistryPath, $generatedRegistryPath, $vectorTool, $testProject)) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing GROUP-CODEC-01 input: $path" }
@@ -22,7 +22,16 @@ $vectorsRaw = Get-Content -LiteralPath $vectorPath -Raw
 if (-not ($vectorsRaw | Test-Json -SchemaFile $schemaPath)) { throw 'GROUP-CODEC-01 vectors do not satisfy their frozen schema.' }
 $vectors = $vectorsRaw | ConvertFrom-Json -Depth 100
 $anchor = Get-Content -LiteralPath $anchorPath -Raw | ConvertFrom-Json -Depth 20
-$digest = (Get-FileHash -LiteralPath $vectorPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$canonicalVectorBytes = [Text.Encoding]::UTF8.GetBytes(
+    $vectorsRaw.Replace("`r`n", "`n").Replace("`r", "`n"))
+$algorithm = [Security.Cryptography.SHA256]::Create()
+try {
+    $digestText = [BitConverter]::ToString($algorithm.ComputeHash($canonicalVectorBytes))
+    $digest = $digestText.Replace('-', '').ToLowerInvariant()
+}
+finally {
+    $algorithm.Dispose()
+}
 if ($digest -cne [string]$anchor.sha256) { throw "GROUP-CODEC-01 vector digest does not match the independent anchor." }
 if ($digest -cne $expectedDigest) { throw 'GROUP-CODEC-01 vector digest does not match the checker literal pin.' }
 if (@($vectors.records).Count -ne 12 -or @($vectors.hostileCases).Count -lt 14) { throw 'GROUP-CODEC-01 requires twelve canonical records and at least fourteen hostile fixtures.' }
