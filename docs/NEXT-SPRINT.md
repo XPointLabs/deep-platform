@@ -310,6 +310,10 @@ restricted-network relay, relay rotation и no silent downgrade.
 - Выполнить Android↔Windows physical matrix на одной signed commit matrix:
   account, restore/new device, contacts, 1:1, small groups, files/images/voice,
   push/no-push, calls, carrier blocking/rotation, restart и offline recovery.
+  Physical/device execution выполняется только локально на операторской машине
+  Mr. X; CI собирает клиенты и проверяет non-physical contracts, но не управляет
+  устройством или interactive Windows desktop. В release gate передаётся
+  sanitized signed commit-bound evidence локального прогона.
 - Проверить переписанный DNP package witness на новом hermetic closure:
   выполнить полный execution gate и обновить approved normative binding после
   фиксации commit; подтвердить успешный GitHub run path-filtered documentation
