@@ -49,7 +49,7 @@
     "contactResolveOperation": {
       "type": "object", "additionalProperties": false,
       "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
-      "properties": { "id": { "const": 4 }, "name": { "const": "ContactResolve" }, "requestMagic": { "const": ["XPU1", "XIQ1", "XPK1", "XUW1", "XUQ1"] }, "successMagic": { "const": ["XPO1", "XIS1", "XPC1", "XUS1"] }, "maxRequestBytes": { "const": 69649 }, "maxSuccessBytes": { "const": 131072 } }
+      "properties": { "id": { "const": 4 }, "name": { "const": "ContactResolve" }, "requestMagic": { "const": ["XPU1", "XIQ1", "XPK1", "XUW1", "XUQ1"] }, "successMagic": { "const": ["XPO1", "XIS1", "XPC1", "XUS1"] }, "maxRequestBytes": { "const": 92992 }, "maxSuccessBytes": { "const": 131072 } }
     },
     "groupControlOperation": {
       "type": "object", "additionalProperties": false,

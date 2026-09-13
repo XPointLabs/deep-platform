@@ -25,7 +25,8 @@ try {
 } catch { Fail "invalid JSON: $($_.Exception.Message)" }
 if (-not ($vectorsRaw | Test-Json -SchemaFile $schemaPath)) { Fail 'vectors do not satisfy schema' }
 if ($anchor.artifact -ne 'contact-codec-v1.vectors.json') { Fail 'anchor artifact' }
-$vectorDigest = ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($vectorsRaw)))).ToLowerInvariant()
+$canonicalVectorsRaw = $vectorsRaw.Replace("`r`n", "`n")
+$vectorDigest = ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($canonicalVectorsRaw)))).ToLowerInvariant()
 if ($anchor.sha256 -cne $vectorDigest) { Fail 'anchor digest' }
 if ($vectors.status -ne 'FROZEN_TARGET_NOT_ACTIVE') { Fail 'vectors status' }
 $bounds = $vectors.canonicalBounds

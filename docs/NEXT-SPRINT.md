@@ -54,6 +54,73 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 только по agent-sized package из `IMPLEMENTATION-PLAN-V1.md`; один агент не
 получает целый multi-repository WP.
 
+## Обязательный порядок исполнения
+
+### CB0 — production clean-break до новой feature-работы
+
+Первый code-changing package текущего спринта закрывает destructive
+clean-break. Не создаётся `LegacyV1`, migration-only runtime, feature
+flag, dual reader или автоматический fallback. Нужно:
+
+- удалить из production project/package/runtime graph Session-derived
+  identity, `05...`/`SessionId`, 13-word recovery, DPE1/DMC1 sealed-box,
+  revision-only group state, plaintext Registry call signaling и старые
+  contact/mailbox paths;
+- удалить production-использование Ed25519↔X25519 conversion;
+  signing, agreement, onion traffic и session keys имеют разные
+  независимые lifecycles;
+- заменять каждый удалённый caller только закрытым Deep-native
+  contract из соответствующего package; временный adapter, mock
+  authority или публично forgeable capability запрещены;
+- активировать clean-break Contact publication chain
+  `XRA1 -> PMS2/XRC1/XSS1 -> XRR1/XIR1 -> DCB1/DCR1 -> XPA1/XPU1`:
+  device-signed records остаются в account-owned custody, threshold records
+  выпускает authority Mr. X, а XPU1 атомарно несёт exact verified route closure;
+  locator-indexed Registry/XNode route lookup и post-publication substitution
+  удаляются из production composition;
+- оставить `deep-protocol/reference/session-compatibility-v0` только
+  immutable offline evidence: он не собирается, не пакуется и не
+  загружается.
+
+Gate: source/API/assembly/package/resource/dependency scans доказывают
+нулевой legacy production graph; retired bytes есть только в negative
+fixtures; чистая установка/сброс создаёт только новое поколение; два независимо
+проверенных XNode receipt подтверждают publication-bound permanent resolve без
+Registry locator oracle.
+
+### DEV0 — локальный dev-контур и честный E2E baseline
+
+Сразу после CB0 поднимается текущий Docker dev-контур и
+выполняется один диагностический Android↔Windows run для account,
+contact, text, attachment и group. Отсутствующий Deep-native service,
+authority, client adapter или activation marker записывается как
+blocking failure с точным владельцем; legacy или mock path не может
+сделать baseline зелёным.
+
+Диагностический снимок 2026-09-12 (не acceptance): 12/12 контейнеров
+healthy; физический Android↔Windows `ProvisionIdentity` проходит на сохранённых
+раздельных account state: one-button account, canonical Deep ID и явный
+24-word reveal/hide проверены в изолированном E2E package. Production Android
+package не изменялся. Предыдущий WinUI `0xc000027b` устранён без ослабления ACL:
+унаследованный app-data root сохраняет уже проверенного current owner, а exact
+private ACL канонизируется отдельно. `Attach` честно остаётся красным до
+интерактивной message surface: production runtime fail-closed отвергает transport
+без owned `IMsg01AuthenticatedEvidenceSource`/E2EE-01 authority. `GroupText` и
+`PayloadMatrix` проходят конфигурационный preflight, но не запускаются как якобы
+независимое E2E-доказательство, пока этот общий upstream blocker не закрыт.
+Подробный журнал находится в `deep-devops/docs/SURVIVAL_DEV_STACK.md`.
+
+Выводы security review, не нужные для CB0, не прерывают
+DEV0. Они выполняются после фиксации baseline в dependency order:
+Deep-native 1:1 vertical, contact, groups/files, routing/carriers, release
+hardening. Mesh, MLS, ML-DSA и on-prem runtime остаются за пределами V1.
+
+`DEV-AUTH0` также отложен до отдельной команды после текущего release. Его
+изолированный контракт сохранён в
+[`architecture/LOCAL-DEV-E2EE-AUTHORITY.md`](architecture/LOCAL-DEV-E2EE-AUTHORITY.md),
+но он не является зависимостью production composition, тестирования или
+публикации этого релиза.
+
 ## WP0 — dependency и implementation decision gate
 
 - Завершить production gate отдельного минимального incremental ML-KEM-768
@@ -79,14 +146,14 @@ Gate: подписанный dependency decision, воспроизводимая
 ## WP1 — destructive identity/database clean break
 
 - Подключить `DeepRecoveryV1`/account/device/store primitives к новому
-  production `DeepClientRuntime`, затем выполнить один destructive reset:
-  удалить старые Session identity/database/secure-storage slots и production
-  registrations без migration, dual reader или legacy fallback.
+  production `DeepClientRuntime` на уже очищенном CB0 production graph,
+  затем выполнить один destructive reset всех pre-production
+  registrations и хранилищ.
 - Закрыть airplane-mode create/restore и crash-safe reset на итоговой MAUI
   composition; до локального account success ни один network/bootstrap callback
   не должен создаваться или вызываться.
-- Завершить production dependency/runtime scan: ноль Session identity,
-  Ed25519↔X25519 conversion и routine recovery-phrase loading.
+- Повторить CB0 production graph scan на итоговой MAUI composition
+  и доказать отсутствие routine recovery-phrase loading.
 
 Gate: golden/negative recovery vectors, airplane-mode create/restore,
 wrong-generation rejection, key-role tests, crash-safe reset и zero Session
@@ -246,7 +313,7 @@ malicious directory/fork/rollback, storage repair и route latency/load. Gate
   `in-app-oblivious` RFC 9458 OHTTP, `multi-origin-https` и signed
   `user-import`; embedded cache не заменяет ни один из них.
 - Не встраивать полный bridge pool или account/device-linked VLESS credential
-  в APK/MSIX. Не использовать один camouflage target/fingerprint для всей сети.
+  в APK/Windows ZIP. Не использовать один camouflage target/fingerprint для всей сети.
 - Реализовать независимый TCP/HTTPS-compatible carrier; UDP/QUIC/MASQUE может
   быть дополнительным, но не единственным path.
 - Добавить padding buckets, polling jitter/batching и packet-capture baseline
@@ -303,8 +370,8 @@ restricted-network relay, relay rotation и no silent downgrade.
 
 ## WP9 — release composition и physical E2E
 
-- Заменить current Shared/MAUI Session-derived path новым generation и удалить
-  старые parsers, IDs, stores, endpoints, feature flags и reference runtime.
+- Собрать итоговую Shared/MAUI composition только из прошедших
+  CB0 Deep-native packages; reference corpus не входит в build/runtime.
 - Release UI показывает фактический transport/carrier/privacy profile и точные
   degraded/unavailable states. Локальное создание account не зависит от сети.
 - Выполнить Android↔Windows physical matrix на одной signed commit matrix:
@@ -318,8 +385,14 @@ restricted-network relay, relay rotation и no silent downgrade.
   выполнить полный execution gate и обновить approved normative binding после
   фиксации commit; подтвердить успешный GitHub run path-filtered documentation
   CI на зафиксированной commit matrix.
-- Выпустить reproducible APK/MSIX, dependency lock, SBOM, signatures,
-  sanitized evidence, backup/restore и rollback rehearsal.
+- Выпустить reproducible Android APK и Windows self-contained ZIP (portable
+  executable с только необходимыми runtime-файлами), dependency lock, SBOM,
+  signatures,
+  sanitized evidence, backup/restore и rollback rehearsal. Каждое обновление
+  и node-installer bundle имеют signed manifest, exact artifact digests,
+  monotonic version/security floor и verify-before-install; подменённый,
+  неполный или rollback manifest отклоняется до запуска бинарного
+  файла или мутации текущей установки.
 - После завершения провести независимые lead-developer, protocol/crypto,
   privacy/censorship и security reviews. Release требует P0=0/P1=0.
 
@@ -343,6 +416,9 @@ restricted-network relay, relay rotation и no silent downgrade.
 - шесть+ с независимыми failure domains: disjoint fallback capability;
 - собственные authority/directory/file/push/call services без обязательной
   зависимости от Deep-operated Registry, DNS, billing или signer;
+- strict zero-public-egress system test: при заблокированных
+  public Deep/XPoint DNS и IP новый локальный account публикует
+  prekeys, находит другой local account и обменивается сообщением;
 - explicit consent-bound profile switch; official public-address policy не
   ослабляется ради private/loopback on-prem endpoints.
 

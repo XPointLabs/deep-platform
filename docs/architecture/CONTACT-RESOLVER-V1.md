@@ -133,7 +133,7 @@ Every request is a canonical tagged record with common tags `1=networkId16`,
 `5=issuedAt:u64`, `6=expiresAt:u64`; operation-specific tags start at 16.
 Service records use the baseline sparse-tag rule: their listed tags are the exact
 strictly increasing known set and tags `7..15` are absent. Their default canonical
-record limit is 65,535 bytes. XPU1 has the exact 69,649-byte request limit
+record limit is 65,535 bytes. XPU1 has the exact 92,992-byte request limit
 defined in section 3.1, XIS1 Success has the exact 89,388-byte canonical result
 limit defined in section 3.2, and XPP1 has the exact 8,362,607-byte publication
 limit defined in section 3.3.2. These are closed per-record exceptions, not a
@@ -311,6 +311,18 @@ type; every other status requires zero.
 
 ### 3.1 Publish: `XPU1`
 
+Permanent publication uses two bounded, request-bound authority exchanges over
+the XPoint/OHTTP terminal. First, the current device signs XRA1 from the verified
+PMT2 context; the threshold returns exact PMS2/XRC1/XSS1 for that proposal. The
+device verifies those records, signs XRR1 and XIR1, and locally authors the exact
+DCB1/DCR1 plus encrypted object. Second, it submits that complete closure and the
+176-byte publisher-tuple signature for XPA1 authorization. The authority
+re-verifies current account, device, directory, route and placement closure before
+signing. Raw caller-selected view hashes, replica lists or unsigned route records
+never cross either authority boundary as trusted values. Both exchanges are
+one-operation, bounded, non-enumerable and durable-exact-replay; a changed replay
+conflicts.
+
 Before publication, the client obtains exact `XPA1` from the account-directory
 threshold over the XPoint/OHTTP path. The threshold validates current
 ADC1/ADH1/ADP1 plus exact DID1 hash/address public key, DAB1/DCA1/DCB1/XIR1
@@ -353,15 +365,27 @@ key for kind 1, or from the one-time DIA1 locator commitment/expected DCB hash/
 expiry for kind 2; no resolver/decryption key is a witness input in either
 case. Witnesses validate exact DCR1 and its hash, and verify an authorized
 publisher-device signature over `(locatorHash32, DCR1Hash32,
-objectCiphertextHash32, generation, predecessorObjectHash32, effectiveExpiresAt)`.
+objectCiphertextHash32, routeClosureHash32, generation,
+predecessorObjectHash32, effectiveExpiresAt)`.
+The tuple is the exact 176-byte concatenation
+`locatorHash32 || DCR1Hash32 || objectCiphertextHash32 || routeClosureHash32 ||
+generation:u64be || predecessorObjectHash32 || effectiveExpiresAt:u64be`; the active DCB1 publisher
+device signs
+`SIGINPUT("Deep/ContactResolver/V1/publisher-publication", 0x0201, tuple)`.
+No canonical record wrapper, length prefix, account ID or resolver capability is
+inserted into this projection. `policyHash32` is exactly
+`SHA256-D("Deep/ContactResolver/V1/publication-policy", exact canonical DCA1)`.
 They do not receive the resolver read capability and therefore do not claim to
 validate encryption itself; a wrong ciphertext can only make that authorized
 publisher's address unavailable and is rejected by holders after AEAD/decode.
 XPA1 additionally contains `authorizationId32`, exact XPU1 `operationId32`,
 `authorizedBodyHash32`, `notBefore:u64` and `authorizationExpiresAt:u64`.
+`authorizationId32` is exactly
+`SHA256-D("Deep/ContactResolver/V1/publication-authorization-id",
+operationId32 || authorizedBodyHash32 || exactCurrentADH1CoreHash32)`.
 `authorizedBodyHash32` is
 `SHA256-D("Deep/ContactResolver/V1/XPU-authorized-body", canonical XPU1 tags
-1..6 and 16..23)`, explicitly excluding the XPA1 field itself. Before signing,
+1..6 and 16..25)`, explicitly excluding the XPA1 field itself. Before signing,
 every directory witness independently verifies that XPU1 tags 3/4 equal section
 3.0 under its exact current XNV1/PMT2 context and that tag 16 selects the same
 InviteResolver replicas. XPA1 lifetime cannot exceed its
@@ -381,19 +405,24 @@ The exact XPU1 tags are:
 | 21 | exact `nonce24 || XChaCha20-Poly1305(exactDCR1)` | `40..65575` |
 | 22 | usage limit | 4 |
 | 23 | effective expires-at | 8 |
-| 24 | exact XPA1 | canonical bytes |
+| 24 | `SHA256(exactRouteClosure)` | 32 |
+| 25 | exact verified `XRR1/XRA1/XRC1/XSS1/PMT2/PMS2` route closure | `4143..23295` |
+| 26 | exact XPA1 | canonical bytes |
 
-The XPU1 canonical size is `408 + tag21Bytes + exactXPA1Bytes`; its closed
-maximum is therefore `408 + 65,575 + 3,666 = 69,649` bytes. No other request
+The XPU1 canonical size is
+`456 + tag21Bytes + exactRouteClosureBytes + exactXPA1Bytes`; its closed
+maximum is therefore `456 + 65,575 + 23,295 + 3,666 = 92,992` bytes. No other request
 inherits this exception and neither field may be padded to reach the maximum.
 
 For a permanent DID1, `locatorHash32` is the exact `permanentLocator32` derivation
 in the contact protocol. For a one-time DIA1,
 `locatorHash32 = SHA256-D("Deep/ContactResolver/V1/one-time-locator", DIA1.locator)`.
 The store verifies XPA1 threshold, exact hashes and bounds without receiving
-DID1, DIA1, DAB1, DCA1 or DCR1 plaintext. Publication
+DID1, DIA1, DAB1, DCA1 or DCR1 plaintext. It verifies that tags 24/25 are
+hash-consistent and that XPA1 binds the same authorized body. Publication
 is compare-and-swap on `(locatorHash, generation, predecessorObjectHash)` and
-commits only after both replicas fsync the same bytes. Same-generation changed
+commits the exact encrypted DCR1 and exact route closure only after both replicas
+fsync the same bytes. Same-generation changed
 bytes fork-latch the locator. A successor never extends any signed inner expiry.
 
 The store verifies XPA1 authorization ID, operation ID, authorized body hash and
@@ -445,9 +474,21 @@ Only `Success` uses `mutationOutcome=DurablyCommitted` for a one-time claim;
 permanent resolution uses `None`. Success returns tags
 `16=publicationGeneration:u64`, `17=currentPublicationExpiresAt:u64`,
 `18=objectCiphertextHash32`, `19=stored nonce24||encryptedDCR1`,
-`20=routeClosureHash32`, `21=exactRouteClosure`, and for a consumed one-time
-invite `22=claimCommitGeneration:u64`, `23=sortedReplicaReceipts` with the same
-two-replica receipt container as XPO1. For a consumed one-time invite, each
+`20=routeClosureHash32`, `21=exactRouteClosure`. Permanent resolution additionally
+returns `22=sortedReplicaReadReceipts`; a consumed one-time invite instead returns
+`22=claimCommitGeneration:u64`, `23=sortedReplicaReceipts`. Both receipt fields use
+the same two-replica container as XPO1. For permanent resolution, each replica
+signs the exact 144-byte tuple:
+
+```text
+SIGINPUT("Deep/ContactResolver/V1/resolve-read", 0x0201,
+  requestHash32 || locatorHash32 || publicationGeneration:u64be ||
+  currentPublicationExpiresAt:u64be || objectCiphertextHash32 ||
+  routeClosureHash32)
+```
+
+The selected replica records the exact XIQ1 as receipt evidence, and the peer
+independently rereads its durable publication before signing. For a consumed one-time invite, each
 replica signs the exact 160-byte tuple:
 
 ```text
@@ -460,12 +501,12 @@ SIGINPUT("Deep/ContactResolver/V1/invite-claim-commit", 0x0201,
 
 All values are copied from the exact XIQ1/XIS1 transaction. In particular,
 `routeClosureHash32 = SHA256(exactRouteClosure)` and `serverTime` is XIS1 tag 6.
-This receipt cannot be replayed for another locator/publication, cannot replace
+Neither receipt can be replayed for another locator/publication or replace
 the returned route closure after commit and has no recursive dependency on tag
-23. Permanent non-consuming resolution has no tags 22/23 and no replica claim
-receipt. Thus XIS1 returns exact stored ciphertext plus a
+22/23. Thus XIS1 returns exact stored ciphertext plus a
 hash-closed current `XRR1/XRA1/XRC1/XSS1/PMT2/PMS2` initial-deposit closure,
-generation and current-publication expiry. XPU1 commits only encrypted DCR1 bytes.
+generation and current-publication expiry. XPU1 commits the encrypted DCR1 and
+the publication-authorized exact route closure as one CAS value.
 `exactRouteClosure` is exactly `count:u8(6) || LP32(exactXRR1) ||
 LP32(exactXRA1) || LP32(exactXRC1) || LP32(exactXSS1) || LP32(exactPMT2) ||
 LP32(exactPMS2)` in that order. It is `4,143..23,295` bytes from the closed
@@ -492,44 +533,27 @@ A lost successful one-time response is replayed byte-for-byte only for the same
 `RET-DPK-CLAIM-V1`. `OutcomeUnknown` is reconciled by retrying the same operation;
 clients MUST NOT mint a new redemption operation.
 
-#### 3.2.1 Route-closure distribution boundary
+#### 3.2.1 Publication-bound route closure
 
-The directory publication owner stores the exact current
-`XRR1/XRA1/XRC1/XSS1/PMT2/PMS2` container under only
-`(networkId16, locatorHash32, generation)`. It may expose those canonical bytes
-through a bounded HTTPS cache/distribution endpoint for XNode exits. The index
-and response contain no Deep ID, account/device identifier, DCR1 plaintext,
-resolver-read capability or caller-supplied trust flag. A locator lookup is not
-an account-directory search and no enumerable list endpoint exists.
+The publisher obtains and verifies the current exact
+`XRR1/XRA1/XRC1/XSS1/PMT2/PMS2` closure before requesting XPA1. The active device
+signature and directory-witness authorization both bind its SHA-256 hash, and
+XPU1 carries the exact closure. The InviteResolver replicas persist it beside the
+encrypted DCR1 and require byte-identical route data for replay, replication and
+CAS. Resolution returns only that publication-bound value with independently
+signed replica read evidence.
 
-The endpoint is transport only. Before XIS1 construction, the XNode decodes all
-six exact records and reruns `ContactCodec.VerifyRouteUpdateClosure` against its
-current Protocol-minted XNA1/DTT1/XNV1/PMT2 authority snapshot. It then requires
-the exact request network/locator, XIR1 commitment, publication generation and
-validity intersection. Registry TLS, a successful HTTP status, catalog metadata
-or cached bytes never mint `VerifiedContactRouteClosure`.
+There is no Registry or XNode endpoint that accepts a locator and returns route
+bytes, and no cache is allowed to mint or substitute a route after publication.
+This removes a cross-role locator oracle and ensures that a storage node cannot
+replace the initial-deposit route without the active publisher and the current
+directory threshold. A route refresh therefore creates a new authorized XPU1
+generation; it never mutates a committed generation out of band.
 
-Missing, stale, conflicting, oversized or unavailable route data yields the same
-coarse `TemporarilyUnavailable` family and no DCR1 ciphertext. It never becomes
-`NotFound` evidence that can enumerate an account. The client reaches this
-boundary only through the selected three-hop ContactResolve operation; there is
-no client-to-Registry or direct-service fallback. An on-prem deployment may
-replace the distribution adapter, but it must satisfy the identical verified
-closure interface and cannot change this wire or trust rule.
-
-The public v1 distribution adapter uses
-`POST /api/v1/contact-route-closures` with request media type
-`application/vnd.deep.contact-route-closure-request.v1+octet-stream` and an
-exact 50-byte body `version:u16be(1) || networkId16 || locatorHash32`.
-`Content-Length` is mandatory. A successful response uses
-`application/vnd.deep.contact-route-closure.v1+octet-stream` and exactly
-`count:u8(6) || LP32(XRR1) || LP32(XRA1) || LP32(XRC1) || LP32(XSS1) ||
-LP32(PMT2) || LP32(PMS2)`, with total size 4,143..23,295 bytes, exact
-`Content-Length`, `Cache-Control: no-store`, no redirect and no trailing bytes.
-The adapter exposes no list method. Unknown locator, wrong network and rejected
-publication are normalized to HTTP 404; a dormant or globally unavailable
-source is HTTP 503. Both remain transport outcomes and MUST NOT be interpreted
-as verified account non-membership.
+Recipients retain a bounded protected evidence cache only after successful,
+authenticated XIS1 verification. The cache is an availability aid for already
+verified peers, not an authority source: cache absence, expiry or mismatch fails
+closed and never triggers a locator lookup.
 
 ### 3.3 Pre-key service descriptor: `XPS1`
 

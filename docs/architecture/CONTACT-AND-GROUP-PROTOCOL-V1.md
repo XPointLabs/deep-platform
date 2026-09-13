@@ -427,8 +427,9 @@ has no continuation/pagination. The parser verifies outer fields, DCB1 canonical
 bytes, support ordering/reference closure, each nested signature and then the
 fresh directory closure. Storage holds only the encrypted `nonce24 ||
 ciphertext(DCR1)` wrapper. Its exact maximum is `24 + 65,535 + 16 = 65,575`
-bytes. XPU1 has the closed 69,649-byte request exception needed for this wrapper
-and a maximum 3,666-byte XPA1; XIS1 Success uses its 131,072-byte response class
+bytes. XPU1 has the closed 92,992-byte request exception needed for its encrypted
+DCR1, publication-bound exact route closure and maximum 3,666-byte XPA1;
+XIS1 Success uses its 131,072-byte response class
 only when the exact encrypted DCR1 plus route closure exceeds class 3. A service
 cannot inspect or index DCR1 plaintext.
 

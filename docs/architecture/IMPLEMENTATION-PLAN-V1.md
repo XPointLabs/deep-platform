@@ -35,6 +35,9 @@ Rules for every package:
    commits. Unreviewed working-tree bytes are not an API contract.
 10. No package pushes, publishes or deploys production without separate user
     authorization.
+11. `CB0` from `NEXT-SPRINT.md` is the first production-graph change. A package
+    may consume immutable Session reference vectors, but may not introduce a
+    compiled `LegacyV1`, migration assembly, compatibility adapter or fallback.
 
 ## 2. Dependency overview
 
@@ -85,10 +88,17 @@ all runtime packages -> COMPOSE-01 -> E2E-01
 The shortest useful vertical milestone is:
 
 ```text
-offline account -> loopback ratchet/outbox -> one-carrier three-hop text
+CB0 legacy production-graph removal -> diagnostic local DEV0 evidence
+-> offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 -> arbitrary offline contact -> second carrier/rotation -> groups/files/push
 -> relay-only calls -> full evidence
 ```
+
+DEV0 is allowed to be red only when it names the exact missing Deep-native
+package/service/authority. It is never made green by re-enabling a Session,
+mock, direct or unauthenticated path. Non-clean-break findings from architecture
+reviews enter the dependency order only after this baseline; ML-DSA, MLS, mesh
+and on-prem runtime remain post-V1.
 
 ## 3. Package catalogue
 
@@ -186,7 +196,8 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 - **consumes:** frozen DNP1 registry/vectors and DeepRecoveryV1 requirements.
 - **produces:** release-referenced DPA1/DPD1/DRS1/DRA1 verification and authoring
   surface; 24-word recovery/KDF vectors; independent device-key generation;
-  sealed recovery/account/device capabilities.
+  sealed recovery/account/device capabilities; optional OS-protected retained
+  phrase slot with explicit reveal and deletion.
 - **wire/API:** exact frozen DNP1 bytes only. Ed25519/X25519 conversion and raw
   recovery-root accessors are absent.
 - **DB impact/removals:** defines new secure-storage slot identifiers and
@@ -252,6 +263,35 @@ offline account -> loopback ratchet/outbox -> one-carrier three-hop text
   compromise/PCS drill and hostile parser corpus.
 - **integration consumer/evidence:** MSG-01, DEVICE-01 and CONTACT-CODEC-01;
   vector package and independent crypto review input.
+
+### DEV-E2EE-01 — deferred post-release local authority
+
+**Scheduling:** deferred until an explicit operator decision after the current
+Windows/Android release. This package is not on the production release critical
+path and MUST NOT be used to satisfy any production-readiness gate below.
+
+- **ownerRepositories:** `deep-protocol`, `deep-client-shared`, `deep-devops`
+  and `deep-client-maui`; implemented as bounded repository-specific packages,
+  not one cross-repository change.
+- **dependsOn:** implemented E2EE-01 codecs/transition producers, STORE-01,
+  MSG-01 persistence and the persistent local registry contour.
+- **consumes:** `LOCAL-DEV-E2EE-AUTHORITY.md`, suite `0x0201`, generated local
+  network/profile identity and isolated `network.xpoint.deep.e2e` builds.
+- **produces:** a DEV-LOCAL-ONLY issuer/snapshot/registration API, client
+  device/prekey enrollment, real DPK2/DPH2/DPE2/TRS1 composition and sanitized
+  `dev-functional` Android↔Windows evidence.
+- **wire/API:** reuses the production candidate codecs and transitions exactly;
+  only the trust root, validity and registration policy are development scoped.
+  It defines no second message format or cryptographic suite.
+- **DB impact/removals:** private issuer seed exists only in ignored dev secrets;
+  clients retain their own secrets and exact ratchet state in protected
+  account/SQLCipher stores. No DPE1, Session identity or plaintext relay is
+  introduced.
+- **negative gate:** Release binaries and resources contain no dev factory,
+  symbol, metadata, endpoint or issuer material and reject a dev descriptor.
+- **integration evidence:** physical bidirectional text, attachment and GroupV1
+  scenarios with process death/cold restart. This evidence cannot satisfy the
+  production E2EE-01 activation or release gate.
 
 ### APPLICATION-CORE-CODEC-01 — frozen identity/device/text application core
 
@@ -467,21 +507,24 @@ No other NETCODEC record inherits frozen status from that slice.
   XNode сохраняет capability-bound durable `Reserved -> Committed` consume saga,
   permanent conflict latch и выдаёт receipt только после quorum `2/2`.
   Authenticated two-replica HTTPS/HTTP2 transport и dormant fail-closed host
-  composition уже реализованы. Registry production issuer теперь использует
-  реальный `AccountDirectoryProofAuthor`, durable one-use ledger и строгий
-  file-backed canonical snapshot source. Отдельный transport-only Registry
-  adapter выдаёт bounded exact-six route closure только по
-  `networkId16 + locatorHash32`, без DID/account/device и без enumerable API; его hostile HTTP,
-  filesystem, rollback/fork и local Protocol-cutover gates закрыты. XNode
-  получает bounded CDR1 по HTTPS, повторно проверяет XNA/DTT/XNV/PMT closure и
-  хранит protected LKG. До runtime activation остаются concrete witness
-  custody/trusted-time composition и XNode recipient-specific route-closure
-  fetch/reverification adapter; структурные XPA1, Registry bytes или успешный
-  HTTPS сами по себе права не дают.
+  composition уже реализованы. Registry production issuer использует реальный
+  `AccountDirectoryProofAuthor`, durable one-use ledger, строгий file-backed
+  canonical snapshot source и threshold custody Mr. X. Clean-break publication
+  flow больше не имеет locator-indexed Registry route adapter: активное устройство
+  и XPA1 threshold совместно связывают hash exact-six route closure, XPU1 несёт
+  эти bytes, а обе XNode replicas атомарно сохраняют их вместе с encrypted DCR1.
+  Permanent resolve требует два independently verified `resolve-read` receipts;
+  recipient protected cache пополняется только из authenticated XIS1 evidence и
+  никогда не инициирует locator lookup. До runtime activation остаётся bounded
+  privacy-routed XPA1 authoring endpoint и его production client composition;
+  структурные XPA1, Registry bytes или успешный HTTPS сами по себе права не дают.
 - **wire/API:** the service never authors or substitutes ADC1: it verifies the
   exact DPA1 device-issuer signature and admits those bytes atomically into the
   current map plus append log. XPA1 binds one operation ID and exact XPU request
-  hash; no threshold member receives resolver read capability.
+  hash plus the publication route-closure hash; no threshold member receives
+  resolver read capability. The authoring transport is reachable only through
+  the registered XPoint/OHTTP terminal and exposes no locator enumeration or
+  post-publication route lookup.
 - **DB impact/removals:** checkpoint predecessor/CAS, map-log transaction,
   authorization issue/consume/replay and fork-latch tables. No invite ciphertext
   or requester IP is retained.
@@ -1111,13 +1154,17 @@ No other NETCODEC record inherits frozen status from that slice.
   CALL-SIGNAL-01, CALL-MEDIA-01.
 - **consumes:** exact reviewed packages and `release-scope.v1.json`.
 - **produces:** one fail-closed Android/Windows composition root; offline
-  onboarding; actual profile/carrier/privacy/degraded UI; physical automation
-  hooks; reproducible APK/MSIX inputs.
+  one-action name-only onboarding; Settings-owned recovery reveal/copy/delete;
+  actual profile/carrier/privacy/degraded UI; physical automation
+  hooks; reproducible APK and Windows self-contained ZIP inputs.
 - **wire/API:** only target generation is referenced. Unsupported P2P/on-prem/
   Apple/direct paths are absent or explicitly unavailable.
-- **DB impact/removals:** activates the clean-break DB once. Remove Session
-  runtime/resources/IDs, DPE1/DMC1, old parsers/stores/endpoints/feature flags,
-  static bootstrap, Registry calls and legacy direct file/push/call paths.
+- **DB impact/removals:** activates the clean-break DB once after the CB0 scan.
+  Session runtime/resources/IDs, DPE1/DMC1, old parsers/stores/endpoints/feature
+  flags, static bootstrap, Registry calls and legacy direct file/push/call paths
+  cannot re-enter the graph. Release/update composition also consumes one
+  signed monotonic manifest with exact APK/Windows ZIP/node/installer digests and
+  verifies it before execution or installation-state mutation.
 - **unit gate:** production dependency/resource/API scans, MAUI ViewModel/UI/
   smoke suites, Windows x64/arm64 and Android arm64 builds, airplane-mode account.
 - **integration consumer/evidence:** E2E-01; signed composition manifest and
@@ -1138,7 +1185,7 @@ No other NETCODEC record inherits frozen status from that slice.
 - **DB impact/removals:** fixture data only; each generation reset is explicit.
   Remove old iOS-blocking, disjoint-route and Registry-call acceptance fixtures.
 - **unit gate:** fixtures schema/compat/smoke/full/load; full DNS/SNI/path/IP/UDP/
-  active-probe/APK-and-MSIX-extraction matrix; crash/restart/rotation; performance SLOs;
+  active-probe/APK-and-Windows-ZIP-extraction matrix; crash/restart/rotation; performance SLOs;
   secret scan and local Markdown-link check.
 - **integration consumer/evidence:** `deep-devops` release gate and independent
   reviewers; one signed commit matrix with P0=0/P1=0 before GA.
