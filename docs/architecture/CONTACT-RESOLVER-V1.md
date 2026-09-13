@@ -917,15 +917,22 @@ the route service. These totals are the complete canonical grammar calculation:
 | 9 | sorted node entries | exactly `136*tag8`: `nodeId32 || mailboxCapacity:u64be || originId32 || currentSpki32 || nextSpki32` |
 | 10..12 | issued-at, not-before, expires-at | u64; `issuedAt<=notBefore<expiresAt`, lifetime at most 14 days |
 | 13 | next PMT2 core-hash commitment | 32; ZERO32 allowed only when no successor is committed |
-| 14 | ADH1 CoreRef | 38 |
+| 14 | issuance-time ADH1 CoreRef audit anchor | 38 |
 | 15 | directory witness count | u8, threshold..32 |
 | 16 | sorted witness receipts | exactly `96*tag15`: `witnessId32 || signature64` |
 
 PMT2 has total `378 + 136*N + 96*W` bytes, `N=2..56`, `W=2..32`. Entries sort
 by node ID, are unique, and exactly equal the unrevoked Mailbox-role XND1
 projection in the named XNV1; omission is allowed only for a signed XNV1
-drain/quarantine reason. Witnesses resolve from tag 14's directory policy and
-sign tags 1..14 using `SIGINPUT("Deep/XPoint/V1/PMT2", 0x0201, projection)`.
+drain/quarantine reason. Tag 14 records the exact witnessed ADH1 that was current
+when this PMT2 generation was authorized. It is a signed audit/issuance anchor,
+not a pin to the latest mutable account-directory head: later account admission
+or ordinary ADH1 renewal MUST NOT invalidate or regenerate an otherwise-current
+PMT2. Verifiers obtain the witness threshold and keys from the verified XNA1
+authority closure, verify the PMT2 receipts against that authority, and verify
+current directory freshness independently through exact ADH1/ADP1/DTT1 evidence.
+Witnesses sign tags 1..14 using
+`SIGINPUT("Deep/XPoint/V1/PMT2", 0x0201, projection)`.
 `PMT2CoreHash32 = SHA256-D("Deep/XPoint/V1/PMT2/core", projection)`. A successor
 is exact generation+1/predecessor-core; tag 13 of predecessor, when nonzero,
 must equal successor core. Any violation, different same-generation core or two

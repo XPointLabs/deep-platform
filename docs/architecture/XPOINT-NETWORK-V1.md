@@ -810,6 +810,11 @@ and required PMT generation rule; it never contains current/next PMT2 hashes.
 PMT2 contains its own predecessor and next-PMT2 commitment. This one-way
 `XNV1 -> PMT2` construction follows DR-0004 and has no hash cycle.
 
+PMT2 tag 14 is the witnessed ADH1 audit anchor used when that PMT generation was
+issued. It does not bind the latest mutable directory head: account admission and
+routine ADH1 renewal advance directory freshness without rotating XVP1/XNV1/XNH1
+or PMT2. Current ADH1/ADP1/DTT1 verification remains mandatory and independent.
+
 `PMA2` authorizes one directory-threshold key set, network ID, minimum reader,
 mailbox algorithm and bounded validity interval. The exact `PMT2`/`PMS2` binary
 records, selection input, ranking hash and threshold projections are frozen in
@@ -827,6 +832,9 @@ Verification requires all of the following:
    by the ported PMT2/PMS2 verifier, never an account-derived selector;
 5. PMS2 names exactly the replicas recomputed by
    `Rendezvous-SHA256-v2`; a Registry signature cannot override that ranking.
+6. PMT2 witness receipts verify under the current XNA1 directory-witness policy;
+   tag 14 is validated as a canonical ADH1 CoreRef and retained for audit, but is
+   never compared with the latest ADH1 CoreRef.
 
 Resolver-service placement is a separate domain-separated rendezvous ranking.
 XPU1/XIQ1 must be locatable by a client that has only DID1, so their
