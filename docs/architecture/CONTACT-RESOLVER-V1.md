@@ -323,6 +323,24 @@ never cross either authority boundary as trusted values. Both exchanges are
 one-operation, bounded, non-enumerable and durable-exact-replay; a changed replay
 conflicts.
 
+The threshold half uses a single canonical request/response envelope at the
+authority terminal. The request media type is
+`application/vnd.deep.contact-route-authority-request.v1+octet-stream` and is
+exactly 1,151 bytes: `version:u16be || flags:u16be(0) || total:u32be ||
+networkId16 || requestNonce32 || directoryLookupKey32 ||
+minimumADH1Generation:u64be || minimumADH1CoreHash32 || exactDCA1[473] ||
+exactXRA1[550]`. The response media type is
+`application/vnd.deep.contact-route-authority-response.v1+octet-stream`, is
+2,151..11,079 bytes, repeats the exact network and nonce, then carries only
+`LP32(exactPMS2) || LP32(exactXRC1) || LP32(exactXSS1)`. The authority obtains
+the current directory/network closure from its protected canonical source,
+not from caller bytes, and signs only after verifying the active DCA1/device
+and XRA1. The client independently rehydrates and verifies all three threshold
+records before device custody may sign XRR1/XIR1. A Registry-hosted terminal is
+only a witness-coordination implementation behind the XPoint/OHTTP path; its
+HTTP address is not a permitted direct client fallback, contact resolver or
+route-selection oracle.
+
 Before publication, the client obtains exact `XPA1` from the account-directory
 threshold over the XPoint/OHTTP path. The threshold validates current
 ADC1/ADH1/ADP1 plus exact DID1 hash/address public key, DAB1/DCA1/DCB1/XIR1
