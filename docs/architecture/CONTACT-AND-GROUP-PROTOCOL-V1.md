@@ -457,7 +457,7 @@ version 1, suite `0x0201`:
 | 6 | sealed exact DPH2 or DPE2, including 16-byte AEAD tag | exact inner size + 16 |
 
 The exact DAO1 total size is `212 + innerRecordSize`. Allowed totals are
-`6129, 18417, 34801` for DPH2 and
+`6213, 18501, 34885` for DPH2 and
 `4725, 4821, 4885, 5685, 5877, 17013, 17109, 17173, 17973, 18165, 33397,
 33493, 33557, 34357, 34549, 49765, 49861, 49925, 50725, 50917` for DPE2.
 All other sizes reject before X25519. `daoHeader` is the canonical record
@@ -836,6 +836,17 @@ server-provided unsigned device list is ignored.
    every active initiator device and own other devices.
 6. Exchange fresh contact-scoped XUR1 update rendezvous descriptors.
 
+An unsolicited first request has no pre-existing verified relationship at the
+recipient. Its relationship ID is inside authenticated DPH2, not in a public
+header. The recipient MUST authenticate and decrypt SessionInit plus
+ContactHello before deriving the conversation ID from the relationship ID,
+network ID and both account IDs, and before opening a conversation-scoped
+session store. It MUST reject a mismatched DMC2 conversation ID. One-time
+prekey consumption, initial ratchet state, authenticated events and pending
+contact state need a crash-recoverable exact-replay/fork discipline; no mailbox
+ACK may precede their durable materialization. A sender-side verified DCB1
+relationship cannot be required as input to this recipient bootstrap.
+
 Accept and reject are explicit. Merely fetching a request does not disclose
 online status. Rejection uses a coarse response and does not expose device or
 route detail.
@@ -847,6 +858,22 @@ hashes and both account generations. Device additions or a same-root
 device/control-head replacement do not change it; a destructive new-phrase
 account replacement does. Device details have a separate per-device
 verification view.
+The exact 32-byte value carried by ContactHello is:
+
+```text
+safetyNumberHash32 = SHA256-D(
+  "Deep/Application/V1/contact-safety-number",
+  networkId16 || min(dpa1HashA32, dpa1HashB32) ||
+  accountGenerationOfMinDpa1:u64be || max(dpa1HashA32, dpa1HashB32) ||
+  accountGenerationOfMaxDpa1:u64be)
+```
+
+The DPA1 hashes are the exact verified canonical artifact hashes; compare them
+lexicographically as unsigned bytes. The two accounts must be distinct and
+their verified DPA1 hashes must differ. A contact request whose hash differs
+from the value recomputed from both verified account closures is rejected
+before pending state or ACK. The UI may format this value for display but may
+not compare a truncated or formatted version as protocol evidence.
 Scanning a peer QR marks the exact account generation verified. Changed account
 lineage pauses sending until explicit user confirmation.
 

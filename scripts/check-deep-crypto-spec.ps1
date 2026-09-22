@@ -124,7 +124,7 @@ $expectedPackages = @(
     @{ Id='E2EE-01'; Status='FROZEN_CLEAN_BREAK'; Records=@('DPK2','DPH2','DTR2','DPE2'); Kinds=@() },
     @{ Id='APPLICATION-CORE-CODEC-01'; Status='FROZEN_CLEAN_BREAK'; Records=@('DID1','DAB1','DMD1','DCA1','DAO1','DMC2'); Kinds=@() },
     @{ Id='ATTACHMENT-CODEC-01'; Status='FROZEN_CLEAN_BREAK'; Records=@('DAM1'); Kinds=@(18,19) },
-    @{ Id='CONTACT-CODEC-01'; Status='FROZEN_TARGET_NOT_ACTIVE'; Records=@('DCB1','DCR1','DIA1','XIR1','XUR1','XRA1','XRC1','XRR1','XSS1','PMT2','PMS2'); Kinds=@(2,3,4,14) },
+    @{ Id='CONTACT-CODEC-01'; Status='FROZEN_TARGET_NOT_ACTIVE'; Records=@('DCB1','DCR1','DIA1','XIR1','XUR1','XRA1','XRC1','XRR1','XSS1','PMA2','PMT2','PMS2','XMG1','XMC1'); Kinds=@(2,3,4,14) },
     @{ Id='GROUP-CODEC-01'; Status='FROZEN_TARGET_NOT_ACTIVE'; Records=@('GIV1','GIA1','DGP1','DGC1','DGM1','DGT1','GCP1','GCF1','GSR1','GSW1','GSQ1','GSS1'); Kinds=@(15,16,17,26,27,28,29) },
     @{ Id='CALL-CODEC-01'; Status='TARGET_UNFROZEN'; Records=@(); Kinds=@(20,21,22,23,24) },
     @{ Id='HISTORY-CODEC-01'; Status='TARGET_UNFROZEN'; Records=@(); Kinds=@(25) }
@@ -152,8 +152,8 @@ Assert-Equal $suites[1].hex '0x0202' 'reserved suite hex'
 Assert-Equal $suites[1].status 'RESERVED_REJECT' 'reserved suite status'
 
 $records = @($registry.records)
-$expectedMagics = @('DPK2','DPH2','DTR2','DPE2','DID1','DAB1','DMD1','DCA1','DCB1','DCR1','DIA1','DAO1','DMC2','DAM1')
-Assert-Equal $records.Count 14 'record count'
+$expectedMagics = @('DPK2','DPH2','DTR2','DPE2','DID1','DAB1','DMD1','DCA1','DCB1','DCR1','DIA1','PMA2','XMG1','XMC1','DAO1','DMC2','DAM1')
+Assert-Equal $records.Count 17 'record count'
 Assert-Sequence @($records.magic) $expectedMagics 'record magics'
 $magicSet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
 foreach ($record in $records) {
@@ -181,7 +181,7 @@ Assert-AllowedTotals $dpk2 @(
 )
 foreach ($magic in @('DPH2','DTR2')) {
     $record = $byMagic[$magic]
-    $variableTag = if ($magic -eq 'DPH2') { 20 } else { 10 }
+    $variableTag = if ($magic -eq 'DPH2') { 21 } else { 10 }
     $totals = foreach ($length in @((Get-Field $record $variableTag).lengths)) {
         Get-FixedRecordTotal $record @{$variableTag=[int]$length}
     }
@@ -304,7 +304,7 @@ Assert-Equal $vectorSchema.'$id' 'urn:deep:crypto:v1:vectors' 'vector schema id'
 Assert-ClosedObjectSchemas $vectorSchema '$'
 if (-not ($contactVectorsRaw | Test-Json -SchemaFile $contactVectorSchemaPath)) { Fail 'contact vector document does not satisfy schema' }
 Assert-Equal $registry.contactCodec.status 'FROZEN_TARGET_NOT_ACTIVE' 'contact codec registry status'
-Assert-Sequence @($registry.contactCodec.records) @('DCB1','DCR1','DIA1','XIR1','XUR1','XRA1','XRC1','XRR1','XSS1','PMT2','PMS2') 'contact codec records'
+Assert-Sequence @($registry.contactCodec.records) @('DCB1','DCR1','DIA1','XIR1','XUR1','XRA1','XRC1','XRR1','XSS1','PMA2','PMT2','PMS2','XMG1','XMC1') 'contact codec records'
 Assert-Sequence @($registry.contactCodec.dmc2Kinds) @(2,3,4,14) 'contact codec kinds'
 Assert-Equal @($contactVectors.primitives).Count 15 'contact primitive vector count'
 Assert-Equal @($contactVectors.negativeCases).Count 17 'contact negative vector count'

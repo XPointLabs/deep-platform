@@ -240,6 +240,9 @@ nonce or plaintext includes a hash that recursively includes itself.
    user passphrase or another word count.
 7. The UI calls it **Deep Recovery Phrase**, warns that it is not a wallet
    mnemonic and never offers wallet import.
+8. Default account creation does not display or require confirmation of the
+   phrase. After the local account commits, the user can explicitly reveal,
+   copy or permanently delete the retained device copy in Settings.
 
 The checksum is error detection, not authentication. A valid but wrong phrase
 creates another account and MUST NOT be searched against public services to
@@ -332,8 +335,16 @@ account recovery, explicit device enrollment, revocation or account reset. It
 is erased after the signed transaction commits. Routine messaging, sync,
 push, mailbox polling, attachment transfer and calls use device-scoped keys.
 
-Phrase display and entry suppress screenshots, screen sharing, clipboard,
-accessibility announcements, telemetry, crash dumps and diagnostic snapshots.
+Account creation and phrase-based restore atomically retain one canonical UTF-8
+copy in platform OS protected storage. That optional copy is not loaded for
+routine account use. Deleting it is idempotent and irreversible on that device;
+deletion never removes the account, device keys or local application data.
+
+Phrase display and entry suppress screenshots, screen sharing, automatic
+clipboard use, accessibility announcements, telemetry, crash dumps and
+diagnostic snapshots. An explicit user-initiated Settings action may copy the
+phrase after warning that the system clipboard can be read by other software;
+the application never copies it automatically.
 The phrase and derived secrets never enter logs, metrics, Registry, XNode,
 push/file services or plaintext cloud backup.
 
@@ -343,7 +354,8 @@ push/file services or plaintext cloud backup.
 
 Account creation is completely offline:
 
-1. create and confirm DeepRecoveryV1;
+1. create DeepRecoveryV1 and atomically retain its canonical phrase in platform
+   protected storage without requiring display, copy or confirmation;
 2. derive the four DPA1 signing roles for account generation one and the
    transport-neutral permanent DID1 address role;
 3. author exact `DPA1` and initial `DRS1` according to the frozen DNP1
@@ -531,14 +543,15 @@ before any hash, signature, claim, KEM, DH or storage operation.
 | 17 | actual ML-KEM-768 ciphertext | octets, 1088 |
 | 18 | initiator initial Double-Ratchet X25519 public key | octets, 32 |
 | 19 | initial-payload XChaCha20 nonce | octets, 24 |
-| 20 | encrypted initial plaintext plus AEAD tag | octets, 4112, 16400 or 32784 |
+| 20 | exact initiator DID1 | octets, 76 |
+| 21 | encrypted initial plaintext plus AEAD tag | octets, 4112, 16400 or 32784 |
 
 Tag 16 is exactly `signedX25519Id32 || oneTimeX25519IdOrZero32 ||
 mlKemId32 || mlKemKind:u8`. It must equal the exact DPK2 selection. For a
 one-time DPK2, the second ID equals DPK2 tag 19, kind is 1 and tag 12 is zero.
 For a last-resort DPK2, the second ID is `ZERO32`, kind is 2 and tag 12 is
 `1..DPK2.tag24`; it must equal the counter in the exact XPC1 receipt. DPH2 has
-only three legal total sizes: 5,917, 18,205 and 34,589 bytes.
+only three legal total sizes: 6,001, 18,289 and 34,673 bytes.
 
 Define these non-circular values:
 
@@ -548,13 +561,14 @@ dpk2Hash32 = SHA256-D("Deep/Messaging/V2/exact-dpk2", exactDPK2)
 senderEphemeralCommitment32 = SHA256-D(
   "Deep/ContactResolver/V1/sender-ephemeral",
   network16 || initiatorAccount32 || initiatorDevice32 ||
-  initiatorDPD1Ref38 || initiatorDeviceAgreement32 ||
+  initiatorDPD1Ref38 || exactInitiatorDID1:76 || initiatorDeviceAgreement32 ||
   initiatorEphemeral32 || initiatorInitialRatchet32)
 
 sessionId32 = SHA256-D(
   "Deep/Messaging/V2/session-id",
   network16 || initiatorAccount32 || initiatorDevice32 ||
   initiatorDeviceGeneration:u64be || initiatorDPD1Ref38 ||
+  exactInitiatorDID1:76 ||
   responderAccount32 || responderDevice32 ||
   responderDeviceGeneration:u64be || dpk2Hash32 ||
   claimOperationId32 || claimReceiptHash32 ||
@@ -581,7 +595,7 @@ DH4 = X25519(initiatorEphemeralPrivate, responderOneTimePrekeyPublic)
       // empty CTX part for LastResort
 PQ  = ML-KEM-768.Encaps(responderMlKemPrekey).sharedSecret
 
-handshakeHeader = canonical DPH2 containing tags 1..19
+handshakeHeader = canonical DPH2 containing tags 1..20
 transcriptHash64 = SHA512-D(
   "Deep/Messaging/V2/handshake-transcript",
   LP32(exactDPK2) || LP32(handshakeHeader))
@@ -601,7 +615,7 @@ handshakeHeaderHash32 = SHA256-D(
   "Deep/Messaging/V2/dph2-header", handshakeHeader)
 ```
 
-Every DH result and PQ shared secret is exactly 32 nonzero bytes. Tag 20 is
+Every DH result and PQ shared secret is exactly 32 nonzero bytes. Tag 21 is
 XChaCha20-Poly1305-IETF under `initKey32`, nonce tag 19 and:
 
 ```text
@@ -610,7 +624,8 @@ initialAad = CTX("Deep/Messaging/V2/dph2-initial-aead-ad", 0x0201,
 ```
 
 The unpadded initial plaintext is exactly
-`eventCount:u8 || LP32(SessionInitDMC2) || [LP32(firstApplicationDMC2)]`, where
+`LP32(exact canonical XPK1) || LP32(exact padded XPC1 Claimed/Replay wire) ||
+eventCount:u8 || LP32(SessionInitDMC2) || [LP32(firstApplicationDMC2)]`, where
 `eventCount` is 1 or 2. Both records are canonical DMC2. `SessionInit` uses the
 companion codec unchanged: its handshake nonce, exact sender DMD1 and capability
 bits are checked against the independently resolved initiator
@@ -625,7 +640,7 @@ inside the closed SessionInit tag-12 payload.
 Random padding and a final `u32be` unpadded length fill the smallest allowed
 plaintext bucket 4,096, 16,384 or 32,768 bytes.
 
-After tag 20 exists, define the distinct replay value:
+After tag 21 exists, define the distinct replay value:
 
 ```text
 fullDph2ReplayHash32 = SHA256-D(
@@ -636,7 +651,7 @@ claimBinding32 = SHA256-D(
   claimReceiptHash32 || fullDph2ReplayHash32)
 ```
 
-The transcript hash never includes tag 20; the replay and claim hashes always
+The transcript hash never includes tag 21; the replay and claim hashes always
 include it through the exact full record. The responder first verifies all
 lineage, DPK2/XPC1 selection and claim bindings without consuming them, then
 decapsulates, derives, authenticates and parses both DMC2 records. One durable
@@ -984,8 +999,10 @@ canonical DMC2 plaintext. The sending device encrypts independent DPE2 copies
 to every active recipient device and every other active sender device. Ratchet
 state, envelope operation ID and ciphertext differ per destination.
 
-The permanent Deep ID (`DID1`) never appears in DPK2, DPH2, DTR2 or DPE2 and
-is never a session, prekey, mailbox or dedup key. Contact bootstrap resolves
+The permanent Deep ID (`DID1`) appears as an exact, authenticated value in
+DPH2 tag 20 so an unsolicited recipient can resolve the initiator's current
+directory. DAO1 seals this header from XNode. DID1 is never a prekey, mailbox
+or dedup key. Contact bootstrap resolves
 DID1/DAB1/DCB1 to a current `DeepAccountId32` plus exact DPA1/DRS1/DMD1/DPD1
 closure before selecting DPK2. A future account binding may change that current
 account closure without changing the permanent DID1; existing sessions do not

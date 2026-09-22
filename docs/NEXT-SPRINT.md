@@ -72,10 +72,26 @@ flag, dual reader или автоматический fallback. Нужно:
 - заменять каждый удалённый caller только закрытым Deep-native
   contract из соответствующего package; временный adapter, mock
   authority или публично forgeable capability запрещены;
+- до активации E2EE-01 выполнить
+  [`DR-0005`](survival-program/decisions/DR-0005-inbound-dph2-claim-evidence.md):
+  заменить event-only initial DPH2 payload на encrypted exact XPK1/XPC1
+  claim transcript плюс DMC2, обновить векторы и production verifier.
+  Старый initial payload отвергается, без dual decoder или fallback;
+- перевести mailbox holder/authentication boundary без compatibility-слоя:
+  `MAU2/MCP2/MCG2` сохраняются только как transport authorization wire, но
+  production holder является новым случайным reachability-scoped Ed25519 key
+  из account-owned protected storage. `SessionId`, session public key,
+  synthetic `05...` alias, recovery phrase и device signing key не являются
+  mailbox holder identity. Краткоживущий current-epoch MCG2 grant выдаётся
+  только через privacy-routed `XMG1/XMC1` по exact verified XRR1 capability;
+  старый direct Registry enrollment/JSON invitation path удаляется;
 - активировать clean-break Contact publication chain
   `XRA1 -> PMS2/XRC1/XSS1 -> XRR1/XIR1 -> DCB1/DCR1 -> XPA1/XPU1`:
   device-signed records остаются в account-owned custody, threshold records
   выпускает authority Mr. X, а XPU1 атомарно несёт exact verified route closure;
+  bounded XPA1/XPU1 authority wire, Registry issuer и independently verifying
+  client и account-owned device-custody caller уже собраны, но full DCB/pre-key
+  orchestration и durable publication ещё не подключены;
   locator-indexed Registry/XNode route lookup и post-publication substitution
   удаляются из production composition;
 - оставить `deep-protocol/reference/session-compatibility-v0` только
@@ -85,8 +101,8 @@ flag, dual reader или автоматический fallback. Нужно:
 Gate: source/API/assembly/package/resource/dependency scans доказывают
 нулевой legacy production graph; retired bytes есть только в negative
 fixtures; чистая установка/сброс создаёт только новое поколение; два независимо
-проверенных XNode receipt подтверждают publication-bound permanent resolve без
-Registry locator oracle.
+проверенных XNode receipt подтверждают publication-bound permanent resolve и
+XRR1-bound mailbox grant acquisition без Registry locator/grant oracle.
 
 ### DEV0 — локальный dev-контур и честный E2E baseline
 
@@ -109,6 +125,185 @@ private ACL канонизируется отдельно. `Attach` честно
 `PayloadMatrix` проходят конфигурационный preflight, но не запускаются как якобы
 независимое E2E-доказательство, пока этот общий upstream blocker не закрыт.
 Подробный журнал находится в `deep-devops/docs/SURVIVAL_DEV_STACK.md`.
+
+Снимок 2026-09-20: clean-break MAUI composition собирается для Android, а
+изолированный физический Samsung проверил создание аккаунта одной кнопкой,
+сохранение после перезапуска, reveal/hide и удаление 24-word фразы. Старый
+Session runtime исключён из production graph, но это ещё не release gate:
+текущий UI умеет проверять контакт; DPH2 подготовлен только как нижележащий
+storage primitive, а group state доступен лишь частично. Production-доставка
+и получение 1:1 сообщений, вложений и групп в новой
+composition не подключены. Полное device E2E остаётся красным; успешная
+сборка и локальная подготовка не считаются подтверждением обмена. После
+clean-break старые тесты, зависящие от удалённого `ClientRuntime`, требуют
+замены тестами новой production-сборки, а не возврата compatibility-кода.
+
+Проверка message path 2026-09-21: импорт контакта больше не расходует
+одноразовый XPK1 prekey и не фиксирует DPH2 до фактической отправки.
+`deep-client-shared` теперь запускает MSG-01 transport tests на clean
+production project с test-only internal hooks: подтверждённые тесты, включая exact DPH2 → DAO1 → recipient open,
+durable DPH2 replay после restart/crash, account-owned pending-DPH2 recovery
+и побайтно стабильный DAO1 при повторной отправке восстановленного DPH2,
+со строгой привязкой к peer/session, responder prekey/session saga,
+DPE2 receive replay/fork, запрет ACK до предъявления inner commit receipt и
+привязку ACK к тому же self-mailbox scope, из которого получена пачка.
+Обнаружен более строгий release blocker: прежняя внутренняя фабрика ACK
+принимала один лишь durable DPH2/DPE2 ratchet commit, хотя MSG-01 inbox event
+не был материализован; после crash replay DPE2 уже не возвращает DMC2. Обе
+production-фабрики такого преждевременного ACK удалены. Пока staged DMC2 не
+материализован в MSG-01 inbox, ACK в production не выдаётся, а устройство не
+может честно заявить получение сообщения.
+SQLCipher schema generation 7 (DPE2 staging введён в generation 6) атомарно stages аутентифицированный
+DMC2 вместе с fresh DPE2 ratchet commit; тест падения сразу после коммита
+подтверждает восстановление exact DMC2 после restart без повторной расшифровки;
+парный тест падения до commit подтверждает откат и ratchet state, и staged DMC2.
+Узкий public durable-authority handoff отдельно утверждён в
+[`DPE2-INBOUND-DURABLE-HANDOFF-AUTHORIZATION.md`](survival-program/releases/v3.0.0/specs/DPE2-INBOUND-DURABLE-HANDOFF-AUTHORIZATION.md).
+Чистый account-wide DMB1 schema generation 2 теперь может семантически
+материализовать direct DMC2 из проверенного session-owner handoff: exact
+cross-session replay идемпотентен, changed bytes при том же semantic ID
+защёлкивают durable fork, событие читается после restart. MAUI account owner
+теперь открывает этот DMB1 store с отдельным защищённым SQLCipher-ключом и
+удаляет его при локальном reset. Это ещё не
+полный MSG-01 receive: handoff не подключён к mailbox retrieve runtime,
+pending stage не retired. Для established direct DPE2 единая production-фабрика
+сначала фиксирует ratchet receive (или восстанавливает exact replay), затем
+материализует inbox и лишь после этого создаёт ACK receipt; initial DPH2 и group
+ещё не имеют этого пути. Group DMC2 требует
+отдельного group-authenticated пути.
+Из них portable CI-фильтр проходит 52 теста; Windows-only approved ML-KEM
+проверки остаются в полном Windows gate.
+В transport-тесте используются fake
+mailbox и тестовый commit receipt; это не доказательство двухустройственного
+E2E. Android Debug build и Windows ARM64 Debug build проходят без
+предупреждений, но UI отправки/получения ещё не подключён. Физический E2E gate требует итогового чистого commit,
+подписанной policy и привязанных к нему APK/Windows executable; текущий dirty
+worktree не может служить release evidence.
+CI shared больше не создаёт старый неподписанный `Deep.Client.Shared.csproj`
+package с `SIGNING-PLACEHOLDER`: release-кандидат использует только clean
+production assembly через MAUI project reference.
+Локальный Windows Release composition preflight без production trust-floor
+закрывается ожидаемым `RequireProductionMailboxTrustFloor`; это не успешный
+Release gate и не основание подставлять фиктивные authority properties.
+
+Проверка production wiring: XRA1 authoring и его metadata-sealing key ID/public
+существуют в `deep-protocol`. В Shared добавлен защищённый владелец X25519
+private key, который переживает restart и открывается только при совпадении
+с exact current XRA1. MAUI уже связывает verified proposal, этот key owner и
+текущий device custody signer для локального авторства XRA1, но точная
+публикация и receive composition ещё не подключены. Bounded HTTPS-клиент
+Registry route-authority теперь формирует запрос только из одной verified
+proposal: nonce, directory lookup rollback floor, current DCA1 и exact XRA1
+не могут быть cross-sourced. Ответ привязывается к запросу и проходит полную
+PMS2/XRC1/XSS1 threshold-проверку; account-owned MAUI author завершает
+XRR1/XIR1 тем же current-device signer. Этот путь пока не вызывается startup/UI
+и не сохраняет/публикует DCB1/DCR1, поэтому self-retrieve authority ещё нет.
+Поэтому получающий клиент
+пока не получает DAO1 из сети. Shared теперь также принимает exact MEO1,
+курсор и внешний digest из clean mailbox adapter, сверяет current mailbox
+route, canonical DAO1, operation ID и hash, затем открывает DAO1 через
+защищённый ключ только для локального DPH2/DPE2-адресата. Это не ratchet/
+application commit и не ACK. До device E2E нужно связать завершённый route с
+durable DCB1/DCR1 publication, mailbox retrieve, responder/ratchet commit и
+ACK после commit.
+MAUI account runtime экспонирует этот clean inbound MEO1→DAO1 open, но ещё
+не вызывает его из mailbox receive loop.
+Responder pre-key owner теперь читает точный публичный DPK2 по hash из
+входящего DPH2 из локального SQLCipher inventory, проверяет local device scope
+и весь selected-prekey tuple без резервации или выдачи private key. Перед
+pre-claim preview Shared также требует, чтобы предоставленный verified DPK2
+совпал с этой текущей локальной записью; отсутствующий/исчерпанный pre-key
+остаётся fail-closed. Для end-to-end receive всё ещё нужно связать эту
+проверку с актуальным DMD1/XPC1 authority и mailbox loop.
+Responder уже может аутентифицированно открыть SessionInit и первое DMC2
+из exact DPH2 вместе с TRS1; проверены настоящий initiator→responder
+round-trip и отказ при повреждении ciphertext. Clean SQLCipher schema 7
+атомарно сохраняет эти exact события с initial TRS1; crash до commit
+откатывает оба, а restart и exact replay сохраняют исходные байты.
+Initial SessionInit и первое DMC2 теперь материализуются одной транзакцией
+в account-wide inbox; тесты покрывают exact replay и crash до/после commit.
+MAUI responder после успешного initial saga вызывает этот handoff, но это ещё
+не ContactHello relationship state и не право на ACK. Protocol теперь вычисляет
+safety number из двух verified non-forked DAB1 и отдельно проверяет exact
+DAB1/DMD1 поля ContactHello, автора, время и подпись XUR1 по verified DPD1.
+Verified DPH2/XPC1 preview теперь сохраняет current initiator checkpoint и
+recipient bundle; Shared unsolicited responder применяет endpoint-проверку
+до открытия conversation store. MAUI receive пока не вызывает этот путь,
+а XUR1 ещё не замкнут на PMT2 placement. Осталось применить полный proof,
+связать mailbox receive loop и его безопасный ACK, а также
+retire staged handoff после подтверждённой материализации.
+Проверка входящего ContactHello теперь дополнительно требует, чтобы
+conversation ID совпал с производным от relationship ID и обоих account ID;
+подмена отклоняется до inbox. Однако unsolicited bootstrap всё ещё не может
+дойти до неё: responder требует заранее проверенный relationship и открывает
+conversation-scoped store до расшифровки DPH2, хотя relationship ID есть только
+внутри ContactHello. В Shared уже добавлены deferred resolver для prekey saga,
+вывод scope из аутентифицированных SessionInit/ContactHello и восстановление
+scope финального повтора по protected catalog. Проверки подтверждают повторное
+использование reserved claim и exact final replay без повторного открытия
+prekey-секрета. Shared account-owned responder теперь выбирает store после
+аутентифицированного ContactHello и при exact final replay находит только
+существующий matching store в защищённом каталоге. MAUI account runtime уже
+экспонирует этот staged commit, но mailbox receive loop его пока не вызывает.
+Ещё нужно подключить этот путь к inbox без предварительного контакта, сохранить
+crash-семантику и запретить ACK до
+полной проверки и durable contact-state commit.
+Production-клиент уже может получить `VerifiedDph2Initiation` через
+account-owned DPH2 preview с exact XPK1/XPC1 и текущим DMD1; отдельный
+`IDph2VerificationCallbacks` для этого пути не требуется. Но полученный из
+сети DAO1 ещё не доведён до этой проверки: нет receive composition, которая
+подаст verified local offering, initiator freshness и placement. До неё
+factory/SQLCipher-тесты не являются физическим входящим E2E.
+Аудит wire выявил причину: прежний DPH2/DAO1 передавал получателю только
+хэш XPC1, а не exact XPK1/XPC1; подтвердить threshold claim по хэшу
+невозможно. Принято clean-break решение
+[`DR-0005`](survival-program/decisions/DR-0005-inbound-dph2-claim-evidence.md):
+вложить transcript внутрь существующего encrypted DPH2 initial payload,
+не добавляя новый транспорт или XNode protocol. Production sender теперь
+сохраняет exact XPK1/XPC1 wire и авторит зашифрованный prefix; payload reader
+структурно его требует в production assembly. Protocol также различает
+pre-claim header (без права на commit/ACK) и повышение только через verified
+XPC1 capability. В Protocol добавлены одноразовая, exact-DPK2-bound копия
+секрета для preview, вывод только initial AEAD key без ratchet roots и строгий
+разбор зашифрованного claim transcript; это проверено на обоих видах prekey,
+подмене ciphertext и event-only body. Добавлены read-only выборка секрета из
+SQLCipher и responder preview, привязанный к verified non-forked DMD1;
+повышение preview требует отдельно проверенный exact XPC1 wire. Preview
+теперь вызывает production two-replica XPC1 verifier с verified placement,
+recipient bundle/network authority и trusted time; account owner выполняет
+этот путь до открытия session store или резервирования prekey. Для выдачи
+verified DPH2 теперь обязателен current initiator DMD1 checkpoint, проверенный
+на текущем monotonic sample. Production Shared facade и MAUI account owner/
+accessor теперь проводят этот pre-claim шаг без выдачи ACK; он ещё не вызван
+из mailbox retrieve. Ещё отсутствуют подключение к mailbox retrieve,
+durable ContactHello/MSG-01 commit и ACK, поэтому device E2E не доказан.
+Shared production assembly собирается с исключённым Session-derived runtime,
+но полный старый `Deep.Client.Shared.Tests` пока не компилируется: часть тестов
+всё ещё импортирует удалённые legacy-типы. Для PreKeyV1 есть отдельный
+диагностический cohort, теперь включённый в основной clean
+`Deep.Client.Shared.Production.slnx` вместе с перенесёнными runtime/mailbox
+тестами. Локальный Windows Release-прогон 2026-09-21 прошёл 142/142;
+он проверяет код и SQLCipher-переходы, но не физический обмен между устройствами.
+Старый `Deep.Client.Maui.ViewModels.Tests` также остаётся вне clean gate:
+он импортирует удалённые Session/`Deep.Client.Shared.State` типы; фильтрация
+тестов не помогает, потому что весь legacy project не компилируется. Новый
+`Deep.Client.Maui.Clean.Tests` проверяется отдельно, без возврата этих типов.
+Этот набор должен расширяться до
+всех новых production функций и пройти вместе с физическим device E2E.
+Реализация и re-freeze векторов обязательны до включения receive и device E2E.
+
+Снимок 2026-09-23: DPH2 теперь несёт exact DID1 отправителя, а initial
+payload — зашифрованный XPK1/XPC1 transcript; получатель может независимо
+разрешить current initiator directory, выполнить pre-claim preview и
+проверить threshold claim до durable responder commit. Согласованы новые
+DPH2/DAO1 размеры в Protocol, SQLCipher и machine registry; прежние DAO1
+размеры отклоняются. Полный Protocol Debug gate прошёл 1 719 тестов
+(11 платформенных skipped), Shared production Release gate — 149/149.
+Чистый MAUI AppShell ещё не вызывает `TryEstablishAndDispatchDirectMessagingSessionAsync`
+и `PrivacyRoutedMessagingReceiver.ProcessInitialAsync` из пользовательского
+диалога или mailbox receive loop. Это остаётся release blocker для физического
+Android↔Windows E2E; сборка клиента и нижележащие storage tests не заменяют
+проверку отправки и получения на устройствах.
 
 Выводы security review, не нужные для CB0, не прерывают
 DEV0. Они выполняются после фиксации baseline в dependency order:
