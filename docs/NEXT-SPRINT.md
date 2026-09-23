@@ -259,13 +259,16 @@ client остаётся на V1, а DID2 fixture выдаёт устройств
 genesis-аккаунт целиком в V2 protected namespace: DPA1/DRS1/DPD1, exact
 DID2/DAB2, DMD1/DCA1 V2/ADC1 V2, фраза, DXP1 и verified bootstrap. Тест
 открывает тот же DID2/DAB2 новым экземпляром bootstrap и после удаления
-фразы. Пока нет current-account index, новой SQL generation/display name,
-MAUI composition, contact transport и physical device E2E — не считать это
-завершённым клиентским clean-break.
-Перед current-account index нужен crash-resume для retained phrase + V2 DXP1
-журнала + частичных слотов. Index можно публиковать только после полного
-verified bootstrap; потерянный в памяти hedged DAB2 допустимо перевыпустить
-лишь если ещё не было durable/external winner. Иначе восстановить exact bytes.
+фразы. Отдельный add-only V2 current-account index теперь публикует
+нормализованное имя, network и account ID только после полного verified
+bootstrap; чтение повторно проверяет всю closure, partial state и замена
+winner отвергаются. Пока нет pre-index orphan cleanup/межпроцессной
+сериализации создания, новой SQL generation, MAUI composition, contact
+transport и physical device E2E — не считать это клиентским clean-break.
+Перед подключением index к UI нужен crash-resume/reset для retained phrase +
+V2 DXP1 журнала + частичных слотов. Потерянный в памяти hedged DAB2
+допустимо перевыпустить лишь если ещё не было durable/external winner;
+иначе восстановить exact bytes.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
