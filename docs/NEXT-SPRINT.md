@@ -116,6 +116,10 @@ upstream ML-DSA-65 KAT (`META.yml` SHA-256) дополнительно прош�
 Linux ARM64 и на физическом Android ARM64. Остаются Windows gates, official
 ACVP/FIPS 204 vectors, расширенный независимый signing differential,
 zeroization/side-channel review и wire cutover DID2/DAB2 перед клиентским E2E.
+Изолированный `net10.0-android` Release/AOT probe также загрузил этот exact
+candidate `.so` на физическом Android и прошёл ABI, public/signature fixture,
+verify/tamper и native zeroization; APK затем удалён с устройства. Это ещё не
+production asset/MAUI integration, и Windows platform gate остаётся открытым.
 
 ### CB0 — production clean-break до новой feature-работы
 
