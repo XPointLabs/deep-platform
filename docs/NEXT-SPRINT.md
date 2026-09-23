@@ -235,8 +235,13 @@ DCA1 V2/ADC1 V2 публичную closure одной add-only записью. R
 DPA1/DRS1/DPD1 через protocol admission verifier с прикреплённым ML-DSA
 verifier и повторно проверяет всю V2-цепочку.
 Повторная запись того же набора допустима, иной hedged DAB2 — конфликт.
-Это ещё не account cutover: DPA1/DRS1/DPD1 reconciliation, атомарный V2
-bootstrap/reset, MAUI composition и физический E2E остаются обязательными.
+Это ещё не account cutover: атомарный V2 bootstrap/reset, MAUI composition
+и физический E2E остаются обязательными.
+Отдельный V2-only add-only слот теперь хранит четыре секрета genesis-устройства:
+запись/восстановление возможны только при совпадении с проверенным DPD1
+(ключи, device ID, revocation handle и account scope). Следующий шаг —
+crash reconciliation двух слотов, V2 retained-phrase/reset ownership и
+связывание их с новым account bootstrap, без чтения V1 namespace.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
