@@ -191,8 +191,16 @@ DID2 admission; candidate разрешён только в `Development`/`UAT`.
 
 Следующий обязательный пакет: независимый latest-head rollback floor против
 подмены ADA2 старой корректной HMAC-копией, UAT-проверка provisioning и V2 proof
-publication на реальном контуре, затем клиентский cutover. Только после этого physical Android ↔ Windows
-account/contact/message/media/group E2E; GitHub Releases не публиковать.
+publication на реальном контуре, затем клиентский cutover. Клиентский cutover
+не является заменой одного поля ID или экрана: текущие `DeepAccount` и
+`IDeepAccountStore` хранят `DeepPermanentIdV1`, а genesis activation выпускает
+DAB1/DCA1/ADC1 V1. Нужны новая несовместимая account/store generation,
+атомарно сохраняемая и восстанавливаемая точная DID2/DAB2/DMD1/DCA1 V2/ADC1 V2
+closure, V2-only admission/proof reader с independently verified DAB2 и
+отдельный reset прежнего UAT state; старый V1 reader нельзя оставлять как
+fallback. Сначала подтвердить offline create/restore и живой UAT admission с
+отрицательными replay/rollback тестами, затем physical Android ↔ Windows
+account/contact/message/media/group E2E. GitHub Releases не публиковать.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
