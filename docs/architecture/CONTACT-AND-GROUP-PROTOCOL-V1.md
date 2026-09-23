@@ -651,7 +651,7 @@ DAM1.
 | 3 | conversation ID | 32, nonzero |
 | 4 | sender account hash | 32, nonzero |
 | 5 | sender device ID | 32, nonzero |
-| 6 | sender client sequence | 8; starts at 1, never wraps |
+| 6 | sender client sequence | 8; first-contact control reserves 1–2, application starts at 3, never wraps |
 | 7 | created-at Unix milliseconds | 8; nonzero |
 | 8 | expires-at Unix milliseconds | 8; zero or greater than tag 7 |
 | 9 | content kind | 2; closed registry below |
@@ -662,8 +662,12 @@ DAM1.
 For payload length `P` and reply length `R` in `{0,32}`, canonical DMC2 size is
 exactly `282 + R + P` bytes. `logicalMessageId` is generated once with the
 durable logical operation and survives retries, per-device fanout and transport
-switching. Sequence is monotonic per `(senderAccountId,senderDeviceId)` and is
-ordering evidence, not global delivery order. Timestamps are presentation and
+switching. Sequence is monotonic per
+`(conversationId,senderAccountId,senderDeviceId)` and is ordering evidence
+inside that conversation, not global delivery order. The initiator's first
+`SessionInit` and `ContactHello` occupy positions 1 and 2 in that scope;
+subsequent application events use a durable local counter and never reuse an
+authored position. Timestamps are presentation and
 expiry inputs and never replace sequence, predecessor or retention checks.
 
 Flags are closed: bit 0 `Silent`, bit 1 `Disappearing`, bit 2 `HighPriority`.
