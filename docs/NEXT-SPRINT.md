@@ -97,8 +97,10 @@ cross-provider KAT и физические Android arm64/Windows x64/arm64 пр�
 Локальный Windows ARM64 SDK здесь не содержит полного MSVC C include/lib
 toolchain. Изолированная Linux/ARM64 Docker-сборка того же pinned source
 прошла upstream `run_func_65` и `run_kat_65` (`META.yml ... kat-sha256: OK`).
-Это ещё не differential BC/native по одним Deep vectors и не physical Android
-или Windows gate.
+BC 2.7.0 и `mldsa-native` v2.0.0 дали один SHA-256 public-key fixture
+`d666806e11cee19a7c989f7445f90dd419cf4d2d51db8c0fdb4c0f0a542238c9`
+для публичного seed `00..1f`. Это первый cross-provider keygen check, но не
+полный signing differential и не physical Android/Windows gate.
 
 ### CB0 — production clean-break до новой feature-работы
 
