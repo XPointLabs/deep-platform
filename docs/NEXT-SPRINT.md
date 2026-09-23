@@ -75,8 +75,10 @@ cross-device restore, PQ-key-substitution/Ed-only forgery rejection и
 green protocol tests и созданные UAT accounts release-compatible.
 
 2026-09-23: кандидат `ADL1` V2 теперь получает lookup key только из exact
-DID2 и отвергает V1-версию/любой неподтверждённый lookup key. Это не
-активирует каталог: `ADP1`/transition/admission, witness head и contact bundle
+DID2 и отвергает V1-версию/любой неподтверждённый lookup key; проверка
+требует уже verified DAB2 binding. Добавлены изолированные V2 transition/map
+primitives с отдельными доменами и ADC1 V2 reference, без допуска V1.
+Это не активирует каталог: `ADP1`/admission, witness head и contact bundle
 по-прежнему должны быть перевыпущены как единый DID2-only путь до device E2E.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`

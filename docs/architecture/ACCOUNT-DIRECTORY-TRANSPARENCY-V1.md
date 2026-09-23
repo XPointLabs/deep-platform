@@ -33,6 +33,19 @@ not yet an active lookup until ADP1, transition/admission and witness closure
 is re-frozen and consumers are cut over. A bare compact text commitment is
 insufficient to construct or verify this capability.
 
+The candidate V2 directory transition retains the 182-byte layout but sets
+`transitionVersion=2` and accepts only `ADC1 || U16BE(2) || SHA256(exactADC1V2)`
+references (all-zero predecessor only for genesis admission). Its commitment
+is `SHA256-D("Deep/AccountDirectory/V2/transition", exactTransitionV2)`,
+then the existing RFC-6962 `SHA256(0x00 || commitment32)` leaf rule applies.
+The candidate depth-256 map keeps the MSB-first bitmap/key-bit order and
+default-sibling rejection, while changing every map domain together to
+`Deep/AccountDirectory/V2/map-empty-leaf`, `/map-present` and `/map-node`.
+This produces a distinct empty root; V1 map roots or ADC1 references cannot
+be reinterpreted as V2 proof material. Witnessed head/admission, ADP1 proof
+envelope and DTT/forward-history closure still require one consistent V2
+re-freeze and are not activated by these primitives alone.
+
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
 cryptographically valid DMD1/DRS1 branch. It is a transparency and freshness layer,

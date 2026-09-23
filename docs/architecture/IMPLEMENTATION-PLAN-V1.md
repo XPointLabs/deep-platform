@@ -144,7 +144,8 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
 - **current candidate evidence (2026-09-23):** exact DID2/DAB2 and DCA1 V2
   author/verify, genesis issuance plus exact-binding restore, ADC1 V2
   DID2-derived leaf and device-issuer closure, ADL1 V2 capability author/
-  decode with exact DID2 lookup binding; ML-DSA-65 ACVP on hosted
+  decode with verified DAB2 lookup binding, candidate transition/map V2
+  primitives and independent hash tests; ML-DSA-65 ACVP on hosted
   Linux/Windows x64/arm64 and a physical Android arm64 managed probe.
   These are protocol/provider checks, not a releasable identity path.
 - **remaining cutover gate:** ADP1/admission and directory witnesses, DCB1/DCR1
