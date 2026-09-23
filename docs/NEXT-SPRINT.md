@@ -242,8 +242,13 @@ verifier и повторно проверяет всю V2-цепочку.
 (ключи, device ID, revocation handle и account scope). Двухслотовый bootstrap
 теперь fail-closed при любой частичной записи, а точный retry завершает её;
 локальная authority выдаётся только после полного verified read-back.
-Следующий шаг — V2 retained-phrase/reset ownership и связывание с новым
-account service/MAUI, без чтения V1 namespace.
+Следующий шаг — V2 reset/purge ownership и связывание с новым account
+service/MAUI, без чтения V1 namespace.
+V2 protected phrase slot теперь сверяет 24 слова с exact account ID;
+удаление требует повторного verified bootstrap и оставляет add-only tombstone,
+чтобы старый writer не вернул фразу. При сбое после tombstone чтение очищает
+оставшиеся байты. Открытие фразы в настройках, V2 reset/purge и MAUI account
+service ещё не подключены.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
