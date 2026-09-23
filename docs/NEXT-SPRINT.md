@@ -262,13 +262,16 @@ DID2/DAB2, DMD1/DCA1 V2/ADC1 V2, фраза, DXP1 и verified bootstrap. Тес�
 фразы. Отдельный add-only V2 current-account index теперь публикует
 нормализованное имя, network и account ID только после полного verified
 bootstrap; чтение повторно проверяет всю closure, partial state и замена
-winner отвергаются. Пока нет pre-index orphan cleanup/межпроцессной
-сериализации создания, новой SQL generation, MAUI composition, contact
-transport и physical device E2E — не считать это клиентским clean-break.
-Перед подключением index к UI нужен crash-resume/reset для retained phrase +
-V2 DXP1 журнала + частичных слотов. Потерянный в памяти hedged DAB2
-допустимо перевыпустить лишь если ещё не было durable/external winner;
-иначе восстановить exact bytes.
+winner отвергаются. Изолированный V2 protected-state owner теперь держит
+межпроцессный файловый lease, ставит creation-intent до записи секретов,
+отвергает прерванное создание без index и допускает только явный V2 reset
+перед новой попыткой. Journaled-store тест закрывает запись/закрытие/
+повторное открытие с тем же DID2/DAB2 и сохранённой фразой. Автоматический
+resume частичного создания не реализован: перед UI нужно либо доказать
+безопасный reset ещё не опубликованного winner, либо восстановить exact bytes;
+потерянный hedged DAB2 нельзя перевыпускать после durable/external winner.
+Новая SQL generation, MAUI composition, contact transport и physical device
+E2E остаются открыты — это ещё не завершённый клиентский clean-break.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte

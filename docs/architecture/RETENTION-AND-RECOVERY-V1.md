@@ -15,9 +15,9 @@ are the machine contract in
 | Data class | Default / maximum | After delivery or supersession | Replication / owner | User-visible claim |
 |---|---|---|---|---|
 | mailbox text/control ciphertext | 30 d / 30 d | delete at signed expiry | PMT2-selected mailbox pair / XNode | offline delivery up to 30 d, not guaranteed after expiry |
-| permanent DID1 address | no expiry | never automatically deleted or redirected; current publication may be absent | recovery root + deterministic per-transport resolver slot | same Deep ID after device loss, long offline and transport change |
+| permanent PQ-root Deep ID (`DID2`) | no expiry | never automatically deleted or redirected; current publication may be absent | genesis-committed recovery root; current publication is separate | same Deep ID after device loss, long offline and transport change |
 | unsolicited contact request | 30 d / effective invite expiry | delete after accept/reject + 24 h replay grace | invite-store pair / XNode | pending request may expire |
-| encrypted DCR1 publication | current closure <=400 d; one-time <=30 d | predecessor 48 h after successor quorum | invite-store pair / XNode | DID1 remains permanent; current first-contact availability may pause |
+| encrypted DCR1 publication | current closure <=400 d; one-time <=30 d | predecessor 48 h after successor quorum | invite-store pair / XNode | DID2 remains permanent; current first-contact availability may pause |
 | DPK2 claim/replay record | DPK2 expiry, <=30 d | later of expiry or 30 d after claim | pre-key claim pair / XNode | exact retries are safe; consumed pre-key cannot be reused |
 | XRR1 deposit reachability | <=24 h | overlap current/next for object horizon | mailbox pair / XNode | internal short-lived route, not Deep ID lifetime |
 | XUR1 encrypted update events | 400 d and >=1,024 generations | compact only behind verified checkpoint | contact update pair / XNode | established contacts can refresh after long offline within horizon |
@@ -48,20 +48,20 @@ whose policy requires V1.
 | Recovery mode | Guaranteed | Not guaranteed without another source |
 |---|---|---|
 | existing device after offline period | local account, contacts, local history, XUR1, group state and durable outbox; verified network/control catch-up | service-expired remote ciphertext/blob |
-| new device + 24-word recovery phrase | same DeepAccountId/account authority, permanent DID1 and a new independently keyed device | contacts, message/group history, XUR1, old one-time invites, ratchets or outbox |
+| new device + 24-word recovery phrase | same DeepAccountId/account authority, genesis-committed DID2 and a new independently keyed device | contacts, message/group history, XUR1, old one-time invites, ratchets or outbox |
 | new device + authenticated encrypted backup/device transfer | exact item classes named by the backup manifest, re-encrypted to the new device | undeclared or service-expired objects; old private device keys |
 
 Product UI and recovery documentation MUST name the mode. “Restore account” cannot
-be presented as “restore all chats.” Apart from the explicitly domain-separated
-permanent DID1 address key, the recovery phrase never derives relationship-scoped
-contact capabilities, one-time invitations, ratchets, mailbox routes or historical
-message keys.
+be presented as “restore all chats.” Apart from the immutable root identity and
+resolver-read values defined by the PQ-root recovery contract, the phrase never
+derives relationship-scoped contact capabilities, one-time invitations, ratchets,
+mailbox routes or historical message keys.
 
 ## 3. Beyond-horizon behavior
 
 After 400 days offline, a protected local device or recovery-authorized new device
 uses the indefinite root lineage and a root consistency checkpoint, enrolls a new
-device/control head and publishes fresh contact/reachability records under the same DID1. Existing local
+device/control head and publishes fresh contact/reachability records under the same DID2. Existing local
 contacts/history remain local, but an expired XUR1 may require a new verified contact
 exchange. Account ID does not change; unavailable old messages are shown as a
 retention gap, never as successful empty synchronization.
@@ -88,7 +88,7 @@ checks; they do not require a second harness or duplicate CI job.
 | Data class | Scenario / evidence | Producer owner | Boundary rules |
 |---|---|---|---|
 | mailbox text/control ciphertext | `RET-MAILBOX-CIPHERTEXT-V1` / `EVD-RET-MAILBOX-CIPHERTEXT-V1` | `XNODE-01` (`xnode`) | `TIME-BOUNDARY-V1` |
-| permanent DID1 address | `RET-PERMANENT-DID-V1` / `EVD-RET-PERMANENT-DID-V1` | `CONTACT-CLIENT-01` (`deep-client-shared`) | `INDEFINITE-CHECKPOINT-V1` |
+| permanent PQ-root Deep ID | `RET-PERMANENT-DID-V1` / `EVD-RET-PERMANENT-DID-V1` | `CONTACT-CLIENT-01` (`deep-client-shared`) | `INDEFINITE-CHECKPOINT-V1` |
 | unsolicited contact request | `RET-CONTACT-REQUEST-V1` / `EVD-RET-CONTACT-REQUEST-V1` | `CONTACT-SERVICE-01` (`xnode`) | `TIME-BOUNDARY-V1`, `SUPERSESSION-GRACE-V1` |
 | encrypted DCR1 publication | `RET-DCR-PUBLICATION-V1` / `EVD-RET-DCR-PUBLICATION-V1` | `CONTACT-SERVICE-01` (`xnode`) | `TIME-BOUNDARY-V1`, `SUPERSESSION-GRACE-V1` |
 | DPK2 claim/replay record | `RET-DPK-CLAIM-V1` / `EVD-RET-DPK-CLAIM-V1` | `CONTACT-SERVICE-01` (`xnode`) | `TIME-BOUNDARY-V1`, `SUPERSESSION-GRACE-V1` |
