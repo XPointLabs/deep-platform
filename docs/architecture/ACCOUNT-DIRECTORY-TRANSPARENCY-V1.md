@@ -56,6 +56,21 @@ admission authority. This verifier does not itself define the DGA1/DGR1
 transport envelope, head mutation, or proof publication; those must be
 cut over before a release account can be admitted.
 
+Candidate `DGA1`/`DGR1` version 2 uses the existing bounded 12-byte envelope
+(`magic4 || version:u16be || zeroFlags:u16be || totalLength:u32be`) with no
+version-one fallback and separate `.v2` media types. The request then carries
+`operationId32`, `LP32(DPA1)`, `LP32(DRS1)`, `DPD1Count:u8` (1..5), exactly
+that many `LP32(DPD1)`, `LP32(DID2)` (2036 bytes), `LP32(DAB2)` (3711 bytes),
+`LP32(DMD1)`, `LP32(ADC1 V2)` (458 bytes), `revokedCount:u16be` (0..4096),
+and exactly that many 32-byte authorization IDs. The receipt carries
+`operationId32 || directoryLeafKey32 || LP32(exactADH1)`; its ADH1 has
+`minimumReader >= 2`. The request is at most 256 KiB (so the full 4096-ID
+revocation bound can fit); the receipt is at most 128 KiB. Decoding never
+grants admission or head trust. The server must pass the exact decoded public
+artifacts through the V2 admission verifier, and the client must independently
+verify the returned witness head/current proof before advancing its protected
+floor. The old V1 wire reader and media type are not a release fallback.
+
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
 cryptographically valid DMD1/DRS1 branch. It is a transparency and freshness layer,

@@ -146,10 +146,11 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   DID2-derived leaf and device-issuer closure, ADL1 V2 capability author/
   decode with verified DAB2 lookup binding, candidate transition/map V2
   primitives and independent hash tests, candidate genesis admission verifier
-  requiring hybrid DAB2 authorization; ML-DSA-65 ACVP on hosted
+  requiring hybrid DAB2 authorization and closed DGA1/DGR1 V2 wire; ML-DSA-65
+  ACVP on hosted
   Linux/Windows x64/arm64 and a physical Android arm64 managed probe.
   These are protocol/provider checks, not a releasable identity path.
-- **remaining cutover gate:** ADP1/admission wire and directory witnesses, DCB1/DCR1
+- **remaining cutover gate:** ADP1/admission service and directory witnesses, DCB1/DCR1
   and contact-route authority, DPH2/DAO1 and XPK locator, client account
   storage/bootstrap/QR/safety number, xnode readers and the UAT reset must
   consume only exact DID2/DAB2. Then run Windows/Android device E2E for
