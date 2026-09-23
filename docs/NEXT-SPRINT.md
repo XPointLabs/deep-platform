@@ -113,8 +113,10 @@ service/client cutover и физический E2E ещё не готовы.
 затем получает positive freshness capability; это protocol-level тест, не
 device E2E и не доказательство готовности registry service.
 Отдельный DID2-only proof issuer теперь берёт только проверенный V2 journal/map
-material, подписывает nonce-bound DTT1 и self-verifies ADP1 V2 тем же публичным
-verifier. Проверены positive real-PQ выпуск и отказ при чужом head/дублированном
+material, подписывает nonce-bound DTT1 и self-verifies ADP1 V2 тем же proof
+verification core через внутренний raw-leaf путь issuer. Публичный reader
+дополнительно требует verified ADL1 V2/DAB2 query. Проверены positive real-PQ
+выпуск и отказ при чужом head/дублированном
 witness; registry durable state и HTTP publication ещё не переключены.
 Registry API вместе с XNode пока имеет двойной build graph: обычный
 `dotnet test Deep.Registry.Api.slnx` тянет старый protocol NuGet и не
