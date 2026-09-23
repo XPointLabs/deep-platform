@@ -109,7 +109,10 @@ native ABI tests. Тестовый бинарник удалён с устрой
 матрица Linux/Windows x64/arm64, но она ещё не запускалась из GitHub.
 Отдельно на физическом Android загружена `libdeep_mldsa.so` с ровно восьмью
 Deep-owned экспортами; тесты прошли и библиотека удалена с устройства.
-Остаются Windows gates, независимый signing differential, zeroization/
+На публичном фиксированном seed детерминированная подпись native Android и
+Bouncy Castle Windows ARM64 дала одинаковый SHA-256 (fixture в
+`eng/Deep.MlDsa.ProviderProbe`); это один cross-provider transcript, не полная
+KAT-матрица. Остаются Windows gates, расширенный signing differential, zeroization/
 side-channel review и wire cutover DID2/DAB2 перед клиентским E2E.
 
 ### CB0 — production clean-break до новой feature-работы
