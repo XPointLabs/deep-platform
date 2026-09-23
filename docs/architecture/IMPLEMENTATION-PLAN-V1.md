@@ -169,6 +169,12 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   is a reset input, never a release reader or fallback. The first device gate
   must create offline, restart, reveal/delete the phrase, restart again and
   prove the same DID2 and exact DAB2 before contacting Registry.
+  The V2 current-account index must be published only after verified bootstrap
+  and must have a crash-resume state machine for a retained phrase, DXP1 journal
+  and partial V2 slots. A hedged DAB2 may be authored again only if no durable
+  or externally published winner exists; otherwise restore the exact bytes.
+  Partial state grants no account/device/publication authority and cannot be
+  silently treated as a fresh account.
 
 ### CRYPTO-01 — production provider and ABI decision
 
