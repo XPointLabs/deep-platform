@@ -97,6 +97,40 @@ same head batch; it MUST NOT be compared with the final head root. This
 material is not a public ADP1 or freshness capability until the V2 envelope,
 nonce-bound DTT1 cross-link and independent client verification are complete.
 
+Candidate `ADP1` version 2 uses suite `0x0301`, the exact ordered TLV header
+and tags 1..15 from the V1 response shape, but accepts only an ADH1 with
+`minimumReader >= 2` and a V2 sparse root. For this candidate, history mode
+is `ConsistencyOrGenesis` only, tag 14 is empty, and tag 15 is the exact
+live-DTT1 core hash. Its result shapes are closed: non-membership has exactly
+15 tags; current value has exactly 27. Current-value tags are:
+
+| Tag | Value |
+|---:|---|
+| 16 | exact ADC1 V2, 458 bytes |
+| 17 | exact DID2, 2036 bytes |
+| 18 | exact DAB2, 3711 bytes |
+| 19 | exact DPA1, 644 bytes |
+| 20 | exact bounded DRS1 |
+| 21 | exact bounded DMD1 |
+| 22 | active DPD1 count, `u8` in 1..5 |
+| 23 | count-matched, device-ID-sorted `LP32(exactDPD1)` records |
+| 24 | exact V2 directory transition, 182 bytes |
+| 25 | append-log index, `u64be`, matching tag 24 |
+| 26 | inclusion-node count, `u8` in 0..64 |
+| 27 | count-matched 32-byte RFC-6962 inclusion nodes |
+
+The whole ADP1 V2 envelope is at most 256 KiB. The parsed shape checks the
+exact DID2-derived leaf, DID2/DAB2/ADC1 hashes and V2 artifact reference,
+the current sparse root and append-log inclusion root. It does not equate the
+transition's potentially intermediate map root with the final head root.
+Decode/authoring alone never grant account or freshness authority: the public
+reader must independently verify the complete DPA1/DRS1/DPD1/DID2/DAB2/
+DMD1/ADC1 closure including ML-DSA-65, the current XNA1 witness threshold,
+caller LKG history and the nonce-bound DTT1. A non-membership answer is
+meaningful only for an independently verified DID2-derived ADL1 V2 query.
+Forward-checkpoint history (AFP1) and the public V2 verifier remain open
+release gates; the candidate wire is not yet a release response.
+
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
 cryptographically valid DMD1/DRS1 branch. It is a transparency and freshness layer,

@@ -95,7 +95,10 @@ append-log inclusion/consistency только после полного replay �
 LKG как префикс V2-журнала. Тест с двумя реальными DID2 аккаунтами
 фиксирует важный clean-break: `transition.nextMapRoot` раннего аккаунта
 не равен финальному корню head; current sparse proof сверяется именно
-с финальным корнем. ADP1 V2 wire и клиентская проверка ещё не готовы.
+с финальным корнем. Кандидат ADP1 V2 wire теперь несёт exact DID2/DAB2,
+ADC1 V2, V2 transition и bounded sparse/append proofs; старый ADP1 V1
+reader его отвергает. Публичная проверка PQ/witness/DTT1, AFP1 forward
+history и клиентский cutover ещё не готовы.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
