@@ -74,6 +74,16 @@ cross-device restore, PQ-key-substitution/Ed-only forgery rejection и
 отсутствие старого ID в production graph. До freeze нельзя считать текущие
 green protocol tests и созданные UAT accounts release-compatible.
 
+2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
+подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
+seed, подпись и rejection подмены сообщения/ключа. Это **не** provider approval:
+проверенный Bouncy Castle 2.7.0 не даёт deterministic disposal для объекта
+private key с внутренними `byte[]`. Следующий шаг — выбрать provider с
+контролируемым lifetime секрета, затем закрыть Android/Windows KAT и только
+после этого замораживать root-credential/DID2/DAB2 wire. Production issuance
+DID1 должна оставаться заблокированной на этапе cutover; старый ID не
+является fallback.
+
 ### CB0 — production clean-break до новой feature-работы
 
 После ID-PQ-CB следующий production-graph package закрывает destructive
