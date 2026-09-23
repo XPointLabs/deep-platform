@@ -146,6 +146,11 @@ DGA1 V2 requests, ограничивает размеры и отвергает 
 остаётся shape-only: перед выдачей authority service обязан HMAC-verify state,
 повторно проверить подписи всех heads и PQ admission, replay V2 journal и
 связность истории; endpoint ещё не активирован.
+Кандидат ADA2 restorer теперь выполняет эти проверки перед повышением строк
+до authority-owned состояния: проверяет pinned genesis, каждую подписанную
+голову и prefix журнала, duplicate operation/leaf, PQ admission и final root.
+Нужны HMAC-backed atomic persistence, реальный positive PQ admission тест,
+V2 HTTP issuance и клиентский cutover до device E2E.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
