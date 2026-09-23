@@ -149,8 +149,13 @@ DGA1 V2 requests, ограничивает размеры и отвергает 
 Кандидат ADA2 restorer теперь выполняет эти проверки перед повышением строк
 до authority-owned состояния: проверяет pinned genesis, каждую подписанную
 голову и prefix журнала, duplicate operation/leaf, PQ admission и final root.
-Нужны HMAC-backed atomic persistence, реальный positive PQ admission тест,
-V2 HTTP issuance и клиентский cutover до device E2E.
+Нужны интеграция durable store с authority, реальный positive PQ admission
+тест, V2 HTTP issuance и клиентский cutover до device E2E.
+Кандидат ADA2 file store теперь требует явного начального provisioning,
+проверяет HMAC до decode и держит lease через read/append-only write; удаление
+state не превращается в молчаливый genesis. Но для защиты от подмены файла
+старой корректно HMAC-подписанной копией между рестартами ещё нужен независимый
+protected latest-head rollback floor. Store не подключён к production API.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
