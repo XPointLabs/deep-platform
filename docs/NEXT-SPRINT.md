@@ -104,9 +104,12 @@ nonce/monotonic currentness, direct-successor LKG consistency и полный
 PQ-backed generation-zero current closure перед выдачей freshness capability;
 ADP1 V1 отвергается. Протокольный тест с реальным PQ-аккаунтом теперь
 проверяет следующий signed head с тем же current checkpoint и защищённым LKG;
-отдельный negative test отклоняет неверный predecessor. Successor с новой
-мутацией, AFP1 forward history, service/client cutover и физический E2E ещё
-не готовы.
+отдельный negative test отклоняет неверный predecessor. Следующий signed head
+с новой DID2 genesis-мутацией теперь проверен на двух PQ-аккаунтах: первый
+остаётся current по финальному двухлистному map root, второй разрешается из
+того же защищённого floor; неполный journal отклоняется. Это protocol-level
+evidence, не service/client cutover. AFP1 forward history и физический E2E
+ещё не готовы.
 Публичный freshness API теперь принимает только типизированный ADL1 V2 query,
 сверенный с independently verified DAB2: сеть аккаунта, DID2-derived leaf и
 точный generation/hash floor обязательны. Сырой leaf допускается лишь во
