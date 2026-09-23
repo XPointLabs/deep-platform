@@ -111,9 +111,11 @@ native ABI tests. Тестовый бинарник удалён с устрой
 Deep-owned экспортами; тесты прошли и библиотека удалена с устройства.
 На публичном фиксированном seed детерминированная подпись native Android и
 Bouncy Castle Windows ARM64 дала одинаковый SHA-256 (fixture в
-`eng/Deep.MlDsa.ProviderProbe`); это один cross-provider transcript, не полная
-KAT-матрица. Остаются Windows gates, расширенный signing differential, zeroization/
-side-channel review и wire cutover DID2/DAB2 перед клиентским E2E.
+`eng/Deep.MlDsa.ProviderProbe`); это один cross-provider transcript. Pinned
+upstream ML-DSA-65 KAT (`META.yml` SHA-256) дополнительно прошёл в CMake/CTest
+Linux ARM64 и на физическом Android ARM64. Остаются Windows gates, official
+ACVP/FIPS 204 vectors, расширенный независимый signing differential,
+zeroization/side-channel review и wire cutover DID2/DAB2 перед клиентским E2E.
 
 ### CB0 — production clean-break до новой feature-работы
 
