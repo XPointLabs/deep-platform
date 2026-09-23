@@ -123,6 +123,15 @@ zeroization/side-channel review и wire cutover DID2/DAB2 перед клиен�
 и native zeroization. Это ещё не production asset/MAUI integration, и Windows
 platform gate остаётся открытым.
 
+2026-09-23: отдельная V2 PQ-root деривация из той же проверенной 24-словной
+фразы зафиксирована в нормативном crypto profile и реализована как внутренний,
+пока не активируемый production API. Независимый Python digest-вектор
+проверяется .NET-тестом для Ed25519 seed, ML-DSA-65 seed и resolver capability;
+V1 public-address capability отделена. Это закрывает только recovery-KDF,
+не genesis commitment и не DID2/DAB2. Создание нового release-аккаунта,
+проверка сообщений/вложений/групп device E2E и выпуск клиентов остаются
+заблокированы до атомарного wire/consumer clean-break и platform gates.
+
 ### CB0 — production clean-break до новой feature-работы
 
 После ID-PQ-CB следующий production-graph package закрывает destructive

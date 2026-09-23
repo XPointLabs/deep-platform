@@ -2,8 +2,10 @@
 
 > **Identity re-freeze required:** [DR-0006](../../../decisions/DR-0006-pq-root-deep-id-clean-break.md)
 > retires the Ed25519-only permanent `DID1`/`DAB1` release root. The reserved
-> PQ derivation below is not a genesis-bound ML-DSA key and MUST NOT be treated
-> as a safe same-ID upgrade. Current exact identity and dependent DPH2 sizes
+> V1's reserved PQ derivation below is not a genesis-bound ML-DSA key and MUST
+> NOT be treated as a safe same-ID upgrade. The new V2 root derivation in
+> section 4.2.1 is a prerequisite, not itself an activated DID2 codec. Current
+> exact identity and dependent DPH2 sizes
 > are historical/negative fixtures until the new root, recovery and vectors
 > are frozen. No release account may be created from these old rules.
 
@@ -314,6 +316,52 @@ Changing network ID or account generation creates unrelated account-role keys
 but intentionally leaves both permanent DID1 values unchanged. Changing
 the phrase or any label creates unrelated keys. The BIP-39 seed and no role seed is used directly as a device, X25519,
 ML-KEM, MLS, mailbox, router, storage, push, database or content key.
+
+### 4.2.1 PQ-root recovery clean-break (ID-PQ-CB)
+
+New accounts MUST NOT use the V1 public-address seed or read capability above.
+They are retired identity material, retained here only to explain negative
+vectors. The canonical 24-word BIP-39 generation, verification, empty
+passphrase and `bip39Seed` calculation in sections 4.1–4.2 remain unchanged.
+The V2 permanent root is globally stable across transport networks, account
+generations and devices, and derives three independent secret outputs:
+
+```text
+rootExtractSalt = SHA-512(ASCII("Deep/Recovery/V2/PQ-root/extract"))
+rootPrk = HKDF-Extract-512(rootExtractSalt, bip39Seed)
+rootContext = ASCII("DeepGlobalPqRootV2")
+rootEdSeed32 = HKDF-Expand-512(rootPrk,
+  ASCII("Deep/Recovery/V2/root-ed25519-signing-seed") || 0x00 ||
+  LP32(rootContext), 32)
+rootMlDsaSeed32 = HKDF-Expand-512(rootPrk,
+  ASCII("Deep/Recovery/V2/root-mldsa65-signing-seed") || 0x00 ||
+  LP32(rootContext), 32)
+rootResolverReadCapability16 = HKDF-Expand-512(rootPrk,
+  ASCII("Deep/Recovery/V2/root-resolver-read-capability") || 0x00 ||
+  LP32(rootContext), 16)
+```
+
+For the public all-zero-entropy BIP-39 test phrase in
+`deep-recovery-v1.vector.json`, the SHA-256 digests of the three outputs,
+respectively, are:
+
+```text
+8d2ac3afb8ca7baacf03b18edb61b80bb006e01f06c4b7c448d575982aefc571
+4db2d658dcbeae33831ae7db06f79ac49be13c2abeb7d470f7a6138cbcc87c8e
+42381d6d25d37d5d1a93517eabd0b64eab462d81f5f258435b00aa0e084f8522
+```
+
+These are digest-only derivation vectors, not account or address vectors. A
+provider must deterministically generate the ML-DSA-65 key pair from the
+32-byte root seed according to the separately frozen provider contract. DID2
+genesis MUST commit both the resulting ML-DSA-65 public key and the independent
+Ed25519 root public key before it can be activated; neither a later
+introduction of the PQ key nor substitution of the old V1 address key preserves
+the same Deep ID. Any account/binding successor requires both root signatures.
+The root seed, PQ seed and read capability never appear in public records or
+logs. Current code may derive this material for test vectors only; it MUST NOT
+create a release account until the exact DID2/DAB2 wire and dependent consumer
+reset have passed their gates.
 
 ### 4.3 Device generation
 
