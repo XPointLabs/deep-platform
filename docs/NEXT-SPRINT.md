@@ -104,6 +104,10 @@ nonce/monotonic currentness, direct-successor LKG consistency и полный
 PQ-backed generation-zero current closure перед выдачей freshness capability;
 ADP1 V1 отвергается. Положительные successor-истории, AFP1 forward history,
 service/client cutover и физический E2E ещё не готовы.
+Отдельный Windows x64 тест теперь выпускает настоящий ML-DSA-backed DID2,
+строит подписанные ADH1/DTT1 и ADP1 V2 с Merkle-inclusion/consistency,
+затем получает positive freshness capability; это protocol-level тест, не
+device E2E и не доказательство готовности registry service.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
