@@ -4,7 +4,8 @@
 > `DAB1` version 1 below is retired from the first public release. Its
 > Ed25519-only root and succession cannot authenticate a later PQ upgrade.
 > The new PQ-committed ID and affected exact contact, directory, DPH2 and
-> safety-number bytes are not frozen yet. This document's old exact tables
+> safety-number bytes are not frozen yet. Section 4.1.0 records the proposed
+> release shape, not a machine-registry activation. This document's old exact tables
 > remain implementation evidence/negative fixtures, not permission to issue
 > release accounts or to add a dual parser. See
 > [DR-0006](../survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md).
@@ -35,7 +36,8 @@ and retention/recovery claims by
 The following are unconditional:
 
 1. `DeepAccountId` identifies an account lineage; it is not a mailbox address.
-2. A user-facing **Deep ID** is permanent, transport-neutral `DID1`. It has no
+2. A user-facing **Deep ID** is permanent and transport-neutral. The release
+   target is PQ-committed `DID2`; the retired `DID1` is not issued. It has no
    expiry and resolves a rotating signed contact bundle; it is not a bare
    account hash, mailbox or current route.
 3. Contact bootstrap MUST work while the recipient application is offline.
@@ -154,7 +156,49 @@ DMD1 has no wall-clock expiry. Freshness is monotonic DRS1/directory continuity,
 not periodic resigning with a recovery-derived key. Enrollment and revocation
 are explicit recovery-authorized ceremonies that advance DMD1.
 
-### 4.1 Permanent Deep ID and account binding: `DID1` / `DAB1`
+### 4.1.0 Release clean-break target: `DID2` / `DAB2` (not yet frozen)
+
+The compact, permanent Deep ID remains a 90-character lowercase Bech32m value
+with HRP `deep`, so copying and QR sharing do not require carrying a 1952-byte
+PQ public key. Its proposed 49-byte payload is `0x02 || DID2RecordHash32 ||
+resolverReadCapability16`. `DID2RecordHash32` is a commitment to the *entire*
+canonical immutable root credential. The credential must be fetched and its
+hash matched before accepting any binding; the compact text alone is not a
+public-key certificate. The read capability permits retrieval, not signing or
+account authority. It is generated independently of either signing seed.
+
+The proposed `DID2` record has exactly three fields: independent Ed25519 root
+verification key (32 bytes), ML-DSA-65 root verification key (1952 bytes), and
+resolver read capability (16 bytes). The keys are generated at genesis from
+the separate V2 root seeds specified by the crypto profile. The wire header
+must explicitly close the new version and root suite; the transcript and
+record hash must bind both algorithm identities and roles so neither key can
+be reinterpreted under another algorithm. It has no network, device, account,
+time or route field. The encoded text must reconstruct or fetch *only* this
+immutable credential; returning a mutable pointer or allowing an Ed-only
+introduction of the PQ key is forbidden.
+
+The proposed `DAB2` preserves per-realm monotonic binding lineage, exact
+predecessor, DPA1 account closure and fork latch, but every genesis and
+successor binding carries three independently verified signatures over the
+same canonical unsigned projection: Ed25519 root, ML-DSA-65 root and exact
+DPA1 account role. Acceptance is a three-way **AND**. The verifier first
+matches the bound DID2 hash and fixed genesis keys, then checks realm and
+lineage, then all three signatures before any account, contact or directory
+state mutation. Unknown algorithms, a substituted PQ key, an Ed-only binding,
+or an old `DAB1` fail closed; there is no key-introduction transition.
+
+This target is not a frozen wire contract. Before coding it into production,
+the machine registry and positive/negative vectors must fix header
+version/suite, exact DID2/DAB2 sizes, the record-hash and three signature
+domains, compact-text reconstruction, identity realm, artifact type, and
+cross-platform ML-DSA seed key generation. The same change must re-pin DCA1,
+DCB1, DCR1, DPH2/DAO1, XPK/contact locator, QR, safety number and database
+sizes/closures. No old DID1/DAB1 parser, row or UAT account survives that
+cutover. Until then, this section is an architecture constraint, not a claim
+that issuance or device E2E works.
+
+### 4.1 Permanent Deep ID and account binding: retired `DID1` / `DAB1`
 
 `DID1`, version 1, suite `0x0201`, contains exactly two tagged fields: the
 32-byte Ed25519 public address key derived from
