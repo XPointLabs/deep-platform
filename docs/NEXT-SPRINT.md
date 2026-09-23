@@ -84,6 +84,22 @@ private key с внутренними `byte[]`. Следующий шаг — в
 DID1 должна оставаться заблокированной на этапе cutover; старый ID не
 является fallback.
 
+Предпочтительный следующий **кандидат для оценки, не принятое решение** —
+[`mldsa-native` v2.0.0](https://github.com/pq-code-package/mldsa-native/releases/tag/v2.0.0):
+это тот же PQ Code Package family, что уже выбранный `mlkem-native`, с
+портативным C backend, seed-driven keygen и upstream ACVP/Wycheproof gates.
+Текущий research pin тега: `834a90d5e846ffa1e1611bd24e160bb2e9b86d35`;
+это не approved source pin для релиза.
+Использовать одну узкую Deep-owned native ABI/asset discipline, как для
+ML-KEM; не добавлять параллельный runtime provider или алгоритмический suite.
+Перед допуском нужны pin/source hash, license/SBOM, zeroization review,
+cross-provider KAT и физические Android arm64/Windows x64/arm64 прогоны.
+Локальный Windows ARM64 SDK здесь не содержит полного MSVC C include/lib
+toolchain. Изолированная Linux/ARM64 Docker-сборка того же pinned source
+прошла upstream `run_func_65` и `run_kat_65` (`META.yml ... kat-sha256: OK`).
+Это ещё не differential BC/native по одним Deep vectors и не physical Android
+или Windows gate.
+
 ### CB0 — production clean-break до новой feature-работы
 
 После ID-PQ-CB следующий production-graph package закрывает destructive
