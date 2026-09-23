@@ -141,6 +141,11 @@ reader 1 и неверный protected hash отклоняются. Подклю
 Registry durable state остаётся следующим шагом.
 Registry имеет отдельный file bootstrap source с независимым protected core
 hash pin и V2 verifier; он не подключён к HTTP/admission и не читает ADA1.
+Кандидат `ADA2` payload codec отдельно хранит V2 heads, transitions и exact
+DGA1 V2 requests, ограничивает размеры и отвергает ADA1/чужую сеть. Decode
+остаётся shape-only: перед выдачей authority service обязан HMAC-verify state,
+повторно проверить подписи всех heads и PQ admission, replay V2 journal и
+связность истории; endpoint ещё не активирован.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
