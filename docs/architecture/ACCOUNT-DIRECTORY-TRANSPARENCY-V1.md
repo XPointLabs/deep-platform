@@ -113,6 +113,15 @@ rollback floor outside that file's rollback domain, including across process
 restart and recovery. The current candidate service lacks that floor and is
 therefore not a production approval or device E2E gate pass.
 
+The Registry's internal DID2 proof issuer MUST hold the same exclusive ADA2
+read lease while deriving V2 proof material from the fully replayed journal
+and PQ-verified ADC1 V2 set. It MUST consume a durable one-use nonce before
+threshold signing, use trusted time and an exact signed XNV1, and
+self-verify the resulting DTT1/ADP1 V2. Its nonce namespace MUST be separate
+from V1. This issuer is not a public endpoint until ADL1 V2 wire/query
+binding, the independent rollback floor and client verification are in place;
+raw leaf bytes are not a trusted DID2 identity capability.
+
 Candidate V2 proof-material author first replays the complete V2 private
 journal against the protected head, checks the complete verified ADC1 V2 map,
 then derives canonical sparse-map, RFC-6962 inclusion and consistency nodes.

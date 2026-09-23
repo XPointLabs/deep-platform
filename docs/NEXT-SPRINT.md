@@ -167,6 +167,15 @@ genesis, не зависящий от ADA1/ADP1 V1, и V2-only durable admission
 отказывается перезаписывать существующий state. Endpoint пока **не включён
 в проде**.
 
+2026-09-24: внутренний Registry DID2 proof issuer теперь под lease читает
+полностью PQ-перепроверенный ADA2 journal/map и выпускает живой DTT1/ADP1 V2
+из trusted time, signed XNV1, durable one-use nonce и threshold custody.
+Реальный PQ admission → ADA2 restore → current-value proof пройден в тесте;
+replay nonce, V1 floor и повреждённый XNV1 отвергаются. Все 403 локальных
+Registry/XNode теста прошли. Это **не** публичная proof publication: HTTP wire,
+самостоятельно защищённый latest-head floor, query binding с verified DAB2 и
+клиентский reader остаются release gates.
+
 Следующий обязательный пакет: независимый latest-head rollback floor против
 подмены ADA2 старой корректной HMAC-копией, UAT-проверка provisioning, V2 proof
 publication и клиентский cutover. Только затем physical Android ↔ Windows
