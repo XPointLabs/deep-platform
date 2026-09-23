@@ -172,9 +172,16 @@ genesis, не зависящий от ADA1/ADP1 V1, и V2-only durable admission
 из trusted time, signed XNV1, durable one-use nonce и threshold custody.
 Реальный PQ admission → ADA2 restore → current-value proof пройден в тесте;
 replay nonce, V1 floor и повреждённый XNV1 отвергаются. Все 403 локальных
-Registry/XNode теста прошли. Это **не** публичная proof publication: HTTP wire,
+Registry/XNode теста прошли. Это **не** публичная proof publication:
 самостоятельно защищённый latest-head floor, query binding с verified DAB2 и
 клиентский reader остаются release gates.
+
+2026-09-24: protocol candidate `DPQ2`/`DPP2` ограничивает exact ADL1 V2 +
+DID2 request и ADH1/DTT1/ADP1 V2 response; неверный DID2-derived lookup,
+V1 wire, replay echo и подмена proof отвергаются. Registry issuer принимает
+этот wire, разрешает floor только из собственного ADA2 head lineage и
+возвращает exact V2 response. Публичный маршрут пока не включён: нужен
+rollback floor вне ADA2 и независимая клиентская верификация.
 
 Следующий обязательный пакет: независимый latest-head rollback floor против
 подмены ADA2 старой корректной HMAC-копией, UAT-проверка provisioning, V2 proof

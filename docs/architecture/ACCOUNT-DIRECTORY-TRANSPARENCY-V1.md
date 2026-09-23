@@ -118,9 +118,27 @@ read lease while deriving V2 proof material from the fully replayed journal
 and PQ-verified ADC1 V2 set. It MUST consume a durable one-use nonce before
 threshold signing, use trusted time and an exact signed XNV1, and
 self-verify the resulting DTT1/ADP1 V2. Its nonce namespace MUST be separate
-from V1. This issuer is not a public endpoint until ADL1 V2 wire/query
-binding, the independent rollback floor and client verification are in place;
+from V1. This issuer is not a public endpoint until client-side ADL1 V2/DAB2
+query binding, the independent rollback floor, HTTP composition and client
+verification are in place;
 raw leaf bytes are not a trusted DID2 identity capability.
+
+The candidate HTTP proof payloads are V2-only, bounded binary frames. A
+`DPQ2` request is exactly 2332 bytes: magic (4), version `2` (u16 BE), zero
+reserved (u16), total length (u32 BE), exact ADL1 V2 (228), exact DID2
+(2036), nonce (32), boot ID (16), and client monotonic send sample (u64 BE).
+The Registry derives the leaf from the exact DID2 and rejects a lookup key
+that does not match that DID2; a requester-controlled raw leaf is never a
+wire input. Initial service profile is XPoint-only (`1`). A `DPP2` response
+echoes network (16), derived leaf (32), nonce (32), boot ID (16), and sample
+(u64 BE) under the same 12-byte header, then carries LP32 exact ADH1,
+LP32 exact DTT1 and LP32 exact ADP1 V2. Each LP32 uses u32 BE length and
+the total response is at most 594047 bytes. Decoding validates canonical
+artifact shapes and exact request/head/DTT/ADP cross-links, but does not
+grant authority or freshness. The client MUST independently verify the
+signed XPoint authority, DID2/DAB2-bound ADL1 V2, witness threshold, PQ
+admission, currentness, and protected LKG. A Registry HTTP route MUST stay
+disabled until the independent ADA2 rollback floor is operational.
 
 Candidate V2 proof-material author first replays the complete V2 private
 journal against the protected head, checks the complete verified ADC1 V2 map,
