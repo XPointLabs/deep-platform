@@ -99,8 +99,11 @@ LKG как префикс V2-журнала. Тест с двумя реальн
 ADC1 V2, V2 transition и bounded sparse/append proofs; старый ADP1 V1
 reader его отвергает. Он также передаёт полный отсортированный список
 отозванных DCA authorization IDs (до 4096) и сверяет его с хэшем ADC1.
-Публичная проверка PQ/witness/DTT1, AFP1 forward
-history и клиентский cutover ещё не готовы.
+Кандидат публичного DID2 verifier теперь проверяет signed ADH1/DTT1,
+nonce/monotonic currentness, direct-successor LKG consistency и полный
+PQ-backed generation-zero current closure перед выдачей freshness capability;
+ADP1 V1 отвергается. Положительные successor-истории, AFP1 forward history,
+service/client cutover и физический E2E ещё не готовы.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte

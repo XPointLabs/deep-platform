@@ -131,8 +131,15 @@ reader must independently verify the complete DPA1/DRS1/DPD1/DID2/DAB2/
 DMD1/ADC1 closure including ML-DSA-65, the current XNA1 witness threshold,
 caller LKG history and the nonce-bound DTT1. A non-membership answer is
 meaningful only for an independently verified DID2-derived ADL1 V2 query.
-Forward-checkpoint history (AFP1) and the public V2 verifier remain open
-release gates; the candidate wire is not yet a release response.
+The candidate public V2 verifier now checks exact signed ADH1/DTT1 authority,
+nonce and monotonic time, direct-successor protected-LKG consistency, the
+ADP1 V2 sparse/inclusion proofs, and full PQ-backed generation-zero
+DPA1/DRS1/DPD1/DID2/DAB2/DMD1/ADC1 admission before issuing a freshness
+capability. It rejects ADP1 V1. It does not yet admit positive successor
+histories or AFP1 forward-checkpoint histories; the directory service and
+client consumers have not cut over. Therefore this candidate is not a release
+response. Non-membership is an absence result for an independently authenticated
+DID2 leaf, not proof of any account ownership.
 
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
