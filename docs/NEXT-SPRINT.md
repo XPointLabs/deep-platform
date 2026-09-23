@@ -74,6 +74,11 @@ cross-device restore, PQ-key-substitution/Ed-only forgery rejection и
 отсутствие старого ID в production graph. До freeze нельзя считать текущие
 green protocol tests и созданные UAT accounts release-compatible.
 
+2026-09-23: кандидат `ADL1` V2 теперь получает lookup key только из exact
+DID2 и отвергает V1-версию/любой неподтверждённый lookup key. Это не
+активирует каталог: `ADP1`/transition/admission, witness head и contact bundle
+по-прежнему должны быть перевыпущены как единый DID2-only путь до device E2E.
+
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
 seed, подпись и rejection подмены сообщения/ключа. Это **не** provider approval:

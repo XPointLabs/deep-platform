@@ -20,6 +20,19 @@ its leaf domain and DAB1 hash cannot be admitted as a V2 value. ADP1,
 admission and resolver proofs still require matching V2 re-freeze; this
 candidate checkpoint alone does not authorize directory activation.
 
+The candidate `ADL1` version 2 keeps the seven ordered fields and 228-byte
+envelope, but uses suite `0x0301`. Its lookup key is exactly
+`SHA256-D("Deep/AccountDirectory/V2/lookup", networkId16 || exactDID2)`;
+the leaf is `SHA256-D("Deep/AccountDirectory/V2/leaf", lookupKey32)`.
+Authoring requires the exact DID2 credential, and a reader MUST compare the
+decoded lookup key with the DID2 from an independently verified DAB2 binding
+before using the capability.
+The network, nonzero floor, service-profile and XOD1 reference checks remain
+closed. Version-one ADL1 cannot be used with DID2, and version-two ADL1 is
+not yet an active lookup until ADP1, transition/admission and witness closure
+is re-frozen and consumers are cut over. A bare compact text commitment is
+insufficient to construct or verify this capability.
+
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
 cryptographically valid DMD1/DRS1 branch. It is a transparency and freshness layer,
