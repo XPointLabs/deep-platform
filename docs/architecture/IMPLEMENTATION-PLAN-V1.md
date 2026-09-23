@@ -157,6 +157,18 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   message text, image/file transfer, restart/retry, contact and group flows.
   Do not classify old DID1 path tests or the candidate native matrix as this
   release gate.
+- **client cutover order:** replace the local account schema and secure-storage
+  namespace as one incompatible generation, including creation receipts,
+  reset/purge ownership and account-scoped database keys. Derive the exact DID2
+  while the 24-word authority is still present; persist the exact issued DAB2
+  and its verified DID2/DMD1/DCA1 V2/ADC1 V2 closure before permitting phrase
+  deletion. On restart, verify that closure against the reconciled DPA1/DRS1/
+  DPD1 account/device authority; re-issuing hedged DAB2 is not restoration.
+  Only then replace `DeepAccount`, genesis activation, directory admission,
+  Contact/XPK and MAUI composition together. A V1 database or protected slot
+  is a reset input, never a release reader or fallback. The first device gate
+  must create offline, restart, reveal/delete the phrase, restart again and
+  prove the same DID2 and exact DAB2 before contacting Registry.
 
 ### CRYPTO-01 — production provider and ABI decision
 

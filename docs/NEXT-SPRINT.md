@@ -220,6 +220,13 @@ fallback. Сначала подтвердить offline create/restore и жив
 отрицательными replay/rollback тестами, затем physical Android ↔ Windows
 account/contact/message/media/group E2E. GitHub Releases не публиковать.
 
+Аудит клиентского кода подтвердил, что замена только `PermanentId` невозможна:
+`deep.store.v1` namespace и generation, защищённый genesis contact slot,
+`DeepGenesisDeviceActivation`, V1 admission и MAUI Contact/Group composition
+связаны одной старой цепочкой. Порядок их несовместимой замены и проверка
+сохранённого exact DAB2 после удаления фразы закреплены в `ID-PQ-CB`
+implementation package; до этого старый UI account-create не release evidence.
+
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
 seed, подпись и rejection подмены сообщения/ключа. Это **не** provider approval:
