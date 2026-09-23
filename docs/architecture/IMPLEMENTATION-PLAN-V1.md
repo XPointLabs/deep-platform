@@ -141,6 +141,18 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   Windows x64/arm64; same-root recovery, independent PQ and Ed roles,
   Ed-only forgery/PQ substitution/fork rejection, physical cross-device
   verification. The current old-ID green tests are not release evidence.
+- **current candidate evidence (2026-09-23):** exact DID2/DAB2 and DCA1 V2
+  author/verify, genesis issuance plus exact-binding restore, ADC1 V2
+  DID2-derived leaf and device-issuer closure; ML-DSA-65 ACVP on hosted
+  Linux/Windows x64/arm64 and a physical Android arm64 managed probe.
+  These are protocol/provider checks, not a releasable identity path.
+- **remaining cutover gate:** ADP1/admission and directory witnesses, DCB1/DCR1
+  and contact-route authority, DPH2/DAO1 and XPK locator, client account
+  storage/bootstrap/QR/safety number, xnode readers and the UAT reset must
+  consume only exact DID2/DAB2. Then run Windows/Android device E2E for
+  message text, image/file transfer, restart/retry, contact and group flows.
+  Do not classify old DID1 path tests or the candidate native matrix as this
+  release gate.
 
 ### CRYPTO-01 — production provider and ABI decision
 
