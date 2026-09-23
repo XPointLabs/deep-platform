@@ -112,6 +112,13 @@ device E2E и не доказательство готовности registry se
 material, подписывает nonce-bound DTT1 и self-verifies ADP1 V2 тем же публичным
 verifier. Проверены positive real-PQ выпуск и отказ при чужом head/дублированном
 witness; registry durable state и HTTP publication ещё не переключены.
+Registry API вместе с XNode пока имеет двойной build graph: обычный
+`dotnet test Deep.Registry.Api.slnx` тянет старый protocol NuGet и не
+собирается, а `-p:DeepProtocolLocalCutover=true
+-p:DeepProtocolSourceCutover=true` проходит 390 тестов. Следующий
+clean-break должен единообразно перевести весь transitive XNode graph на
+текущий source/package pin; локальное изменение только registry defaults
+недостаточно и не должно попадать в релиз.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
