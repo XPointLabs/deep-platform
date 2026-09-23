@@ -135,6 +135,10 @@ Legacy Registry authority теперь жёстко допускает толь�
 Следующий service cutover требует отдельного V2 bootstrap head с пустым
 V2 map root, нового защищённого durable state и V2 admission/proof HTTP;
 старый ADA1 state не мигрировать и не читать как V2.
+Протокольный bootstrap verifier уже восстанавливает только точный
+threshold-signed zero-head с V2 empty-map root и reader ≥2; V1 empty root,
+reader 1 и неверный protected hash отклоняются. Подключение к новому
+Registry durable state остаётся следующим шагом.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte

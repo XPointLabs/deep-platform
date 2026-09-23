@@ -38,6 +38,15 @@ The candidate V2 directory transition retains the 182-byte layout but sets
 references (all-zero predecessor only for genesis admission). Its commitment
 is `SHA256-D("Deep/AccountDirectory/V2/transition", exactTransitionV2)`,
 then the existing RFC-6962 `SHA256(0x00 || commitment32)` leaf rule applies.
+
+The V2 authority MUST start from a separately pinned, threshold-signed exact
+ADH1 genesis with generation and tree size zero, zero predecessor, RFC-6962
+empty append root, V2 empty sparse-map root and minimum reader at least two.
+Restore MUST authenticate the exact ADH1 against its protected core hash and
+verified XPoint witness authority before accepting it as an LKG. A V1 empty
+map root, ADA1 durable state or a reader-one head cannot be reused as V2
+genesis; no implicit migration or fallback is permitted.
+
 The candidate depth-256 map keeps the MSB-first bitmap/key-bit order and
 default-sibling rejection, while changing every map domain together to
 `Deep/AccountDirectory/V2/map-empty-leaf`, `/map-present` and `/map-node`.
