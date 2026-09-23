@@ -227,6 +227,16 @@ account/contact/message/media/group E2E. GitHub Releases не публикова
 сохранённого exact DAB2 после удаления фразы закреплены в `ID-PQ-CB`
 implementation package; до этого старый UI account-create не release evidence.
 
+2026-09-24: в `deep-client-shared` добавлен изолированный кандидат V2-only
+защищённого genesis-contact слота. Он принимает только уже проверенные
+DAB2/DCA1 V2/ADC1 V2, сохраняет exact DMD1/DID2/DAB2/DCA1 V2/ADC1 V2
+добавлением без замены. Raw-чтение возвращает лишь непроверенные байты;
+отдельное verified-чтение требует уже сверенной DPA1/DRS1/DPD1 closure и
+прикреплённого ML-DSA verifier, повторно проверяет всю V2-цепочку.
+Повторная запись того же набора допустима, иной hedged DAB2 — конфликт.
+Это ещё не account cutover: DPA1/DRS1/DPD1 reconciliation, атомарный V2
+bootstrap/reset, MAUI composition и физический E2E остаются обязательными.
+
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
 seed, подпись и rejection подмены сообщения/ключа. Это **не** provider approval:
