@@ -229,10 +229,11 @@ implementation package; до этого старый UI account-create не rele
 
 2026-09-24: в `deep-client-shared` добавлен изолированный кандидат V2-only
 защищённого genesis-contact слота. Он принимает только уже проверенные
-DAB2/DCA1 V2/ADC1 V2, сохраняет exact DMD1/DID2/DAB2/DCA1 V2/ADC1 V2
-добавлением без замены. Raw-чтение возвращает лишь непроверенные байты;
-отдельное verified-чтение требует уже сверенной DPA1/DRS1/DPD1 closure и
-прикреплённого ML-DSA verifier, повторно проверяет всю V2-цепочку.
+DAB2/DCA1 V2/ADC1 V2, сохраняет exact DPA1/DRS1/DPD1/DMD1/DID2/DAB2/
+DCA1 V2/ADC1 V2 публичную closure одной add-only записью. Raw-чтение
+возвращает лишь непроверенные байты; отдельное verified-чтение восстанавливает
+DPA1/DRS1/DPD1 через protocol admission verifier с прикреплённым ML-DSA
+verifier и повторно проверяет всю V2-цепочку.
 Повторная запись того же набора допустима, иной hedged DAB2 — конфликт.
 Это ещё не account cutover: DPA1/DRS1/DPD1 reconciliation, атомарный V2
 bootstrap/reset, MAUI composition и физический E2E остаются обязательными.
