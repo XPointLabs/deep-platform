@@ -251,6 +251,10 @@ V2 protected phrase slot теперь сверяет 24 слова с exact acco
 поддерживают идемпотентный purge только точного префикса `deep.store.v2.`;
 V1 и соседние слоты сохраняются. Открытие фразы в настройках, подключение
 purge к новому reset owner и MAUI account service ещё не готовы.
+DXP1 issuance persistence получил явный выбор store generation: текущий V1
+client остаётся на V1, а DID2 fixture выдаёт устройство только в V2 namespace
+и проверяет отсутствие V1 profile slot. Полный новый account owner должен
+выбирать этот V2 режим без fallback.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
