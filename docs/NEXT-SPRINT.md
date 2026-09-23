@@ -130,6 +130,11 @@ clean-break должен единообразно перевести весь tr
 integration XNode теста прошли. Пробная правка полностью откатана; сначала
 нужен отдельный review/rebaseline этой frozen evidence, затем единый default
 source graph без старого пакета.
+Legacy Registry authority теперь жёстко допускает только reader V1:
+подстановка `SupportedReader=2` не включает DID2 и отклоняется на старте.
+Следующий service cutover требует отдельного V2 bootstrap head с пустым
+V2 map root, нового защищённого durable state и V2 admission/proof HTTP;
+старый ADA1 state не мигрировать и не читать как V2.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
