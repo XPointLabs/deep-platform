@@ -112,8 +112,10 @@ Deep-owned экспортами; тесты прошли и библиотека
 Bouncy Castle Windows ARM64 дала одинаковый SHA-256 (fixture в
 `eng/Deep.MlDsa.ProviderProbe`); это один cross-provider transcript. Pinned
 upstream ML-DSA-65 KAT (`META.yml` SHA-256) дополнительно прошёл в CMake/CTest
-Linux ARM64 и на физическом Android ARM64. Остаются Windows gates, official
-ACVP/FIPS 204 vectors, расширенный независимый signing differential,
+Linux ARM64 и на физическом Android ARM64. Deep-owned ABI также прошёл 70
+применимых официальных ACVP `v1.1.0.43` cases на Linux ARM64: 25 keygen,
+30 seed-format pure signing и 15 verification (3 positive/12 negative).
+Остаются Windows и physical Android ACVP gates, расширенный независимый signing differential,
 zeroization/side-channel review и wire cutover DID2/DAB2 перед клиентским E2E.
 Изолированный `net10.0-android` Release/AOT probe также загрузил этот exact
 candidate `.so` на физическом Android и прошёл ABI, public/signature fixture,
