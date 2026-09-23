@@ -509,6 +509,14 @@ Android↔Windows E2E; сборка клиента и нижележащие sto
 `PrivacyRoutedMessagingReceiver.PollOnceAsync` проходит путь initial/established
 до durable materialization и ACK только после commit. Локальный MAUI clean
 Release test gate прошёл 6/6, Shared production Release gate — 159/159.
+Повторная проверка 2026-09-24: Windows ARM64 и Android Debug MAUI собираются
+с 0 предупреждений; это не Release и не физический E2E. Старый compiled
+Release composition guard проверял уже исключённый Session-era entrypoint;
+guard перепривязан к скомпилированному clean `MauiProgram`, а Android CI
+переведён на `setup-android@v4` после отказа удалённого SDK `tools`.
+Итоговый CI этих правок остаётся обязательным gate. Физический Android
+доступен, но локальная signed lab policy привязана к предыдущему коммиту;
+она не может служить доказательством для нового APK/Windows build.
 Это пока **не** физический device E2E: нужны
 подтверждённая contact publication/authority, два реально созданных аккаунта,
 доставка Android↔Windows и, после DR-0006, новый release-compatible ID.
