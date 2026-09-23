@@ -118,7 +118,12 @@ Registry API вместе с XNode пока имеет двойной build grap
 -p:DeepProtocolSourceCutover=true` проходит 390 тестов. Следующий
 clean-break должен единообразно перевести весь transitive XNode graph на
 текущий source/package pin; локальное изменение только registry defaults
-недостаточно и не должно попадать в релиз.
+недостаточно и не должно попадать в релиз. XNode ProfileGenerator содержит
+отдельный замороженный P14C offline package/restore gate: пробное изменение
+его default props нарушило 6 из 107 тестов этого gate, хотя 231 unit и 373
+integration XNode теста прошли. Пробная правка полностью откатана; сначала
+нужен отдельный review/rebaseline этой frozen evidence, затем единый default
+source graph без старого пакета.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
