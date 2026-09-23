@@ -82,8 +82,14 @@ primitives с отдельными доменами и ADC1 V2 reference, без
 по-прежнему должны быть перевыпущены как единый DID2-only путь до device E2E.
 Изолированный verifier first admission уже проверяет exact DID2/DAB2 и
 ML-DSA подпись. Кандидат DGA1/DGR1 V2 wire закрыт и отвергает V1, но
-admission service, head mutation и proof publication ещё старые; до их
-clean-break регистрация release-аккаунта остаётся заблокирована.
+admission service и proof publication ещё старые; до их clean-break
+регистрация release-аккаунта остаётся заблокирована.
+Отдельный V2 head author теперь проверяет полный приватный V2-журнал и
+весь текущий набор ADC1 V2, применяет canonical batch и выпускает
+threshold-signed ADH1 с `minimumReader >= 2`; он повторно проверяет
+полученный protected head. ADH1 envelope сохраняет версию 1 только как
+контейнер непрозрачных V2-корней. Это пока не service cutover: старые
+admission/proof/freshness consumers и физический E2E остаются блокерами.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte

@@ -71,6 +71,20 @@ artifacts through the V2 admission verifier, and the client must independently
 verify the returned witness head/current proof before advancing its protected
 floor. The old V1 wire reader and media type are not a release fallback.
 
+Candidate witnessed V2 head mutation reuses the exact `ADH1` version-one
+signed envelope because it carries network, authority, validity and opaque
+32-byte roots, not DID1 or ADC1 bytes. This is **not** a dual directory
+reader: DID2 heads MUST have `minimumReader >= 2`, start from the distinct V2
+empty-map root, and be signed only after replaying the complete authority-private
+V2 transition journal and checking the complete current ADC1 V2 capability map.
+Every new leaf starts at ADC1 V2 checkpoint generation zero; a successor must
+consume the exact prior checkpoint hash and advance by one. Witness selection
+and signature verification use the current XNA1 policy/failure-domain threshold.
+The returned head is independently restored to a protected LKG and its V2 roots
+replayed before publication. The old DID1 head author cannot authorize a DID2
+admission; service cutover must select the V2-only path. ADP1 publication,
+freshness/DTT closure and clients remain separate release gates.
+
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
 cryptographically valid DMD1/DRS1 branch. It is a transparency and freshness layer,
