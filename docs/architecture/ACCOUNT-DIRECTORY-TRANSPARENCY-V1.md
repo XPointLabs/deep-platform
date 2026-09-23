@@ -46,6 +46,16 @@ be reinterpreted as V2 proof material. Witnessed head/admission, ADP1 proof
 envelope and DTT/forward-history closure still require one consistent V2
 re-freeze and are not activated by these primitives alone.
 
+The candidate first-admission verifier accepts exact DPA1/DRS1/DPD1,
+2036-byte DID2, 3711-byte DAB2, DMD1 and 458-byte ADC1 V2. It reconstructs
+the verified account/device closure, checks all three DAB2 signatures
+including ML-DSA-65 through the selected provider, enforces DAB2 genesis,
+then verifies the ADC1 V2 account/device binding and generation-zero
+checkpoint. A syntactically valid DID2 or an Ed25519-only signature is not
+admission authority. This verifier does not itself define the DGA1/DGR1
+transport envelope, head mutation, or proof publication; those must be
+cut over before a release account can be admitted.
+
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
 cryptographically valid DMD1/DRS1 branch. It is a transparency and freshness layer,

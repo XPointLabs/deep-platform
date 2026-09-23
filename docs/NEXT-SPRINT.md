@@ -80,6 +80,9 @@ DID2 и отвергает V1-версию/любой неподтверждён
 primitives с отдельными доменами и ADC1 V2 reference, без допуска V1.
 Это не активирует каталог: `ADP1`/admission, witness head и contact bundle
 по-прежнему должны быть перевыпущены как единый DID2-only путь до device E2E.
+Изолированный verifier first admission уже проверяет exact DID2/DAB2 и
+ML-DSA подпись, но DGA1/DGR1 wire, head mutation и proof publication ещё
+старые; до их clean-break регистрация release-аккаунта остаётся заблокирована.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
