@@ -162,10 +162,13 @@ genesis, не зависящий от ADA1/ADP1 V1, и V2-only durable admission
 повтор после рестарта возвращает тот же receipt, подмена operation ID/leaf
 отклоняется без мутации. Отдельный `/api/v2/account-directory/genesis-admissions`
 имеет V2 media type и включается только явной конфигурацией; одновременное
-включение V1 admission запрещено. Endpoint пока **не включён в проде**.
+включение V1 admission запрещено. Однократный операторский
+`did2-directory provision-state` создаёт только проверенный пустой ADA2 и
+отказывается перезаписывать существующий state. Endpoint пока **не включён
+в проде**.
 
 Следующий обязательный пакет: независимый latest-head rollback floor против
-подмены ADA2 старой корректной HMAC-копией, provisioning/runbook, V2 proof
+подмены ADA2 старой корректной HMAC-копией, UAT-проверка provisioning, V2 proof
 publication и клиентский cutover. Только затем physical Android ↔ Windows
 account/contact/message/media/group E2E; GitHub Releases не публиковать.
 
