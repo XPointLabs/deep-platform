@@ -8,7 +8,7 @@
     { "id": 1, "name": "Store", "requestMagic": ["MAU2"], "successMagic": ["MQR3"], "maxRequestBytes": 82344, "maxSuccessBytes": 776 },
     { "id": 2, "name": "Retrieve", "requestMagic": ["MAU2"], "successMagic": ["MRP1"], "maxRequestBytes": 792, "maxSuccessBytes": 1048556 },
     { "id": 3, "name": "Acknowledge", "requestMagic": ["MAU2"], "successMagic": ["MAR1"], "maxRequestBytes": 4792, "maxSuccessBytes": 77840 },
-    { "id": 4, "name": "ContactResolve", "requestMagic": ["XPU1", "XIQ1", "XPK1", "XUW1", "XUQ1"], "successMagic": ["XPO1", "XIS1", "XPC1", "XUS1"], "maxRequestBytes": 92992, "maxSuccessBytes": 131072 },
+    { "id": 4, "name": "ContactResolve", "requestMagic": ["XPU1", "XIQ1", "XPK1", "XUW1", "XUQ1", "XMG1"], "successMagic": ["XPO1", "XIS1", "XPC1", "XUS1", "XMC1"], "maxRequestBytes": 93032, "maxSuccessBytes": 131072 },
     { "id": 5, "name": "GroupControl", "requestMagic": ["GSW1", "GSQ1"], "successMagic": ["GSS1"], "maxRequestBytes": 33160, "maxSuccessBytes": 65535 }
   ],
   "wireContracts": [

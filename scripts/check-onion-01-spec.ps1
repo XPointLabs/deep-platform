@@ -47,9 +47,9 @@ if ((@($groupOperation.requestMagic) -join '|') -cne 'GSW1|GSQ1' -or
     Fail 'GroupControl exact pairing or bounds'
 }
 $contactOperation = $terminalOperations[3]
-if ((@($contactOperation.requestMagic) -join '|') -cne 'XPU1|XIQ1|XPK1|XUW1|XUQ1' -or
-    (@($contactOperation.successMagic) -join '|') -cne 'XPO1|XIS1|XPC1|XUS1' -or
-    [int]$contactOperation.maxRequestBytes -ne 92992 -or
+if ((@($contactOperation.requestMagic) -join '|') -cne 'XPU1|XIQ1|XPK1|XUW1|XUQ1|XMG1' -or
+    (@($contactOperation.successMagic) -join '|') -cne 'XPO1|XIS1|XPC1|XUS1|XMC1' -or
+    [int]$contactOperation.maxRequestBytes -ne 93032 -or
     [int]$contactOperation.maxSuccessBytes -ne 131072) {
     Fail 'ContactResolve exact pairing or bounds'
 }

@@ -5,6 +5,13 @@ Date: 2026-08-30
 Status: **`mlkem-native` v2.0.0 selected for whole ML-KEM/PQXDH; exact
 incremental ML-KEM required by Braid remains a separate provider gate**
 
+> **2026-09-23 identity decision:** [DR-0006](../../../decisions/DR-0006-pq-root-deep-id-clean-break.md)
+> supersedes the older conclusion below that ML-DSA is entirely post-V1.
+> ML-DSA for the permanent identity root is now a release requirement, while
+> per-message signatures and other authority-suite migrations are not. This
+> ML-KEM feasibility checkpoint is not ML-DSA provider approval: Android/
+> Windows key lifecycle, deterministic recovery, KAT and review remain open.
+
 ## Outcome
 
 Deep V1 targets a narrow C static-library ABI around vendored
@@ -67,6 +74,51 @@ obtain independent review before suite `0x0201` becomes releasable.
 The 24-word DeepRecoveryV1 work is independent of that provider and may proceed
 first.
 
+## Suite-substitution review (2026-09-12)
+
+Changing AEAD, HKDF hash or authentication signatures does not remove the
+incremental ML-KEM provider required by SPQR/Braid. They solve different
+problems:
+
+| Proposal | Security/implementation result | V1 decision |
+| --- | --- | --- |
+| AES-256-GCM instead of XChaCha20-Poly1305 | Both are approved 256-bit-key AEAD choices with a 128-bit tag. AES-GCM is widely hardware accelerated, but its short nonce MUST be unique for each key; XChaCha's 192-bit nonce is safer for random distributed nonce allocation. Either choice still consumes the same ML-KEM/Braid outputs. | Keep frozen XChaCha20 suite `0x0201`. Reopening the wire, nonce grammar and vectors provides no PQ gain and does not remove Rust. |
+| HKDF-SHA-256 instead of HKDF-SHA-512 | Both are adequate labeled combiners at the required output sizes. The hash choice neither implements ML-KEM nor changes Braid's split encapsulation API. | Keep the frozen SHA-512 transcript/KDF construction; no extra suite or negotiation. |
+| ML-DSA-65 in V1 | Adds post-quantum long-lived authentication, but not confidentiality or the continuous PQ ratchet. Public keys/signatures are large and the .NET platform implementation is unavailable on Android. | Required for the genesis-committed permanent ID under DR-0006, pending provider/recovery/wire gates; still not placed in each message. |
+| .NET 10 `MLKem` | Removes an application-owned native ABI only on platforms whose OS crypto provider supports it. The API exposes whole keygen/encapsulate/decapsulate, not Braid `Encaps1`/`Encaps2`. | Windows/Linux oracle and future whole-KEM provider candidate; not an Android or incremental-Braid replacement. |
+
+"AES-256" and "SHA-256" therefore do not mean a stronger suite than the
+current 256-bit-key XChaCha20/HKDF-SHA-512 construction. AES-256 and
+XChaCha20 have the same nominal key-search class; the operational difference
+here is nonce handling and platform/provider behavior. HKDF security is bounded
+by its input key material, labels and requested output as well as by the hash;
+changing SHA-512 to SHA-256 is not an upgrade. ML-DSA is orthogonal: it can add
+post-quantum authentication to selected long-lived signed objects, while
+ML-KEM/PQXDH and Triple Ratchet protect message confidentiality and recovery.
+
+Replacing only XChaCha20-Poly1305 with `AesGcm` would not remove the existing
+native crypto boundary either: the current Sodium provider also owns the
+cross-platform X25519 and Ed25519 operations, while the separate Rust
+`libcrux-ml-kem` candidate owns incremental Braid state. A native-free client is
+a valid future goal, but its acceptance gate is an Android-and-Windows provider
+for every required primitive and exact Braid split operation, not an AEAD name
+change.
+
+On the current Windows arm64 lab host (`.NET 10.0.9`, Windows build 26200),
+`MLKem.IsSupported` and `MLDsa.IsSupported` both return `true`. This is useful
+platform evidence, not cross-platform evidence: Microsoft's current support
+matrix lists ML-KEM and ML-DSA as unsupported on Android. Target Android 9/API
+28 therefore still needs an application-supplied implementation.
+
+Removing the native Rust Braid library is acceptable if a maintained,
+license-compatible implementation later exposes the exact split operations,
+passes the same vectors/zeroization/constant-time gates and runs on Android and
+Windows. Replacing Triple Ratchet with whole-ML-KEM-only refresh merely to use
+the .NET API is a protocol redesign and security regression, not a provider
+simplification. Mixing .NET ML-KEM on Windows with another Android production
+provider would retain two implementations without eliminating Braid, so it is
+not the V1 default.
+
 ## Candidate assessment
 
 ### .NET 10 `System.Security.Cryptography`
@@ -78,7 +130,8 @@ or browser support. The native interop classes depend on the underlying OS
 cryptographic provider.
 
 Verdict: preferred API shape and useful Windows/Linux oracle, but not a
-cross-platform Deep client provider today.
+cross-platform Deep client provider today. The current API is also monolithic:
+it cannot satisfy the separately required Braid `Encaps1`/`Encaps2` contract.
 
 References:
 
