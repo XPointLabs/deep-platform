@@ -29,7 +29,7 @@ generation. This is availability quorum, not a disjointness claim.
 ### 2.1 CONTACT-CODEC canonical record rule
 
 `CONTACT-CODEC-01` owns `DCB1`, `DCR1`, `DIA1`, `XIR1`, `XPS1`, `XPI1`,
-`XPP1`, `XIC1`, `XPK1`, `XPC1`, `XUR1`, and the
+`XPP1`, `XIC1`, `XPK1`, `XPC1`, `XUR1`, `XMG1`, `XMC1`, and the
 DR-0004 route/placement records `XRA1`, `XRC1`, `XRR1`, `XSS1`, `PMT2`, `PMS2`.
 They use exactly this one binary grammar; this section is the sole grammar source
 for those records:
@@ -346,6 +346,19 @@ threshold over the XPoint/OHTTP path. The threshold validates current
 ADC1/ADH1/ADP1 plus exact DID1 hash/address public key, DAB1/DCA1/DCB1/XIR1
 closure, but XPA1 exposes to the invite store only this canonical record:
 
+The bounded authority envelope uses
+`application/vnd.deep.contact-publication-authority-request.v1+octet-stream`
+and `application/vnd.deep.contact-publication-authority-response.v1+octet-stream`.
+The request is `5,000..155,210` bytes and carries one nonce-bound directory
+rollback floor, exact DCA1/DCR1/six-record route closure, operation/generation,
+protected DCR1, publication windows, owner Retrieve capability and the active
+publisher-device signature. The response is `72..93,092` bytes and repeats the
+exact network and nonce before `LP32(exactXPU1)`. Both sides reject trailing
+bytes, cross-network records, changed operation IDs and values outside these
+bounds. The client independently verifies the embedded XPA1 threshold, current
+view/placement and every publisher-authored XPU1 body field before it may stage
+the request for publication.
+
 | Tag | Value | Size |
 |---:|---|---:|
 | 1 | network ID | 16 |
@@ -384,10 +397,11 @@ expiry for kind 2; no resolver/decryption key is a witness input in either
 case. Witnesses validate exact DCR1 and its hash, and verify an authorized
 publisher-device signature over `(locatorHash32, DCR1Hash32,
 objectCiphertextHash32, routeClosureHash32, generation,
-predecessorObjectHash32, effectiveExpiresAt)`.
-The tuple is the exact 176-byte concatenation
+predecessorObjectHash32, effectiveExpiresAt, ownerRetrieveCapability32)`.
+The tuple is the exact 208-byte concatenation
 `locatorHash32 || DCR1Hash32 || objectCiphertextHash32 || routeClosureHash32 ||
-generation:u64be || predecessorObjectHash32 || effectiveExpiresAt:u64be`; the active DCB1 publisher
+generation:u64be || predecessorObjectHash32 || effectiveExpiresAt:u64be ||
+ownerRetrieveCapability32`; the active DCB1 publisher
 device signs
 `SIGINPUT("Deep/ContactResolver/V1/publisher-publication", 0x0201, tuple)`.
 No canonical record wrapper, length prefix, account ID or resolver capability is
@@ -403,7 +417,7 @@ XPA1 additionally contains `authorizationId32`, exact XPU1 `operationId32`,
 operationId32 || authorizedBodyHash32 || exactCurrentADH1CoreHash32)`.
 `authorizedBodyHash32` is
 `SHA256-D("Deep/ContactResolver/V1/XPU-authorized-body", canonical XPU1 tags
-1..6 and 16..25)`, explicitly excluding the XPA1 field itself. Before signing,
+1..6, 16..25 and 27)`, explicitly excluding the XPA1 field itself. Before signing,
 every directory witness independently verifies that XPU1 tags 3/4 equal section
 3.0 under its exact current XNV1/PMT2 context and that tag 16 selects the same
 InviteResolver replicas. XPA1 lifetime cannot exceed its
@@ -426,10 +440,11 @@ The exact XPU1 tags are:
 | 24 | `SHA256(exactRouteClosure)` | 32 |
 | 25 | exact verified `XRR1/XRA1/XRC1/XSS1/PMT2/PMS2` route closure | `4143..23295` |
 | 26 | exact XPA1 | canonical bytes |
+| 27 | random owner-only Retrieve grant capability | 32 |
 
 The XPU1 canonical size is
-`456 + tag21Bytes + exactRouteClosureBytes + exactXPA1Bytes`; its closed
-maximum is therefore `456 + 65,575 + 23,295 + 3,666 = 92,992` bytes. No other request
+`496 + tag21Bytes + exactRouteClosureBytes + exactXPA1Bytes`; its closed
+maximum is therefore `496 + 65,575 + 23,295 + 3,666 = 93,032` bytes. No other request
 inherits this exception and neither field may be padded to reach the maximum.
 
 For a permanent DID1, `locatorHash32` is the exact `permanentLocator32` derivation
@@ -446,6 +461,11 @@ bytes fork-latch the locator. A successor never extends any signed inner expiry.
 The store verifies XPA1 authorization ID, operation ID, authorized body hash and
 time window before reserving it. Reservation and publication CAS are one durable
 saga: `Available -> Reserved(requestHash) -> Committed(commitCertificate)`.
+Tag 27 is generated and retained in the publisher's protected account state,
+stored only as a domain-separated lookup digest by the service, never returned by resolve,
+and never included in DCB1, DCR1, XIR1, XRR1 or the route closure. It authorizes
+only privacy-routed Retrieve-grant acquisition for this exact publication and
+must differ from the route's public Deposit capability.
 Crash in `Reserved` reconciles both replicas; it never makes the authorization
 available to different bytes. Same operation/request exact-replays; the same
 authorization or operation with changed bytes returns `Conflict`.
@@ -907,6 +927,32 @@ the route service. These totals are the complete canonical grammar calculation:
 `12 + 16*8 + 410 = 550`, and omitting only tag 16 gives
 `12 + 15*8 + 358 = 478`; V1 has no reserved extension field or padding.
 
+`PMA2` (mailbox-directory authority) has 16 fields:
+
+| Tag | Value | Size / bound |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2..3 | authority generation, predecessor PMA2 core hash | `8,32`; predecessor is ZERO32 iff generation is zero |
+| 4 | random mailbox-authority ID | 32 |
+| 5..6 | Deposit and Retrieve MCG2 issuer Ed25519 public keys | `32,32`; nonzero and distinct |
+| 7 | minimum accepted MCG2 generation | u64be, `>=1` |
+| 8 | maximum MCG2 lifetime seconds | u32be, `60..86400` |
+| 9 | mailbox authorization algorithm profile | u16be, exactly `1=MAU2/MCG2-v2` |
+| 10..12 | issued-at, not-before, expires-at | u64be; `issuedAt<=notBefore<expiresAt`, lifetime at most 14 days |
+| 13 | authorizing XNA1 CoreRef | 38 |
+| 14 | exact XNA1 directory-witness-policy hash | 32 |
+| 15 | root receipt count | u8, root threshold..8 |
+| 16 | sorted root receipts | exactly `96*tag15`: `rootKeyId32 || Ed25519 signature64` |
+
+PMA2 is `401 + 96*R` bytes, R=`root threshold..8`. Root receipts sign tags
+1..14 using `SIGINPUT("Deep/XPoint/V1/PMA2/root", 0x0201, projection)` and its
+core is `SHA256-D("Deep/XPoint/V1/PMA2/core", projection)`. Tags 13/14 must equal
+the current verified XNA1 authority. A successor retains network and authority
+ID, increments generation exactly and names the accepted predecessor core. The
+two issuer keys are role-separated; an MCG2 issued for one domain cannot be
+verified with the other. PMA2 contains no service endpoint, TLS pin, release
+certificate, account/device/holder identifier, route or client entitlement.
+
 `PMT2` (mailbox projection) has 16 fields:
 
 | Tag | Value | Size / bound |
@@ -1001,6 +1047,83 @@ reserved fixed zero and is intentionally included to prohibit extension. The
 core is `SHA256-D("Deep/XPoint/V1/XRR1/core", projection)`. The resolver returns
 this complete client closure only inside the read-capability-protected response;
 the deposit service receives only tag 10 or a tag-15 replica capability.
+
+### 3.7 Privacy-routed mailbox grant acquisition: `XMG1` / `XMC1`
+
+`MAU2/MCP2/MCG2` remains the single mailbox authorization wire used inside
+ONION-01 Store/Retrieve/Acknowledge. Its holder identity is clean-break state:
+one independently generated random Ed25519 key per reachability direction and
+local account generation. It is stored only in account-owned protected storage,
+is never derived from or converted to a `SessionId`, and is distinct from
+account, device, recovery, DPM1 mailbox-role, route-owner and sealing keys.
+
+A client holding a verified current XRR1 route closure obtains short-lived MCG2
+grants through the existing `ContactResolve=4` onion operation. Direct Registry
+issuance, JSON invitations and public grant endpoints are forbidden. `XMG1`,
+version 1, suite `0x0201`, has exactly 12 fields:
+
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2 | random grant operation ID | 32 |
+| 3 | exact resolver locator hash used by XPU1/XIQ1 placement | 32 |
+| 4 | exact role-scoped mailbox grant capability | 32 |
+| 5 | reachability-scoped holder Ed25519 public key | 32 |
+| 6 | requested MCG2 domain | 1; `1=Deposit`, `2=Retrieve` |
+| 7 | exact current PMT2 ArtifactRef | 38 |
+| 8 | exact current PMS2 hash | 32 |
+| 9 | issued-at Unix seconds | 8 |
+| 10 | expires-at Unix seconds | 8 |
+| 11 | random request nonce | 32 |
+| 12 | holder proof-of-possession signature | 64 |
+
+XMG1 is exactly 435 bytes. Tag 12 signs the canonical projection tags 1..11
+under `SIGINPUT("Deep/ContactResolver/V1/XMG1", 0x0201, projection)`. Its
+window is non-empty and at most 300 seconds. Tags 7/8 must equal the exact
+verified placement carried by the XRR1 closure; the request neither carries nor
+permits lookup by DeepAccountId, DeepDeviceId, DID1, DPD1 or DPM1.
+
+The service uses tag 3 only to select the exact two resolver replicas, resolves
+tag 4 only as a random capability in that publication-bound route state, and
+verifies the full current XRR1/XRA1/XRC1/XSS1/PMT2/PMS2 closure,
+then atomically journals the request. A Deposit request requires exact XRR1 tag
+10. A Retrieve request requires exact owner-only XPU1 tag 27; using either
+capability for the other domain is rejected. The owner capability is never
+returned by a public resolve. The service issues one exact current-epoch MCG2
+grant whose network, domain and holder key equal the request, while epoch and
+placement equal the verified XRR1/PMT2/PMS2 route closure. XMG1 tag 4 is only a role-scoped authorization
+secret and is never interpreted as the placement identifier.
+For the grant, `PlacementCommitment` is exactly
+`MailboxPlacementCommitment.Compute(BlindedPlacementId(XRR1.tag10))`,
+`MembershipCommitment` is exactly the independently authenticated current
+mailbox-topology commitment, and the current epoch must equal both that topology
+epoch and `PMS2.tag4`. A client refreshes the grant before the current epoch
+expires; the issuer never fabricates a next-epoch membership assertion from a
+current PMS2.
+Grant expiry is the minimum of XRR1, XRC1, PMT2, PMS2 and issuer validity.
+
+`XMC1`, version 1, suite `0x0201`, has exactly 8 fields:
+
+| Tag | Value | Size |
+|---:|---|---:|
+| 1 | network ID | 16 |
+| 2 | exact grant operation ID | 32 |
+| 3 | result | 2; `1=Success`, `2=UnknownOrExpired`, `3=RateLimited`, `4=Unavailable`, `5=Conflict` |
+| 4 | authenticated server time | 8 |
+| 5 | SHA-256(exact XMG1) | 32 |
+| 6 | response expires-at Unix seconds | 8 |
+| 7 | SHA-256(exact verified route closure), or ZERO32 on non-success | 32 |
+| 8 | exact current MCG2, or empty on non-success | `0 or 272` |
+
+XMC1 is 206 bytes on failure and 478 bytes on Success. Success requires one
+canonical current grant; an empty grant is required for every non-success
+result. The client independently verifies its issuer signature, exact
+request/hash, holder/domain/network, current epoch, current mailbox-topology
+membership, PMT2/PMS2 route closure, route-closure hash and effective validity
+before atomically installing the grant. Same operation ID with changed request
+or result is a permanent conflict;
+lost response exact-replays the byte-identical XMC1. The service stores no
+account/device identity and logs no reachability capability or holder key.
 
 ## 4. Rotation, quotas and abuse
 

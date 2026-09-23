@@ -815,24 +815,29 @@ issued. It does not bind the latest mutable directory head: account admission an
 routine ADH1 renewal advance directory freshness without rotating XVP1/XNV1/XNH1
 or PMT2. Current ADH1/ADP1/DTT1 verification remains mandatory and independent.
 
-`PMA2` authorizes one directory-threshold key set, network ID, minimum reader,
-mailbox algorithm and bounded validity interval. The exact `PMT2`/`PMS2` binary
+`PMA2` authorizes one directory-threshold policy, network ID, role-separated
+Deposit/Retrieve MCG2 issuer keys, minimum grant generation, mailbox algorithm
+and bounded validity interval. It is root-threshold signed; neither a single
+Registry response nor a mailbox node can replace its issuer keys. The exact
+`PMA2`/`PMT2`/`PMS2` binary
 records, selection input, ranking hash and threshold projections are frozen in
 [CONTACT-RESOLVER-V1 §3.6](CONTACT-RESOLVER-V1.md#36-exact-route-and-mailbox-closure).
 No field may be resolved from an unsigned Registry response.
 
 Verification requires all of the following:
 
-1. every PMT2 node exists as an unrevoked `Mailbox`-capable XND1 in exact XNV1;
-2. node ID, public origin and current/next SPKI in PMT2 exactly match the XND1
+1. PMA2 is signed by the exact current XNA1 root threshold, binds that XNA1
+   CoreRef and directory-witness-policy hash, and covers the trusted-time interval;
+2. every PMT2 node exists as an unrevoked `Mailbox`-capable XND1 in exact XNV1;
+3. node ID, public origin and current/next SPKI in PMT2 exactly match the XND1
    projection; XND1 additionally supplies failure-domain and traffic-key data;
-3. no eligible PMT2 mailbox node is omitted unless the signed XNV1 policy records
+4. no eligible PMT2 mailbox node is omitted unless the signed XNV1 policy records
    its bounded drain/quarantine reason;
-4. XRR1 supplies the exact random blinded placement value and commitments needed
+5. XRR1 supplies the exact random blinded placement value and commitments needed
    by the ported PMT2/PMS2 verifier, never an account-derived selector;
-5. PMS2 names exactly the replicas recomputed by
+6. PMS2 names exactly the replicas recomputed by
    `Rendezvous-SHA256-v2`; a Registry signature cannot override that ranking.
-6. PMT2 witness receipts verify under the current XNA1 directory-witness policy;
+7. PMT2 witness receipts verify under the current XNA1 directory-witness policy;
    tag 14 is validated as a canonical ADH1 CoreRef and retained for audit, but is
    never compared with the latest ADH1 CoreRef.
 

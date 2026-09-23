@@ -75,8 +75,18 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
 
 ## Принятые решения
 
+- До отдельного письменного решения владельца единственным production
+  operator и владельцем custody для offline root, Registry/DTT1 threshold,
+  MSG authenticated-evidence, Contact/XPK, Group GSR1/DCR1, Android release
+  signing и Windows release signing является **Mr. X**. Это operational
+  custody, а не перенос ownership исходного кода или protocol semantics из
+  репозиториев, указанных ниже.
 - Пользователей production ещё нет: выполняется один destructive clean break
   без миграции, dual-read, legacy parser или downgrade.
+- [`DR-0006`](../survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md)
+  требует PQ-ключ, закреплённый в корне постоянного Deep ID уже при создании.
+  Старые DID1/DAB1 и Ed25519-only succession не входят в release graph;
+  exact replacement wire/provider ещё не frozen и блокирует выпуск.
 - Текущие Session-derived identity, DPE1/DMC1 и group bytes не являются
   production compatibility surface и не ограничивают новый дизайн.
 - Первый публичный релиз использует новое поколение account/device/database,
@@ -85,11 +95,12 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   outbox, deduplication, attachments и call signaling не зависят от него.
 - Direct P2P mesh и on-prem являются обязательными архитектурными профилями,
   но их runtime-реализация не входит в первый релиз.
-- Первая production topology может состоять из трёх XNode и обеспечивает один
+- Первая production topology состоит ровно из трёх XNode и обеспечивает один
   точный трёхузловой privacy route. Она **не** заявляет полностью независимый
   fallback, operator diversity или устойчивость к отказу общего провайдера.
-- После появления не менее шести узлов отдельный gate может активировать
-  failure-domain-disjoint primary/fallback.
+- Расширение до шести отложено до готовности приглашать реальных пользователей;
+  после этого отдельный gate может активировать failure-domain-disjoint
+  primary/fallback при проверенной независимости failure domains.
 - Reality является первым pluggable carrier, а не единственным определением
   censorship resistance. Bootstrap и bridge distribution являются отдельной
   частью anti-censorship системы.
@@ -117,7 +128,12 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   [`release-scope.v1.schema.json`](release-scope.v1.schema.json) — его
   машиночитаемые scenario/evidence IDs, owners и exact pass predicates.
 - [`SESSION-PARITY-AND-SOURCES.md`](SESSION-PARITY-AND-SOURCES.md) —
-  функциональный/performance baseline Session и правила upstream reuse.
+  функциональный/performance baseline Session, узкие выводы из
+  Signal/Tor/Matrix/Briar/Cwtch и правила upstream reuse без нового
+  runtime/wire зоопарка.
+- [`LOCAL-DEV-E2EE-AUTHORITY.md`](LOCAL-DEV-E2EE-AUTHORITY.md) — отложенный
+  post-release DEV-LOCAL-ONLY trust domain для настоящих DPK2/DPH2/DPE2/TRS1;
+  не является зависимостью текущего production release.
 - `CONTACT-AND-GROUP-PROTOCOL-V1.md` — permanent transport-neutral DID1,
   one-time invites, initial contact, multi-device и small group semantics.
 - `CONTACT-RESOLVER-V1.md` — invite publication/resolve, long-lived XIR1 и

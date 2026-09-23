@@ -345,14 +345,14 @@
     {
       "scenarioId": "CENS-BLOCK-MATRIX-V1",
       "evidenceId": "EVD-CENS-BLOCK-MATRIX-V1",
-      "title": "DNS, SNI, IP, path, active-probe, UDP, carrier, rotation, APK and MSIX extraction matrix",
+      "title": "DNS, SNI, IP, path, active-probe, UDP, carrier, rotation, APK and Windows ZIP extraction matrix",
       "blocking": true,
       "ownerPackage": "BRIDGE-01",
       "ownerRepository": "deep-devops",
       "releaseVerifierPackage": "E2E-01",
       "evidenceKind": "external-network censor matrix",
       "platforms": ["android-arm64-phone-a", "android-arm64-phone-b", "windows-x64", "windows-arm64"],
-      "cases": ["direct endpoints blocked", "DNS poisoned", "SNI blocked", "embedded IPs blocked", "invalid active probe", "UDP blocked", "Reality unavailable", "descriptor rotated while queued", "all APK and MSIX resources treated as known"],
+      "cases": ["direct endpoints blocked", "DNS poisoned", "SNI blocked", "embedded IPs blocked", "invalid active probe", "UDP blocked", "Reality unavailable", "descriptor rotated while queued", "all APK and Windows ZIP resources treated as known"],
       "passCriteria": { "noDirectFallback": true, "textContactFileRemainAvailableThroughAnAuthorizedRemainingCarrier": true, "udpBlockUsesMaskedTcpAudio": true, "apkAndMsixExtractionTested": true }
     },
     {

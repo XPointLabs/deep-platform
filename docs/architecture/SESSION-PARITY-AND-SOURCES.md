@@ -1,7 +1,7 @@
-# Session parity baseline and upstream source policy
+# Competitor baselines and upstream source policy
 
 Статус: **нормативный product comparison для XPoint v1**  
-Проверено: 30 августа 2026 года.
+Проверено: 12 сентября 2026 года.
 
 ## 1. Цель сравнения
 
@@ -101,3 +101,25 @@ Session build находятся только в machine contract.
   reference для per-contact queues, route replacement и call event model;
 - [Tor Pluggable Transports](https://spec.torproject.org/pt-spec/) — reference
   для carrier separation и bridge distribution, не XPoint wire dependency.
+
+## 6. Минимальные выводы из других систем
+
+Эти системы являются design references, а не dependency list.
+Заимствуется узкий инвариант; чужой runtime, wire, identifier,
+trust root или federation model не становится частью Deep.
+
+| Reference | Что принять | Чего не добавлять | Срок |
+| --- | --- | --- | --- |
+| Signal | asynchronous authenticated prekeys, PQXDH/Triple Ratchet state-machine discipline, bounded skipped keys, deterministic deletion and identical cross-platform behavior | libsignal wire/private API, AGPL runtime без decision, ещё один crypto suite | V1 crypto boundary; уже закреплено в `DEEP-CRYPTO-V1-DRAFT.md` |
+| Tor | persistent guards, path constraints, separation onion semantics from pluggable transports, non-enumerable bridge distribution | Tor clone, custom mixnet или заявление защиты от global observer | guards/carrier boundary в V1; traffic countermeasures только после measurement |
+| Session | recipient-scoped durable asynchronous storage, repairable swarms, transport of ordinary control events through the message plane | Session IDs/wire/runtime, static-key E2EE или публичный enumerable bridge pool | V1 functional/performance baseline |
+| Matrix/Element | воспроизводимый operator experience, explicit deployment profiles, health/backup/upgrade/rollback evidence | federation/event graph, homeserver-bound user IDs и JSON wire в E2EE/onion path | installer/release hardening после DEV0 |
+| Briar | узкие discovery/link/store-forward interfaces, которые не меняют logical message identity | Bluetooth/Wi-Fi runtime и один общий routing algorithm для Internet и mesh | только post-V1 mesh profile |
+| Cwtch/Ricochet/Tox | metadata-first threat questions и adversarial measurement scenarios | onion identity as Deep account, direct-P2P default или новый runtime dependency | threat-model input; не implementation backlog |
+
+Поэтому V1 сохраняет один crypto suite, один application wire,
+один durable outbox и один onion frame. Reality и HTTPS-stream —
+плагины одного узкого carrier contract, а не две сетевые
+архитектуры. Новая dependency допускается только если она
+заменяет custom security-critical code и проходит license, provenance,
+ABI, update-owner и cross-platform gates.

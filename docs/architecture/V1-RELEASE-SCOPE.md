@@ -17,10 +17,16 @@ V1 — первый публичный production-релиз нового Deep-n
 - отдельные device keys, ratcheted 1:1 E2EE и owner-sequenced small-group
   state с pairwise ratcheted fan-out;
 - никакого импорта старых pre-production accounts/history/keys.
+- постоянный Deep ID создаётся только после genesis-commitment и
+  PQ-authorized succession из [DR-0006](../survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md);
+  старый DID1/DAB1 и Ed25519-only account не являются release-compatible.
 
 V1 использует только профиль `OfficialXPoint3` из
 [`DEPLOYMENT-PROFILES.md`](DEPLOYMENT-PROFILES.md). P2P mesh и on-prem остаются
 архитектурными requirements, но не доступны пользователю и не блокируют V1.
+На старте размещаются ровно три XNode. Переход к шести выполняется позднее,
+когда продукт готов к приглашению реальных пользователей; disjoint fallback
+тогда требует отдельного доказательства независимых failure domains.
 
 Этот файл является source of truth для набора функций и release gates. Старые
 списки, требующие iOS или fully disjoint 3+3 fallback от трёх узлов, не
@@ -52,7 +58,7 @@ data class и boundary rule, а exact signed deadlines берутся из canon
 | Platform | V1 status |
 | --- | --- |
 | Android arm64, поддерживаемые physical phones | supported, blocking evidence |
-| Windows x64 и arm64 | supported, blocking evidence |
+| Windows x64 и arm64 | self-contained ZIP; supported, blocking evidence |
 | iOS/iPadOS/macOS | compiled/unverified MAY exist, не supported и не blocking |
 | Linux | не входит в V1 GUI scope |
 
@@ -188,7 +194,9 @@ Release блокируют:
 6. transport-independent semantic dedup and durable outbox;
 7. independent crypto/privacy/security review без открытых critical/high;
 8. SBOM, pinned native sources, reproducible builds и license approval для
-   borrowed GitHub code.
+   borrowed GitHub code;
+9. signed client/node/installer update manifest, exact artifact digests,
+   monotonic security/version floor, rollback prevention и verify-before-run.
 
 Post-quantum minimum suite следует утверждённому crypto profile. Если
 production-quality cross-platform ML-KEM/Triple-Ratchet provider не прошёл
@@ -398,6 +406,8 @@ Blocking scenario `PRIVACY-OPERATIONS-EVIDENCE-V1`, owner `E2E-01`, объеди
 - три nodes находятся минимум на трёх physical hosts; общая operator/ASN
   зависимость явно задокументирована и не выдаётся за diversity;
 - dependency/security scan не содержит незакрытых critical/high findings;
+- tampered, incomplete, wrong-channel и rollback update manifests отвергаются
+  до запуска нового кода или мутации installation state;
 - независимые lead-developer и security reviews завершены после freeze.
 
 ## 8. Release claim language

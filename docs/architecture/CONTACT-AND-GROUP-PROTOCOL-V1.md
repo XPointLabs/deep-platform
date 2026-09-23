@@ -156,7 +156,7 @@ DMD1 has no wall-clock expiry. Freshness is monotonic DRS1/directory continuity,
 not periodic resigning with a recovery-derived key. Enrollment and revocation
 are explicit recovery-authorized ceremonies that advance DMD1.
 
-### 4.1.0 Release clean-break target: `DID2` / `DAB2` (not yet frozen)
+### 4.1.0 Release clean-break target: `DID2` / `DAB2` (vectors pending)
 
 The compact, permanent Deep ID remains a 90-character lowercase Bech32m value
 with HRP `deep`, so copying and QR sharing do not require carrying a 1952-byte
@@ -167,32 +167,86 @@ hash matched before accepting any binding; the compact text alone is not a
 public-key certificate. The read capability permits retrieval, not signing or
 account authority. It is generated independently of either signing seed.
 
-The proposed `DID2` record has exactly three fields: independent Ed25519 root
-verification key (32 bytes), ML-DSA-65 root verification key (1952 bytes), and
-resolver read capability (16 bytes). The keys are generated at genesis from
-the separate V2 root seeds specified by the crypto profile. The wire header
-must explicitly close the new version and root suite; the transcript and
-record hash must bind both algorithm identities and roles so neither key can
-be reinterpreted under another algorithm. It has no network, device, account,
-time or route field. The encoded text must reconstruct or fetch *only* this
-immutable credential; returning a mutable pointer or allowing an Ed-only
-introduction of the PQ key is forbidden.
+The proposed `DID2` record uses the canonical tagged-field grammar of section
+3, with magic `DID2`, version `2`, root-identity suite `0x0301`, field count
+`3` and zero reserved values:
 
-The proposed `DAB2` preserves per-realm monotonic binding lineage, exact
-predecessor, DPA1 account closure and fork latch, but every genesis and
-successor binding carries three independently verified signatures over the
-same canonical unsigned projection: Ed25519 root, ML-DSA-65 root and exact
-DPA1 account role. Acceptance is a three-way **AND**. The verifier first
-matches the bound DID2 hash and fixed genesis keys, then checks realm and
-lineage, then all three signatures before any account, contact or directory
-state mutation. Unknown algorithms, a substituted PQ key, an Ed-only binding,
-or an old `DAB1` fail closed; there is no key-introduction transition.
+| Tag | Immutable root-credential value | Bytes |
+|---:|---|---:|
+| 1 | Ed25519 root verification key | 32 |
+| 2 | ML-DSA-65 root verification key | 1952 |
+| 3 | resolver read capability | 16 |
 
-This target is not a frozen wire contract. Before coding it into production,
-the machine registry and positive/negative vectors must fix header
-version/suite, exact DID2/DAB2 sizes, the record-hash and three signature
-domains, compact-text reconstruction, identity realm, artifact type, and
-cross-platform ML-DSA seed key generation. The same change must re-pin DCA1,
+Its exact length is 2036 bytes. `DID2RecordHash32` is
+`SHA256-D("Deep/Application/V2/record-hash/DID2", exactDID2)`; this domain
+and the version/suite in the hashed record bind both algorithm identities and
+roles. The keys are generated at genesis from the separate V2 root seeds in
+the crypto profile. The record has no network, device, account, time or route.
+The compact text cannot reconstruct the public keys: resolution must return
+the exact DID2, compare its hash and capability against the text, then validate
+the current account closure. A mutable pointer or later Ed-only PQ-key
+introduction is forbidden. DCB1's old 32-byte address-key projection must be
+replaced by the exact DID2 record so a contact importer can independently
+verify the credential after fetching DCR1.
+
+The proposed `DAB2` uses magic `DAB2`, version `2`, suite `0x0301`, field count
+`10`, and the following closed fields. The 32-byte realm is
+`SHA256-D("Deep/Application/V2/address-binding-realm",
+networkId16 || deploymentProfileId:u16be)`.
+
+| Tag | Value | Bytes |
+|---:|---|---:|
+| 1 | exact DID2 record hash | 32 |
+| 2 | identity realm | 32 |
+| 3 | binding generation `u64be` | 8 |
+| 4 | predecessor DAB2 hash; zero only at generation 0 | 32 |
+| 5 | DeepAccountId hash | 32 |
+| 6 | account generation `u64be`, at least 1 | 8 |
+| 7 | exact DPA1 ArtifactRef | 38 |
+| 8 | Ed25519 root signature | 64 |
+| 9 | ML-DSA-65 root signature | 3309 |
+| 10 | DPA1 account-role Ed25519 signature | 64 |
+
+The full record is exactly 3711 bytes. The canonical unsigned projection
+contains tags 1..7 under the same magic/version/suite with field count `7`,
+exactly 250 bytes. Signatures cover this same projection under distinct
+`SIGINPUT` labels `Deep/Application/V2/address-binding/root-ed25519`,
+`Deep/Application/V2/address-binding/root-mldsa65`, and
+`Deep/Application/V2/address-binding/account-ed25519`, with suite `0x0301`.
+The FIPS 204 context for tag 9 is exact ASCII `Deep/DAB2/V2/root`; this is a
+pure-message ML-DSA-65 signature, not a prehash. The record hash is
+`SHA256-D("Deep/Application/V2/record-hash/DAB2", exactDAB2)`. Its artifact
+type is `0x1002`, with exact canonical length 3711. The old `0x1001` type
+rejects; it is not an alias.
+
+DAB2 preserves per-realm monotonic binding lineage, exact predecessor, DPA1
+account closure and fork latch. Every genesis and successor binding has all
+three independently verified signatures: Ed25519 root, ML-DSA-65 root and
+exact DPA1 account role. Acceptance is a three-way **AND**. The verifier first
+matches the DID2 hash and fixed genesis keys, then checks realm and lineage,
+then all three signatures before any account, contact or directory mutation.
+Unknown algorithms, a substituted PQ key, an Ed-only binding, or an old DAB1
+fail closed; there is no key-introduction transition.
+
+ML-DSA issuance is hedged with fresh randomness. Restoring the same 24-word
+phrase MUST reconstruct the identical DID2, then resolve and verify the
+already-published exact DAB2 lineage. It MUST NOT silently re-author a
+generation-zero DAB2: a second valid signature would change the record hash
+and create a fork. Reissuance is an explicit account ceremony with a closed
+predecessor, not a side effect of device restore.
+
+The V2 contact safety number is
+`SHA256-D("Deep/Application/V2/contact-safety-number", material160)`, where
+`material160 = networkId16 || lower(DPA1Hash32) || lower(accountGeneration8)
+|| lower(DID2RecordHash32) || upper(DPA1Hash32) ||
+upper(accountGeneration8) || upper(DID2RecordHash32)`; `lower/upper` sort by
+the exact DPA1 hash. Both bindings must be non-forked, from distinct accounts
+on the same network. Including the DID2 hashes makes a changed or substituted
+PQ root visible to the users; the V1 account-only safety number is rejected.
+
+This target is not yet an activated wire contract. Its candidate machine
+allocation, transcript vectors and cross-platform ML-DSA seed checks do not
+authorize release issuance. The same change must re-pin DCA1,
 DCB1, DCR1, DPH2/DAO1, XPK/contact locator, QR, safety number and database
 sizes/closures. No old DID1/DAB1 parser, row or UAT account survives that
 cutover. Until then, this section is an architecture constraint, not a claim
@@ -273,6 +327,21 @@ days. An implementation MUST NOT extend reusable prekeys or retained user
 ciphertext indefinitely to make a stronger claim.
 
 ### 4.2 Contact-publication authorization: `DCA1`
+
+The release clean-break uses `DCA1` version 2, suite `0x0301`. It keeps the
+473-byte field grammar and the 401-byte unsigned projection below, but tag 13
+is the exact DID2 record hash and tag 14 is the exact DAB2 ArtifactRef: type
+`0x1002`, canonical length 3711, canonical DAB2 record hash. Its account-role
+signature covers
+`SIGINPUT("Deep/Application/V2/contact-publication-authorization", 0x0301,
+projection)`. Verification MUST close over the exact DID2, DAB2, DPA1 and
+DMD1; the publisher device MUST be active in that DMD1. Time authority is the
+half-open interval `[notBefore, expiresAt)`. A DAB1 reference, DID1 hash,
+version 1 signature domain or suite `0x0201` MUST NOT be accepted on the
+clean-break path. Reusing the magic and length does not imply a dual decoder.
+
+The following version 1 description records the pre-cutover implementation;
+it is not a compatibility requirement for the release:
 
 `DCA1`, version 1, suite `0x0201`, lets one active device rotate short-lived
 contact bundles without loading the recovery phrase every month. It is issued

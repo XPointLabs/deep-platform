@@ -352,6 +352,14 @@ device`, `read` and `expired`; `Accepted` не называется delivered.
 → E2EE open → device/group authentication → semantic dedup → transactional
 state apply + inbox cursor/ACK.
 
+Коммит одного только pre-key/ratchet state MUST NOT разрешать transport ACK:
+аутентифицированный application event должен быть либо атомарно сохранён
+в inbox вместе с переходом, либо защищённо staged для точного восстановления
+после crash до удаления транспортной копии. Повторный ciphertext после уже
+сохранённого ratchet-перехода без recoverable application event не считается
+успешной материализацией. ACK выдаётся лишь после durable semantic dedup и
+доступности event для чтения клиентом.
+
 Semantic dedup key: `(protocolGeneration, conversationId, semanticMessageId,
 authorDeviceId)`. Одинаковый ключ с другими authenticated plaintext bytes —
 permanent fork/security error, а не duplicate. Tombstone хранится не меньше

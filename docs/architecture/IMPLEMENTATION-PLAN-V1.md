@@ -35,7 +35,8 @@ Rules for every package:
    commits. Unreviewed working-tree bytes are not an API contract.
 10. No package pushes, publishes or deploys production without separate user
     authorization.
-11. `CB0` from `NEXT-SPRINT.md` is the first production-graph change. A package
+11. `ID-PQ-CB` and then `CB0` from `NEXT-SPRINT.md` are the first
+    production-graph changes. A package
     may consume immutable Session reference vectors, but may not introduce a
     compiled `LegacyV1`, migration assembly, compatibility adapter or fallback.
 
@@ -46,7 +47,7 @@ GOV-01 ───────────────┐
 CRYPTO-01 ────────────┼─> REG-01
 ARCH-01 ──────────────┘
 
-REG-01 -> ID-01 -> STORE-01
+ID-PQ-CB -> REG-01 -> ID-01 -> STORE-01
 REG-01 + ID-01 + CRYPTO-01 -> E2EE-01 -> APPLICATION-CORE-CODEC-01
 STORE-01 + E2EE-01 + APPLICATION-CORE-CODEC-01 -> MSG-01 -> DEVICE-01
 APPLICATION-CORE-CODEC-01 -> ATTACHMENT-CODEC-01 -> BLOB-01
@@ -88,17 +89,23 @@ all runtime packages -> COMPOSE-01 -> E2E-01
 The shortest useful vertical milestone is:
 
 ```text
-CB0 legacy production-graph removal -> diagnostic local DEV0 evidence
+ID-PQ-CB root/provider/wire freeze -> CB0 legacy production-graph removal
+-> diagnostic local DEV0 evidence
 -> offline account -> loopback ratchet/outbox -> one-carrier three-hop text
 -> arbitrary offline contact -> second carrier/rotation -> groups/files/push
 -> relay-only calls -> full evidence
 ```
 
+DR-0006 supersedes the former "ML-DSA post-V1" assumption for the **permanent
+identity root only**. This does not pull PQ signatures into every message or
+promise a fully PQ network. Old DID1/DAB1, exact DPH2 sizes and account
+fixtures must be re-frozen before a release-compatible vertical run.
+
 DEV0 is allowed to be red only when it names the exact missing Deep-native
 package/service/authority. It is never made green by re-enabling a Session,
 mock, direct or unauthenticated path. Non-clean-break findings from architecture
-reviews enter the dependency order only after this baseline; ML-DSA, MLS, mesh
-and on-prem runtime remain post-V1.
+reviews enter the dependency order only after this baseline; ML-DSA outside
+the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
 
 ## 3. Package catalogue
 
@@ -119,6 +126,21 @@ and on-prem runtime remain post-V1.
 - **integration consumer/evidence:** every package consumes the reviewed GOV-01
   commit; evidence is a scope manifest listing required platforms, suites,
   profiles, features, scenarios and evidence schemas.
+
+### ID-PQ-CB — genesis-committed permanent identity clean break
+
+- **ownerRepository:** `deep-protocol`, with separate consumer changes in
+  `deep-client-shared`, `deep-client-maui` and service repositories.
+- **dependsOn:** DR-0006 and reviewed managed ML-DSA provider feasibility.
+- **produces:** new canonical genesis root credential and compact ID, 24-word
+  restore contract, hybrid root-authenticated binding/succession, new magic and
+  suite allocations, machine vectors, hostile parser tests and retired DID1/
+  DAB1 manifest. All DPH2, DAO1, contact, QR, safety-number and storage
+  consumers are re-frozen in their owning packages; no dual reader.
+- **gate:** FIPS 204 KAT/differential/provider review on Android arm64 and
+  Windows x64/arm64; same-root recovery, independent PQ and Ed roles,
+  Ed-only forgery/PQ substitution/fork rejection, physical cross-device
+  verification. The current old-ID green tests are not release evidence.
 
 ### CRYPTO-01 — production provider and ABI decision
 
@@ -366,11 +388,106 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   dedup/fork latch; receipts and retention/tombstones.
 - **wire/API:** implements `IMessageDeliveryTransport` orchestration without an
   XPoint type. Stable semantic event ID is distinct from attempt/dedup tokens.
-- **implemented storage slice:** MAUI owns one account-wide SQLCipher DPK2
-  prekey store, one independently keyed DPE2 store per verified
+- **implemented storage/transport slice:** MAUI owns one account-wide SQLCipher
+  DPK2 prekey store, one independently keyed DPE2 store per verified
   contact/device/DPH2 tuple and a durable generation-bound DSC1 session catalog.
-  Restart/reset/zeroization and wrong-scope rejection pass `9/9`; the remaining
-  step is the Shared DPH2/TRS1 atomic adapter and real network dispatch.
+  Shared has the atomic DPH2/TRS1 adapter, account-owned exact pending-DPH2
+  restart reader, protected XRA1 metadata-sealing key custody and privacy-routed DAO1 transport;
+  clean production-project tests cover exact replay, crash recovery and
+  transport open/ACK boundaries. MAUI now binds the verified XRA1 proposal to
+  this protected key owner and current-device custody signer for local XRA1
+  authoring. The bounded Registry route-authority client derives the request
+  nonce, directory rollback floor, current DCA1 and exact XRA1 from that one
+  verified proposal, verifies the bound PMS2/XRC1/XSS1 response, and the MAUI
+  account owner can finish XRR1/XIR1 with the same current-device signer.
+  This capability has no startup caller and does not yet durably publish
+  DCB1/DCR1. Shared also binds exact retrieved MEO1 wire, cursor and external
+  digest to the current mailbox route, exact canonical DAO1, derived mailbox
+  operation ID and DAO1 hash before opening it through that protected key.
+  It checks the DPH2/DPE2 local recipient before returning bytes; this
+  bridge is exposed through the MAUI account runtime but has no receive-loop
+  caller yet and grants neither E2EE commit nor ACK. Ratchet-only DPH2/DPE2 commits also
+  do not grant ACK: the E2EE→MSG-01 inbox handoff must durably retain the
+  authenticated DMC2 across crash and materialize its semantic event first.
+  The clean SQLCipher session store now stages exact authenticated DMC2 in
+  schema generation 6 atomically with fresh DPE2 ratchet commits and can
+  recover it by exact operation/envelope after restart. A new account-wide
+  clean DMB1 generation-2 store can materialize verified direct DMC2 with
+  semantic dedup/fork and restart-safe readback. The clean MAUI account owner
+  now opens that store with a separate protected key and removes it on local
+  reset. Production mailbox receive
+  composition, protected staging retirement, group event application, and
+  initial-DPH2 ACK handoff remain missing. Protocol now recovers exact
+  authenticated SessionInit and optional first DMC2 from DPH2 alongside
+  responder TRS1, rejects altered ciphertext, and exposes a zeroizable
+  handoff. The clean SQLCipher session store generation 8 stages those
+  exact events atomically with initial TRS1, binds their hashes into the
+  initialization fingerprint, validates/reopens the batch, and retains exact
+  outbound DPE2 ciphertext in the same transaction as a send ratchet commit;
+  the verified account owner now materializes the batch atomically into DMB1,
+  and MAUI invokes this after a successful responder saga. ContactHello's
+  relationship and peer-directory/XUR1 endpoint fields, and the conversation
+  ID derived from relationship ID plus both account IDs, are checked before
+  inbox retention. Protocol now derives the safety number from two verified
+  non-forked DAB1 lineages and separately checks ContactHello's exact
+  DAB1/DMD1 fields and XUR1 author, DPD1 signature and creation-time validity.
+  Production DPH2/XPC1 promotion now retains the verified current initiator
+  checkpoint and recipient bundle; the Shared unsolicited responder invokes
+  this endpoint check before opening a conversation store. MAUI receive does
+  not invoke that path yet. It does not close XUR1's PMT2 placement reference
+  and cannot grant ACK. Durable relationship state and
+  ACK authority remain missing. The separate relationship-bound responder
+  API requires a pre-existing verified relationship. For a
+  new contact, the relationship ID exists only inside that authenticated
+  DPH2 payload. The prekey/session saga now supports a deferred store resolver:
+  authenticated initial material is available before a store is chosen, and
+  final exact replay can resolve an existing store without reopening prekey
+  secrets. Shared also derives a first-contact store scope from authenticated
+  SessionInit/ContactHello and validates a recovered catalog scope against
+  exact DPH2. The account-owned Shared responder now composes this deferred
+  store selection for unsolicited DPH2 and exposes the staged result through
+  the account-owned MAUI runtime, but applies no contact state or ACK;
+  MAUI mailbox receive still does not invoke it. The separate
+  relationship-bound responder API continues to require a pre-existing contact.
+  Protocol can now mint `VerifiedDph2Initiation` via the account-owned
+  encrypted-claim preview and current DMD1/XPC1 verification, without a
+  separate production `IDph2VerificationCallbacks` implementation. Inbound
+  DAO1 still has no receive composition supplying the verified local offering,
+  initiator freshness and placement to that path.
+  The previous event-only initial payload supplied only the XPC1 hash, not the
+  exact XPK1/XPC1 evidence. [`DR-0005`](../survival-program/decisions/DR-0005-inbound-dph2-claim-evidence.md)
+  is the accepted pre-activation clean break: carry the exact claim transcript
+  inside encrypted DPH2 initial payload and re-freeze vectors before composing
+  the responder verifier. Sender authoring and production structural read now
+  use the claim prefix; the account-owned production API now verifies the
+  encrypted XPK1/XPC1 transcript with current DMD1 freshness before prekey
+  reservation. Mailbox receive-loop authority composition and updated vectors
+  remain absent. No callback may treat the hash as claim proof.
+  Complete that clean-break, preserve one-time prekey replay/fork semantics,
+  and refuse ACK until contact state is durably applied. A
+  direct-DPE2 ACK receipt factory
+  now performs ratchet commit (or exact replay recovery) and account inbox
+  materialization before granting ACK, but is not composed into
+  the production receive loop.
+  Durable DCB1/DCR1 publication and MAUI receive composition are not yet
+  connected. Missing are production authority composition,
+  logical message outbox/inbox, real dispatch/materialization and device E2E.
+- **next vertical integration order:** first create and retain the recipient's
+  protected metadata-sealing X25519 key under the verified PMT2 reference
+  before device-signing XRA1 (the XRA1 author generates its authorization ID
+  only during authoring), publish
+  its key ID/public key through the verified route-closure flow, then reopen
+  the same private key only after its ID/public key match that exact current
+  XRA1; a newly generated key cannot silently replace an already published
+  key. Independently bind the current ContactV1 peer closure
+  and protected reachability holder to a verified deposit grant; replay the
+  durable exact DPH2 through DAO1/MAU2 until authenticated SessionAck or signed
+  expiry; bind self-retrieve grant and DAO1 open to the responder prekey/session
+  saga; commit the DMC2 event and ratchet/inbox state before minting ACK;
+  then connect one logical 1:1 outbox and a visible receive surface. Every
+  intermediate failure remains pending or fail-closed, never a synthetic
+  delivered/materialized status. Android↔Windows device evidence follows on
+  one clean commit and pinned signed policy.
 - **DB impact/removals:** new event/outbox/attempt/inbox/dedup/tombstone tables
   with atomic ratchet+materialization commits. Remove current Session-derived
   message rows and network-level exactly-once assumptions.
@@ -516,8 +633,13 @@ No other NETCODEC record inherits frozen status from that slice.
   Permanent resolve требует два independently verified `resolve-read` receipts;
   recipient protected cache пополняется только из authenticated XIS1 evidence и
   никогда не инициирует locator lookup. До runtime activation остаётся bounded
-  privacy-routed XPA1 authoring endpoint и его production client composition;
-  структурные XPA1, Registry bytes или успешный HTTPS сами по себе права не дают.
+  bounded nonce-bound XPA1 authoring endpoint, production client transport и
+  independent client-side exact XPA1/XPU1 re-verification уже реализованы;
+  account-owned device-custody caller уже связывает готовые DCR1/route bytes с
+  этим client; остаются full DCB/pre-key orchestration, durable XPU1
+  staging/publication и перевод HTTP-hosted terminal за XPoint/OHTTP ingress.
+  Структурные XPA1,
+  Registry bytes или успешный HTTPS сами по себе права не дают.
 - **wire/API:** the service never authors or substitutes ADC1: it verifies the
   exact DPA1 device-issuer signature and admits those bytes atomically into the
   current map plus append log. XPA1 binds one operation ID and exact XPU request
@@ -863,7 +985,7 @@ No other NETCODEC record inherits frozen status from that slice.
   matrix.
 - **produces:** exact codecs/vectors for DCB1/DCR1/DIA1, DMC2 kinds 2..4/14,
   XIR1/XPU1/XPO1/XPA1/XIQ1/XIS1/XPS1/XPI1/XPP1/XIC1/XPK1/XPC1/
-  XUR1/XUW1/XUQ1/XUS1;
+  XUR1/XUW1/XUQ1/XUS1/XMG1/XMC1;
   exact common-tag derivation from a verified current XNV/PMT capability plus
   per-magic tag-16 shard key; effective-expiry rule; exact routable XRR closure;
   signed hash-closed support packages. Public request encoders do not accept raw
@@ -876,6 +998,11 @@ No other NETCODEC record inherits frozen status from that slice.
   encoder overloads that accept unrelated raw `viewHash32/placementHash32`;
   production authoring requires the NETCODEC-minted verified placement capability,
   exact request magic and its tag-16 shard key.
+  XMG1/XMC1 retains exact MAU2/MCP2/MCG2 mailbox authorization while replacing
+  Session-derived holder identity: its holder is an independent random
+  reachability-scoped Ed25519 key, and acquisition is XRR1-capability keyed over
+  the ContactResolve onion operation. No account/device ID or direct Registry
+  endpoint enters that flow.
 - **DB impact/removals:** pure sealed transition plans only. Remove bare account
   hash/`05...` address and PRA-as-initial-discovery semantics.
 - **unit gate:** closure completeness, concurrent claim, prekey exhaustion,
@@ -897,7 +1024,8 @@ No other NETCODEC record inherits frozen status from that slice.
 - **produces:** durable encrypted DCR publication/resolution; atomic one-time
   redemption; two-replica all-or-nothing DPK2 inventory publication and
   manifest-bound prekey claim/exact replay; unsolicited admission/quota;
-  400-day XUR successor storage; replication/restart/corruption behavior.
+  XRR1-bound short-lived MCG2 grant issuance through XMG1/XMC1; 400-day XUR
+  successor storage; replication/restart/corruption behavior.
 - **wire/API:** service never indexes by DeepAccountId, parses DCR1/DMC2 or
   learns contact graph. Registry is not the resolver. Error detail is
   closed/coarse. Production dispatch recomputes request tags 3/4 and verifies the
@@ -932,7 +1060,8 @@ No other NETCODEC record inherits frozen status from that slice.
 - **produces:** verify/import/request/accept/reject/block state machine; safety
   fingerprint; per-device first-message fanout; route/update convergence;
   explicit expired/unavailable/conflict outcomes; returning-device versus
-  phrase-recovery behavior.
+  phrase-recovery behavior; protected reachability-scoped mailbox holder keys
+  and verified XMG1/XMC1 grant lifecycle.
 - **wire/API:** success requires end-to-end mailbox acceptance by at least one
   valid recipient device, not local socket write. No live PRA prerequisite.
 - **DB impact/removals:** relationships, verified identity generations,

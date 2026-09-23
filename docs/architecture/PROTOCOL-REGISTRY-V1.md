@@ -4,6 +4,14 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-08-30
 Owner: `deep-protocol`
 
+DR-0006 retires the current permanent `DID1`/`DAB1` release identity. The
+identity and every exact consumer containing their bytes are pending a new
+machine-registry allocation/re-freeze. The historical sizes in this planning
+registry are negative-fixture evidence, not releasable values; accepted
+decision records take precedence. `DID2`/`DAB2` and root suite `0x0301` are
+allocated as non-active clean-break targets; the dependent closure remains
+unfrozen and the old bytes are not a fallback.
+
 ## 1. Purpose and authority
 
 This document is the single human-readable registry for names that cross a
@@ -115,8 +123,9 @@ machine contract `deep-crypto-v1.registry.json`.
 
 | ID | Canonical name | Required construction | Status |
 | ---: | --- | --- | --- |
-| `0x0201` | `DHM2-X25519-MLKEM768-TRIPLE-XCHACHA20` | X25519 + ML-KEM-768 hybrid AKE, Ed25519 certificate/prekey authentication, SHA3-256/HMAC-SHA-256 Braid authentication, HKDF-SHA-512, XChaCha20-Poly1305-IETF and Triple Ratchet/SPQR. Classical and PQ branches are both mandatory. | `FROZEN_TARGET_NOT_ACTIVE`; provider/vector/platform gates block activation |
+| `0x0201` | `DHM2-X25519-MLKEM768-TRIPLE-XCHACHA20` | X25519 + ML-KEM-768 hybrid AKE, Ed25519 certificate/prekey authentication, SHA3-256/HMAC-SHA-256 Braid authentication, HKDF-SHA-512, XChaCha20-Poly1305-IETF and Triple Ratchet/SPQR. Classical and PQ branches are both mandatory. | `TARGET_UNFROZEN` only for DR-0005 DPH2 initial-payload re-freeze; provider/vector/platform gates also block activation |
 | `0x0202` | `DHM2-FutureHybridAuthentication` | Future long-lived hybrid authentication profile. | `RESERVED` |
+| `0x0301` | `DeepRootHybridEd25519MlDsa65V2` | Genesis-committed Ed25519 plus ML-DSA-65 root credential and binding signatures; not an E2EE cipher suite. | `TARGET_UNFROZEN` pending DR-0006 dependent closure and physical provider gates |
 
 No classical-only, PQ-only or environment-selected fallback ID is allocated.
 Provider-private serialization is never encoded inside a Deep record.
@@ -125,6 +134,11 @@ The clean-break messaging/application registry is split between `E2EE-01`,
 `APPLICATION-CODEC-01` is not a package-complete marker. Suites `0x0101/0x0102`, records
 `DPAC/DPDC/DPKB/DPHI` and every `Deep/Handshake/V1/*` domain are
 `RETIRED_REJECT`, not compatibility aliases.
+DR-0005 leaves the reviewed outer DPH2 record and primitive suite IDs intact,
+but supersedes the event-only encrypted initial-payload grammar. Current
+machine vectors remain an implementation baseline, not activation evidence,
+until the claim-transcript vectors are re-frozen. No old-body decoder is a
+release path.
 
 ### 4.3 XPoint onion suite (`u8`)
 
@@ -270,7 +284,7 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | Magic | Meaning | Status |
 | --- | --- | --- |
 | `DPK2` | one atomic signed per-device hybrid prekey offering; inventories are sets of exact DPK2 records. | `FROZEN_TARGET_NOT_ACTIVE`; exact sizes 1,973/2,037 |
-| `DPH2` | complete hybrid asynchronous initiation with XPC1 claim binding, actual ML-KEM ciphertext in tag 17 and separate transcript/full-replay hashes. | `FROZEN_TARGET_NOT_ACTIVE`; exact sizes 5,917/18,205/34,589 |
+| `DPH2` | complete hybrid asynchronous initiation with XPC1 claim binding, actual ML-KEM ciphertext in tag 17 and separate transcript/full-replay hashes. | `TARGET_UNFROZEN`; DR-0005 changed the encrypted claim payload and initiator-ID header, and DR-0006 requires another exact-ID/header re-freeze; old event-only and old-ID payloads reject |
 | `DTR2` | embedded-only canonical Double-Ratchet + SPQR/ML-KEM-Braid header carried only in DPE2 tag 6. | `FROZEN_TARGET_NOT_ACTIVE`; exact canonical record sizes 189/285/349/1,149/1,341 |
 | `DPE2` | established Triple-Ratchet device envelope with exact DTR2, authenticated counters and per-envelope dedup operation ID. | `FROZEN_TARGET_NOT_ACTIVE`; twenty exact canonical record sizes 4,513..50,705 |
 | `MBA1` | local managed ML-KEM-Braid profile plaintext state before protected-store sealing. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
@@ -278,13 +292,15 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | `TRC1` | local managed Triple-Ratchet component-provider snapshot. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
 | `TRS1` | complete account-scoped durable Triple-Ratchet session state. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network; maximum 2 MiB |
 | `DMD1` | account-authorized messaging device directory. | `FROZEN_TARGET_NOT_ACTIVE`; exact `356+70*N`, `N=1..16` |
-| `DID1` | permanent transport-neutral Deep ID containing address key plus read capability; no expiry. | `FROZEN_TARGET_NOT_ACTIVE`; exact 76 bytes, canonical Bech32m projection |
-| `DAB1` | dual-signed permanent-address/current-account binding lineage. | `FROZEN_TARGET_NOT_ACTIVE`; exact 394 bytes; application ArtifactRef type `0x1001` |
-| `DCA1` | device authorization to publish rotating contact bundles for exact DID1/DAB1. | `FROZEN_TARGET_NOT_ACTIVE`; exact 473 bytes |
-| `DCB1` | signed contact bundle. | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
-| `DCR1` | exact resolver closure around DCB1/DRS1/DPD1 support objects. | `FROZEN_TARGET_NOT_ACTIVE`; service/runtime remain inactive |
+| `DID1` | historical Ed25519-only permanent ID; replaced by DR-0006. | `RETIRED_REJECT`; 76-byte/Bech32m vectors become negative fixtures |
+| `DAB1` | historical Ed25519-only permanent-address/current-account binding. | `RETIRED_REJECT`; 394-byte vectors and ArtifactRef type `0x1001` become negative fixtures |
+| `DID2` | immutable permanent credential with genesis Ed25519 and ML-DSA-65 root keys; compact text carries hash commitment plus resolver capability. | `TARGET_UNFROZEN`; exact 2036-byte candidate and transcript vectors exist, dependent closure remains open |
+| `DAB2` | hybrid-AND permanent ID/current-account binding lineage. | `TARGET_UNFROZEN`; exact 3711-byte candidate, ArtifactRef type `0x1002` and transcript vectors exist, dependent closure remains open |
+| `DCA1` | device authorization to publish rotating contact bundles; existing bytes bind old DID1/DAB1. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze; old 473-byte form rejects |
+| `DCB1` | signed contact bundle; existing bytes bind old DID1/DAB1. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze |
+| `DCR1` | exact resolver closure around DCB1/DRS1/DPD1 support objects. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze |
 | `DIA1` | expiring one-time invitation locator; never the permanent Deep ID. | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
-| `DAO1` | metadata-sealed asynchronous deposit object containing DPH2 or DPE2. | `FROZEN_TARGET_NOT_ACTIVE`; exact inner-size-derived set |
+| `DAO1` | metadata-sealed asynchronous deposit object containing DPH2 or DPE2. | `TARGET_UNFROZEN` for DPH2-derived sizes pending DR-0006; established DPE2 semantics remain separately frozen |
 | `DMC2` | canonical pairwise application event plaintext. | `FROZEN_TARGET_NOT_ACTIVE` for base kinds 1, 5..13, 18..19 and CONTACT-CODEC-01 kinds 2..4,14; all other allocated kinds `RESERVED_REJECT` until owner package freeze |
 | `DGP1` | signed group membership proposal. | `FROZEN_TARGET_NOT_ACTIVE`; GROUP-CODEC-01 |
 | `DGC1` | owner-sequenced group commit. | `FROZEN_TARGET_NOT_ACTIVE`; GROUP-CODEC-01 |
@@ -332,6 +348,8 @@ Normative source: `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`.
 | `AFP1` | exact authority/ADF/source-membership proof package for ADP1 forward mode. | `TARGET_UNFROZEN` |
 | `DTS1` | root-signed closed authenticated-time-source policy committed by the directory witness policy. | `TARGET_UNFROZEN` |
 | `DTT1` | nonce-bound threshold-signed live time/current ADH1/XNV1 attestation. | `TARGET_UNFROZEN` |
+| `DGA1` | bounded first account-directory genesis admission request carrying exact public artifacts. | `TARGET_UNFROZEN` |
+| `DGR1` | operation-bound account-directory genesis admission receipt carrying exact ADH1. | `TARGET_UNFROZEN` |
 
 These records are mandatory freshness inputs to first contact and group member
 directory verification. A valid old DMD1 signature without a current ADP1/ADH1
@@ -354,6 +372,8 @@ Normative source: `XPOINT-NETWORK-V1.md`.
 | `NFP1` | bounded authority/checkpoint/source-membership proof manifest for XNF1 merge. | mirrors package; clients verify | `FROZEN_TARGET_NOT_ACTIVE` |
 | `XIR1` | long-lived invite rendezvous embedded in DCB1; never a current message deposit route. | contact owner authors; selected invite-store pair hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XRR1` | short-lived established-contact/message deposit reachability. It is not a public Deep ID artifact. | contact owner authors; selected mailbox pair hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
+| `XMG1` | privacy-routed proof-of-possession request for short-lived mailbox grants bound to exact XRR1 reachability. | contact client authors; ContactResolve authority verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
+| `XMC1` | closed mailbox-grant acquisition result carrying exactly one current-epoch MCG2 only on success. | ContactResolve authority authors; contact client verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XUR1` | established-contact update rendezvous capability/record. | contact owner authors; update-rendezvous service hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XCP1` | local protected client path plan. Never uploaded. | `deep-client-shared` | `TARGET_UNFROZEN`; local DB generation only |
 | `XCD1` | signed CallRelay target-auth plus replica/quorum authority descriptor with exact per-node CallRelay role-key generations and proofs of possession. | CallRelay authors; XNV1 witnesses authorize/publish the exact core ref | `FROZEN_TARGET_NOT_ACTIVE`; exact codec owner is NETCODEC-01 |
@@ -451,12 +471,21 @@ documents under `../../deep-protocol/docs/`.
 | `PMA1`, `PMT1`, `PMS1` | Existing mailbox authority, topology and deterministic selection. | `CURRENT_PRE_CUTOVER`; not accepted as the target XNV-bound placement generation. |
 | `PRA1`, `PSS1` | Pre-continuity advertisement/successor. | `RETIRED_REJECT` in new contacts/runtime. |
 | `RCD1`, `RDA1`, `RCR1`, `RHC1`, `RTC1`, `RCA1`, `PRA2`, `PSS2` | Existing owner/delegated route-continuity V2 closure. | `CURRENT_PRE_CUTOVER` and `RETIRED_REJECT` after reset; DR-0004 ports semantics to XRA1/XRC1/XSS1. |
-| `PMA2`, `PMT2`, `PMS2` | DR-0004 clean-break threshold authority, XNV1-bound projection and deterministic blinded selection. | `PMT2/PMS2` are `FROZEN_TARGET_NOT_ACTIVE` under CONTACT-CODEC-01; PMA2 remains NETCODEC dependency. |
+| `PMA2`, `PMT2`, `PMS2` | DR-0004 clean-break root-authorized role-separated MCG2 issuer policy, XNV1-bound projection and deterministic blinded selection. | `FROZEN_TARGET_NOT_ACTIVE`; PMA2 is a NETCODEC authority record encoded with the shared canonical tagged grammar, while PMT2/PMS2 are consumed by CONTACT-CODEC-01. |
 | `XRA1`, `XRC1`, `XRR1`, `XSS1` | DR-0004 owner authorization, live route, shared reachability and retained successor closure. | `FROZEN_TARGET_NOT_ACTIVE`; pre-cutover continuity records reject. |
+| `XMG1`, `XMC1` | Privacy-routed request/closed result for short-lived holder-specific MCG2 grants bound to an exact XRR1 reachability capability and current PMT2/PMS2. | `FROZEN_TARGET_NOT_ACTIVE` under CONTACT-CODEC-01; no direct Registry or Session-derived issuance path. |
+| `MAU2`, `MCP2`, `MCG2` | Canonical mailbox request, holder presentation and short-lived grant records; they carry no account identity. | `FROZEN_TARGET_NOT_ACTIVE`; retained as target wire records, with grants issued only through XMG1/XMC1. |
 
 DR-0004 is immutable for this generation. `XRR1` alone is not a routable deposit
 closure; the exact XRA1/XRC1/XRR1/XSS1 plus PMT2/PMS2 closure in the contact/XPoint
 specifications is mandatory. Implementations may not reopen or replace that choice.
+
+`MAU2/MCP2/MCG2` remain the one canonical mailbox authorization envelope; this
+does not retain Session identity. The MCG2 holder is a random, independently
+generated, reachability-scoped Ed25519 key held in protected client storage.
+`XMG1/XMC1` is the only production acquisition path for its grants. A device,
+account, recovery, DPM1 or synthetic Session key MUST NOT be substituted as the
+holder, and the grant service receives no DeepAccountId or DeepDeviceId.
 
 ## 7. Status and collision manifest required from deep-protocol
 
@@ -501,7 +530,7 @@ Resolved planning inputs, still requiring machine schemas/codecs, are:
 
 | Input | Accepted source | Consequence |
 | --- | --- | --- |
-| mailbox clean-break | `CONTACT-RESOLVER-V1.md` and `RETENTION-AND-RECOVERY-V1.md` | target uses PMT2/PMS2; PMT1/PMS1 remain pre-cutover only |
+| mailbox clean-break | `CONTACT-RESOLVER-V1.md` and `RETENTION-AND-RECOVERY-V1.md` | target uses PMT2/PMS2 plus XRR1-bound XMG1/XMC1 grant acquisition; PMT1/PMS1 and Session-derived/direct-Registry issuance remain pre-cutover only |
 | invite/prekey service | `CONTACT-RESOLVER-V1.md` | XNode owns two-replica invite/prekey stores; Registry is distribution cache only |
 | account freshness | `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md` | ADC1/ADH1/ADP1/ADL1 are mandatory inputs to new contact/device selection |
 | retention/recovery | `RETENTION-AND-RECOVERY-V1.md` | all runtime GC, capacity, recovery UX and time-travel gates consume one matrix |

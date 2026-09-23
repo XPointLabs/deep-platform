@@ -36,8 +36,16 @@
 | Компрометация mailbox/file/push | ciphertext и opaque capabilities; bounded replay | availability и удаление сохранённых blobs |
 | Компрометация TURN/media relay | SRTP/WebRTC E2EE; relay не получает chat keys | relay видит call endpoints, время и объём |
 | Компрометация одного device | revoke/rekey и PCS ограничивают будущий ущерб | plaintext и активный state этого устройства до revoke/rekey |
-| Компрометация recovery phrase | нет доступа к другим локальным данным без восстановления | account recovery authority и permanent DID1 address key считаются потерянными; безопасно сохранить тот же публичный ID после компрометации невозможно |
+| Компрометация recovery phrase | нет доступа к другим локальным данным без восстановления | account recovery authority и root signing keys считаются потерянными; безопасно сохранить тот же публичный ID после компрометации невозможно |
 | Quantum store-now/decrypt-later | hybrid suite защищает handshake при стойкости хотя бы одной ветви и combiner | безопасность при одновременном взломе обеих ветвей/implementation |
+| Квантовый подлог постоянного ID | новый genesis-committed PQ root по DR-0006 требует ML-DSA подтверждения binding/succession | до реализации, независимой проверки и выпуска нового ID нет production-гарантии; device/network/onion/call подписи не становятся PQ автоматически |
+
+До закрытия DR-0006 нельзя заявлять quantum-safe account authentication.
+После его закрытия допустима только узкая формулировка «PQ-committed permanent
+identity root»: ONION-01 всё ещё использует X25519, а остальные authority
+имеют отдельные suite и release gates. Три стартовых XNode не обеспечивают
+непересекающиеся маршруты или независимость операторов; число шесть отложено
+до готовности приглашать пользователей и само по себе не доказывает diversity.
 
 ## 3. Metadata boundary
 
@@ -134,7 +142,7 @@ stale trust, после получения подписанного revoke rollb
 - fuzzing каждого parser и hostile-size boundary;
 - compromise/recovery тесты для device, prekey, router traffic key, bridge,
   Registry и TURN;
-- APK/MSIX extraction test: embedded seeds не должны быть полным доступным
+- APK/Windows-ZIP extraction test: embedded seeds не должны быть полным доступным
   bridge pool или account-linked credential;
 - DNS/SNI/IP/path/active-probe/UDP-block tests без direct fallback;
 - packet-capture classifier baseline для text, polling, attachment и call;
