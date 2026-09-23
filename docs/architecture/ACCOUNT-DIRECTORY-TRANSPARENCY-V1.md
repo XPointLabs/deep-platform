@@ -201,10 +201,11 @@ The candidate public V2 verifier now checks exact signed ADH1/DTT1 authority,
 nonce and monotonic time, direct-successor protected-LKG consistency, the
 ADP1 V2 sparse/inclusion proofs, and full PQ-backed generation-zero
 DPA1/DRS1/DPD1/DID2/DAB2/DMD1/ADC1 admission before issuing a freshness
-capability. It rejects ADP1 V1. It does not yet admit positive successor
-histories or AFP1 forward-checkpoint histories; the directory service and
-client consumers have not cut over. Therefore this candidate is not a release
-response. Non-membership is an absence result for an independently authenticated
+capability. It rejects ADP1 V1. A signed direct successor with an unchanged
+current checkpoint has protocol-level positive and predecessor-rejection tests;
+successors with new account mutations and AFP1 forward-checkpoint histories
+remain open. The directory service and client consumers have not cut over.
+Therefore this candidate is not a release response. Non-membership is an absence result for an independently authenticated
 DID2 leaf, not proof of any account ownership.
 The DID2-only proof issuer MUST derive ADP1 V2 from verified V2 journal/map
 material, bind it to threshold-signed nonce-bound DTT1 and the exact current

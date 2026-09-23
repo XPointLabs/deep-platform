@@ -189,6 +189,12 @@ Development/UAT `POST /api/v2/account-directory/proofs` теперь можно 
 включить после provisioning exact XNV1 и собственного one-use nonce ledger;
 реальный PQ HTTP roundtrip и replay-rejection проверены локально. Это не
 production path: сервер всё ещё отказывает вне Development/UAT.
+Изолированный клиентский DPQ2/DPP2 fetcher теперь требует verified DAB2-bound
+ADL1 V2, XPoint authority и защищённый V2 LKG, затем проверяет nonce,
+boot-stable monotonic window и полный PQ-backed proof до возврата freshness
+capability. Он пока не подключён к MAUI и не фиксирует следующий LKG атомарно;
+эти два шага остаются обязательным client cutover, а не поводом считать E2E
+пройденным.
 До появления такого floor production-хост Registry отвергает включение
 DID2 admission; candidate разрешён только в `Development`/`UAT`.
 
