@@ -239,9 +239,11 @@ verifier и повторно проверяет всю V2-цепочку.
 и физический E2E остаются обязательными.
 Отдельный V2-only add-only слот теперь хранит четыре секрета genesis-устройства:
 запись/восстановление возможны только при совпадении с проверенным DPD1
-(ключи, device ID, revocation handle и account scope). Следующий шаг —
-crash reconciliation двух слотов, V2 retained-phrase/reset ownership и
-связывание их с новым account bootstrap, без чтения V1 namespace.
+(ключи, device ID, revocation handle и account scope). Двухслотовый bootstrap
+теперь fail-closed при любой частичной записи, а точный retry завершает её;
+локальная authority выдаётся только после полного verified read-back.
+Следующий шаг — V2 retained-phrase/reset ownership и связывание с новым
+account service/MAUI, без чтения V1 namespace.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
