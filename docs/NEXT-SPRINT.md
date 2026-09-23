@@ -108,6 +108,10 @@ service/client cutover и физический E2E ещё не готовы.
 строит подписанные ADH1/DTT1 и ADP1 V2 с Merkle-inclusion/consistency,
 затем получает positive freshness capability; это protocol-level тест, не
 device E2E и не доказательство готовности registry service.
+Отдельный DID2-only proof issuer теперь берёт только проверенный V2 journal/map
+material, подписывает nonce-bound DTT1 и self-verifies ADP1 V2 тем же публичным
+verifier. Проверены positive real-PQ выпуск и отказ при чужом head/дублированном
+witness; registry durable state и HTTP publication ещё не переключены.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte

@@ -140,6 +140,11 @@ histories or AFP1 forward-checkpoint histories; the directory service and
 client consumers have not cut over. Therefore this candidate is not a release
 response. Non-membership is an absence result for an independently authenticated
 DID2 leaf, not proof of any account ownership.
+The DID2-only proof issuer MUST derive ADP1 V2 from verified V2 journal/map
+material, bind it to threshold-signed nonce-bound DTT1 and the exact current
+XNV1, and run the public V2 verifier on its own output before publication.
+Reusing the identity-neutral DTT1/XNV1 witness signing primitives does not
+permit emitting an ADP1 V1 result or bypassing PQ genesis verification.
 
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
