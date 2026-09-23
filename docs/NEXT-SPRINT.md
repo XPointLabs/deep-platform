@@ -78,11 +78,10 @@ green protocol tests и созданные UAT accounts release-compatible.
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
 seed, подпись и rejection подмены сообщения/ключа. Это **не** provider approval:
 проверенный Bouncy Castle 2.7.0 не даёт deterministic disposal для объекта
-private key с внутренними `byte[]`. Следующий шаг — выбрать provider с
-контролируемым lifetime секрета, затем закрыть Android/Windows KAT и только
-после этого замораживать root-credential/DID2/DAB2 wire. Production issuance
-DID1 должна оставаться заблокированной на этапе cutover; старый ID не
-является fallback.
+private key с внутренними `byte[]`. Поэтому production-кандидатом выбран
+native provider с Deep-owned ABI и вызовом без долгоживущего expanded secret.
+Production issuance DID1 должна оставаться заблокированной на этапе cutover;
+старый ID не является fallback.
 
 Выбранная библиотека (ещё **не** production-accepted provider) —
 [`mldsa-native` v2.0.0](https://github.com/pq-code-package/mldsa-native/releases/tag/v2.0.0):
@@ -99,8 +98,8 @@ toolchain. Изолированная Linux/ARM64 Docker-сборка того �
 прошла upstream `run_func_65` и `run_kat_65` (`META.yml ... kat-sha256: OK`).
 BC 2.7.0 и `mldsa-native` v2.0.0 дали один SHA-256 public-key fixture
 `d666806e11cee19a7c989f7445f90dd419cf4d2d51db8c0fdb4c0f0a542238c9`
-для публичного seed `00..1f`. Это первый cross-provider keygen check, но не
-полный signing differential и не physical Android/Windows gate.
+для публичного seed `00..1f`. Это первый cross-provider keygen check; более
+поздние физические Android/KAT/signature результаты приведены ниже.
 
 2026-09-23: vendored source snapshot и узкий Deep-owned C ABI добавлены в
 `deep-protocol/native/Deep.MlDsa` вне production package graph. На Linux
