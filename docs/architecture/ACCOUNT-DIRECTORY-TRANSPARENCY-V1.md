@@ -102,7 +102,7 @@ and tags 1..15 from the V1 response shape, but accepts only an ADH1 with
 `minimumReader >= 2` and a V2 sparse root. For this candidate, history mode
 is `ConsistencyOrGenesis` only, tag 14 is empty, and tag 15 is the exact
 live-DTT1 core hash. Its result shapes are closed: non-membership has exactly
-15 tags; current value has exactly 27. Current-value tags are:
+15 tags; current value has exactly 28. Current-value tags are:
 
 | Tag | Value |
 |---:|---|
@@ -118,10 +118,13 @@ live-DTT1 core hash. Its result shapes are closed: non-membership has exactly
 | 25 | append-log index, `u64be`, matching tag 24 |
 | 26 | inclusion-node count, `u8` in 0..64 |
 | 27 | count-matched 32-byte RFC-6962 inclusion nodes |
+| 28 | `revokedCount:u16be || revokedDcaAuthorizationIds[32]`, 0..4096, sorted and unique |
 
-The whole ADP1 V2 envelope is at most 256 KiB. The parsed shape checks the
+The whole ADP1 V2 envelope is at most 512 KiB, so the full 4096-ID revocation
+bound fits with the other exact artifacts. The parsed shape checks the
 exact DID2-derived leaf, DID2/DAB2/ADC1 hashes and V2 artifact reference,
-the current sparse root and append-log inclusion root. It does not equate the
+the ADC1 revocation-list hash, current sparse root and append-log inclusion
+root. It does not equate the
 transition's potentially intermediate map root with the final head root.
 Decode/authoring alone never grant account or freshness authority: the public
 reader must independently verify the complete DPA1/DRS1/DPD1/DID2/DAB2/
