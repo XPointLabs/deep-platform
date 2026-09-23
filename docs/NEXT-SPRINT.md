@@ -247,8 +247,10 @@ service/MAUI, без чтения V1 namespace.
 V2 protected phrase slot теперь сверяет 24 слова с exact account ID;
 удаление требует повторного verified bootstrap и оставляет add-only tombstone,
 чтобы старый writer не вернул фразу. При сбое после tombstone чтение очищает
-оставшиеся байты. Открытие фразы в настройках, V2 reset/purge и MAUI account
-service ещё не подключены.
+оставшиеся байты. Интерфейс secure storage и оба production adapter теперь
+поддерживают идемпотентный purge только точного префикса `deep.store.v2.`;
+V1 и соседние слоты сохраняются. Открытие фразы в настройках, подключение
+purge к новому reset owner и MAUI account service ещё не готовы.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
