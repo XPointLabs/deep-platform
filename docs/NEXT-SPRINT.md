@@ -90,6 +90,12 @@ threshold-signed ADH1 с `minimumReader >= 2`; он повторно прове�
 полученный protected head. ADH1 envelope сохраняет версию 1 только как
 контейнер непрозрачных V2-корней. Это пока не service cutover: старые
 admission/proof/freshness consumers и физический E2E остаются блокерами.
+V2 proof-material author уже строит membership/non-membership и
+append-log inclusion/consistency только после полного replay и проверяет
+LKG как префикс V2-журнала. Тест с двумя реальными DID2 аккаунтами
+фиксирует важный clean-break: `transition.nextMapRoot` раннего аккаунта
+не равен финальному корню head; current sparse proof сверяется именно
+с финальным корнем. ADP1 V2 wire и клиентская проверка ещё не готовы.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte

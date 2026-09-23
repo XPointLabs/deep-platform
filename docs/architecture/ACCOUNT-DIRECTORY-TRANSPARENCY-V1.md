@@ -85,6 +85,18 @@ replayed before publication. The old DID1 head author cannot authorize a DID2
 admission; service cutover must select the V2-only path. ADP1 publication,
 freshness/DTT closure and clients remain separate release gates.
 
+Candidate V2 proof-material author first replays the complete V2 private
+journal against the protected head, checks the complete verified ADC1 V2 map,
+then derives canonical sparse-map, RFC-6962 inclusion and consistency nodes.
+If a caller supplies a protected LKG, its own V2 map and append roots must
+replay from the exact journal prefix. A current-value proof binds the included
+last transition for that leaf to the exact ADC1 V2 reference, while the sparse
+proof binds that reference to the **final** head map root. The transition's
+`nextMapRoot` is an intermediate root when later leaves were changed in the
+same head batch; it MUST NOT be compared with the final head root. This
+material is not a public ADP1 or freshness capability until the V2 envelope,
+nonce-bound DTT1 cross-link and independent client verification are complete.
+
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
 cryptographically valid DMD1/DRS1 branch. It is a transparency and freshness layer,
