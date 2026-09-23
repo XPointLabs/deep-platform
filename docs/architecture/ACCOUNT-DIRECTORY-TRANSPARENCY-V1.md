@@ -94,6 +94,25 @@ replayed before publication. The old DID1 head author cannot authorize a DID2
 admission; service cutover must select the V2-only path. ADP1 publication,
 freshness/DTT closure and clients remain separate release gates.
 
+The DID2 Registry admission service obtains the exact XNA1/DTS1 lineage from
+files verified against a separately pinned genesis authority core hash; it
+MUST NOT derive network authority from an ADA1 head or ADP1 V1 response. Its
+ADA2 file is explicitly provisioned, HMAC-verified before decoding, replayed
+from a separately pinned threshold-signed V2 empty head, and updated under a
+single exclusive read/append lease. An absent ADA2 file is an outage, never
+implicit genesis. Operation IDs bind exact DGA1 V2 bytes; a repeated ID with
+changed bytes or a second operation for the same leaf is a conflict. A
+verification time later than the current trusted upper bound is invalid.
+The V2 HTTP endpoint is separate from V1 and the two admissions MUST NOT be
+enabled together. A signed receipt alone does not grant client currentness.
+
+HMAC and an immutable genesis pin do **not** detect replacement by an older,
+correctly authenticated ADA2 file. Before production activation, Registry
+MUST compare each recovered head with an independently protected latest-head
+rollback floor outside that file's rollback domain, including across process
+restart and recovery. The current candidate service lacks that floor and is
+therefore not a production approval or device E2E gate pass.
+
 Candidate V2 proof-material author first replays the complete V2 private
 journal against the protected head, checks the complete verified ADC1 V2 map,
 then derives canonical sparse-map, RFC-6962 inclusion and consistency nodes.

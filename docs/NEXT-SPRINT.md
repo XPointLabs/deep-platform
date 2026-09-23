@@ -146,16 +146,28 @@ DGA1 V2 requests, ограничивает размеры и отвергает 
 остаётся shape-only: перед выдачей authority service обязан HMAC-verify state,
 повторно проверить подписи всех heads и PQ admission, replay V2 journal и
 связность истории; endpoint ещё не активирован.
-Кандидат ADA2 restorer теперь выполняет эти проверки перед повышением строк
-до authority-owned состояния: проверяет pinned genesis, каждую подписанную
-голову и prefix журнала, duplicate operation/leaf, PQ admission и final root.
-Нужны интеграция durable store с authority, реальный positive PQ admission
-тест, V2 HTTP issuance и клиентский cutover до device E2E.
-Кандидат ADA2 file store теперь требует явного начального provisioning,
-проверяет HMAC до decode и держит lease через read/append-only write; удаление
-state не превращается в молчаливый genesis. Но для защиты от подмены файла
-старой корректно HMAC-подписанной копией между рестартами ещё нужен независимый
-protected latest-head rollback floor. Store не подключён к production API.
+Кандидат ADA2 restorer проверяет pinned genesis, каждую подписанную голову и
+prefix журнала, duplicate operation/leaf, PQ admission и final root перед
+повышением строк до authority-owned состояния. ADA2 file store требует явного
+начального provisioning, HMAC до decode и lease через read/append-only write;
+удаление state не превращается в молчаливый genesis. Проверка отклоняет
+admission с временем в будущем относительно trusted upper bound.
+
+2026-09-23: точный Linux x64 ML-DSA CI-бинарник добавлен в protocol NuGet с
+SHA-256 pin; managed DID2/DAB2/ADP1 V2 tests прошли в GitHub CI на Linux x64,
+Windows x64 и Windows ARM64. Это всё ещё candidate, не окончательный provider
+approval. Registry получил отдельный verified XNA1/DTS1 source от pinned
+genesis, не зависящий от ADA1/ADP1 V1, и V2-only durable admission service:
+реальный PQ DGA1 V2 добавляет одну ADA2 transition и threshold-signed ADH1,
+повтор после рестарта возвращает тот же receipt, подмена operation ID/leaf
+отклоняется без мутации. Отдельный `/api/v2/account-directory/genesis-admissions`
+имеет V2 media type и включается только явной конфигурацией; одновременное
+включение V1 admission запрещено. Endpoint пока **не включён в проде**.
+
+Следующий обязательный пакет: независимый latest-head rollback floor против
+подмены ADA2 старой корректной HMAC-копией, provisioning/runbook, V2 proof
+publication и клиентский cutover. Только затем physical Android ↔ Windows
+account/contact/message/media/group E2E; GitHub Releases не публиковать.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
