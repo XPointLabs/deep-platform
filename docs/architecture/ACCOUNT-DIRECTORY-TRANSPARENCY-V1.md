@@ -2,6 +2,24 @@
 
 Status: **normative implementation target for the first public release**
 
+DR-0006 release clean-break: the DID1/DAB1-dependent V1 directory closure
+below is pre-cutover evidence, not an accepted release reader. The candidate
+`ADC1` version 2 uses suite `0x0301`, the same 13 tagged field lengths and
+458-byte canonical size. Tag 9 is the exact DAB2 record hash. Its 32-byte
+leaf is computed as
+`SHA256-D("Deep/AccountDirectory/V2/leaf",
+ SHA256-D("Deep/AccountDirectory/V2/lookup", networkId16 || exactDID2))`.
+The list commitment changes to
+`Deep/AccountDirectory/V2/revoked-DCA-authorization-ids`; the device-issuer
+signature covers the 386-byte unsigned tags 1..12 under
+`SIGINPUT("Deep/AccountDirectory/V2/ADC1/account", 0x0301, unsignedADC1)`.
+Its artifact reference is `ADC1 || U16BE(2) || SHA256(exactADC1)`.
+Verification requires the exact DID2/DAB2/DPA1/DRS1/DMD1 closure, a minimum
+reader of at least 2, and a valid device-issuer signature. Version 1 ADC1,
+its leaf domain and DAB1 hash cannot be admitted as a V2 value. ADP1,
+admission and resolver proofs still require matching V2 re-freeze; this
+candidate checkpoint alone does not authorize directory activation.
+
 Signed account artifacts alone do not prove freshness to a sender with no local
 history. This contract prevents a revoked contact publisher from serving an old but
 cryptographically valid DMD1/DRS1 branch. It is a transparency and freshness layer,
