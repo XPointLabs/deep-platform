@@ -1,6 +1,6 @@
 # DR-0006 — Commit a post-quantum root at Deep ID creation
 
-Status: **accepted architecture; wire/provider freeze and implementation pending**
+Status: **accepted architecture; ML-DSA library selected, provider acceptance/wire cutover pending**
 Date: 2026-09-23
 Decision owner: **Mr. X** (delegated architecture authority)
 
@@ -22,8 +22,8 @@ dual readers or a legacy account alias.
 
 1. The new permanent Deep ID commits, at genesis, to one canonical immutable
    root credential containing **both** an independent classical Ed25519
-   verification key and an ML-DSA verification key (initial candidate:
-   ML-DSA-65), their exact algorithm/suite identifiers, roles and binding
+   verification key and an ML-DSA-65 verification key, their exact
+   algorithm/suite identifiers, roles and binding
    context. The compact human-facing ID may carry a collision-resistant hash
    commitment rather than the large PQ public key, but the complete root
    credential must be presented and verified before trust. An uncommitted
@@ -67,14 +67,21 @@ dual readers or a legacy account alias.
 
 ## Provider and release gates
 
-- Evaluate a single managed .NET ML-DSA provider on physical Android arm64 and
-  Windows x64/arm64. The .NET platform API is not assumed available on Android;
-  Bouncy Castle's managed implementation is a candidate, not an approved
-  production dependency. Pin exact package/source hash and license, run FIPS
-  204 known-answer and independent differential tests, malformed/signature
-  negatives, key-import/export/zeroization checks, memory/battery/latency
-  budgets and a side-channel review. Provider failure blocks identity creation
-  and release; it does not choose a weaker suite.
+- The selected ML-DSA-65 library is
+  [`mldsa-native` v2.0.0](https://github.com/pq-code-package/mldsa-native/releases/tag/v2.0.0),
+  pinned at `834a90d5e846ffa1e1611bd24e160bb2e9b86d35`. Use its portable C
+  implementation behind one Deep-owned narrow ABI on Android arm64 and Windows
+  x64/arm64. This is the same provider family as the already selected
+  `mlkem-native`, not a second runtime algorithm suite. The managed Bouncy
+  Castle 2.7.0 candidate passed functional seed recovery but was rejected for
+  production private-key ownership: it retains internal secret arrays without
+  deterministic disposal. The .NET platform ML-DSA API is not cross-platform
+  on the required Android target. Library selection is **not provider
+  acceptance**: pin the exact source snapshot, license and SBOM; run FIPS 204
+  known-answer and independent signing differential tests, malformed/signature
+  negatives, zeroization/key-lifetime and side-channel review, resource budgets
+  and physical platform gates before identity issuance. Provider failure blocks
+  creation and release; it never chooses a weaker or alternate suite.
 - Freeze root credential, recovery derivation, ID encoding, successor
   transcripts, trust display and all affected envelope/locator sizes in one
   reviewed protocol change. Regenerate machine registry, vectors, fuzz targets

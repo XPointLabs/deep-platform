@@ -84,12 +84,12 @@ private key с внутренними `byte[]`. Следующий шаг — в
 DID1 должна оставаться заблокированной на этапе cutover; старый ID не
 является fallback.
 
-Предпочтительный следующий **кандидат для оценки, не принятое решение** —
+Выбранная библиотека (ещё **не** production-accepted provider) —
 [`mldsa-native` v2.0.0](https://github.com/pq-code-package/mldsa-native/releases/tag/v2.0.0):
 это тот же PQ Code Package family, что уже выбранный `mlkem-native`, с
 портативным C backend, seed-driven keygen и upstream ACVP/Wycheproof gates.
-Текущий research pin тега: `834a90d5e846ffa1e1611bd24e160bb2e9b86d35`;
-это не approved source pin для релиза.
+Pin исходника: `834a90d5e846ffa1e1611bd24e160bb2e9b86d35`;
+это не approved binary/asset pin для релиза.
 Использовать одну узкую Deep-owned native ABI/asset discipline, как для
 ML-KEM; не добавлять параллельный runtime provider или алгоритмический suite.
 Перед допуском нужны pin/source hash, license/SBOM, zeroization review,
@@ -101,6 +101,16 @@ BC 2.7.0 и `mldsa-native` v2.0.0 дали один SHA-256 public-key fixture
 `d666806e11cee19a7c989f7445f90dd419cf4d2d51db8c0fdb4c0f0a542238c9`
 для публичного seed `00..1f`. Это первый cross-provider keygen check, но не
 полный signing differential и не physical Android/Windows gate.
+
+2026-09-23: vendored source snapshot и узкий Deep-owned C ABI добавлены в
+`deep-protocol/native/Deep.MlDsa` вне production package graph. На Linux
+ARM64 прошли CMake/CTest; на физическом Android API 31 arm64 прошли те же
+native ABI tests. Тестовый бинарник удалён с устройства. В CI добавлена
+матрица Linux/Windows x64/arm64, но она ещё не запускалась из GitHub.
+Отдельно на физическом Android загружена `libdeep_mldsa.so` с ровно восьмью
+Deep-owned экспортами; тесты прошли и библиотека удалена с устройства.
+Остаются Windows gates, независимый signing differential, zeroization/
+side-channel review и wire cutover DID2/DAB2 перед клиентским E2E.
 
 ### CB0 — production clean-break до новой feature-работы
 
