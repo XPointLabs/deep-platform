@@ -195,6 +195,12 @@ boot-stable monotonic window и полный PQ-backed proof до возврат
 capability. Он пока не подключён к MAUI и не фиксирует следующий LKG атомарно;
 эти два шага остаются обязательным client cutover, а не поводом считать E2E
 пройденным.
+У ADA2 store добавлена точка интеграции независимого latest-head floor:
+чтение сверяет полностью восстановленный signed head, запись продвигает
+внешний floor **до** замены ADA2 и при несогласованности закрывается. Тесты
+подтверждают отказ при откате и отсутствие записи при ошибке floor. Реальный
+rollback-resistant provider вне домена backup/restore ADA2 ещё не подключён,
+поэтому это не снимает production gate и не разрешает включить DID2 endpoint.
 До появления такого floor production-хост Registry отвергает включение
 DID2 admission; candidate разрешён только в `Development`/`UAT`.
 
