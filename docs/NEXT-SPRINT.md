@@ -340,6 +340,22 @@ Release test gate прошёл 6/6, Shared production Release gate — 159/159.
 recipient discovery/accept и отображение входящего диалога остаются частью
 этого же text vertical, а не доказанным UX.
 
+Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
+name-only account создалось и открыло clean Contacts UI, но фоновая genesis
+contact publication отказала fail-closed с
+`ContactPeerReverificationUnavailableException: AuthoritySource`. Это
+конкретный upstream blocker для обмена с Android в установленной UAT-сборке;
+никакой fake authority или Registry-only shortcut не разрешён. Нужно сверить
+exact installed package/runtime config с текущей verified host capability,
+восстановить production-bound authority и повторить публикацию, затем
+sender/recipient текстовый прогон. Созданный DID1-аккаунт диагностический и
+после DR-0006 не является release-compatible.
+`ProductionContactVerifiedAuthoritySnapshotSource` уже существует в XNode;
+отказ Windows-клиента сам по себе не доказывает отсутствие этого сервиса.
+Старый accessor маскировал конкретный `UnavailableReason` как
+`AuthoritySource`; диагностический fix в MAUI сохраняет исходную причину,
+но не подменяет authority и не делает установленный старый пакет зелёным.
+
 Выводы security review, не нужные для CB0, не прерывают
 DEV0. Они выполняются после фиксации baseline в dependency order:
 Deep-native 1:1 vertical, contact, groups/files, routing/carriers, release
