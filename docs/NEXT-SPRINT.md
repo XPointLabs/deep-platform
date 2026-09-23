@@ -102,8 +102,11 @@ reader его отвергает. Он также передаёт полный 
 Кандидат публичного DID2 verifier теперь проверяет signed ADH1/DTT1,
 nonce/monotonic currentness, direct-successor LKG consistency и полный
 PQ-backed generation-zero current closure перед выдачей freshness capability;
-ADP1 V1 отвергается. Положительные successor-истории, AFP1 forward history,
-service/client cutover и физический E2E ещё не готовы.
+ADP1 V1 отвергается. Протокольный тест с реальным PQ-аккаунтом теперь
+проверяет следующий signed head с тем же current checkpoint и защищённым LKG;
+отдельный negative test отклоняет неверный predecessor. Successor с новой
+мутацией, AFP1 forward history, service/client cutover и физический E2E ещё
+не готовы.
 Публичный freshness API теперь принимает только типизированный ADL1 V2 query,
 сверенный с independently verified DAB2: сеть аккаунта, DID2-derived leaf и
 точный generation/hash floor обязательны. Сырой leaf допускается лишь во
