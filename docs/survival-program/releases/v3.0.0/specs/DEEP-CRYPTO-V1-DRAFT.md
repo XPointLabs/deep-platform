@@ -1,5 +1,12 @@
 # Deep Production Cryptography and Pairwise Messaging V1
 
+> **Identity re-freeze required:** [DR-0006](../../../decisions/DR-0006-pq-root-deep-id-clean-break.md)
+> retires the Ed25519-only permanent `DID1`/`DAB1` release root. The reserved
+> PQ derivation below is not a genesis-bound ML-DSA key and MUST NOT be treated
+> as a safe same-ID upgrade. Current exact identity and dependent DPH2 sizes
+> are historical/negative fixtures until the new root, recovery and vectors
+> are frozen. No release account may be created from these old rules.
+
 Status: **normative implementation target; clean-break production profile**
 
 Decision: DR-0003

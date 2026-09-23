@@ -20,10 +20,12 @@
 Apple-клиенты не входят в этот спринт. macOS, iOS и Mac Catalyst CI/build
 остаются отключёнными до отдельной явной команды Mr. X.
 
-Первый production profile использует три разных XNode внутри одного маршрута.
+Первый production profile использует ровно три XNode, все три внутри одного маршрута.
 Он не заявляет полностью disjoint fallback, независимых операторов или защиту
 от общего ASN/provider failure. Direct P2P mesh и on-prem runtime выполняются
 после первого релиза, но transport-neutral contracts ниже обязательны сейчас.
+Рост до шести XNode отложен до готовности приглашать реальных пользователей;
+сейчас он не является условием запуска и не маскируется логическими replicas.
 
 ## Нормативные входы
 
@@ -45,6 +47,7 @@ Apple-клиенты не входят в этот спринт. macOS, iOS и M
 - `architecture/PROTOCOL-REGISTRY-V1.md`
 - `architecture/IMPLEMENTATION-PLAN-V1.md`
 - [`survival-program/releases/v3.0.0/specs/DEEP-CRYPTO-V1-DRAFT.md`](survival-program/releases/v3.0.0/specs/DEEP-CRYPTO-V1-DRAFT.md)
+- [`survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md`](survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md)
 
 Любая не определённая этими документами cryptographic transcript, state
 transition, downgrade или trust source является блокером спецификации, а не
@@ -56,9 +59,24 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ## Обязательный порядок исполнения
 
+### ID-PQ-CB — корень Deep ID до продолжения production-сценария
+
+Первый protocol/identity package выполняет [`DR-0006`](survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md):
+новый ID с immutable genesis commitment к Ed25519 **и** ML-DSA ключам,
+PQ-авторизованная succession и восстановление того же корня 24 словами.
+Одного хэша расширяемого credential или последующего Ed25519-only добавления
+PQ-ключа недостаточно. DID1/DAB1 v1 становятся negative fixtures, не dual-read.
+
+Gate: выбрать и проверить один provider на Android arm64 и Windows x64/arm64;
+заморозить recovery/KDF, canonical root credential, новые wire/suite/QR,
+binding projections и все affected DPH2/DAO1/contact/DB vectors; доказать
+cross-device restore, PQ-key-substitution/Ed-only forgery rejection и
+отсутствие старого ID в production graph. До freeze нельзя считать текущие
+green protocol tests и созданные UAT accounts release-compatible.
+
 ### CB0 — production clean-break до новой feature-работы
 
-Первый code-changing package текущего спринта закрывает destructive
+После ID-PQ-CB следующий production-graph package закрывает destructive
 clean-break. Не создаётся `LegacyV1`, migration-only runtime, feature
 flag, dual reader или автоматический fallback. Нужно:
 
@@ -305,10 +323,41 @@ DPH2/DAO1 размеры в Protocol, SQLCipher и machine registry; прежн�
 Android↔Windows E2E; сборка клиента и нижележащие storage tests не заменяют
 проверку отправки и получения на устройствах.
 
+Актуализация после аудита 2026-09-23: текущая clean MAUI surface уже имеет
+явные `StartSecureChannel`, `SendText` и `CheckInbox` вызовы; предыдущий
+снимок выше описывает более ранний commit и не является текущим статусом UI.
+`PrivacyRoutedMessagingReceiver.PollOnceAsync` проходит путь initial/established
+до durable materialization и ACK только после commit. Локальный MAUI clean
+Release test gate прошёл 6/6, Shared production Release gate — 159/159.
+Это пока **не** физический device E2E: нужны
+подтверждённая contact publication/authority, два реально созданных аккаунта,
+доставка Android↔Windows и, после DR-0006, новый release-compatible ID.
+Следующая проверка — sender DPH2, recipient self-retrieve/ContactHello,
+ответный DPE2 и crash/replay на тех же двух устройствах; файлы и группы
+выполняются только после зелёного текстового пути.
+Входящий ContactHello сейчас сохраняется как pending request, но Contacts UI
+показывает историю лишь для вручную выбранного `VerifiedConversation`;
+recipient discovery/accept и отображение входящего диалога остаются частью
+этого же text vertical, а не доказанным UX.
+
 Выводы security review, не нужные для CB0, не прерывают
 DEV0. Они выполняются после фиксации baseline в dependency order:
 Deep-native 1:1 vertical, contact, groups/files, routing/carriers, release
-hardening. Mesh, MLS, ML-DSA и on-prem runtime остаются за пределами V1.
+hardening. Mesh, MLS, **ML-DSA вне корня permanent identity** и on-prem
+runtime остаются за пределами V1. Корневой ML-DSA из ID-PQ-CB обязателен.
+
+Остальной аудит разбит по уже существующим владельцам, без новых protocol
+families в text vertical: Signal PQXDH/Triple Ratchet остаётся проверяемым
+криптографическим benchmark, SimpleX — benchmark минимизации глобальных
+идентификаторов и self-host, Session — roster/placement, Briar — будущего
+offline mesh, Matrix — on-prem операционной зрелости. В V1 перенимаем не
+новый стек, а gates: Registry не является steady-state trust oracle;
+crypto/onion/call claims разделены; два независимых censorship carriers и
+реальные hostile-network tests закрываются перед публичным выпуском;
+release BOM привязывает exact commits, protocol registry, native binaries,
+service images, APK/Windows ZIP и policy к физическому E2E. Hybrid/PQ onion,
+MLS, on-prem и mesh — отдельные последующие профили, не блокирующие первые
+текстовые Android↔Windows тесты. Начальные три XNode не дают disjoint route.
 
 `DEV-AUTH0` также отложен до отдельной команды после текущего release. Его
 изолированный контракт сохранён в

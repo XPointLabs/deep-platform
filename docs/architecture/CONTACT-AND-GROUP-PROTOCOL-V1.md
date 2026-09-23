@@ -1,5 +1,14 @@
 # Deep Contact, Multi-Device and Group Protocol V1
 
+> **Release compatibility stop (DR-0006, 2026-09-23):** permanent `DID1`/
+> `DAB1` version 1 below is retired from the first public release. Its
+> Ed25519-only root and succession cannot authenticate a later PQ upgrade.
+> The new PQ-committed ID and affected exact contact, directory, DPH2 and
+> safety-number bytes are not frozen yet. This document's old exact tables
+> remain implementation evidence/negative fixtures, not permission to issue
+> release accounts or to add a dual parser. See
+> [DR-0006](../survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md).
+
 Status: **normative implementation target for the first public release**
 
 This specification closes arbitrary-contact bootstrap, device fanout,

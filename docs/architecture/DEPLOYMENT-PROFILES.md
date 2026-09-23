@@ -21,7 +21,9 @@ Transport failure не меняет profile. Переход между official,
 
 ### 2.1 `OfficialXPoint3` — первый релиз
 
-Минимум три доступных public routing nodes. Каждый mailbox operation проходит
+Начальный production roster содержит ровно три public routing nodes.
+Расширение до шести отложено до готовности приглашать реальных пользователей.
+Для работоспособности все три должны быть доступны; каждый mailbox operation проходит
 ровно три onion hops:
 
 ```text
