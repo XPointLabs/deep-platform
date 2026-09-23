@@ -118,10 +118,11 @@ read lease while deriving V2 proof material from the fully replayed journal
 and PQ-verified ADC1 V2 set. It MUST consume a durable one-use nonce before
 threshold signing, use trusted time and an exact signed XNV1, and
 self-verify the resulting DTT1/ADP1 V2. Its nonce namespace MUST be separate
-from V1. This issuer is not a public endpoint until client-side ADL1 V2/DAB2
-query binding, the independent rollback floor, HTTP composition and client
-verification are in place;
-raw leaf bytes are not a trusted DID2 identity capability.
+from V1. An explicitly enabled Development/UAT-only HTTP endpoint may expose
+the exact `DPQ2`/`DPP2` frame with a separate protected one-use nonce ledger.
+Production hosting rejects DID2 admission and proofs until the independent
+rollback floor and client verification are in place; raw leaf bytes are not a
+trusted DID2 identity capability.
 
 The candidate HTTP proof payloads are V2-only, bounded binary frames. A
 `DPQ2` request is exactly 2332 bytes: magic (4), version `2` (u16 BE), zero
@@ -137,8 +138,9 @@ the total response is at most 594047 bytes. Decoding validates canonical
 artifact shapes and exact request/head/DTT/ADP cross-links, but does not
 grant authority or freshness. The client MUST independently verify the
 signed XPoint authority, DID2/DAB2-bound ADL1 V2, witness threshold, PQ
-admission, currentness, and protected LKG. A Registry HTTP route MUST stay
-disabled until the independent ADA2 rollback floor is operational.
+admission, currentness, and protected LKG. The UAT HTTP route is disabled by
+default; production hosting MUST reject it until the independent ADA2
+rollback floor is operational.
 
 Candidate V2 proof-material author first replays the complete V2 private
 journal against the protected head, checks the complete verified ADC1 V2 map,

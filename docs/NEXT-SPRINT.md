@@ -180,14 +180,18 @@ Registry/XNode теста прошли. Это **не** публичная proof
 DID2 request и ADH1/DTT1/ADP1 V2 response; неверный DID2-derived lookup,
 V1 wire, replay echo и подмена proof отвергаются. Registry issuer принимает
 этот wire, разрешает floor только из собственного ADA2 head lineage и
-возвращает exact V2 response. Публичный маршрут пока не включён: нужен
-rollback floor вне ADA2 и независимая клиентская верификация.
+возвращает exact V2 response. Production-маршрут остаётся заблокированным:
+нужны rollback floor вне ADA2 и независимая клиентская верификация.
+Development/UAT `POST /api/v2/account-directory/proofs` теперь можно отдельно
+включить после provisioning exact XNV1 и собственного one-use nonce ledger;
+реальный PQ HTTP roundtrip и replay-rejection проверены локально. Это не
+production path: сервер всё ещё отказывает вне Development/UAT.
 До появления такого floor production-хост Registry отвергает включение
 DID2 admission; candidate разрешён только в `Development`/`UAT`.
 
 Следующий обязательный пакет: независимый latest-head rollback floor против
-подмены ADA2 старой корректной HMAC-копией, UAT-проверка provisioning, V2 proof
-publication и клиентский cutover. Только затем physical Android ↔ Windows
+подмены ADA2 старой корректной HMAC-копией, UAT-проверка provisioning и V2 proof
+publication на реальном контуре, затем клиентский cutover. Только после этого physical Android ↔ Windows
 account/contact/message/media/group E2E; GitHub Releases не публиковать.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
