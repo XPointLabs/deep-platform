@@ -115,12 +115,13 @@ upstream ML-DSA-65 KAT (`META.yml` SHA-256) дополнительно прош�
 Linux ARM64 и на физическом Android ARM64. Deep-owned ABI также прошёл 70
 применимых официальных ACVP `v1.1.0.43` cases на Linux ARM64: 25 keygen,
 30 seed-format pure signing и 15 verification (3 positive/12 negative).
-Остаются Windows и physical Android ACVP gates, расширенный независимый signing differential,
+Те же 70 ACVP cases прошли в `net10.0-android` Release/AOT APK на физическом
+Android ARM64 с exact candidate `.so`; APK удалён. Остаются Windows ACVP gates,
+расширенный независимый signing differential,
 zeroization/side-channel review и wire cutover DID2/DAB2 перед клиентским E2E.
-Изолированный `net10.0-android` Release/AOT probe также загрузил этот exact
-candidate `.so` на физическом Android и прошёл ABI, public/signature fixture,
-verify/tamper и native zeroization; APK затем удалён с устройства. Это ещё не
-production asset/MAUI integration, и Windows platform gate остаётся открытым.
+Изолированный probe также прошёл ABI, public/signature fixture, verify/tamper
+и native zeroization. Это ещё не production asset/MAUI integration, и Windows
+platform gate остаётся открытым.
 
 ### CB0 — production clean-break до новой feature-работы
 
