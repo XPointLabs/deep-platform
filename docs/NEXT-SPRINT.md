@@ -123,6 +123,12 @@ zeroization/side-channel review и wire cutover DID2/DAB2 перед клиен�
 и native zeroization. Это ещё не production asset/MAUI integration, и Windows
 platform gate остаётся открытым.
 
+Локальный Windows ARM64-хост собрал Windows x64 candidate с MSVC 19.44;
+оба CTest (Deep ABI и upstream KAT) прошли под x64-эмуляцией. Это не
+физический x64/ARM64 acceptance и не ACVP Windows: доступный Python ARM64
+не загружает x64 DLL. Sanitized evidence — в
+`deep-protocol/native/Deep.MlDsa/evidence/windows-x64-emulated.v1.json`.
+
 2026-09-23: отдельная V2 PQ-root деривация из той же проверенной 24-словной
 фразы зафиксирована в нормативном crypto profile и реализована как внутренний,
 пока не активируемый production API. Независимый Python digest-вектор
