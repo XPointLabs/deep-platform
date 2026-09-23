@@ -182,6 +182,8 @@ V1 wire, replay echo и подмена proof отвергаются. Registry is
 этот wire, разрешает floor только из собственного ADA2 head lineage и
 возвращает exact V2 response. Публичный маршрут пока не включён: нужен
 rollback floor вне ADA2 и независимая клиентская верификация.
+До появления такого floor production-хост Registry отвергает включение
+DID2 admission; candidate разрешён только в `Development`/`UAT`.
 
 Следующий обязательный пакет: независимый latest-head rollback floor против
 подмены ADA2 старой корректной HMAC-копией, UAT-проверка provisioning, V2 proof
