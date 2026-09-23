@@ -131,6 +131,15 @@ reader must independently verify the complete DPA1/DRS1/DPD1/DID2/DAB2/
 DMD1/ADC1 closure including ML-DSA-65, the current XNA1 witness threshold,
 caller LKG history and the nonce-bound DTT1. A non-membership answer is
 meaningful only for an independently verified DID2-derived ADL1 V2 query.
+The public DID2 freshness reader MUST take a query capability constructed
+from the exact ADL1 V2 and an independently verified DAB2 binding. The ADL1
+network MUST equal the verified account certificate network, and the reader
+MUST match the ADL1 lookup/leaf to that DID2, the current authority network,
+and the exact `(minimumAdhGeneration, minimumAdhHash)` floor. That floor MUST
+be the presented current ADH1 or the exact protected LKG whose history is
+proved by ADP1 V2; a caller-provided raw 32-byte leaf is never sufficient
+to mint public freshness. A raw-leaf self-check may exist only inside the
+proof issuer and does not grant a reader capability.
 The candidate public V2 verifier now checks exact signed ADH1/DTT1 authority,
 nonce and monotonic time, direct-successor protected-LKG consistency, the
 ADP1 V2 sparse/inclusion proofs, and full PQ-backed generation-zero
@@ -142,7 +151,9 @@ response. Non-membership is an absence result for an independently authenticated
 DID2 leaf, not proof of any account ownership.
 The DID2-only proof issuer MUST derive ADP1 V2 from verified V2 journal/map
 material, bind it to threshold-signed nonce-bound DTT1 and the exact current
-XNV1, and run the public V2 verifier on its own output before publication.
+XNV1, and run the same proof verification core on its own exact leaf output
+before publication. This issuer-internal self-check is not a substitute for
+the public ADL1 V2/DAB2-bound reader path.
 Reusing the identity-neutral DTT1/XNV1 witness signing primitives does not
 permit emitting an ADP1 V1 result or bypassing PQ genesis verification.
 

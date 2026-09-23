@@ -104,6 +104,10 @@ nonce/monotonic currentness, direct-successor LKG consistency и полный
 PQ-backed generation-zero current closure перед выдачей freshness capability;
 ADP1 V1 отвергается. Положительные successor-истории, AFP1 forward history,
 service/client cutover и физический E2E ещё не готовы.
+Публичный freshness API теперь принимает только типизированный ADL1 V2 query,
+сверенный с independently verified DAB2: сеть аккаунта, DID2-derived leaf и
+точный generation/hash floor обязательны. Сырой leaf допускается лишь во
+внутреннем self-check issuer; проверены отказы при чужой сети и неверном floor.
 Отдельный Windows x64 тест теперь выпускает настоящий ML-DSA-backed DID2,
 строит подписанные ADH1/DTT1 и ADP1 V2 с Merkle-inclusion/consistency,
 затем получает positive freshness capability; это protocol-level тест, не
