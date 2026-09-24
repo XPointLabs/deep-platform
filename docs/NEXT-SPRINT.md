@@ -371,6 +371,10 @@ runtime build без предупреждений. `Up` пока fail-closed н�
 После диагностики launcher стал отвергать отсутствующий pin до Docker build.
 Неисправный изолированный контур остановлен с сохранением volumes; работающий
 survival dev и production не тронуты. Это не DID2 admission и не device E2E.
+Production custody Mr. X одноразово дополнена отдельными mailbox deposit и
+retrieve issuer-ключами; существующие десять ролей и offline root не
+ротировались, старый публичный manifest сохранён для аудита. Локальный
+bootstrap/deployment и device E2E этим ещё не подтверждены.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
