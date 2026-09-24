@@ -416,8 +416,12 @@ flag, dual reader или автоматический fallback. Нужно:
   является fallback reader;
   изолированный DCR1 V2 codec проверяет exact DCB1 V2 и закрытый, строго
   упорядоченный набор DRS1/DPD1 для всех DMD1 devices, а promotion требует
-  byte-identical verified custody. Это ещё не ADH1/ADP1 freshness, XPS1,
+  byte-identical verified custody. Это ещё не ADH1/ADP1 freshness, XPI1/DPK2 inventory,
   ContactResolve publication или physical E2E;
+  изолированный DID2 XPI1 manifest binding теперь сверяет independently
+  versioned XPI1 с exact DCR1 V2/XPS1/DMD1/DRS1 и подписью responder DPD1.
+  Полные XPP1/DPK2 bytes, Merkle membership, two-replica receipts, durable
+  inventory lineage и live claim ещё не подтверждены для DID2 пути;
   device-signed records остаются в account-owned custody, threshold records
   выпускает authority Mr. X, а XPU1 атомарно несёт exact verified route closure;
   bounded XPA1/XPU1 authority wire, Registry issuer и independently verifying

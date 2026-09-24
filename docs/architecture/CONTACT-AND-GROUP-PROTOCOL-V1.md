@@ -433,6 +433,11 @@ the bundle must cover every active DMD1 device exactly once, in device order,
 with its verified DPD1 reference, device signature and validity covering the
 entire bundle interval. This does not validate XPI1/DPK2 inventory or a live
 pre-key claim.
+The independently versioned XPI1 manifest must then bind the exact selected
+XPS1, responder DPD1, current DMD1/DRS1 and device signature as specified in
+[CONTACT-RESOLVER-V1](CONTACT-RESOLVER-V1.md#331-complete-pre-key-inventory-manifest-xpi1).
+That manifest binding is not proof of its XPP1 DPK2 inventory, two-replica
+receipts, installed inventory lineage or a successful atomic claim.
 
 The replacement `DCR1` keeps its four tags and 65,535-byte bound but likewise
 uses version `2`, suite `0x0301`, and embeds only DCB1 V2. Its DRS1/DPD1

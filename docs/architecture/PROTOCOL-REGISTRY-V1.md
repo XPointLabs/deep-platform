@@ -416,7 +416,7 @@ Normative source: `CONTACT-RESOLVER-V1.md`.
 | `XIQ1` | idempotent permanent-address resolve or one-time invite claim request. | `TARGET_UNFROZEN` |
 | `XIS1` | closed invite resolve result with exact-replay semantics. | `TARGET_UNFROZEN` |
 | `XPS1` | signed per-device prekey service descriptor carried by DCB1. | `TARGET_UNFROZEN` |
-| `XPI1` | device-signed complete DPK2 inventory manifest with ordered Merkle commitment. | `TARGET_UNFROZEN` |
+| `XPI1` | device-signed complete DPK2 inventory manifest with ordered Merkle commitment. | `TARGET_UNFROZEN`; isolated DID2 DCR1/XPS1 manifest binding only, no XPP1/DPK2 or live-claim authority |
 | `XPP1` | bounded atomic publication of one exact XPI1 and its complete DPK2 inventory to both placement replicas. | `TARGET_UNFROZEN` |
 | `XIC1` | replica-signed durable XPI1 inventory commit receipt. | `TARGET_UNFROZEN` |
 | `XPK1` | atomic one-time/last-resort prekey claim request. | `TARGET_UNFROZEN` |
