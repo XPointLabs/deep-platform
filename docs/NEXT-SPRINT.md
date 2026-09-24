@@ -288,7 +288,9 @@ composition, contact transport и physical device E2E остаются откр�
 создание по имени, проверенное повторное открытие exact DID2, доступ к
 удержанной recovery-фразе, её необратимое удаление и только явный V2 reset.
 Он ещё не является MAUI production composition: старый V1 account runtime
-нельзя частично подключать к новой DID2 учётной записи.
+нельзя частично подключать к новой DID2 учётной записи. Выбор ML-DSA
+verifier lease обязан быть явным в composition; CI candidate provider не
+считается автоматически одобренным production provider.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
