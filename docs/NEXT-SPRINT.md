@@ -133,11 +133,12 @@ material, подписывает nonce-bound DTT1 и self-verifies ADP1 V2 те�
 verification core через внутренний raw-leaf путь issuer. Публичный reader
 дополнительно требует verified ADL1 V2/DAB2 query. Проверены positive real-PQ
 выпуск и отказ при чужом head/дублированном
-witness; registry durable state и HTTP publication ещё не переключены.
+witness; Registry durable ADA2 и HTTP publication затем добавлены как
+изолированный UAT-кандидат, но production gate остаётся закрытым ниже.
 Registry API вместе с XNode пока имеет двойной build graph: обычный
 `dotnet test Deep.Registry.Api.slnx` тянет старый protocol NuGet и не
 собирается, а `-p:DeepProtocolLocalCutover=true
--p:DeepProtocolSourceCutover=true` проходит 390 тестов. Следующий
+-p:DeepProtocolSourceCutover=true` теперь проходит 410 тестов. Следующий
 clean-break должен единообразно перевести весь transitive XNode graph на
 текущий source/package pin; локальное изменение только registry defaults
 недостаточно и не должно попадать в релиз. XNode ProfileGenerator содержит
@@ -239,6 +240,15 @@ store; интеграционный тест отвергает старую к�
 backup/restore ADA2, ограничить роли, провести UAT recovery drill и доказать
 независимое восстановление. До этого DID2 production endpoint закрыт;
 candidate разрешён только в `Development`/`UAT`.
+
+2026-09-24: положительный локальный Registry↔client-shared тест впервые
+замкнул create DID2 → DGA1 V2 admission → nonce-bound DTT1/ADP1 V2 proof →
+durable SQLCipher latest-head CAS. Он выявил нулевой после ответа TTL DTT1:
+Registry ставил `expires-at` равным верхней границе uncertainty, из-за чего
+следующая монотонная секунда клиента всегда отклонялась. Issuer теперь
+выдаёт bounded срок до 30 секунд от authenticated observation, обрезанный
+epoch/XNA1/DTS1/ADH1; тест проверяет положительный путь и истечение. Это не
+заменяет UAT/physical E2E и не открывает production endpoint.
 
 Следующий обязательный пакет: независимое размещение latest-head rollback
 floor, UAT-проверка provisioning/recovery и V2 proof
