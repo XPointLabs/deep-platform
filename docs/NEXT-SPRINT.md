@@ -368,6 +368,7 @@ provisioning. Это устраняет ручную тестовую подпи
 обновления локального Protocol package graph/pins; XNode unit gate 231/231 и
 runtime build без предупреждений. `Up` пока fail-closed на отсутствующем
 независимом genesis XNA1 pin/полном подписанном artifact inventory у Registry.
+После диагностики launcher стал отвергать отсутствующий pin до Docker build.
 Неисправный изолированный контур остановлен с сохранением volumes; работающий
 survival dev и production не тронуты. Это не DID2 admission и не device E2E.
 
