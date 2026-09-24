@@ -202,7 +202,9 @@ V1 wire, replay echo и подмена proof отвергаются. Registry is
 Development/UAT `POST /api/v2/account-directory/proofs` теперь можно отдельно
 включить после provisioning exact XNV1 и собственного one-use nonce ledger;
 реальный PQ HTTP roundtrip и replay-rejection проверены локально. Это не
-production path: сервер всё ещё отказывает вне Development/UAT.
+production path: сервер по умолчанию закрыт, а production opt-in требует
+явного cutover attestation, proof endpoint, удалённого PostgreSQL floor с
+VerifyFull TLS и успешного startup-read ADA2 против этого floor.
 Изолированный клиентский DPQ2/DPP2 fetcher теперь требует verified DAB2-bound
 ADL1 V2, XPoint authority и восстановленный из защищённого V2 store LKG,
 затем проверяет nonce, boot-stable monotonic window и полный PQ-backed proof.
@@ -238,8 +240,8 @@ store; интеграционный тест отвергает старую к�
 Тест с отдельным локальным PostgreSQL проверил повторный provision, stale head
 и restart. Это ещё не production floor: нужно развернуть БД вне домена
 backup/restore ADA2, ограничить роли, провести UAT recovery drill и доказать
-независимое восстановление. До этого DID2 production endpoint закрыт;
-candidate разрешён только в `Development`/`UAT`.
+независимое восстановление. До этого DID2 production endpoint остаётся
+выключенным; наличие защищённого opt-in gate не является разрешением релиза.
 
 2026-09-24: положительный локальный Registry↔client-shared тест впервые
 замкнул create DID2 → DGA1 V2 admission → nonce-bound DTT1/ADP1 V2 proof →
@@ -777,20 +779,28 @@ Linux CI обязан отвергать его без release-approved ML-KEM a
 `DGA1 V2 admission → ADH1/DTT1/ADP1 current proof → STORE-V2 LKG → DPK2`
 для того же DID2-аккаунта. На Windows создаётся реальный one-time prekey;
 на Linux отсутствие release-approved ML-KEM обязано завершиться fail-closed.
-Source-cutover Registry suite локально прошёл 410/410; GitHub CI и image
+Source-cutover Registry suite локально прошёл 413/413; GitHub CI и image
 candidate должны checkout того же branch `deep-client-shared` для тестов.
 Этот тест не является физическим Android↔Windows transport evidence.
 Read-only production check 2026-09-24: `registry.xpoint.network` отвечает
 `GET /health/live` 200, а HEAD к обоим `/api/v2/account-directory/*`
-маршрутам даёт 404; production DID2 availability не доказана, и кодовая
-группа endpoint по-прежнему разрешена лишь в Development/UAT. Текущий
+маршрутам даёт 404; production DID2 availability не доказана. Кодовая
+группа endpoint теперь допускает только явный production opt-in после
+аттестации удалённого VerifyFull PostgreSQL floor, proof issuer и startup
+сверки полной ADA2-журнальной головы с внешним floor; эти условия в
+действующем production не настроены. Текущий
 локальный public bootstrap manifest для
 production network `edc5dc1516a847a65fc8ba0e690d000d` истекает
 2026-09-25 10:25:43 UTC. До выката необходимо проверить refresh подписанного
 authority, независимый PostgreSQL latest-head floor, rollback и сохранность
 co-located staking; локальный TestServer не подменяет этот gate.
-Windows probe был свёрнут, и его окно не удалось активировать для повторной
-физической UI-проверки; данные Windows-аккаунта не менялись.
+Windows probe после созданного оператором нового аккаунта снова наблюдался
+через UI: отображаются имя, DID2-адрес и скрытая фраза; её содержимое не
+раскрывалось. Это не подтверждает сетевую регистрацию или доставку.
+Shared production suite теперь прошёл 183/183; DID2 proof client создаётся
+через owned HTTPS transport factory, которая ограничивает origin, endpoint,
+размеры и timeout. Полный Registry suite после добавления production gate
+прошёл 413/413. Ничего из этого не заменяет физический device E2E.
 Следующая проверка — sender DPH2, recipient self-retrieve/ContactHello,
 ответный DPE2 и crash/replay на тех же двух устройствах; файлы и группы
 выполняются только после зелёного текстового пути.
