@@ -273,8 +273,17 @@ DID2/DAB2; reset до восстановления winner запрещён. Бе
 lease владельца; deletion marker переживает повторное открытие без смены
 DID2/DAB2. Если public closure durable, но device secrets incomplete, reset
 также запрещён; exact repair этого состояния остаётся открытым перед UI.
-Новая SQL generation, MAUI composition, contact transport и physical device
-E2E остаются открыты — это ещё не завершённый клиентский clean-break.
+Изолированный V2 owner теперь создаёт до публикации index отдельную SQLCipher
+`DSV2` generation: защищённый V2 ключ и instance ID, атомарные account/device/
+profile rows и пустые LKG/outbox/inbox/security-event roots. После публикации
+каждое чтение сверяет exact DID2/DAB2/device projection и схему; потерянная
+база не создаётся заново. Pre-index pending SQL восстанавливается из той же
+verified closure, явный reset удаляет только V2 database family и namespace.
+Фокусные проверки покрывают зашифрованный файл, journaled-key restart,
+wrong scope/generation, повреждённый pending и отсутствие базы/ключа.
+Полный mutable STORE-01 с in-memory parity и restore-as-new-device, MAUI
+composition, contact transport и physical device E2E остаются открыты — это
+ещё не завершённый клиентский clean-break.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
