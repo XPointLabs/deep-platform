@@ -351,6 +351,14 @@ closure точный DGA1 V2 с фиксированным для genesis operat
 недоверенной квитанцией: живой admission, независимо аутентифицированный
 ADH1/DTT1/ADP1 proof и их связка с отдельной DID2 MAUI composition ещё не
 проверены; V1 fallback запрещён.
+Клиентская account-owned последовательность теперь принимает DGR1 только как
+недоверенную квитанцию, авторит ADL1 V2 из защищённого V2 floor и проверенного
+DID2, требует независимо верифицированный current-value ADH1/DTT1/ADP1 V2,
+сверяет exact DID2/DAB2/ADC1 с локальным genesis и повторно проверяет локальный
+аккаунт после сети. Тест с HTTP 200 DGR1 и недоступным proof остаётся
+fail-closed. Это локальный API gate, а не живой UAT admission или device E2E:
+в текущем dev Registry DID2 admission/proof не включены, а MAUI probe ещё не
+композирует сетевой путь.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
