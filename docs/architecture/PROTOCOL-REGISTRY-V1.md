@@ -373,7 +373,7 @@ Normative source: `XPOINT-NETWORK-V1.md`.
 | `XNP1` | bounded XNV inclusion/consistency proof manifest using typed core refs. | mirrors publish; clients verify | `FROZEN_TARGET_NOT_ACTIVE` |
 | `XNF1` | root-authorized beyond-horizon network-view forward checkpoint. | offline root tooling authors; mirrors publish; clients verify | `FROZEN_TARGET_NOT_ACTIVE` |
 | `NFP1` | bounded authority/checkpoint/source-membership proof manifest for XNF1 merge. | mirrors package; clients verify | `FROZEN_TARGET_NOT_ACTIVE` |
-| `XIR1` | long-lived invite rendezvous embedded in DCB1; never a current message deposit route. | contact owner authors; selected invite-store pair hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
+| `XIR1` | long-lived invite rendezvous embedded in DCB1; never a current message deposit route. | contact owner authors; selected invite-store pair hosts | DID2-bound V2 `TARGET_UNFROZEN`; isolated 611-byte candidate verifies DCA1 V2 issuer only, old V1 bytes are not release authority |
 | `XRR1` | short-lived established-contact/message deposit reachability. It is not a public Deep ID artifact. | contact owner authors; selected mailbox pair hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XMG1` | privacy-routed proof-of-possession request for short-lived mailbox grants bound to exact XRR1 reachability. | contact client authors; ContactResolve authority verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XMC1` | closed mailbox-grant acquisition result carrying exactly one current-epoch MCG2 only on success. | ContactResolve authority authors; contact client verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |

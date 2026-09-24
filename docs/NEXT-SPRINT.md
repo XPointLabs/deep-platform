@@ -404,6 +404,10 @@ flag, dual reader или автоматический fallback. Нужно:
   до runtime activation атомарно re-freeze DCB1/DCR1 вместе с XIR1→DCA1
   ArtifactRef/version/signature input, ADL1 V2 и exact DID2/DAB2; простая
   замена DID1-полей DCB1 создаёт недопустимый смешанный V1/V2 closure;
+  изолированный XIR1 V2 codec уже отклоняет старые version/suite/reference,
+  проверяет exact DCA1 V2 hash и подпись активного issuer device. Он не
+  авторитативен для публикации без XRA1/PMT2, DCB1/DCR1 и V2 resolver
+  closure; физический E2E этим тестом не закрыт;
   device-signed records остаются в account-owned custody, threshold records
   выпускает authority Mr. X, а XPU1 атомарно несёт exact verified route closure;
   bounded XPA1/XPU1 authority wire, Registry issuer и independently verifying

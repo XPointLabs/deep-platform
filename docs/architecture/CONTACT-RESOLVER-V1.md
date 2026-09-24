@@ -114,6 +114,28 @@ object hash is `SHA256(exactXIR1)`. A successor has the same network/rendezvous
 ID, exact generation plus one, predecessor hash equality and overlapping
 effective validity; same-generation changed bytes or two successors fork-latch.
 
+### 2.1.1 DID2 XIR1 candidate (not release-active)
+
+The DID2 contact cutover retains the 18 XIR1 field meanings and exact 611-byte
+shape above, but uses record version `2`, suite `0x0301`, and
+`SIGINPUT("Deep/ContactResolver/V2/XIR1", 0x0301, unsignedXIR1)` over tags
+1..16 and 18 (539 bytes). Tag 16 is exactly
+`"DCA1" || u16be(2) || DCA1-V2.RecordHash32`, where the hash is the
+domain-separated `Deep/Application/V2/record-hash/DCA1` value; the V1
+artifact version or raw SHA-256 of DCA1 cannot authorize it. Tags 5, 15 and
+18 retain version-1 references to the independently versioned PMT2, DPD1
+and XRA1 objects respectively. The XIR1 object hash and predecessor link
+remain raw `SHA256(exactXIR1)`. The issuer signature must verify under the
+active DPD1 device key bound by exact, currently authoritative DCA1 V2;
+network, issuer device, permitted invite kind and complete validity interval
+must agree before promotion. The XRA1/PMT2 route closure is independently
+mandatory. The old XIR1 V1 parser is a negative fixture, not a dual reader.
+
+This is an isolated candidate, **not** permission to publish contacts. DCB1,
+DCR1, the resolver locator/protection derivation and XPA1/XPU1 consumers
+still require a single DID2-only re-freeze with positive and hostile vectors
+before runtime activation.
+
 Permanent DID1 has no expiry. Its current first-contact availability ends at the
 minimum of DCB1, DCA1, XIR1, XRA1 and
 XPS1 authorization. ADH1 is separately required as fresh verification evidence:
