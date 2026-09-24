@@ -292,14 +292,28 @@ composition, contact transport и physical device E2E остаются откр�
 verifier lease обязан быть явным в composition; CI candidate provider не
 считается автоматически одобренным production provider.
 
+2026-09-24: отдельный Debug/UAT MAUI DID2 account-only probe теперь создаёт
+аккаунт одной кнопкой без V1 runtime. На физическом Android проверены создание,
+неизменный DID2 после перезапуска, показ и скрытие 24 слов, удаление сохранённой
+фразы через UI и сохранность ID после повторного запуска; секретный текст не
+попал в evidence. Результат и границы проверки — в
+[`deep-client-maui/docs/DID2-ANDROID-ACCOUNT-GATE-2026-09-24.md`](../deep-client-maui/docs/DID2-ANDROID-ACCOUNT-GATE-2026-09-24.md).
+Windows ARM64 probe собран, но физический UI-gate пока не пройден: средство
+запуска не открыло окно; отдельный каталог данных не создавался. См.
+[`deep-client-maui/docs/DID2-WINDOWS-PROBE-2026-09-24.md`](../deep-client-maui/docs/DID2-WINDOWS-PROBE-2026-09-24.md).
+Оба результата не активируют production DID2 composition и не доказывают
+контакты, сообщения, вложения или группы. Следующий сквозной gate — exact
+DID2/DAB2 public closure, contact/QR/XPK consumers и Android→Windows text
+delivery с durable inbox/ACK; legacy V1 runtime к DID2 probe не подключать.
+
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
 seed, подпись и rejection подмены сообщения/ключа. Это **не** provider approval:
 проверенный Bouncy Castle 2.7.0 не даёт deterministic disposal для объекта
 private key с внутренними `byte[]`. Поэтому production-кандидатом выбран
 native provider с Deep-owned ABI и вызовом без долгоживущего expanded secret.
-Production issuance DID1 должна оставаться заблокированной на этапе cutover;
-старый ID не является fallback.
+Production issuance DID2 должна оставаться заблокированной до provider
+acceptance и полного cutover; старый DID1 не является fallback.
 
 Выбранная библиотека (ещё **не** production-accepted provider) —
 [`mldsa-native` v2.0.0](https://github.com/pq-code-package/mldsa-native/releases/tag/v2.0.0):

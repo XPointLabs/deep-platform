@@ -422,10 +422,11 @@ Normative source: `CONTACT-RESOLVER-V1.md`.
 | `XUQ1` | established-contact successor/update query. | `TARGET_UNFROZEN` |
 | `XUS1` | closed established-contact update result. | `TARGET_UNFROZEN` |
 
-`DID1` plus `XIR1` and these operations replaces the earlier plan to embed
-consumable DPK2 bytes or a 24-hour XRR1 in a reusable address. DID1 itself has
-no expiry; current publication availability is bounded by every mandatory
-nested signed object. DIA1 remains an expiring one-time invitation.
+The release target uses verified `DID2` plus `XIR1` and these operations,
+not consumable DPK2 bytes or a 24-hour XRR1 in a reusable address. DID2
+itself has no expiry; publication availability is bounded by every mandatory
+nested signed object. DIA1 remains an expiring one-time invitation. This
+target is not active until the DID2-dependent contact closure is re-frozen.
 
 ### 6.7 Carrier records
 
