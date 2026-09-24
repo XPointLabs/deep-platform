@@ -116,8 +116,11 @@ HMAC and an immutable genesis pin do **not** detect replacement by an older,
 correctly authenticated ADA2 file. Before production activation, Registry
 MUST compare each recovered head with an independently protected latest-head
 rollback floor outside that file's rollback domain, including across process
-restart and recovery. The current candidate service lacks that floor and is
-therefore not a production approval or device E2E gate pass.
+restart and recovery. The candidate Registry has an opt-in PostgreSQL
+compare/exchange floor and explicit one-time genesis provisioning. Production
+approval still requires a database outside ADA2's backup/restore domain,
+independent recovery evidence and a stale-ADA2 restoration drill; an optional
+UAT connection is not that approval and is not a device E2E pass.
 
 The Registry's internal DID2 proof issuer MUST hold the same exclusive ADA2
 read lease while deriving V2 proof material from the fully replayed journal

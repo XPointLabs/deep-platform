@@ -232,14 +232,16 @@ SQL-only rollback при сохранённом secure storage: совместн
 подтверждают отказ при откате и отсутствие записи при ошибке floor. Пути
 admission и proof issuer теперь передают одну DI-зависимость floor в ADA2
 store; интеграционный тест отвергает старую корректную HMAC-копию на обоих
-путях. Реальный
-rollback-resistant provider вне домена backup/restore ADA2 ещё не подключён,
-поэтому это не снимает production gate и не разрешает включить DID2 endpoint.
-До появления такого floor production-хост Registry отвергает включение
-DID2 admission; candidate разрешён только в `Development`/`UAT`.
+путях. Реализован opt-in PostgreSQL provider с точным network-bound CAS,
+явным однократным provision genesis и fail-closed при отсутствии строки/БД.
+Тест с отдельным локальным PostgreSQL проверил повторный provision, stale head
+и restart. Это ещё не production floor: нужно развернуть БД вне домена
+backup/restore ADA2, ограничить роли, провести UAT recovery drill и доказать
+независимое восстановление. До этого DID2 production endpoint закрыт;
+candidate разрешён только в `Development`/`UAT`.
 
-Следующий обязательный пакет: независимый latest-head rollback floor против
-подмены ADA2 старой корректной HMAC-копией, UAT-проверка provisioning и V2 proof
+Следующий обязательный пакет: независимое размещение latest-head rollback
+floor, UAT-проверка provisioning/recovery и V2 proof
 publication на реальном контуре, затем клиентский cutover. Клиентский cutover
 не является заменой одного поля ID или экрана: текущие `DeepAccount` и
 `IDeepAccountStore` хранят `DeepPermanentIdV1`, а genesis activation выпускает
