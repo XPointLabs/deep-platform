@@ -769,7 +769,9 @@ MAUI transport composition, доступный DID2 Registry endpoint и физ�
 данных; после restart и обновления открыт экран управления сохранённой фразой,
 а не создание аккаунта. Debug Android и Windows probe собираются; полный
 Shared production gate 182/182, Protocol 1758 passed/11 skipped,
-MAUI clean 15/15, соответствующие GitHub CI зелёные. Это доказывает только
+MAUI clean 15/15. DPK2 one-time authoring положительно проверен на Windows;
+Linux CI обязан отвергать его без release-approved ML-KEM asset, без fallback.
+Это доказывает только
 локальную непрерывность аккаунта, не network admission и не message E2E.
 Windows probe был свёрнут, и его окно не удалось активировать для повторной
 физической UI-проверки; данные Windows-аккаунта не менялись.
