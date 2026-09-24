@@ -329,6 +329,9 @@ verifier lease обязан быть явным в composition; CI candidate pro
 фразы через UI и сохранность ID после повторного запуска; секретный текст не
 попал в evidence. Результат и границы проверки — в
 [`deep-client-maui/docs/DID2-ANDROID-ACCOUNT-GATE-2026-09-24.md`](../deep-client-maui/docs/DID2-ANDROID-ACCOUNT-GATE-2026-09-24.md).
+После DR-0007 тот же изолированный Android probe отверг старый DID2,
+сбросил его через подтверждение в приложении и подтвердил неизменный новый
+Deep ID после перезапуска и после удаления фразы с ещё одним перезапуском.
 Windows ARM64 probe впоследствии показал существующий тестовый аккаунт и
 элементы управления recovery-фразой в отдельном окне; создание и сохранность
 после перезапуска наблюдателем не проверены, поэтому полный Windows account
@@ -338,6 +341,13 @@ gate ещё открыт. См.
 контакты, сообщения, вложения или группы. Следующий сквозной gate — exact
 DID2/DAB2 public closure, contact/QR/XPK consumers и Android→Windows text
 delivery с durable inbox/ACK; legacy V1 runtime к DID2 probe не подключать.
+
+После DR-0007 account owner теперь формирует из проверенной сохранённой
+closure точный DGA1 V2 с фиксированным для genesis operation ID. Побайтная
+идемпотентность после удаления фразы и отсутствие сырого resolver capability
+в публичном запросе проверены тестом. Это ещё не HTTP admission и не
+аутентифицированный ADH1/ADP1 proof; следующий шаг — связать их с отдельной
+DID2 MAUI composition, не возвращая V1 fallback.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
