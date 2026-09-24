@@ -120,6 +120,19 @@ ADP1 V1 отвергается. Протокольный тест с реаль�
 того же защищённого floor; неполный journal отклоняется. Это protocol-level
 evidence, не service/client cutover. AFP1 forward history и физический E2E
 ещё не готовы.
+2026-09-25 device-кандидат подтвердил границу: второй Android-аккаунт
+прошёл DGA1 admission, но genesis LKG не может получить fresh ADP1 после
+истечения первого промежуточного ADH1. Registry корректно отказал, а клиент
+сохранил локальный аккаунт. Bounded direct-successor catch-up теперь проходит
+Registry 415/415 и shared 183/183, однако он работает лишь пока каждый
+промежуточный signed head актуален. До public cutover нужен отдельный P0
+root-authorized AFP1/ADF1-equivalent именно для DID2 V2: зафиксировать wire,
+source-LKG membership, полный exact successor/authority transcript, текущий
+target ADH1 и root-threshold signatures; выпуск и проверку через Registry,
+клиент и negative vectors. Нельзя продлевать истёкший head, сбрасывать
+защищённый LKG или объявлять двухшаговый catch-up заменой checkpoint.
+Физический Android/Windows E2E повторить после этого на непрерывно работающем
+canary; сообщения, вложения и группы пока не подтверждены.
 Публичный freshness API теперь принимает только типизированный ADL1 V2 query,
 сверенный с independently verified DAB2: сеть аккаунта, DID2-derived leaf и
 точный generation/hash floor обязательны. Сырой leaf допускается лишь во
