@@ -196,8 +196,26 @@ production path: сервер всё ещё отказывает вне Developm
 ADL1 V2, XPoint authority и восстановленный из защищённого V2 store LKG,
 затем проверяет nonce, boot-stable monotonic window и полный PQ-backed proof.
 Freshness capability не возвращается до успешного durable CAS следующего LKG.
-Реального V2 store ещё нет, клиент не подключён к MAUI; это обязательный
-client cutover, а не повод считать E2E пройденным.
+У DID2 account owner теперь есть реальное account-scoped SQLCipher-хранилище
+этого LKG: оно начинает только с отдельно закреплённого signed empty V2 head,
+восстанавливает его после restart, проверяет подписи/сеть и атомарно делает
+CAS следующей головы под общим lease аккаунта. Отдельный add-only защищённый
+маркер для каждой ревизии закрепляет exact hash подписанной головы и SQL
+revision; следующий маркер пишется до SQL commit, поэтому потеря или откат
+SQL-строки закрывается, а crash между двумя записями требует явного
+восстановления/сброса вместо
+молчаливого принятия старого floor. Тесты подтверждают signed bootstrap,
+reopen, exact replay, stale-writer rejection и отказ при откате на старую
+корректно подписанную голову, повреждении или удалении строки. DPQ2/DPP2
+клиент также заново проверяет boot и TTL после durable CAS,
+прежде чем вернуть freshness capability. Полный положительный HTTP proof →
+SQLCipher CAS → Contact consumer всё ещё не проверен; клиент не подключён к
+MAUI, а Registry production proof endpoint закрыт. Это обязательный client
+cutover, а не повод считать E2E пройденным. Маркеры защищают только от
+SQL-only rollback при сохранённом secure storage: совместный rollback обоих
+хранилищ требует независимого floor, а текущий journaled secure storage
+ограничен 128 слотами. Масштабируемый независимый якорь и восстановление
+после crash между маркером и SQL commit остаются release gates.
 У ADA2 store добавлена точка интеграции независимого latest-head floor:
 чтение сверяет полностью восстановленный signed head, запись продвигает
 внешний floor **до** замены ADA2 и при несогласованности закрывается. Тесты
