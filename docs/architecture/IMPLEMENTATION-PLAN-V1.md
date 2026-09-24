@@ -180,7 +180,8 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   `VerifiedDeviceRelative` values supplied by its DNP1 verifier; the
   lower-level `VerifiedDevice` overload must never synthesize those values.
   STORE-V2 uses that narrow fact together with protected matching device
-  secrets to open `LocalDeviceX25519AgreementAuthority` after restart,
+  secrets to open `LocalDeviceX25519AgreementAuthority` and the closed
+  `Dpk2AuthoringAuthority` after restart,
   including after user deletion of the retained phrase. This grants no raw
   key, network freshness, DMD1 currentness or message-delivery authority.
   Re-freeze both Release and Debug protocol public-API snapshots and verify

@@ -756,10 +756,11 @@ guard перепривязан к скомпилированному clean `Maui
 Это пока **не** физический device E2E: нужны
 подтверждённая contact publication/authority, два реально созданных аккаунта,
 доставка Android↔Windows и, после DR-0006, новый release-compatible ID.
-После DID2 clean-break account service открывает проверенную, неэкспортируемую
-DPH2 X25519 capability из STORE-V2; повторное открытие после удаления локальной
-сид-фразы покрыто тестом. Эта capability не выдаёт право на отправку сама по
-себе: operation требует exact current unforked DMD1 и одноразовый binding.
+После DID2 clean-break account service открывает проверенные, неэкспортируемые
+DPH2 X25519 и DPK2 prekey-authoring capabilities из STORE-V2; повторное
+открытие после удаления локальной сид-фразы покрыто тестом. Эти capabilities
+не выдают право на отправку или публикацию сами по себе: операции требуют
+exact current unforked DMD1 и одноразовый binding.
 MAUI transport composition, доступный DID2 Registry endpoint и физическая
 доставка Android↔Windows всё ещё остаются обязательными gate. STORE-V1/
 `SessionId` fallback не добавлять.
