@@ -134,8 +134,9 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
 - [`LOCAL-DEV-E2EE-AUTHORITY.md`](LOCAL-DEV-E2EE-AUTHORITY.md) — отложенный
   post-release DEV-LOCAL-ONLY trust domain для настоящих DPK2/DPH2/DPE2/TRS1;
   не является зависимостью текущего production release.
-- `CONTACT-AND-GROUP-PROTOCOL-V1.md` — permanent transport-neutral DID1,
-  one-time invites, initial contact, multi-device и small group semantics.
+- `CONTACT-AND-GROUP-PROTOCOL-V1.md` — permanent transport-neutral Deep ID
+  (PQ-root DID2 for the release graph), one-time invites, initial contact,
+  multi-device и small group semantics.
 - `CONTACT-RESOLVER-V1.md` — invite publication/resolve, long-lived XIR1 и
   atomic fresh pre-key claim.
 - `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md` — fresh account/device heads,
