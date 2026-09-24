@@ -393,9 +393,17 @@ provisioning. Это устраняет ручную тестовую подпи
 перепроверен и закреплён; из него создан HMAC-защищённый пустой ADA2.
 Защищённые файлы staged на Registry-хосте, а exact ADH1 единожды записан в
 отдельный production floor через provisioning-роль. Повторная запись закрыта.
-Новый Registry image собран CI и проверил head, но работающий Registry ещё не
-заменён; DID2 admission/proof выключены. UAT/physical device E2E и оставшиеся
-floor startup/recovery gates обязательны до release-кандидата.
+Новый Registry image собран CI и проверил head; публичный Registry ещё не
+заменён. Отдельная loopback-only UAT-канарейка 2026-09-24 приняла реальный
+PQ-backed DID2 genesis и выдала независимо проверенный current proof;
+защищённый клиентский LKG и внешний PostgreSQL floor перешли к tree size 1.
+Актуальные ADA2 и floor dump сохранены локально с проверкой хэшей. Отдельный
+непубликуемый Production-mode процесс отверг старый ADA2 при старте из-за
+несовпадения с floor, тогда как контрольный процесс с текущим ADA2 стартовал.
+Изолированный Production-mode процесс без сети также не стартовал из-за
+недоступного PostgreSQL floor. Это не physical device E2E и не production
+cutover: полный role-recovery drill, подключение Windows/Android и транспорт
+сообщений остаются обязательными.
 Изолированный трёхузловой first-release local image build прошёл после
 обновления локального Protocol package graph/pins; XNode unit gate 231/231 и
 runtime build без предупреждений. `Up` пока fail-closed на отсутствующем
