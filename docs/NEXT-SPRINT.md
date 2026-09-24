@@ -238,10 +238,12 @@ store; интеграционный тест отвергает старую к�
 путях. Реализован opt-in PostgreSQL provider с точным network-bound CAS,
 явным однократным provision genesis и fail-closed при отсутствии строки/БД.
 Тест с отдельным локальным PostgreSQL проверил повторный provision, stale head
-и restart. Это ещё не production floor: нужно развернуть БД вне домена
-backup/restore ADA2, ограничить роли, провести UAT recovery drill и доказать
-независимое восстановление. До этого DID2 production endpoint остаётся
-выключенным; наличие защищённого opt-in gate не является разрешением релиза.
+и restart. 2026-09-24 floor отдельно развернут на production seed2 с
+single-source firewall, частным VerifyFull TLS, раздельными ролями и точной
+genesis-строкой. Согласованный дамп восстановил exact signed head в отдельном
+временном PostgreSQL. Это ещё не Registry cutover: outage/old-ADA2 startup
+drill, полное восстановление ролей и device E2E остаются gate; opt-in provider
+не является разрешением релиза.
 
 2026-09-24: положительный локальный Registry↔client-shared тест впервые
 замкнул create DID2 → DGA1 V2 admission → nonce-bound DTT1/ADP1 V2 proof →
@@ -252,9 +254,13 @@ Registry ставил `expires-at` равным верхней границе un
 epoch/XNA1/DTS1/ADH1; тест проверяет положительный путь и истечение. Это не
 заменяет UAT/physical E2E и не открывает production endpoint.
 
-Следующий обязательный пакет: независимое размещение latest-head rollback
-floor, UAT-проверка provisioning/recovery и V2 proof
-publication на реальном контуре, затем клиентский cutover. Клиентский cutover
+Следующий обязательный пакет: startup-read текущего ADA2 против production
+floor только с runtime-ролью; проверка отказа при outage и откате старого
+ADA2 после первой реальной admission; полное восстановление ролей, затем V2
+admission/proof на реальном контуре и клиентский cutover. Поскольку пустой
+genesis ADH1 имеет ограниченный срок, до релиза нужен проверенный механизм
+продления подписанного head даже без новых аккаунтов — иначе после истечения
+срока Registry обязан закрыться. Клиентский cutover
 не является заменой одного поля ID или экрана: текущие `DeepAccount` и
 `IDeepAccountStore` хранят `DeepPermanentIdV1`, а genesis activation выпускает
 DAB1/DCA1/ADC1 V1. Нужны новая несовместимая account/store generation,
@@ -382,14 +388,14 @@ threshold witness custody один раз выпустить пустой под
 проверить его и вывести только core-hash для независимого pin перед ADA2
 provisioning. Это устраняет ручную тестовую подпись головы, но не заменяет
 отдельный UAT deployment, rollback floor или device E2E.
-2026-09-24: production custody Mr. X локально выпустила обновлённый
-authority-кандидат с сохранённым genesis XNA1 pin и отдельный подписанный
-пустой DID2 ADH1. Его core hash проверен операторской read-only командой и
-независимым расчётом, затем отдельно закреплён; из него однократно создан
-HMAC-защищённый пустой ADA2. Это только локальные offline-артефакты:
-Registry/XNode в production не изменены, DID2 admission/proof не включены.
-Независимый latest-head rollback floor, UAT admission/proof и device E2E
-по-прежнему обязательны до release-кандидата.
+2026-09-24: production custody Mr. X локально выпустила отдельный подписанный
+пустой DID2 ADH1 при сохранённом genesis XNA1 pin. Core hash независимо
+перепроверен и закреплён; из него создан HMAC-защищённый пустой ADA2.
+Защищённые файлы staged на Registry-хосте, а exact ADH1 единожды записан в
+отдельный production floor через provisioning-роль. Повторная запись закрыта.
+Новый Registry image собран CI и проверил head, но работающий Registry ещё не
+заменён; DID2 admission/proof выключены. UAT/physical device E2E и оставшиеся
+floor startup/recovery gates обязательны до release-кандидата.
 Изолированный трёхузловой first-release local image build прошёл после
 обновления локального Protocol package graph/pins; XNode unit gate 231/231 и
 runtime build без предупреждений. `Up` пока fail-closed на отсутствующем
