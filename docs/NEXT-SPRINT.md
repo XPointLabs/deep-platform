@@ -345,9 +345,12 @@ delivery с durable inbox/ACK; legacy V1 runtime к DID2 probe не подклю
 После DR-0007 account owner теперь формирует из проверенной сохранённой
 closure точный DGA1 V2 с фиксированным для genesis operation ID. Побайтная
 идемпотентность после удаления фразы и отсутствие сырого resolver capability
-в публичном запросе проверены тестом. Это ещё не HTTP admission и не
-аутентифицированный ADH1/ADP1 proof; следующий шаг — связать их с отдельной
-DID2 MAUI composition, не возвращая V1 fallback.
+в публичном запросе проверены тестом. Отдельный DID2-only HTTPS-клиент теперь
+отправляет только `/api/v2/account-directory/genesis-admissions`, ограничивает
+размер и время ответа и сверяет operation/leaf/network в DGR1. DGR1 остаётся
+недоверенной квитанцией: живой admission, независимо аутентифицированный
+ADH1/DTT1/ADP1 proof и их связка с отдельной DID2 MAUI composition ещё не
+проверены; V1 fallback запрещён.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
