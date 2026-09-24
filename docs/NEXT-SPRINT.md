@@ -763,6 +763,15 @@ DPH2 X25519 capability из STORE-V2; повторное открытие пос
 MAUI transport composition, доступный DID2 Registry endpoint и физическая
 доставка Android↔Windows всё ещё остаются обязательными gate. STORE-V1/
 `SessionId` fallback не добавлять.
+Физическая проверка 2026-09-24: изолированный Android DID2 probe
+`network.xpoint.deep.did2probe` установлен поверх прежней версии без удаления
+данных; после restart и обновления открыт экран управления сохранённой фразой,
+а не создание аккаунта. Debug Android и Windows probe собираются; полный
+Shared production gate 182/182, Protocol 1758 passed/11 skipped,
+MAUI clean 15/15, соответствующие GitHub CI зелёные. Это доказывает только
+локальную непрерывность аккаунта, не network admission и не message E2E.
+Windows probe был свёрнут, и его окно не удалось активировать для повторной
+физической UI-проверки; данные Windows-аккаунта не менялись.
 Следующая проверка — sender DPH2, recipient self-retrieve/ContactHello,
 ответный DPE2 и crash/replay на тех же двух устройствах; файлы и группы
 выполняются только после зелёного текстового пути.
