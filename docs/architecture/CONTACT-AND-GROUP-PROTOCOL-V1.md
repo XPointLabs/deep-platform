@@ -398,6 +398,45 @@ must then accept only that exact replacement. Freeze the complete field table,
 size bounds, transcript and hostile vectors before any authoring or runtime
 activation. The old version-1 codec is not a compatibility reader.
 
+### 5.0.1 DID2-bound DCB1/DCR1 candidate (not release-active)
+
+The replacement keeps magic `DCB1`, the 24 ordered tags and the semantic
+meaning of tags 1..21, but uses record version `2`, suite `0x0301`, and
+`SIGINPUT("Deep/Application/V2/contact-bundle", 0x0301, unsignedDCB1)`.
+The unsigned projection contains tags 1..18 and 20..24 (23 fields, with no
+tag-19 placeholder). The following fields are exact DID2-only replacements:
+
+| Tag | V2 value | Exact size |
+|---:|---|---:|
+| 6 | complete DCA1 V2 | 473 |
+| 14 | one OfficialXPoint3 descriptor containing exact XIR1 V2 | 651 |
+| 20 | complete DID2-derived ADL1 V2 | 228 |
+| 22 | domain-separated DID2 `RecordHash32` | 32 |
+| 23 | complete DID2 credential | 2036 |
+| 24 | complete, independently verified DAB2 lineage record | 3711 |
+
+Tag 2 remains the account identifier, not a public address or lookup key.
+The canonical size is
+`7652 + exactDPA1Bytes + exactDMD1Bytes + 356*XPS1Count + profileNameBytes`:
+9,078..15,596 bytes under the section-5.1 device/name bounds. DCA1 V2,
+DAB2, DID2, DMD1, DPA1, ADL1 V2 and XIR1 V2 must be byte-identical to their
+independently verified objects, not merely plausible nested records. The
+issuer device must be active in the same exact DMD1 and authorized by DCA1
+V2 for this bundle generation, invite kind and entire validity interval;
+ADL1 V2 must derive its lookup key from the exact DID2 and agree with tag 21.
+The descriptor must reference the same DCA1 V2 hash, issuer DPD1 and network.
+The DCB1 V2 object/predecessor hash remains `SHA256(exactDCB1)`; generation
+and fork decisions still require durable lineage state.
+
+The replacement `DCR1` keeps its four tags and 65,535-byte bound but likewise
+uses version `2`, suite `0x0301`, and embeds only DCB1 V2. Its DRS1/DPD1
+support entries retain their independently versioned exact canonical bytes;
+outer DCR1 bytes confer no authority without exact support closure and fresh
+directory evidence. V1 DCB1/DCR1 and a V2 outer record containing V1 inner
+bytes are rejected, never dual-read. This candidate defines the identity
+binding; it does not activate publication or waive XPS1, XRA1/PMT2,
+resolver-placement, XPA1/XPU1 and encrypted DCR1 verification gates.
+
 ### 5.1 Purpose
 
 `DCB1` closes the first-message cycle. A sender can validate identity, discover

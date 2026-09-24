@@ -408,6 +408,11 @@ flag, dual reader или автоматический fallback. Нужно:
   проверяет exact DCA1 V2 hash и подпись активного issuer device. Он не
   авторитативен для публикации без XRA1/PMT2, DCB1/DCR1 и V2 resolver
   closure; физический E2E этим тестом не закрыт;
+  изолированный DCB1 V2 candidate теперь проверяет exact DID2/DAB2/DCA1 V2,
+  DID2-derived ADL1 V2, XIR1 V2 descriptor, bundle issuer и подпись.
+  XPS1 inventory, route/placement, DCR1 support/freshness и publication
+  authority остаются отдельными обязательными gates; старый DCB1 V1 не
+  является fallback reader;
   device-signed records остаются в account-owned custody, threshold records
   выпускает authority Mr. X, а XPU1 атомарно несёт exact verified route closure;
   bounded XPA1/XPU1 authority wire, Registry issuer и independently verifying
