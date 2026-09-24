@@ -408,7 +408,7 @@ without an existing E2EE channel.
 `DCB1`, version 1, suite `0x0201`, has exactly 24 fields in the generic
 tagged record grammar in [CONTACT-RESOLVER-V1](CONTACT-RESOLVER-V1.md#21-contact-codec-canonical-record-rule).
 Its complete length is exactly
-`2263 + exactDPA1Bytes + exactDMD1Bytes + 356*XPS1Count + profileNameBytes`
+`2331 + exactDPA1Bytes + exactDMD1Bytes + 356*XPS1Count + profileNameBytes`
 where `XPS1Count=activeDMD1DeviceCount=1..16`,
 `exactDMD1Bytes=356+70*XPS1Count` and `profileNameBytes=0..128`; it is capped at
 24,576 bytes. No paged,
