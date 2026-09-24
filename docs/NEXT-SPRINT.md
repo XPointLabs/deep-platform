@@ -780,6 +780,15 @@ Linux CI обязан отвергать его без release-approved ML-KEM a
 Source-cutover Registry suite локально прошёл 410/410; GitHub CI и image
 candidate должны checkout того же branch `deep-client-shared` для тестов.
 Этот тест не является физическим Android↔Windows transport evidence.
+Read-only production check 2026-09-24: `registry.xpoint.network` отвечает
+`GET /health/live` 200, а HEAD к обоим `/api/v2/account-directory/*`
+маршрутам даёт 404; production DID2 availability не доказана, и кодовая
+группа endpoint по-прежнему разрешена лишь в Development/UAT. Текущий
+локальный public bootstrap manifest для
+production network `edc5dc1516a847a65fc8ba0e690d000d` истекает
+2026-09-25 10:25:43 UTC. До выката необходимо проверить refresh подписанного
+authority, независимый PostgreSQL latest-head floor, rollback и сохранность
+co-located staking; локальный TestServer не подменяет этот gate.
 Windows probe был свёрнут, и его окно не удалось активировать для повторной
 физической UI-проверки; данные Windows-аккаунта не менялись.
 Следующая проверка — sender DPH2, recipient self-retrieve/ContactHello,
