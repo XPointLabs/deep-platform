@@ -156,7 +156,11 @@ DMD1 has no wall-clock expiry. Freshness is monotonic DRS1/directory continuity,
 not periodic resigning with a recovery-derived key. Enrollment and revocation
 are explicit recovery-authorized ceremonies that advance DMD1.
 
-### 4.1.0 Release clean-break target: `DID2` / `DAB2` (vectors pending)
+### 4.1.0 Release clean-break target: `DID2` / `DAB2` (re-freeze pending)
+
+[`DR-0007`](../survival-program/decisions/DR-0007-did2-resolver-read-capability-separation.md)
+supersedes the old 2036-byte candidate that embedded the raw resolver read
+capability in DID2. That candidate and its vectors MUST NOT be activated.
 
 The compact, permanent Deep ID remains a 90-character lowercase Bech32m value
 with HRP `deep`, so copying and QR sharing do not require carrying a 1952-byte
@@ -165,7 +169,9 @@ resolverReadCapability16`. `DID2RecordHash32` is a commitment to the *entire*
 canonical immutable root credential. The credential must be fetched and its
 hash matched before accepting any binding; the compact text alone is not a
 public-key certificate. The read capability permits retrieval, not signing or
-account authority. It is generated independently of either signing seed.
+account authority. It is generated independently of either signing seed and
+is checked against the commitment in DID2 before use. The directory authority
+receives only that commitment, never the raw capability.
 
 The proposed `DID2` record uses the canonical tagged-field grammar of section
 3, with magic `DID2`, version `2`, root-identity suite `0x0301`, field count
@@ -175,15 +181,17 @@ The proposed `DID2` record uses the canonical tagged-field grammar of section
 |---:|---|---:|
 | 1 | Ed25519 root verification key | 32 |
 | 2 | ML-DSA-65 root verification key | 1952 |
-| 3 | resolver read capability | 16 |
+| 3 | domain-separated resolver read capability commitment | 32 |
 
-Its exact length is 2036 bytes. `DID2RecordHash32` is
+The replacement target length is 2052 bytes, pending machine-registry/vector
+re-freeze. `DID2RecordHash32` is
 `SHA256-D("Deep/Application/V2/record-hash/DID2", exactDID2)`; this domain
 and the version/suite in the hashed record bind both algorithm identities and
 roles. The keys are generated at genesis from the separate V2 root seeds in
 the crypto profile. The record has no network, device, account, time or route.
 The compact text cannot reconstruct the public keys: resolution must return
-the exact DID2, compare its hash and capability against the text, then validate
+the exact DID2, compare its hash and capability commitment against the text,
+then validate
 the current account closure. A mutable pointer or later Ed-only PQ-key
 introduction is forbidden. DCB1's old 32-byte address-key projection must be
 replaced by the exact DID2 record so a contact importer can independently
@@ -389,7 +397,7 @@ publisher. Routine DCB1 rotation uses only the publisher device key.
 **DID2 cutover boundary.** The version-1 byte tables in sections 5.1 and 5.2
 below are retained only to identify the retired DID1/DAB1 contract and its
 negative fixtures. They do not authorize release publication or parsing of a
-DID2 contact. The replacement must bind the exact 2036-byte DID2 credential,
+DID2 contact. The replacement must bind the exact 2052-byte DID2 credential,
 its verified hash and exact 3711-byte DAB2 lineage, DCA1 V2 and ADL1 V2.
 The XIR1 reference to DCA1, its artifact version/hash and signature input
 must be re-pinned in the same change; replacing DCB1 tags 23/24 alone would
@@ -412,7 +420,7 @@ tag-19 placeholder). The following fields are exact DID2-only replacements:
 | 14 | one OfficialXPoint3 descriptor containing exact XIR1 V2 | 651 |
 | 20 | complete DID2-derived ADL1 V2 | 228 |
 | 22 | domain-separated DID2 `RecordHash32` | 32 |
-| 23 | complete DID2 credential | 2036 |
+| 23 | complete DID2 credential | 2052 (DR-0007 re-freeze pending) |
 | 24 | complete, independently verified DAB2 lineage record | 3711 |
 
 Tag 2 remains the account identifier, not a public address or lookup key.

@@ -294,7 +294,7 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | `DMD1` | account-authorized messaging device directory. | `FROZEN_TARGET_NOT_ACTIVE`; exact `356+70*N`, `N=1..16` |
 | `DID1` | historical Ed25519-only permanent ID; replaced by DR-0006. | `RETIRED_REJECT`; 76-byte/Bech32m vectors become negative fixtures |
 | `DAB1` | historical Ed25519-only permanent-address/current-account binding. | `RETIRED_REJECT`; 394-byte vectors and ArtifactRef type `0x1001` become negative fixtures |
-| `DID2` | immutable permanent credential with genesis Ed25519 and ML-DSA-65 root keys; compact text carries hash commitment plus resolver capability. | `TARGET_UNFROZEN`; exact 2036-byte candidate and transcript vectors exist, dependent closure remains open |
+| `DID2` | immutable permanent credential with genesis Ed25519 and ML-DSA-65 root keys plus only a hash commitment to the resolver capability; compact text carries the raw capability. | `TARGET_UNFROZEN`; DR-0007 retires the 2036-byte raw-capability candidate; 2052-byte replacement codec/vectors pass local gates, live/device closure pending |
 | `DAB2` | hybrid-AND permanent ID/current-account binding lineage. | `TARGET_UNFROZEN`; exact 3711-byte candidate, ArtifactRef type `0x1002` and transcript vectors exist, dependent closure remains open |
 | `DCA1` | device authorization to publish rotating contact bundles; V2 candidate binds exact DID2/DAB2. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze; V1 version/suite rejects even though V2 also happens to be 473 bytes |
 | `DCB1` | signed contact bundle; V1 bytes bind retired DID1/DAB1. | DID2-bound V2 `TARGET_UNFROZEN`; isolated identity/issuer/XPS1-descriptor verifier only, not publication authority |
@@ -353,6 +353,8 @@ Normative source: `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`.
 | `DTT1` | nonce-bound threshold-signed live time/current ADH1/XNV1 attestation. | `TARGET_UNFROZEN` |
 | `DGA1` | bounded first account-directory genesis admission request carrying exact public artifacts. | `TARGET_UNFROZEN` |
 | `DGR1` | operation-bound account-directory genesis admission receipt carrying exact ADH1. | `TARGET_UNFROZEN` |
+| `DPQ2` | exact DID2 account-directory proof request frame, with one-use nonce and boot ID. | `TARGET_UNFROZEN` |
+| `DPP2` | bounded account-directory proof response frame carrying ADH1, DTT1 and ADP1 V2. | `TARGET_UNFROZEN` |
 
 These records are mandatory freshness inputs to first contact and group member
 directory verification. A valid old DMD1 signature without a current ADP1/ADH1

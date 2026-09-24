@@ -48,6 +48,7 @@ Apple-клиенты не входят в этот спринт. macOS, iOS и M
 - `architecture/IMPLEMENTATION-PLAN-V1.md`
 - [`survival-program/releases/v3.0.0/specs/DEEP-CRYPTO-V1-DRAFT.md`](survival-program/releases/v3.0.0/specs/DEEP-CRYPTO-V1-DRAFT.md)
 - [`survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md`](survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md)
+- [`survival-program/decisions/DR-0007-did2-resolver-read-capability-separation.md`](survival-program/decisions/DR-0007-did2-resolver-read-capability-separation.md)
 
 Любая не определённая этими документами cryptographic transcript, state
 transition, downgrade или trust source является блокером спецификации, а не
@@ -73,6 +74,15 @@ binding projections и все affected DPH2/DAO1/contact/DB vectors; доказ�
 cross-device restore, PQ-key-substitution/Ed-only forgery rejection и
 отсутствие старого ID в production graph. До freeze нельзя считать текущие
 green protocol tests и созданные UAT accounts release-compatible.
+
+P0 внутри этого же clean-break: [`DR-0007`](survival-program/decisions/DR-0007-did2-resolver-read-capability-separation.md)
+запрещает сырой resolver read capability в публичном DID2. Замена field 3 на
+commitment, machine registry, transcript/negative vectors, зависимые wire
+sizes и защищённый STORE-V2 завершены локально и прошли тесты. Следующий
+обязательный gate — сбросить прежний UAT DID2, подтвердить неизменный адрес
+после удаления фразы на обоих физических устройствах и повторить live
+admission/proof без выдачи capability Registry. Только затем считать
+контакты, сообщения, вложения и группы device E2E релизными.
 
 2026-09-23: кандидат `ADL1` V2 теперь получает lookup key только из exact
 DID2 и отвергает V1-версию/любой неподтверждённый lookup key; проверка

@@ -55,8 +55,14 @@ be reinterpreted as V2 proof material. Witnessed head/admission, ADP1 proof
 envelope and DTT/forward-history closure still require one consistent V2
 re-freeze and are not activated by these primitives alone.
 
-The candidate first-admission verifier accepts exact DPA1/DRS1/DPD1,
-2036-byte DID2, 3711-byte DAB2, DMD1 and 458-byte ADC1 V2. It reconstructs
+[`DR-0007`](../survival-program/decisions/DR-0007-did2-resolver-read-capability-separation.md)
+retires the old 2036-byte DID2 admission/proof candidate: that record exposes
+the raw resolver read capability to Registry. Its replacement commitment-only
+credential and all dependent request sizes and signed fixtures require one
+clean re-freeze; the old UAT path is not release evidence.
+
+The replacement first-admission verifier must accept exact DPA1/DRS1/DPD1,
+2052-byte DID2, 3711-byte DAB2, DMD1 and 458-byte ADC1 V2. It reconstructs
 the verified account/device closure, checks all three DAB2 signatures
 including ML-DSA-65 through the selected provider, enforces DAB2 genesis,
 then verifies the ADC1 V2 account/device binding and generation-zero
@@ -69,7 +75,7 @@ Candidate `DGA1`/`DGR1` version 2 uses the existing bounded 12-byte envelope
 (`magic4 || version:u16be || zeroFlags:u16be || totalLength:u32be`) with no
 version-one fallback and separate `.v2` media types. The request then carries
 `operationId32`, `LP32(DPA1)`, `LP32(DRS1)`, `DPD1Count:u8` (1..5), exactly
-that many `LP32(DPD1)`, `LP32(DID2)` (2036 bytes), `LP32(DAB2)` (3711 bytes),
+that many `LP32(DPD1)`, `LP32(DID2)` (2052 bytes), `LP32(DAB2)` (3711 bytes),
 `LP32(DMD1)`, `LP32(ADC1 V2)` (458 bytes), `revokedCount:u16be` (0..4096),
 and exactly that many 32-byte authorization IDs. The receipt carries
 `operationId32 || directoryLeafKey32 || LP32(exactADH1)`; its ADH1 has
@@ -125,9 +131,10 @@ rollback floor and client verification are in place; raw leaf bytes are not a
 trusted DID2 identity capability.
 
 The candidate HTTP proof payloads are V2-only, bounded binary frames. A
-`DPQ2` request is exactly 2332 bytes: magic (4), version `2` (u16 BE), zero
+`DPQ2` replacement request is exactly 2348 bytes after the DR-0007 re-freeze:
+magic (4), version `2` (u16 BE), zero
 reserved (u16), total length (u32 BE), exact ADL1 V2 (228), exact DID2
-(2036), nonce (32), boot ID (16), and client monotonic send sample (u64 BE).
+(2052), nonce (32), boot ID (16), and client monotonic send sample (u64 BE).
 The Registry derives the leaf from the exact DID2 and rejects a lookup key
 that does not match that DID2; a requester-controlled raw leaf is never a
 wire input. Initial service profile is XPoint-only (`1`). A `DPP2` response
@@ -164,7 +171,7 @@ live-DTT1 core hash. Its result shapes are closed: non-membership has exactly
 | Tag | Value |
 |---:|---|
 | 16 | exact ADC1 V2, 458 bytes |
-| 17 | exact DID2, 2036 bytes |
+| 17 | exact DID2, replacement target 2052 bytes (DR-0007 re-freeze pending) |
 | 18 | exact DAB2, 3711 bytes |
 | 19 | exact DPA1, 644 bytes |
 | 20 | exact bounded DRS1 |

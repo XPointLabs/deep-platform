@@ -87,6 +87,12 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   требует PQ-ключ, закреплённый в корне постоянного Deep ID уже при создании.
   Старые DID1/DAB1 и Ed25519-only succession не входят в release graph;
   exact replacement wire/provider ещё не frozen и блокирует выпуск.
+- [`DR-0007`](../survival-program/decisions/DR-0007-did2-resolver-read-capability-separation.md)
+  запрещает сырой resolver read capability в публичном DID2 и Registry
+  DGA1/DPQ2: credential содержит только его hash commitment, адрес сохраняет
+  сам capability. 2052-byte replacement codec/store и локальные тесты готовы;
+  прежний raw-capability DID2 кандидат retired, а live/device closure ещё
+  блокирует релиз.
 - Текущие Session-derived identity, DPE1/DMC1 и group bytes не являются
   production compatibility surface и не ограничивают новый дизайн.
 - Первый публичный релиз использует новое поколение account/device/database,
