@@ -773,6 +773,13 @@ MAUI clean 15/15. DPK2 one-time authoring положительно провер�
 Linux CI обязан отвергать его без release-approved ML-KEM asset, без fallback.
 Это доказывает только
 локальную непрерывность аккаунта, не network admission и не message E2E.
+Локальный ASP.NET Registry TestServer дополнительно проверяет цепочку
+`DGA1 V2 admission → ADH1/DTT1/ADP1 current proof → STORE-V2 LKG → DPK2`
+для того же DID2-аккаунта. На Windows создаётся реальный one-time prekey;
+на Linux отсутствие release-approved ML-KEM обязано завершиться fail-closed.
+Source-cutover Registry suite локально прошёл 410/410; GitHub CI и image
+candidate должны checkout того же branch `deep-client-shared` для тестов.
+Этот тест не является физическим Android↔Windows transport evidence.
 Windows probe был свёрнут, и его окно не удалось активировать для повторной
 физической UI-проверки; данные Windows-аккаунта не менялись.
 Следующая проверка — sender DPH2, recipient self-retrieve/ContactHello,
