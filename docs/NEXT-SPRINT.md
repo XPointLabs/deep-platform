@@ -359,6 +359,11 @@ DID2, требует независимо верифицированный curre
 fail-closed. Это локальный API gate, а не живой UAT admission или device E2E:
 в текущем dev Registry DID2 admission/proof не включены, а MAUI probe ещё не
 композирует сетевой путь.
+Registry operator теперь может из точной проверенной XNA1/DTS1 и существующего
+threshold witness custody один раз выпустить пустой подписанный V2 ADH1,
+проверить его и вывести только core-hash для независимого pin перед ADA2
+provisioning. Это устраняет ручную тестовую подпись головы, но не заменяет
+отдельный UAT deployment, rollback floor или device E2E.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
