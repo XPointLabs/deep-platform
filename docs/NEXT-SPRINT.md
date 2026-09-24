@@ -135,7 +135,11 @@ proof и повторил его после перезапуска прилож�
 
 До public cutover нужен P0 root-authorized AFP1/ADF1-equivalent именно для
 DID2 V2: зафиксировать wire, source-LKG membership, точную authority/checkpoint
-lineage, текущий target ADH1 и root-threshold signatures; выпуск и проверку
+lineage, текущий target ADH1 и root-threshold signatures. Прямой ADF1 к
+каждому новому ADH1 не годится для production: offline root не должен
+подписывать каждый admission. Нужен ограниченный exact successor-tail от
+периодического root checkpoint до последнего DTT1-bound head с отдельными
+negative vectors; выпуск и проверку
 через Registry, клиент и negative vectors. Нельзя переподписывать старый head
 как текущий, продлевать его срок, сбрасывать защищённый LKG или объявлять
 multi-hop direct-successor заменой checkpoint. Затем повторить физический

@@ -526,6 +526,25 @@ present LKG. Append-log proof nodes
 are exactly 32 bytes, ordered by RFC-6962, count-prefixed and bounded to 64 nodes per
 list. Forward checkpoint never replaces the current-value/non-membership map proof.
 
+For DID2, mode 1 may reuse the existing root-threshold ADF1/AFP1 verifier only
+when its final root-authorized target is the **same current ADH1** authenticated
+by the nonce-bound DTT1. The DID2 reader still requires `minimumReader >= 2`,
+the V2 sparse-map and exact DID2/DAB2/ADC1 closure; a V1 ADP1 or account
+binding never crosses this boundary. A fresh DTT1 MUST NOT be issued for a
+historical intermediate head. This direct-target mode is a protocol primitive,
+not a scalable production publication strategy: requiring the offline root
+signer to authorize every admission would defeat the offline-root boundary.
+Before DID2 public cutover, specify and test a bounded signed-ADH successor
+tail from a periodic offline-root ADF1 checkpoint to the latest DTT1-bound
+head. Each tail head must be threshold-valid, exact-predecessor-linked and
+monotonic in tree size; intermediate expiry cannot be repaired with a new DTT1.
+The protected source must be included in the ADF1 covered set, and the latest
+head must retain the normal V2 map and append-log proofs. A tail beyond its
+bound fails closed until a newer offline-root checkpoint is published. The
+wire format, independent negative vectors, offline signing/import workflow,
+Registry issuance and Android/Windows protected-LKG tests are release gates;
+no live root signing key is placed in Registry or XNode containers.
+
 No unauthenticated pagination or “latest” pointer is accepted. ADL1 has no wall-clock
 expiry; its generation/hash is a rollback floor. A current ADH1 and one of the two
 current-map result kinds are still mandatory and cannot be replaced by the floor.
