@@ -140,11 +140,11 @@ lineage, текущий target ADH1 и root-threshold signatures. Прямой A
 подписывать каждый admission. Нужен ограниченный exact successor-tail от
 периодического root checkpoint до последнего DTT1-bound head с отдельными
 negative vectors. ADP1 V2 mode 2 / anchor-AFP1 + exact ADH1 tail уже имеет
-probe-verifier, но его AFP1 доказывает source membership только в первом
-ADF1; production V2 wire должен добавить source-checkpoint index и proof
-membership в соответствующем более позднем ADF1. Пока нет production issuer;
-выпуск и проверку
-через Registry, клиент и negative vectors. Нельзя переподписывать старый head
+протокольный тест защищённого floor из более позднего ADF1 через отдельный
+source-checkpoint index и membership proof. Registry issuer с импортом только
+подписанного ADF1 и клиентский защищённый LKG прошли локальный интеграционный
+сценарий двух аккаунтов; ещё нужны независимые negative vectors, offline
+signing/import runbook и device E2E. Нельзя переподписывать старый head
 как текущий, продлевать его срок, сбрасывать защищённый LKG или объявлять
 multi-hop direct-successor заменой checkpoint. Затем повторить физический
 Android/Windows E2E контактов, сообщений, вложений и групп; они пока не

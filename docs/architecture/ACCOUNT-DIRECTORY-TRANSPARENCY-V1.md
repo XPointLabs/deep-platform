@@ -534,29 +534,41 @@ binding never crosses this boundary. A fresh DTT1 MUST NOT be issued for a
 historical intermediate head. This direct-target mode is a protocol primitive,
 not a scalable production publication strategy: requiring the offline root
 signer to authorize every admission would defeat the offline-root boundary.
-The DID2-only mode 2 **probe candidate** keeps the ADP1 V2 envelope and existing ADF1
-root signatures. Tag 14 is exactly `U32BE(anchorAFP1Length) || exactAFP1 ||
-tailCount:u8 || repeated U32BE(headLength) || exactADH1`, with `1..64` tail
-heads and each head at most 4096 bytes. The embedded AFP1 ends at a
+The DID2-only mode 2 **protocol candidate** keeps the ADP1 V2 envelope and
+existing ADF1 root signatures. Tag 14 is exactly
+`U32BE(anchorAFP1Length) || exactAFP1 || U32BE(chainSourceHeadLength) ||
+exactChainSourceADH1 || sourceCheckpointIndex:u8 || sourceLeafIndex:u64BE ||
+sourceMembershipCount:u8 || 32*sourceMembershipCount nodes || tailCount:u8 ||
+repeated U32BE(headLength) || exactADH1`, with `0..64` tail heads and each
+head at most 4096 bytes. The embedded AFP1 ends at a
 historical root-authorized anchor; its live-DTT1 hash is the current ADP1
 tag-15 hash, but its target hash names the anchor, not the final head. Only
-ADP1 V2 mode 2 may interpret that pairing. ADP1 tags 7/8 carry RFC-6962
+ADP1 V2 mode 2 may interpret that pairing. The exact chain-source ADH1
+matches AFP1's first-source tuple and proves the complete root-signed ADF1
+predecessor chain. Separately, `sourceCheckpointIndex` selects the signed
+ADF1 whose covered-head set contains the **actual** protected LKG from ADP1
+tags 5/6; `sourceLeafIndex` and the bounded RFC-6962 path prove that exact
+tuple's membership there. An index outside the ADF1 chain, a missing or
+substituted tuple, or a checkpoint target not newer than the LKG rejects.
+ADP1 tags 7/8 carry RFC-6962
 consistency nodes from the anchor tree to the current tree. The final tail
-head is byte-identical to ADP1 tag 4 and is the only DTT1-bound current head.
+head is byte-identical to ADP1 tag 4 and is the only DTT1-bound current head;
+with zero tail heads the root-authorized anchor itself is current.
 Each tail head must be threshold-valid, exact-predecessor-linked and
 monotonic in tree size; intermediate expiry cannot be repaired with a new DTT1.
 The protected source must be included in the ADF1 covered set, and the latest
 head must retain the normal V2 map and append-log proofs. A tail beyond its
 bound fails closed until a newer offline-root checkpoint is published. The
-current AFP1 anchor proof proves source membership only in its **first** ADF1
-covered set; it can test a pinned-genesis floor, but cannot recover clients
-whose protected floor was created after that first checkpoint. A production
-V2 forward proof must carry an explicit source-checkpoint index and prove the
-exact protected tuple in that checkpoint's covered set, while also proving the
-complete root-signed predecessor chain from checkpoint generation zero.
-That V2-only wire and verifier, offline signing/import workflow, Registry
-issuance, full independent negative vectors and Android/Windows protected-LKG
-tests remain release gates;
+protocol test covers a protected floor created after the first ADF1; periodic
+root checkpoints must cover every intervening protected head that may need
+recovery. The Registry issuer imports ordered exact ADF1 artifacts from
+protected paths and does not receive a root private key. The client commits a
+non-successor head only when the successful verifier result binds the exact
+prior protected ADH1 and asserts a root-authorized forward lineage. A local
+two-account Registry/client integration test exercises fail-closed without
+the import and success with it. Offline signing/import operations, full
+independent negative vectors and Android/Windows protected-LKG tests remain
+release gates;
 no live root signing key is placed in Registry or XNode containers.
 
 No unauthenticated pagination or “latest” pointer is accepted. ADL1 has no wall-clock
