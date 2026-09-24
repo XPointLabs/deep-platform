@@ -756,6 +756,13 @@ guard перепривязан к скомпилированному clean `Maui
 Это пока **не** физический device E2E: нужны
 подтверждённая contact publication/authority, два реально созданных аккаунта,
 доставка Android↔Windows и, после DR-0006, новый release-compatible ID.
+После DID2 clean-break account service открывает проверенную, неэкспортируемую
+DPH2 X25519 capability из STORE-V2; повторное открытие после удаления локальной
+сид-фразы покрыто тестом. Эта capability не выдаёт право на отправку сама по
+себе: operation требует exact current unforked DMD1 и одноразовый binding.
+MAUI transport composition, доступный DID2 Registry endpoint и физическая
+доставка Android↔Windows всё ещё остаются обязательными gate. STORE-V1/
+`SessionId` fallback не добавлять.
 Следующая проверка — sender DPH2, recipient self-retrieve/ContactHello,
 ответный DPE2 и crash/replay на тех же двух устройствах; файлы и группы
 выполняются только после зелёного текстового пути.
@@ -850,11 +857,12 @@ Gate каждого WP создаёт переиспользуемый black-box
 commit matrix и проверяет композицию; отдельные копии harness/tests для WP9 не
 создаются.
 
-- Подключить production genesis/account/device authoring к новому opaque
+- Подключить DID2 genesis/account/device authoring к новому opaque
   `AuthorGenesisDmd1`, зафиксировать verifier-minted current DMD1 в уже готовом
-  account-scoped protected store и передать готовый одноразовый Protocol
-  agreement lease production caller. Public-forgeable provider и raw keys
-  запрещены. Готовые account-wide DPK2 prekey owner,
+  account-scoped protected store и передать одноразовый Protocol agreement
+  lease production caller. DID2 STORE-V2 уже выдаёт только verifier-bound
+  локальную X25519 capability, но MAUI caller/current-DMD1 композиция ещё не
+  подключена. Public-forgeable provider и raw keys запрещены. Готовые account-wide DPK2 prekey owner,
   per-session DPE2 stores, durable session catalog, Protocol one-shot DPH2/TRS1
   capability и atomic initial-session transaction уже связаны внутри MAUI
   runtime owner; осталось подключить production caller после current-DMD1,
@@ -880,7 +888,7 @@ Android↔Windows interoperability и независимый crypto review P0/P1
 
 ## WP3 — arbitrary contact bootstrap
 
-- Реализовать AppShell activation для готового account-scoped DID1/DIA1 entry
+- Реализовать AppShell activation для DID2-only account-scoped entry
   flow: по verifier-minted relationship/conversation ID повторно проверить
   durable peer package, создать DPH2/TRS1 session и открыть новый direct chat;
   добавить physical UI/restart evidence и QR-import.

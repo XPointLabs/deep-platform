@@ -175,6 +175,17 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   or externally published winner exists; otherwise restore the exact bytes.
   Partial state grants no account/device/publication authority and cannot be
   silently treated as a fresh account.
+- **DPH2 device-capability API re-freeze (2026-09-24):** a verified DID2
+  application identity closure may retain and expose only the exact
+  `VerifiedDeviceRelative` values supplied by its DNP1 verifier; the
+  lower-level `VerifiedDevice` overload must never synthesize those values.
+  STORE-V2 uses that narrow fact together with protected matching device
+  secrets to open `LocalDeviceX25519AgreementAuthority` after restart,
+  including after user deletion of the retained phrase. This grants no raw
+  key, network freshness, DMD1 currentness or message-delivery authority.
+  Re-freeze both Release and Debug protocol public-API snapshots and verify
+  package graph, malformed input and downstream Shared/MAUI rebuild before
+  calling this production-ready. No STORE-V1 bridge is allowed.
 
 ### CRYPTO-01 — production provider and ABI decision
 
