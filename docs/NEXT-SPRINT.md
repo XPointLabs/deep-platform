@@ -410,9 +410,13 @@ flag, dual reader или автоматический fallback. Нужно:
   closure; физический E2E этим тестом не закрыт;
   изолированный DCB1 V2 candidate теперь проверяет exact DID2/DAB2/DCA1 V2,
   DID2-derived ADL1 V2, XIR1 V2 descriptor, bundle issuer и подпись.
-  XPS1 inventory, route/placement, DCR1 support/freshness и publication
+  XPS1 inventory, route/placement, DCR1 freshness и publication
   authority остаются отдельными обязательными gates; старый DCB1 V1 не
   является fallback reader;
+  изолированный DCR1 V2 codec проверяет exact DCB1 V2 и закрытый, строго
+  упорядоченный набор DRS1/DPD1 для всех DMD1 devices, а promotion требует
+  byte-identical verified custody. Это ещё не ADH1/ADP1 freshness, XPS1,
+  ContactResolve publication или physical E2E;
   device-signed records остаются в account-owned custody, threshold records
   выпускает authority Mr. X, а XPU1 атомарно несёт exact verified route closure;
   bounded XPA1/XPU1 authority wire, Registry issuer и independently verifying
