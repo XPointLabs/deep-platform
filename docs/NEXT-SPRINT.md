@@ -298,8 +298,10 @@ verifier lease обязан быть явным в composition; CI candidate pro
 фразы через UI и сохранность ID после повторного запуска; секретный текст не
 попал в evidence. Результат и границы проверки — в
 [`deep-client-maui/docs/DID2-ANDROID-ACCOUNT-GATE-2026-09-24.md`](../deep-client-maui/docs/DID2-ANDROID-ACCOUNT-GATE-2026-09-24.md).
-Windows ARM64 probe собран, но физический UI-gate пока не пройден: средство
-запуска не открыло окно; отдельный каталог данных не создавался. См.
+Windows ARM64 probe впоследствии показал существующий тестовый аккаунт и
+элементы управления recovery-фразой в отдельном окне; создание и сохранность
+после перезапуска наблюдателем не проверены, поэтому полный Windows account
+gate ещё открыт. См.
 [`deep-client-maui/docs/DID2-WINDOWS-PROBE-2026-09-24.md`](../deep-client-maui/docs/DID2-WINDOWS-PROBE-2026-09-24.md).
 Оба результата не активируют production DID2 composition и не доказывают
 контакты, сообщения, вложения или группы. Следующий сквозной gate — exact
@@ -420,6 +422,11 @@ flag, dual reader или автоматический fallback. Нужно:
   ContactResolve publication или physical E2E;
   изолированный DID2 XPI1 manifest binding теперь сверяет independently
   versioned XPI1 с exact DCR1 V2/XPS1/DMD1/DRS1 и подписью responder DPD1.
+  DID2 ADH1/DTT1/ADP1 V2 reader теперь отдаёт аутентифицированный временной
+  интервал; отдельная DCA1 V2 capability связывает его с exact current
+  DID2/DAB2/DMD1/ADC1, проверяет отзыв authorization ID и продвигает обе
+  границы только по тому же boot-specific monotonic clock. Это не contact
+  publication authority и не разрешение включить runtime;
   Полные XPP1/DPK2 bytes, Merkle membership, two-replica receipts, durable
   inventory lineage и live claim ещё не подтверждены для DID2 пути;
   device-signed records остаются в account-owned custody, threshold records
