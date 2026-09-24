@@ -534,15 +534,29 @@ binding never crosses this boundary. A fresh DTT1 MUST NOT be issued for a
 historical intermediate head. This direct-target mode is a protocol primitive,
 not a scalable production publication strategy: requiring the offline root
 signer to authorize every admission would defeat the offline-root boundary.
-Before DID2 public cutover, specify and test a bounded signed-ADH successor
-tail from a periodic offline-root ADF1 checkpoint to the latest DTT1-bound
-head. Each tail head must be threshold-valid, exact-predecessor-linked and
+The DID2-only mode 2 **probe candidate** keeps the ADP1 V2 envelope and existing ADF1
+root signatures. Tag 14 is exactly `U32BE(anchorAFP1Length) || exactAFP1 ||
+tailCount:u8 || repeated U32BE(headLength) || exactADH1`, with `1..64` tail
+heads and each head at most 4096 bytes. The embedded AFP1 ends at a
+historical root-authorized anchor; its live-DTT1 hash is the current ADP1
+tag-15 hash, but its target hash names the anchor, not the final head. Only
+ADP1 V2 mode 2 may interpret that pairing. ADP1 tags 7/8 carry RFC-6962
+consistency nodes from the anchor tree to the current tree. The final tail
+head is byte-identical to ADP1 tag 4 and is the only DTT1-bound current head.
+Each tail head must be threshold-valid, exact-predecessor-linked and
 monotonic in tree size; intermediate expiry cannot be repaired with a new DTT1.
 The protected source must be included in the ADF1 covered set, and the latest
 head must retain the normal V2 map and append-log proofs. A tail beyond its
 bound fails closed until a newer offline-root checkpoint is published. The
-wire format, independent negative vectors, offline signing/import workflow,
-Registry issuance and Android/Windows protected-LKG tests are release gates;
+current AFP1 anchor proof proves source membership only in its **first** ADF1
+covered set; it can test a pinned-genesis floor, but cannot recover clients
+whose protected floor was created after that first checkpoint. A production
+V2 forward proof must carry an explicit source-checkpoint index and prove the
+exact protected tuple in that checkpoint's covered set, while also proving the
+complete root-signed predecessor chain from checkpoint generation zero.
+That V2-only wire and verifier, offline signing/import workflow, Registry
+issuance, full independent negative vectors and Android/Windows protected-LKG
+tests remain release gates;
 no live root signing key is placed in Registry or XNode containers.
 
 No unauthenticated pagination or “latest” pointer is accepted. ADL1 has no wall-clock
