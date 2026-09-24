@@ -364,6 +364,12 @@ threshold witness custody один раз выпустить пустой под
 проверить его и вывести только core-hash для независимого pin перед ADA2
 provisioning. Это устраняет ручную тестовую подпись головы, но не заменяет
 отдельный UAT deployment, rollback floor или device E2E.
+Изолированный трёхузловой first-release local image build прошёл после
+обновления локального Protocol package graph/pins; XNode unit gate 231/231 и
+runtime build без предупреждений. `Up` пока fail-closed на отсутствующем
+независимом genesis XNA1 pin/полном подписанном artifact inventory у Registry.
+Неисправный изолированный контур остановлен с сохранением volumes; работающий
+survival dev и production не тронуты. Это не DID2 admission и не device E2E.
 
 2026-09-23: изолированный `deep-protocol/eng/Deep.MlDsa.ProviderProbe`
 подтвердил на Windows arm64 воспроизводимый ML-DSA-65 public key из 32-byte
