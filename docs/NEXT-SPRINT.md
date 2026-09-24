@@ -242,15 +242,16 @@ verifier и повторно проверяет всю V2-цепочку.
 (ключи, device ID, revocation handle и account scope). Двухслотовый bootstrap
 теперь fail-closed при любой частичной записи, а точный retry завершает её;
 локальная authority выдаётся только после полного verified read-back.
-Следующий шаг — V2 reset/purge ownership и связывание с новым account
-service/MAUI, без чтения V1 namespace.
+Изолированный V2 owner уже владеет reset/purge; связывание с новым account
+service/MAUI без чтения V1 namespace остаётся открытым.
 V2 protected phrase slot теперь сверяет 24 слова с exact account ID;
 удаление требует повторного verified bootstrap и оставляет add-only tombstone,
 чтобы старый writer не вернул фразу. При сбое после tombstone чтение очищает
 оставшиеся байты. Интерфейс secure storage и оба production adapter теперь
 поддерживают идемпотентный purge только точного префикса `deep.store.v2.`;
-V1 и соседние слоты сохраняются. Открытие фразы в настройках, подключение
-purge к новому reset owner и MAUI account service ещё не готовы.
+V1 и соседние слоты сохраняются. Открытие фразы в настройках и MAUI
+account/reset composition ещё не готовы; изолированный V2 owner уже вызывает
+purge при явном локальном reset.
 DXP1 issuance persistence получил явный выбор store generation: текущий V1
 client остаётся на V1, а DID2 fixture выдаёт устройство только в V2 namespace
 и проверяет отсутствие V1 profile slot. Полный новый account owner должен
@@ -263,15 +264,15 @@ DID2/DAB2, DMD1/DCA1 V2/ADC1 V2, фраза, DXP1 и verified bootstrap. Тес�
 нормализованное имя, network и account ID только после полного verified
 bootstrap; чтение повторно проверяет всю closure, partial state и замена
 winner отвергаются. Изолированный V2 protected-state owner теперь держит
-межпроцессный файловый lease, ставит creation-intent до записи секретов,
-отвергает прерванное создание без index и допускает только явный V2 reset
-перед новой попыткой. Journaled-store тест закрывает запись/закрытие/
-повторное открытие с тем же DID2/DAB2 и сохранённой фразой; чтение и явное
-удаление фразы теперь проходят через lease владельца и повторное открытие
-подтверждает deletion marker без смены DID2/DAB2. Автоматический
-resume частичного создания не реализован: перед UI нужно либо доказать
-безопасный reset ещё не опубликованного winner, либо восстановить exact bytes;
-потерянный hedged DAB2 нельзя перевыпускать после durable/external winner.
+межпроцессный файловый lease и атомарно ставит creation-intent с именем и
+candidate account ID до записи секретов. Если exact public closure уже durable,
+но index не записан, новый owner проверяет полный bootstrap и публикует тот же
+DID2/DAB2; reset до восстановления winner запрещён. Без public closure
+прерванное создание допускает только явный V2 reset. Journaled-store тесты
+проверяют оба повторных открытия. Чтение и удаление фразы проходят через
+lease владельца; deletion marker переживает повторное открытие без смены
+DID2/DAB2. Если public closure durable, но device secrets incomplete, reset
+также запрещён; exact repair этого состояния остаётся открытым перед UI.
 Новая SQL generation, MAUI composition, contact transport и physical device
 E2E остаются открыты — это ещё не завершённый клиентский clean-break.
 
