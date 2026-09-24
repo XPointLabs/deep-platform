@@ -296,7 +296,7 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | `DAB1` | historical Ed25519-only permanent-address/current-account binding. | `RETIRED_REJECT`; 394-byte vectors and ArtifactRef type `0x1001` become negative fixtures |
 | `DID2` | immutable permanent credential with genesis Ed25519 and ML-DSA-65 root keys; compact text carries hash commitment plus resolver capability. | `TARGET_UNFROZEN`; exact 2036-byte candidate and transcript vectors exist, dependent closure remains open |
 | `DAB2` | hybrid-AND permanent ID/current-account binding lineage. | `TARGET_UNFROZEN`; exact 3711-byte candidate, ArtifactRef type `0x1002` and transcript vectors exist, dependent closure remains open |
-| `DCA1` | device authorization to publish rotating contact bundles; existing bytes bind old DID1/DAB1. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze; old 473-byte form rejects |
+| `DCA1` | device authorization to publish rotating contact bundles; V2 candidate binds exact DID2/DAB2. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze; V1 version/suite rejects even though V2 also happens to be 473 bytes |
 | `DCB1` | signed contact bundle; existing bytes bind old DID1/DAB1. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze |
 | `DCR1` | exact resolver closure around DCB1/DRS1/DPD1 support objects. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze |
 | `DIA1` | expiring one-time invitation locator; never the permanent Deep ID. | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
@@ -327,10 +327,13 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 DGP1/DMD1/DRS1/DPD1/transparency objects. DGC1 alone is not sufficient input
 to materialize a commit.
 
-`DCB1`, `DCR1` and `DIA1` have frozen target bytes under CONTACT-CODEC-01;
-the machine manifest and vector set bind their XPS1/XIR1/ADL1 and resolver
-closure dependencies. They are not runtime-active and no old umbrella
-APPLICATION-CODEC-01 completion follows from this package freeze.
+The existing CONTACT-CODEC-01 DCB1/DCR1 bytes and vectors describe the
+retired DID1/DAB1 closure. They are **not** a frozen DID2 release contract,
+even though the old codec remains available to isolated validation tests.
+Before activation, re-freeze DCB1, DCR1 and their exact XIR1/DCA1/ADL1
+references together under DR-0006, then replace the machine manifest and
+vectors. DIA1 must be audited against the resulting locator/closure. A green
+old CONTACT-CODEC test does not authorize contact publication or device E2E.
 
 ### 6.4 Account-directory transparency records
 

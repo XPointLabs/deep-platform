@@ -401,6 +401,9 @@ flag, dual reader или автоматический fallback. Нужно:
   старый direct Registry enrollment/JSON invitation path удаляется;
 - активировать clean-break Contact publication chain
   `XRA1 -> PMS2/XRC1/XSS1 -> XRR1/XIR1 -> DCB1/DCR1 -> XPA1/XPU1`:
+  до runtime activation атомарно re-freeze DCB1/DCR1 вместе с XIR1→DCA1
+  ArtifactRef/version/signature input, ADL1 V2 и exact DID2/DAB2; простая
+  замена DID1-полей DCB1 создаёт недопустимый смешанный V1/V2 closure;
   device-signed records остаются в account-owned custody, threshold records
   выпускает authority Mr. X, а XPU1 атомарно несёт exact verified route closure;
   bounded XPA1/XPU1 authority wire, Registry issuer и independently verifying

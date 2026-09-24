@@ -1020,12 +1020,17 @@ No other NETCODEC record inherits frozen status from that slice.
 - **produces:** exact codecs/vectors for DCB1/DCR1/DIA1, DMC2 kinds 2..4/14,
   XIR1/XPU1/XPO1/XPA1/XIQ1/XIS1/XPS1/XPI1/XPP1/XIC1/XPK1/XPC1/
   XUR1/XUW1/XUQ1/XUS1/XMG1/XMC1;
+  DID2 cutover replaces the old DCB1/DCR1/XIR1 chain as one closed version-2
+  identity-bound publication: exact DID2/DAB2 and DCA1 V2, ADL1 V2,
+  XIR1-to-DCA1 artifact version/hash, signature projection/domain and
+  DCR1 support/freshness verification are re-pinned together. Old DID1/DAB1
+  records become negative fixtures, never dual-read input;
   exact common-tag derivation from a verified current XNV/PMT capability plus
   per-magic tag-16 shard key; effective-expiry rule; exact routable XRR closure;
   signed hash-closed support packages. Public request encoders do not accept raw
   caller-selected view/placement hashes. Only this reviewed output changes those DMC2 IDs from
   `RESERVED_REJECT` to accepted.
-- **wire/API:** permanent DID1 resolves rotating DCB/prekeys atomically without
+- **wire/API:** permanent DID2 resolves rotating DCB/prekeys atomically without
   expiring or redirecting the ID; one-time redemption
   exact-replays only for the same operation; DCB cannot outlive mandatory
   reachability. Missing prekeys have one canonical result. Remove public request
@@ -1042,7 +1047,7 @@ No other NETCODEC record inherits frozen status from that slice.
 - **unit gate:** closure completeness, concurrent claim, prekey exhaustion,
   replay/lost response, expiry boundaries, stale successor, spam bounds and no
   account-indexed lookup vectors; identical XPU/XIQ shard derivation from only
-  DID1 locator plus current network fixtures; cross-class, wrong-view, wrong-PMT,
+  DID2 locator plus current network fixtures; cross-class, wrong-view, wrong-PMT,
   wrong-placement and receipt-envelope substitution negatives.
 - **integration consumer/evidence:** CONTACT-SERVICE-01 and CONTACT-CLIENT-01;
   two-implementation vector agreement.

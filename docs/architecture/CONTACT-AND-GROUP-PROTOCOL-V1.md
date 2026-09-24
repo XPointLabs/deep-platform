@@ -108,7 +108,7 @@ are never guessed:
 |---|---|---|
 | `APPLICATION-CORE-CODEC-01` | DID1, DAB1, DMD1, DCA1, DAO1, DMC2; kinds 1 and 5..13 | `FROZEN_CLEAN_BREAK` |
 | `ATTACHMENT-CODEC-01` | DAM1; DMC2 kinds 18 and 19 | `FROZEN_CLEAN_BREAK`, runtime inactive until BLOB-01 |
-| `CONTACT-CODEC-01` | DCB1, DCR1, DIA1; DMC2 kinds 2..4 and 14 | `FROZEN_TARGET_NOT_ACTIVE` |
+| `CONTACT-CODEC-01` | DID2-bound DCB1/DCR1/XIR1 closure and DIA1; DMC2 kinds 2..4 and 14 | `TARGET_UNFROZEN` for DID2 contact closure; old DID1/DAB1 vectors are negative fixtures |
 | `GROUP-CODEC-01` | DGP1/DGC1/DGM1/DGT1/GIV1/GIA1/GCP1/GCF1/GSR1/GSW1/GSQ1/GSS1 and DMC2 kinds 15..17 and 26..29 | `FROZEN_TARGET_NOT_ACTIVE` |
 | `CALL-CODEC-01` | DMC2 kinds 20..24 and their exact call payload records | `TARGET_UNFROZEN` |
 | `HISTORY-CODEC-01` | DMC2 kind 25 and its backup/history producer closure | `TARGET_UNFROZEN` |
@@ -385,6 +385,18 @@ enrollment/revocation ceremony issues a successor authorization for an active
 publisher. Routine DCB1 rotation uses only the publisher device key.
 
 ## 5. Contact bundle: `DCB1`
+
+**DID2 cutover boundary.** The version-1 byte tables in sections 5.1 and 5.2
+below are retained only to identify the retired DID1/DAB1 contract and its
+negative fixtures. They do not authorize release publication or parsing of a
+DID2 contact. The replacement must bind the exact 2036-byte DID2 credential,
+its verified hash and exact 3711-byte DAB2 lineage, DCA1 V2 and ADL1 V2.
+The XIR1 reference to DCA1, its artifact version/hash and signature input
+must be re-pinned in the same change; replacing DCB1 tags 23/24 alone would
+produce a mixed V1/V2 closure. DCR1 support-object and freshness verification
+must then accept only that exact replacement. Freeze the complete field table,
+size bounds, transcript and hostile vectors before any authoring or runtime
+activation. The old version-1 codec is not a compatibility reader.
 
 ### 5.1 Purpose
 

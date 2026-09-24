@@ -1,6 +1,7 @@
 # Contact Resolver and Pre-Key Claim V1
 
-Status: **normative implementation target for the first public release**
+Status: **service-semantics target; DID1-dependent wire is retired pending
+DR-0006 DID2 re-freeze**
 
 This contract closes the service side of arbitrary-contact bootstrap. It is a
 clean-break protocol: the Registry is not an invite directory, a bare account ID
@@ -12,7 +13,7 @@ Deep ID. All requests travel as opaque operations through the selected transport
 
 | Role | Responsibility | Owner repository |
 |---|---|---|
-| address publisher | creates DID1/DAB1 and rotating DCB1/XIR1, encrypts DCR1 | `deep-client-shared` |
+| address publisher | creates DID2/DAB2 and, after the exact contact re-freeze, rotating DCB1/XIR1 and encrypted DCR1 | `deep-client-shared` |
 | invite store | quorum publication, resolve, one-time claim and replay | `xnode` |
 | pre-key claim store | atomic DPK2 one-time-key claim | `xnode` |
 | path/placement verifier | verifies XNV1/PMT2, derives service shards, and separately verifies returned PMS2 route closures | `deep-client-shared` |
