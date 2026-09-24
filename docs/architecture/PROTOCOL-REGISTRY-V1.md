@@ -297,7 +297,7 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | `DID2` | immutable permanent credential with genesis Ed25519 and ML-DSA-65 root keys; compact text carries hash commitment plus resolver capability. | `TARGET_UNFROZEN`; exact 2036-byte candidate and transcript vectors exist, dependent closure remains open |
 | `DAB2` | hybrid-AND permanent ID/current-account binding lineage. | `TARGET_UNFROZEN`; exact 3711-byte candidate, ArtifactRef type `0x1002` and transcript vectors exist, dependent closure remains open |
 | `DCA1` | device authorization to publish rotating contact bundles; V2 candidate binds exact DID2/DAB2. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze; V1 version/suite rejects even though V2 also happens to be 473 bytes |
-| `DCB1` | signed contact bundle; V1 bytes bind retired DID1/DAB1. | DID2-bound V2 `TARGET_UNFROZEN`; isolated identity/issuer codec only, not publication authority |
+| `DCB1` | signed contact bundle; V1 bytes bind retired DID1/DAB1. | DID2-bound V2 `TARGET_UNFROZEN`; isolated identity/issuer/XPS1-descriptor verifier only, not publication authority |
 | `DCR1` | exact resolver closure around DCB1/DRS1/DPD1 support objects. | DID2-bound V2 `TARGET_UNFROZEN`; isolated exact-support verifier only, not publication or freshness authority |
 | `DIA1` | expiring one-time invitation locator; never the permanent Deep ID. | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `DAO1` | metadata-sealed asynchronous deposit object containing DPH2 or DPE2. | `TARGET_UNFROZEN` for DPH2-derived sizes pending DR-0006; established DPE2 semantics remain separately frozen |
