@@ -364,6 +364,14 @@ threshold witness custody один раз выпустить пустой под
 проверить его и вывести только core-hash для независимого pin перед ADA2
 provisioning. Это устраняет ручную тестовую подпись головы, но не заменяет
 отдельный UAT deployment, rollback floor или device E2E.
+2026-09-24: production custody Mr. X локально выпустила обновлённый
+authority-кандидат с сохранённым genesis XNA1 pin и отдельный подписанный
+пустой DID2 ADH1. Его core hash проверен операторской read-only командой и
+независимым расчётом, затем отдельно закреплён; из него однократно создан
+HMAC-защищённый пустой ADA2. Это только локальные offline-артефакты:
+Registry/XNode в production не изменены, DID2 admission/proof не включены.
+Независимый latest-head rollback floor, UAT admission/proof и device E2E
+по-прежнему обязательны до release-кандидата.
 Изолированный трёхузловой first-release local image build прошёл после
 обновления локального Protocol package graph/pins; XNode unit gate 231/231 и
 runtime build без предупреждений. `Up` пока fail-closed на отсутствующем
