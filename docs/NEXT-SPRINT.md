@@ -932,6 +932,14 @@ Android↔Windows interoperability и независимый crypto review P0/P1
   добавить physical UI/restart evidence и QR-import.
   Старый `05...` ID, display name, CMI1, route или DCR1 не являются адресом.
   Истечение DCB/XIR/XPS даёт только `TemporarilyUnavailable`, не меняет Deep ID.
+- Вернуть полноценный интерфейс без возврата legacy runtime: использовать
+  существующие визуальные шаблоны `ConversationsPage`, `ChatPage`,
+  `GroupsPage`, `GroupChatPage`, `SettingsPage` и двухпанельный
+  `DesktopWorkspacePage` как основу новых DID2-only экранов. Сохранить
+  палитру и стабильные `AutomationId`, но не включать старые XAML вместе с
+  `SessionId` ViewModel/code-behind. Активные действия и статусы доставки
+  показывать только после появления соответствующих проверенных runtime
+  capabilities; Android и Windows проверять отдельным физическим UI lane.
 - Подключить MAUI client LKG/entry-guard stores и
   fork/freshness ADC1/ADH1/ADP1/ADL1 к production authority fetch/runtime и
   запустить publication/replenishment scheduler поверх уже готовых durable
