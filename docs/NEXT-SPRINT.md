@@ -60,6 +60,33 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ## Обязательный порядок исполнения
 
+### Фактический вертикальный gate после DID2 account/device-state (2026-09-25)
+
+Физические Android и Windows DID2 probes подтвердили создание нового аккаунта,
+перезапуск с тем же ID и удаление локально сохранённой фразы с сохранением ID.
+Это **не** доказательство контактов или E2E сообщений: оба probe намеренно
+account-only. Следующий блокер не следует маскировать зелёными тестами старого
+клиента: `Dph2InitialClaimPreview.VerifyCurrentAsync` принимает только
+`VerifiedAccountDirectoryFreshness` V1 и возвращает V1 checkpoint, тогда как
+новый каталог выдаёт `VerifiedDeepIdV2DirectoryFreshness`/`VerifiedAdc1V2`.
+Текущий DPH2 tag 20 и transcript/session-ID включают exact DID1: их нельзя
+кормить DID2 или менять один тип без полного wire/transcript re-freeze.
+
+Порядок P0: (1) заморозить DID2-only DPH2/DAO1/contact-publication wire,
+размеры, domain-separated transcript и negative vectors; (2) перевести
+инициаторский и входящий claim/current-checkpoint verifier на exact DID2,
+DAB2/ADC1 V2 и свежий DMD1 без dual-read; (3) связать проверенный current
+proof с защищённым одноразовым device-agreement burn и durable DPK2;
+(4) завершить DAO1 mailbox receive, contact-state/inbox commit до ACK;
+(5) один Android↔Windows цикл contact → text → image/attachment → group на
+одном закреплённом наборе policy/бинарников. До выполнения каждого gate
+production UI сообщений остаётся fail-closed. Задействованы ровно три
+production XNode; расширение до шести не требуется для этих проверок.
+
+Дополнительный локальный safety fix: account admission повторно сверяет
+monotonic freshness после асинхронного перечитывания аккаунта; сохранённый
+rollback floor сам по себе не продлевает право использовать proof.
+
 ### ID-PQ-CB — корень Deep ID до продолжения production-сценария
 
 Первый protocol/identity package выполняет [`DR-0006`](survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md):

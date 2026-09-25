@@ -518,8 +518,16 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   Durable DCB1/DCR1 publication and MAUI receive composition are not yet
   connected. Missing are production authority composition,
   logical message outbox/inbox, real dispatch/materialization and device E2E.
-- **next vertical integration order:** first create and retain the recipient's
-  protected metadata-sealing X25519 key under the verified PMT2 reference
+- **next vertical integration order:** DID2 clean-break precedes this historical
+  V1 composition sequence: re-freeze
+  DPH2 tag 20 and every transcript/session-ID/DAO1/contact projection that
+  embeds DID1; replace the V1-only inbound `VerifiedAccountDirectoryFreshness`
+  checkpoint with an exact DID2/DAB2/ADC1 V2 current proof. A successful
+  old-path DPH2 test must not be counted as DID2 device E2E. Keep the probe
+  account-only and the production UI fail-closed until this proof and the
+  one-use protected DMD1 agreement transaction are composed.
+  Then create and retain the recipient's protected metadata-sealing X25519 key
+  under the verified PMT2 reference
   before device-signing XRA1 (the XRA1 author generates its authorization ID
   only during authoring), publish
   its key ID/public key through the verified route-closure flow, then reopen
