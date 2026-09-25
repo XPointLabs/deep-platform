@@ -871,6 +871,14 @@ protected trusted time, полную ADA2 lineage, независимый latest
 проверять новый маршрут отдельным canary, не использовать его как
 автоматическое разрешение публичного cutover. Локальные focused-тесты
 проверили зелёный и fail-closed пути; физический message E2E остаётся открыт.
+Canary 2026-09-25: без сброса ADA2 и нод подписана бессодержательная голова
+generation 5/tree 3; независимый floor подтвердил exact core hash. Сохранённый
+Android-аккаунт проверил successor proof до и после force-stop/relaunch.
+Новый CI-образ Registry показал `GET /health/did2/ready` 200 в отдельном
+loopback-only контейнере, публичный staking остался 200. Важный release gate:
+подписанная голова живёт один час; до публичной активации нужен управляемый
+renewal по защищённому trusted time и проверка деградации/восстановления,
+а не ручное продление canary.
 Входящий ContactHello сейчас сохраняется как pending request, но Contacts UI
 показывает историю лишь для вручную выбранного `VerifiedConversation`;
 recipient discovery/accept и отображение входящего диалога остаются частью
