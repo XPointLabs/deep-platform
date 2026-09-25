@@ -96,7 +96,8 @@ production promotion смешанного V2 DPH2 с V1 DCB1/DCR1/XPC1/ContactHe
 старый Shared путь отправки и приёма остановлен fail-closed. Следующий gate —
 единый V2 contact/prekey/ContactHello closure, затем машинный registry,
 vectors и physical E2E. После удаления смешанных DID1 фикстур Shared production
-suite прошёл 137/137, MAUI Clean.Tests — 19/19, MAUI SmokeTests — 164/164;
+suite прошёл 137/137, MAUI Clean.Tests — 19/19, оставшиеся MAUI SmokeTests
+после удаления source-only проверок старого shell — 118/118;
 это не заменяет package/public-API witness и device E2E. Основной
 `MauiProgram.Clean`/`AppShell.Clean` всё ещё компонует `DeepAccountService`
 старого account-пути; DID2 доказан только в отдельных account probes. Его
