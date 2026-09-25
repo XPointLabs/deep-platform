@@ -28,7 +28,10 @@ The offline root seed remains outside Registry and XNode containers.
    fresh DTT1 to that historical head. With admissions stopped, run the
    candidate's `did2-directory refresh-current-head <valid-from-unix>
    <valid-until-unix>` operator action using its exact witness custody and
-   independent PostgreSQL floor. It permits only a near-current one-hour
+   independent PostgreSQL floor. The operator reads the protected monotonic
+   trusted-time anchor and fails closed if it is absent or stale; system UTC
+   is not its authority. The requested interval must cover the whole trusted
+   uncertainty window. It permits only a near-current one-hour
    interval and appends a new witness-signed ADH1 successor without changing
    the journal, tree size or map root. It advances the external floor by CAS;
    if ADA2 persistence then fails, stop and recover rather than resetting the

@@ -879,6 +879,11 @@ loopback-only контейнере, публичный staking остался 20
 подписанная голова живёт один час; до публичной активации нужен управляемый
 renewal по защищённому trusted time и проверка деградации/восстановления,
 а не ручное продление canary.
+Операторская команда `refresh-current-head` больше не доверяет системному UTC:
+она читает protected monotonic trusted-time anchor, проверяет uncertainty
+window и закрывается при отсутствующем/просроченном состоянии. Положительный
+PostgreSQL/ADA2 CAS и отрицательный missing-anchor тесты пройдены локально;
+автоматический renewal остаётся отдельным gate.
 Входящий ContactHello сейчас сохраняется как pending request, но Contacts UI
 показывает историю лишь для вручную выбранного `VerifiedConversation`;
 recipient discovery/accept и отображение входящего диалога остаются частью
