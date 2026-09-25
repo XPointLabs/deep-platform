@@ -150,8 +150,10 @@ source-checkpoint index и membership proof. Registry issuer с импортом
 covered-head ряда, а также операторский no-content successor refresh с
 PostgreSQL floor CAS реализованы; локальный PostgreSQL-тест refresh и rollback
 прошёл. На изолированной машинной пробе refresh до поколения 4 сверился с
-независимым floor, но полный covered-set ADF1 ещё не импортирован. Машинная
-церемония импорта, независимые negative vectors и
+независимым floor; offline-root ADF1 над полным набором поколений 0–3
+импортирован только в отдельный loopback-canary. Физический Android-клиент
+догнал актуальный proof и повторил проверку после перезапуска с сохранённым
+protected LKG. Windows device proof, независимые machine negative vectors и
 device E2E ещё нужны. Нельзя переподписывать старый head
 как текущий, продлевать его срок, сбрасывать защищённый LKG или объявлять
 multi-hop direct-successor заменой checkpoint. Затем повторить физический
