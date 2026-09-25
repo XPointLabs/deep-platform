@@ -864,6 +864,13 @@ Shared production suite теперь прошёл 183/183; DID2 proof client с�
 Следующая проверка — sender DPH2, recipient self-retrieve/ContactHello,
 ответный DPE2 и crash/replay на тех же двух устройствах; файлы и группы
 выполняются только после зелёного текстового пути.
+Для DID2 добавлен отдельный `GET /health/did2/ready`: он повторно проверяет
+protected trusted time, полную ADA2 lineage, независимый latest-head floor и
+срок текущей подписанной головы до возможности выпустить новый proof.
+Общий `/health/ready` отражает иные сервисы и не доказывает готовность DID2;
+проверять новый маршрут отдельным canary, не использовать его как
+автоматическое разрешение публичного cutover. Локальные focused-тесты
+проверили зелёный и fail-closed пути; физический message E2E остаётся открыт.
 Входящий ContactHello сейчас сохраняется как pending request, но Contacts UI
 показывает историю лишь для вручную выбранного `VerifiedConversation`;
 recipient discovery/accept и отображение входящего диалога остаются частью
