@@ -143,10 +143,15 @@ negative vectors. ADP1 V2 mode 2 / anchor-AFP1 + exact ADH1 tail уже имее
 протокольный тест защищённого floor из более позднего ADF1 через отдельный
 source-checkpoint index и membership proof. Registry issuer с импортом только
 подписанного ADF1 и клиентский защищённый LKG прошли локальный интеграционный
-сценарий двух аккаунтов. Initial empty-source ADF1 offline author,
-HMAC/PQ-проверенный export текущего ADH1 и операторский no-content successor
-refresh с PostgreSQL floor CAS реализованы; локальный PostgreSQL-тест refresh
-и rollback прошёл. Машинная церемония импорта, независимые negative vectors и
+сценарий двух аккаунтов. Initial ADF1 offline author теперь покрывает весь
+непрерывный подписанный ряд от пустого genesis до непосредственного
+предшественника target ADH1: только genesis недостаточен для уже созданных
+устройств. HMAC/PQ-проверенные export текущего ADH1 и manifest полного
+covered-head ряда, а также операторский no-content successor refresh с
+PostgreSQL floor CAS реализованы; локальный PostgreSQL-тест refresh и rollback
+прошёл. На изолированной машинной пробе refresh до поколения 4 сверился с
+независимым floor, но полный covered-set ADF1 ещё не импортирован. Машинная
+церемония импорта, независимые negative vectors и
 device E2E ещё нужны. Нельзя переподписывать старый head
 как текущий, продлевать его срок, сбрасывать защищённый LKG или объявлять
 multi-hop direct-successor заменой checkpoint. Затем повторить физический

@@ -1,8 +1,11 @@
 # DID2 initial ADF1 offline ceremony
 
 This procedure is for the first root-authorized forward checkpoint from the
-separately pinned, signed empty DID2 directory head. It does not sign every
-admission and does not replace the later periodic covered-set/checkpoint policy.
+separately pinned, signed empty DID2 directory head. The first checkpoint
+must cover **every** prior signed head from genesis through the target's
+immediate predecessor; covering only genesis strands devices with a newer
+protected floor. It does not sign every admission and does not replace the
+later periodic covered-set/checkpoint policy.
 The offline root seed remains outside Registry and XNode containers.
 
 1. Stop admissions on the isolated candidate and retain its ADA2 state. Read
@@ -12,11 +15,15 @@ The offline root seed remains outside Registry and XNode containers.
 2. On the isolated operator host, run
    `did2-directory export-current-head <floor-core-hash> <new-output.adh1>`
    using configuration pointing to the copied HMAC-protected ADA2, its
-   integrity key, signed XNA1/DTS1 chain, and pinned DID2 genesis. The command
-   replays the full signed-head/PQ-admission journal and refuses a mismatched
-   independent floor. It creates a new output file; it never edits ADA2.
+   integrity key, signed XNA1/DTS1 chain, and pinned DID2 genesis. Also run
+   `did2-directory export-covered-lineage <floor-core-hash>
+   <existing-empty-output-directory>`. Both commands replay the full
+   signed-head/PQ-admission journal and refuse a mismatched independent floor.
+   The second emits exact prior ADH1 files and a bound manifest. Neither
+   command edits ADA2.
 3. Review the exported generation, tree size, core hash, target validity
-   interval, source genesis pin, network/XNA1 pin, and custody manifest. If the
+   interval, contiguous covered-head generations, source genesis pin,
+   network/XNA1 pin, and custody manifest. If the
    target ADH1 has expired, do **not** backdate the root signature or attach a
    fresh DTT1 to that historical head. With admissions stopped, run the
    candidate's `did2-directory refresh-current-head <valid-from-unix>
@@ -28,11 +35,14 @@ The offline root seed remains outside Registry and XNode containers.
    floor. Re-read the floor independently and repeat step 2 for the new head.
 4. In offline root custody, run `Did2Adf1Offline` with exactly these inputs:
    `--authority-root`, `--output`, `--xna1-core-hash`, `--xna1`, `--dts1`,
-   `--source-adh1`, `--source-adh1-core-hash`, `--target-adh1`,
+   `--source-adh1`, `--source-adh1-core-hash`, `--covered-manifest`,
+   `--target-adh1`,
    `--target-adh1-core-hash`, `--issued-at-unix`, and `--minimum-reader 2`.
-   The source must be the verified empty DID2 genesis; the target must be a
-   newer signed nonempty head. The issue time must be within five minutes of
-   the offline machine's current UTC and inside target/authority validity.
+   The covered set must start at the verified empty DID2 genesis and include
+   every signed successor up to the target's immediate predecessor. The
+   target must be a newer signed nonempty head. The issue time must be within
+   five minutes of the offline machine's current UTC and inside
+   target/authority validity.
    The tool compares the root seed to the custody manifest and the manifest
    to the verified XNA1 before signing. Output must be a new file under the
    offline authority artifacts directory.
