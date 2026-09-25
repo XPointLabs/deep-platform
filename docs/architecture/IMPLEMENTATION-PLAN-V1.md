@@ -365,13 +365,13 @@ path and MUST NOT be used to satisfy any production-readiness gate below.
 
 - **ownerRepository:** `deep-protocol`.
 - **dependsOn:** REG-01, ID-01, E2EE-01.
-- **consumes:** frozen DID1/DAB1/DMD1/DCA1/DAO1/DMC2 normative tables, exact
+- **consumes:** DID2/DAB2 V2/DMD1/DCA1 V2/DAO1/DMC2 target tables, exact
   DPK2/DPH2/DPE2 refs and the canonical tagged grammar. It does not consume
   DCB1/DCR1/DIA1 or future group/call producer bytes.
-- **produces:** exact schemas/codecs/vectors for DID1/DAB1/DMD1/DCA1/DAO1 and
+- **produces:** exact schemas/codecs/vectors for DID2/DAB2 V2/DMD1/DCA1 V2/DAO1 and
   DMC2 kinds 1 and 5..13; closed numeric registry whose downstream-dependent
-  kinds are `RESERVED_REJECT`; DAB1/DMD1 lineage and signature projections;
-  retired address/event negative vectors.
+  kinds are `RESERVED_REJECT`; DAB2 V2/DMD1 lineage and signature projections;
+  retired DID1/DAB1 address/event negative vectors.
 - **wire/API:** no kind exposes an untyped blob to application code. Unknown
   or reserved kind/field/enum, mismatched authenticated sender/context and
   max+1 reject before callback or mutation.
@@ -1121,7 +1121,8 @@ No other NETCODEC record inherits frozen status from that slice.
 - **unit gate:** Android/Windows fixture, recipient offline, simultaneous hello,
   stale/rotated route, every machine-contract long-offline/beyond-horizon state,
   no-backup recovery and block; a fresh client derives the XIQ replica set from
-  only DID1, rejects server/static hash authority and retries a verified successor
+  only the DID2-bound locator and verified placement, rejects server/static hash
+  authority and retries a verified successor
   view with the same logical operation.
 - **integration consumer/evidence:** GROUP-CODEC-01, CALL-SIGNAL-01 and E2E-01;
   arbitrary-contact cold-restart evidence.
