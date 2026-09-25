@@ -884,6 +884,12 @@ renewal по защищённому trusted time и проверка дегра�
 window и закрывается при отсутствующем/просроченном состоянии. Положительный
 PostgreSQL/ADA2 CAS и отрицательный missing-anchor тесты пройдены локально;
 автоматический renewal остаётся отдельным gate.
+Дополнительная проверка через изолированный canary: Windows .NET-процесс
+создал отдельный PQ-backed DID2-аккаунт и проверил свой signed proof через
+offline-root forward chain; независимый floor продвинулся. Физический Android
+со старым protected floor после этого принял текущий signed proof. Это
+межплатформенная совместимость каталога (Windows headless + Android UI), не
+физический Windows↔Android message E2E.
 Входящий ContactHello сейчас сохраняется как pending request, но Contacts UI
 показывает историю лишь для вручную выбранного `VerifiedConversation`;
 recipient discovery/accept и отображение входящего диалога остаются частью
