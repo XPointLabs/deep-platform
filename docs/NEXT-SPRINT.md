@@ -989,6 +989,13 @@ Android↔Windows interoperability и независимый crypto review P0/P1
   XPK1/XPC1 journal и bounded two-replica XPP1/XIC1 transport. Atomic
   activation выполняется только после двух verified final XIC1; public DCB1
   не содержит consumable prekey bytes.
+- DID2-only peer discovery: protocol/client теперь авторуют ADL1 по точному
+  DID2 без заранее доверенного DAB2 и принимают только nonce-bound current
+  proof с тем же DID2 и защищённым LKG. Двухаккаунтный Registry integration
+  test подтверждает Alice→Bob lookup через подписанный forward checkpoint.
+  Это service-level evidence, не физический контакт/E2E: MAUI UI, contact
+  acceptance и transport activation ещё нужно подключить и проверить на
+  Android↔Windows.
 - Выпустить и смонтировать через готовые Registry production trusted-time,
   one-use-ledger, DTT1 custody и operator authoring полный подписанный authority
   package; готовый durable verified permanent/one-time resolve evidence owner
