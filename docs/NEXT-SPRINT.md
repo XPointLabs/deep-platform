@@ -1036,9 +1036,11 @@ Android↔Windows interoperability и независимый crypto review P0/P1
   DID2 без заранее доверенного DAB2 и принимают только nonce-bound current
   proof с тем же DID2 и защищённым LKG. Двухаккаунтный Registry integration
   test подтверждает Alice→Bob lookup через подписанный forward checkpoint.
-  Это service-level evidence, не физический контакт/E2E: MAUI UI, contact
-  acceptance и transport activation ещё нужно подключить и проверить на
-  Android↔Windows.
+  Изолированный non-Release Android probe дополнительно подтвердил по
+  текущему подписанному каталогу точный публичный DID2 аккаунта, созданного
+  Windows-host клиентом. Это физический proof lookup, но ещё не принятие
+  контакта и не device-to-device сообщения: DID2-only MAUI UI, durable
+  acceptance и transport activation остаются gate Android↔Windows.
 - Выпустить и смонтировать через готовые Registry production trusted-time,
   one-use-ledger, DTT1 custody и operator authoring полный подписанный authority
   package; готовый durable verified permanent/one-time resolve evidence owner
