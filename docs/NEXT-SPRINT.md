@@ -143,8 +143,11 @@ negative vectors. ADP1 V2 mode 2 / anchor-AFP1 + exact ADH1 tail уже имее
 протокольный тест защищённого floor из более позднего ADF1 через отдельный
 source-checkpoint index и membership proof. Registry issuer с импортом только
 подписанного ADF1 и клиентский защищённый LKG прошли локальный интеграционный
-сценарий двух аккаунтов; ещё нужны независимые negative vectors, offline
-signing/import runbook и device E2E. Нельзя переподписывать старый head
+сценарий двух аккаунтов. Initial empty-source ADF1 offline author,
+HMAC/PQ-проверенный export текущего ADH1 и операторский no-content successor
+refresh с PostgreSQL floor CAS реализованы; локальный PostgreSQL-тест refresh
+и rollback прошёл. Машинная церемония импорта, независимые negative vectors и
+device E2E ещё нужны. Нельзя переподписывать старый head
 как текущий, продлевать его срок, сбрасывать защищённый LKG или объявлять
 multi-hop direct-successor заменой checkpoint. Затем повторить физический
 Android/Windows E2E контактов, сообщений, вложений и групп; они пока не
