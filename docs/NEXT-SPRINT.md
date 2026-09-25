@@ -981,10 +981,12 @@ Gate каждого WP создаёт переиспользуемый black-box
 commit matrix и проверяет композицию; отдельные копии harness/tests для WP9 не
 создаются.
 
-- Подключить DID2 genesis/account/device authoring к новому opaque
-  `AuthorGenesisDmd1`, зафиксировать verifier-minted current DMD1 в уже готовом
-  account-scoped protected store и передать одноразовый Protocol agreement
-  lease production caller. DID2 STORE-V2 уже выдаёт только verifier-bound
+- DID2 genesis уже авторует `AuthorGenesisDmd1`; Shared account owner теперь
+  передаёт заново проверенный genesis DMD1 в durable current-device store
+  идемпотентной account-bound операцией. Смонтировать конкретный store в
+  DID2 MAUI owner с V2-изолированными ключом и путём, затем передать
+  одноразовый Protocol agreement lease production caller только после
+  отдельной store-авторизации. DID2 STORE-V2 уже выдаёт только verifier-bound
   локальную X25519 capability, но MAUI caller/current-DMD1 композиция ещё не
   подключена. Public-forgeable provider и raw keys запрещены. Готовые account-wide DPK2 prekey owner,
   per-session DPE2 stores, durable session catalog, Protocol one-shot DPH2/TRS1
