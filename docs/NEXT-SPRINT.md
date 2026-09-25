@@ -628,9 +628,9 @@ flag, dual reader или автоматический fallback. Нужно:
   orchestration и durable publication ещё не подключены;
   locator-indexed Registry/XNode route lookup и post-publication substitution
   удаляются из production composition;
-- оставить `deep-protocol/reference/session-compatibility-v0` только
-  immutable offline evidence: он не собирается, не пакуется и не
-  загружается.
+- удалить исторический `session-compatibility-v0` корпус и его отдельный gate
+  из release checkout; при необходимости аудита он доступен в Git history,
+  но не собирается, не пакуется и не загружается.
 
 Gate: source/API/assembly/package/resource/dependency scans доказывают
 нулевой legacy production graph; retired bytes есть только в negative
