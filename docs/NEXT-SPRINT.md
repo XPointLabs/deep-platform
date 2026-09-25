@@ -149,10 +149,12 @@ signing/import runbook и device E2E. Нельзя переподписыват�
 multi-hop direct-successor заменой checkpoint. Затем повторить физический
 Android/Windows E2E контактов, сообщений, вложений и групп; они пока не
 подтверждены.
-Публичный freshness API теперь принимает только типизированный ADL1 V2 query,
-сверенный с independently verified DAB2: сеть аккаунта, DID2-derived leaf и
-точный generation/hash floor обязательны. Сырой leaf допускается лишь во
-внутреннем self-check issuer; проверены отказы при чужой сети и неверном floor.
+Публичный freshness API принимает типизированный ADL1 V2 query: для собственного
+аккаунта он сверяется с independently verified DAB2, а для peer discovery — с
+точным запрошенным DID2. В обоих случаях DID2-derived leaf, сеть authority,
+generation/hash защищённого floor и совпадение DID2 в возвращённом current
+checkpoint обязательны. Сырой leaf допускается лишь во внутреннем self-check
+issuer; чужой DID2 и неверный floor отвергаются.
 Отдельный Windows x64 тест теперь выпускает настоящий ML-DSA-backed DID2,
 строит подписанные ADH1/DTT1 и ADP1 V2 с Merkle-inclusion/consistency,
 затем получает positive freshness capability; это protocol-level тест, не
