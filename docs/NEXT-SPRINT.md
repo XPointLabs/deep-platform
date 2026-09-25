@@ -72,7 +72,8 @@ account-only. Следующий блокер не следует маскиро
 Текущий DPH2 tag 20 и transcript/session-ID включают exact DID1: их нельзя
 кормить DID2 или менять один тип без полного wire/transcript re-freeze.
 
-Порядок P0: (1) заморозить DID2-only DPH2/DAO1/contact-publication wire,
+Порядок P0 по [DR-0008](survival-program/decisions/DR-0008-did2-dph2-wire-clean-break.md):
+(1) заморозить DID2-only DPH2/DAO1/contact-publication wire,
 размеры, domain-separated transcript и negative vectors; (2) перевести
 инициаторский и входящий claim/current-checkpoint verifier на exact DID2,
 DAB2/ADC1 V2 и свежий DMD1 без dual-read; (3) связать проверенный current
@@ -86,6 +87,10 @@ production XNode; расширение до шести не требуется �
 Дополнительный локальный safety fix: account admission повторно сверяет
 monotonic freshness после асинхронного перечитывания аккаунта; сохранённый
 rollback floor сам по себе не продлевает право использовать proof.
+Для DR-0008 общий MessagingWire framing теперь умеет выбирать exact version
+на уровне одного codec, причём version 1 и 2 взаимно отвергаются в тесте.
+Сам DPH2 ещё не переключён на version 2/DID2: это только необходимая граница
+для clean-break, не физический E2E и не разрешение включить сообщения.
 
 ### ID-PQ-CB — корень Deep ID до продолжения production-сценария
 

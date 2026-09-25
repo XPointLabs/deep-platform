@@ -93,6 +93,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   сам capability. 2052-byte replacement codec/store и локальные тесты готовы;
   прежний raw-capability DID2 кандидат retired, а live/device closure ещё
   блокирует релиз.
+- [`DR-0008`](../survival-program/decisions/DR-0008-did2-dph2-wire-clean-break.md)
+  задаёт один DID2-only DPH2 version-2 target с exact DID2 в tag 20.
+  Исторический DID1 DPH2 и его DAO1 размеры не входят в release graph;
+  machine registry, vectors и consumers ещё должны быть перевыпущены вместе.
 - Текущие Session-derived identity, DPE1/DMC1 и group bytes не являются
   production compatibility surface и не ограничивают новый дизайн.
 - Первый публичный релиз использует новое поколение account/device/database,

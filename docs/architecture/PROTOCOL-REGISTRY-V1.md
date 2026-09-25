@@ -284,7 +284,7 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | Magic | Meaning | Status |
 | --- | --- | --- |
 | `DPK2` | one atomic signed per-device hybrid prekey offering; inventories are sets of exact DPK2 records. | `FROZEN_TARGET_NOT_ACTIVE`; exact sizes 1,973/2,037 |
-| `DPH2` | complete hybrid asynchronous initiation with XPC1 claim binding, actual ML-KEM ciphertext in tag 17 and separate transcript/full-replay hashes. | `TARGET_UNFROZEN`; DR-0005 changed the encrypted claim payload and initiator-ID header, and DR-0006 requires another exact-ID/header re-freeze; old event-only and old-ID payloads reject |
+| `DPH2` | complete hybrid asynchronous initiation with XPC1 claim binding, actual ML-KEM ciphertext in tag 17 and separate transcript/full-replay hashes. | `TARGET_UNFROZEN`; [DR-0008](../survival-program/decisions/DR-0008-did2-dph2-wire-clean-break.md) selects one DID2-only version-2 target, but the machine registry, vectors and consumers are not yet re-frozen; old event-only and DID1 records must reject in the release graph |
 | `DTR2` | embedded-only canonical Double-Ratchet + SPQR/ML-KEM-Braid header carried only in DPE2 tag 6. | `FROZEN_TARGET_NOT_ACTIVE`; exact canonical record sizes 189/285/349/1,149/1,341 |
 | `DPE2` | established Triple-Ratchet device envelope with exact DTR2, authenticated counters and per-envelope dedup operation ID. | `FROZEN_TARGET_NOT_ACTIVE`; twenty exact canonical record sizes 4,513..50,705 |
 | `MBA1` | local managed ML-KEM-Braid profile plaintext state before protected-store sealing. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
