@@ -89,8 +89,14 @@ monotonic freshness после асинхронного перечитывани
 rollback floor сам по себе не продлевает право использовать proof.
 Для DR-0008 общий MessagingWire framing теперь умеет выбирать exact version
 на уровне одного codec, причём version 1 и 2 взаимно отвергаются в тесте.
-Сам DPH2 ещё не переключён на version 2/DID2: это только необходимая граница
-для clean-break, не физический E2E и не разрешение включить сообщения.
+В зафиксированном baseline DPH2 ещё не переключён на version 2/DID2. Рабочий
+кандидат теперь перевёл wire tag 20, transcript и DAO1 размеры, а также
+инициаторскую и входящую проверку current DID2. Он намеренно не предоставляет
+production promotion смешанного V2 DPH2 с V1 DCB1/DCR1/XPC1/ContactHello;
+старый Shared путь отправки и приёма остановлен fail-closed. Следующий gate —
+единый V2 contact/prekey/ContactHello closure, затем полный Shared/MAUI тест,
+машинный registry, vectors и physical E2E. Проход production compilation при
+падающих старых V1 интеграционных тестах не является release evidence.
 
 ### ID-PQ-CB — корень Deep ID до продолжения production-сценария
 

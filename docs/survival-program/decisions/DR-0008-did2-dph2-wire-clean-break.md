@@ -53,6 +53,12 @@ the old path for a DID2 account is not a release option.
    UAT state explicitly, do not migrate or dual-read old sessions. ACK still
    requires authenticated initial payload, exact XPC1 receipt, ratchet and
    semantic contact/inbox commit in one durable sequence.
+7. The first authenticated `ContactHello` and `ContactAccept` events must bind
+   exact DID2/DAB2 V2 endpoint evidence, not a DAB1 reference with a new name.
+   The associated safety-number input and inbound XUR1 authority must be
+   re-frozen with that V2 contact closure before a responder can create a
+   relationship or ACK. A DPH2 V2 sender paired with a V1 DCB1/DCR1/XPC1 or
+   V1 ContactHello is a mixed-lineage claim and must fail closed.
 
 ## Freeze and evidence gate
 
@@ -67,7 +73,8 @@ the old path for a DID2 account is not a release option.
   forked V2 proof, V1 checkpoint, changed exact XPC1, duplicate/forked DPH2,
   old DAO1 size and wrong protected-device operation.
 - Compile and test the complete production graph after removal of the old
-  caller API and SQL size checks. A green old-path test is not V2 evidence.
+  caller API and SQL size checks. A green old-path test is not V2 evidence;
+  compilation alone is not enough while old V1 contact/session tests fail.
   Then prove one physical Android↔Windows contact → text DPH2/DPE2 → durable
   recipient inbox → authenticated ACK before advancing to images,
   attachments and groups. No GitHub Release follows automatically.
