@@ -907,6 +907,16 @@ Shared production suite теперь прошёл 183/183; DID2 proof client с�
 Следующая проверка — sender DPH2, recipient self-retrieve/ContactHello,
 ответный DPE2 и crash/replay на тех же двух устройствах; файлы и группы
 выполняются только после зелёного текстового пути.
+Аудит текущей композиции 2026-09-25 уточнил обязательный предшествующий gate:
+обычный MAUI `CreateMauiApp` всё ещё монтирует `DeepAccountRuntimeAccessor`
+и ContactV1 message runtime, который намеренно отвергает DID2 DPH2, тогда
+как изолированный DID2 probe не монтирует message runtime. Поэтому старые
+`StartSecureChannel`/`SendText`/`CheckInbox` не являются DID2 E2E. Сначала
+нужно подключить account-owned DID2 contact/prekey/DPH2/receive composition
+в основной клиент без V1 fallback, затем запускать вышеуказанный физический
+сценарий. DID2 peer lookup теперь повторно проверяет локальный admission
+перед каждым запросом; UI-флаг прошлой успешной проверки не является
+долгоживущим authority. Это ещё не acceptance и не доставка.
 Для DID2 добавлен отдельный `GET /health/did2/ready`: он повторно проверяет
 protected trusted time, полную ADA2 lineage, независимый latest-head floor и
 срок текущей подписанной головы до возможности выпустить новый proof.
