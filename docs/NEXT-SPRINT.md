@@ -1039,11 +1039,15 @@ commit matrix и проверяет композицию; отдельные к�
   идемпотентной account-bound операцией. Конкретный SQLCipher device-state
   store теперь монтируется с V2-изолированными ключом и путём при создании
   аккаунта и запуске MAUI; защищённый маркер запрещает незаметное пересоздание
-  утраченного agreement ledger. Следующий шаг — передать одноразовый Protocol
-  agreement lease production caller только после отдельной store-авторизации.
-  DID2 STORE-V2 уже выдаёт только verifier-bound
-  локальную X25519 capability, но MAUI caller/current-DMD1 композиция ещё не
-  подключена. Public-forgeable provider и raw keys запрещены. Готовые account-wide DPK2 prekey owner,
+  утраченного agreement ledger. Shared DID2 account service теперь начинает
+  DPH2 claim только по свежему точному DAB2/DMD1 proof и завершает его через
+  отдельную одноразовую store-авторизацию; proof повторно сверяется с
+  защищённой текущей головой каталога перед операцией. HTTP-интеграционный
+  Windows HTTP-интеграционный тест с двумя аккаунтами подтверждает отказ старому/чужому proof и replay
+  device-DH1. Это не публикация XPK1/XPC1 и не отправленный DPH2:
+  MAUI production caller/current-DMD1 композиция ещё не подключена.
+  DID2 STORE-V2 выдаёт только verifier-bound локальную X25519 capability;
+  public-forgeable provider и raw keys запрещены. Готовые account-wide DPK2 prekey owner,
   per-session DPE2 stores, durable session catalog, Protocol one-shot DPH2/TRS1
   capability и atomic initial-session transaction уже связаны внутри MAUI
   runtime owner; осталось подключить production caller после current-DMD1,
