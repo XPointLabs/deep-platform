@@ -1204,9 +1204,15 @@ XPP1 в сеть.
 он после HTTP/2 peer authentication повторно проверяет signed current
 NETCODEC placement и долговечно собирает XPP1 V2 на выбранной реплике.
 `CandidateReady` доказывает только локальную сборку кандидата; это не XIC1,
-не активация inventory и не device E2E. Следующий обязательный шаг text
-vertical — verified двухрепличный final XIC1 commit и клиентский DPH2
-claim/receive, затем сообщения Windows↔Android на физических устройствах.
+не активация inventory и не device E2E. На UAT peer-only пути теперь есть
+отдельная операция final commit: она требует exact replay долговечного Commit
+fragment, повторно проверяет DID2/device authority и независимо полученный
+NETCODEC placement, затем атомарно продвигает service-capability-keyed
+inventory lineage и возвращает один подписанный XIC1. Потеря или повреждение
+активного состояния и конфликт epoch/operation отказывают fail-closed.
+Следующий обязательный шаг text vertical — двухрепличная отправка и клиентская
+проверка обоих final XIC1, затем DPH2 claim/receive и сообщения
+Windows↔Android на физических устройствах.
 V1 inventory store/codec не использовать как обходной путь.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
