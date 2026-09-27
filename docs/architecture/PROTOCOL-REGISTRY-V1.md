@@ -422,7 +422,7 @@ Normative source: `CONTACT-RESOLVER-V1.md`.
 | `XPP1` | bounded atomic publication of one exact XPI1 and its complete DPK2 inventory to both placement replicas. | `TARGET_UNFROZEN`; bounded DID2-only V2 structural codec exists, but authenticated placement and durable two-replica commit are absent |
 | `XIC1` | replica-signed durable XPI1 inventory commit receipt. | `TARGET_UNFROZEN`; DID2-only 284-byte codec and V2 signature input exist, but verified final receipts and activation are absent |
 | `XPK1` | atomic one-time/last-resort prekey claim request. | `TARGET_UNFROZEN`; fixed-size DID2-only version-2/suite-0x0301 request codec and V2 request hash exist, but verified placement, live claim and XPC1 are absent |
-| `XPC1` | witnessed prekey claim/replay/failure result bound into DPH2. | `TARGET_UNFROZEN`; DID2 claim must use version-2/suite-0x0301, exact V2 DCB1/XPI1/DPK2 and V2 receipt domains; no V1 mixed-lineage result is accepted |
+| `XPC1` | witnessed prekey claim/replay/failure result bound into DPH2. | `TARGET_UNFROZEN`; internal DID2 version-2/suite-0x0301 structural codec checks padded status/result matrix, exact V2 XPI1/DPK2 selection, Merkle membership and V2 receipt tuple, but authentic PMT2-bound two-replica signatures, durable CAS, registry/vectors and runtime activation remain open; no V1 mixed-lineage result is accepted |
 | `XUW1` | established-contact encrypted successor/update publication. | `TARGET_UNFROZEN` |
 | `XUQ1` | established-contact successor/update query. | `TARGET_UNFROZEN` |
 | `XUS1` | closed established-contact update result. | `TARGET_UNFROZEN` |

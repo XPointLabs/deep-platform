@@ -60,6 +60,24 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ## Обязательный порядок исполнения
 
+### Ритм вертикальных проверок
+
+P0 выполняется по законченным пользовательским сценариям, а не по числу
+изменённых файлов. Первый инкремент — DID2 contact/bootstrap и текстовое
+сообщение Android↔Windows: публикация pre-key, атомарный claim, DPH2,
+зашифрованная отправка, приём, durable inbox commit до ACK и повтор после
+перезапуска. После него — тот же транспорт для изображения/файла с проверкой
+целостности и возобновления; затем создание группы, доставка и смена состава.
+Это порядок выполнения, не сокращение release scope.
+
+Внутри инкремента запускаются быстрые точечные compile/unit/integration проверки
+для изменённого security boundary; fail-closed, canonical wire и негативные
+crypto-векторы проверяются до подключения runtime. Полный package/API/graph
+gate и физический device E2E запускаются после связанного сценария и
+исправления найденных дефектов, затем повторяются перед commit/push и
+production promotion. Зелёный codec/unit test сам по себе не даёт права
+включить production UI или заявить доставку сообщения.
+
 ### Фактический вертикальный gate после DID2 account/device-state (2026-09-25)
 
 Физические Android и Windows DID2 probes подтвердили создание нового аккаунта,
@@ -649,9 +667,12 @@ flag, dual reader или автоматический fallback. Нужно:
   complete body lengths и V2 receipt signing input. Они пока не выдают
   publication authority: нужны authenticated placement, два final receipt,
   durable replica commit/replay и live XPC1;
-  DID2-only XPK1 V2 request codec теперь фиксирует exact 438-byte wire,
-  suite `0x0301` и V2 request-hash domain; XPC1 result, replica CAS и
-  защищённая отправка DPH2 ещё не активированы;
+  DID2-only XPK1 V2 request codec фиксирует exact 438-byte wire,
+  suite `0x0301` и V2 request-hash domain. Внутренний XPC1 V2 codec
+  проверяет padded status/result matrix, exact DPK2/XPI1 selection,
+  Merkle inclusion и V2 receipt tuple, но не выдаёт claim authority:
+  PMT2-bound подписи двух реплик, durable replica CAS и защищённая отправка
+  DPH2 ещё не активированы;
   публичная проверка принимает только заново проверенную current DCA1 V2
   capability и весь nonce-bound trusted-time interval, а не caller-supplied
   timestamp. Это ещё не XPK1/XPC1 claim и не runtime activation.
