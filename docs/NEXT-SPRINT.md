@@ -141,7 +141,9 @@ P0 выполняется по законченным пользовательс
    якоря и неверный genesis pin проверены интеграционными тестами. UAT-only DI
    теперь поднимает независимые XNA1/DTS1/genesis/protected-head assets при
    старте; внутренний gate связывает committed XPP1 candidate с новым DID2
-   proof и полным DCA1/DCR1/XPI1/DPK2 verifier. Peer RPC пока выполняет
+   proof и полным DCA1/DCR1/XPI1/DPK2 verifier. Этот gate теперь сам извлекает
+   DCA1 из exact DCR1 и проверяет его на собственном current DID2 checkpoint,
+   не принимая готовую авторизацию от вызывающего кода. Peer RPC пока выполняет
    только staging; durable final commit/XIC1 не вызывают этот gate; публикация
    остаётся закрытой и device E2E этим не подтверждён.
    Отдельный UAT-only XNode source теперь может построить NETCODEC
