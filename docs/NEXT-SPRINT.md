@@ -121,6 +121,10 @@ P0 выполняется по законченным пользовательс
    реплики, не подтверждённая личность и не готовый XIC1. Следующий шаг —
    подключить recipient-specific DID2 proof к runtime-verifier и отказать в
    commit, пока current DAB2/ADC1 V2 не совпадут с XPI1/DPK2.
+   Протокольный V2 gate теперь связывает эту подсказку с exact DID2 текущей
+   DCA1 V2 authority и заново проверяет полный XPI1/DPK2 inventory перед
+   promotion кандидата. Подмена DID2 либо inventory отвергается; XNode ещё
+   не вызывает этот gate в runtime, поэтому публикация остаётся закрытой.
    В XNode добавлен bounded HTTPS-запрос к существующему V2 Registry proof
    endpoint для exact DID2: wire связывает lookup/nonce/boot ID, HTTP-ответ
    проверяется по endpoint, типу, размеру и `no-store`. Он пока возвращает
@@ -143,7 +147,9 @@ P0 выполняется по законченным пользовательс
    XNode NuGet pin ещё указывает на пакет до DID2 clean-break и не компилирует
    текущий runtime. Локальный пакетный cutover проверяет совместимость, но не
    является release evidence; перед выпуском нужен единый новый production
-   package/pin/lock graph для всех потребителей.
+   package/pin/lock graph для всех потребителей. Новый публичный verifier
+   меняет surface `Deep.Protocol`: XNode, Registry и клиент должны перейти
+   на один пересобранный пакет и согласованные lock-файлы, без старого pin.
 4. Структурный V2 `XPC1` и отдельный verifier теперь проверяют обе подписи
    выбранных NETCODEC/PMT2 реплик для exact V2 claim tuple, но не доказывают
    публикацию inventory или durable claim. Следующий runtime gate —
