@@ -1148,10 +1148,15 @@ SessionId fallback, затем сверить идентичность уста�
 Protocol теперь имеет локального автора полного DID2 V2 DPK2→XPI1→XPP1
 инвентаря с verified DAB2/DMD1 binding и подписью текущего устройства.
 Он возвращает opaque prekey capabilities для последующей передачи в
-SQLCipher, но не делает публикацию: следующий обязательный шаг text vertical —
-account-owned durable V2 inventory transaction, затем verified двухрепличный
-XIC1 commit и клиентский DPH2 claim/receive. V1 inventory store/codec не
-использовать как обходной путь.
+SQLCipher, но не делает публикацию. Shared теперь имеет отдельный DID2-only
+SQLCipher primitive для атомарного initial XPP1 inventory + sealed DPK2
+capabilities: crash до commit не оставляет частичных rows, reopen сверяет
+exact scope/member bytes и восстанавливает sealed secrets. Primitive пока не
+подключён к account-owned STORE-V2 protected install marker/rollback floor и
+не выдаёт XPP1 в сеть. Следующий обязательный шаг text vertical — связать
+initial staging с защищённым floor (потеря/rollback SQL должны fail-closed),
+затем verified двухрепличный XIC1 commit и клиентский DPH2 claim/receive.
+V1 inventory store/codec не использовать как обходной путь.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
