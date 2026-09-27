@@ -1248,6 +1248,12 @@ Registry и локальный integration Registry отвечают 404 на DI
 routes; в работающем локальном dev Registry DID2 authority не включён.
 Staking portal отвечает 200. Это исключает трактовку старого `.e2e` V1
 экрана или успешного account-probe как DID2 device E2E.
+Read-only source/runtime audit 2026-09-28: targeted Registry HTTP-тест
+multi-hop ADF1→текущий ADH1 прошёл с локальным Protocol source-cutover, но
+сохранённый canary environment не содержит `ForwardCheckpointPaths`.
+Приватные ADF1-кандидаты ещё не сопоставлены с exact ADA2/floor текущего
+контура. Это отдельный обязательный gate перед возобновлением canary;
+результат теста не является разрешением включать production route.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
