@@ -1229,6 +1229,9 @@ ONION exit и отдаёт результат только после прове
 Обнаруженный смешанный XPS1 V1 support вынесен в clean-break: DID2 путь теперь
 требует XPS1 version 2/suite `0x0301`, V2 signature domain, generation-1
 genesis и version-2 ArtifactRef; локальный DPD1 signer умеет его авторовать.
+V2 inventory author теперь потребляет один подписанный XPS1 object вместо
+раздельных raw service capability и artifact reference; несогласованные
+device/generation/policy/time отвергаются до генерации private pre-keys.
 PKV2 schema generation 2 атомарно сохраняет exact XPS1 V2 с XPP1/DPK2,
 сверяет его подпись, scope и XPI1-reference при записи и reopen; старую
 schema generation 1 не мигрируем. Отправитель принимает только защищённый
@@ -1237,6 +1240,13 @@ schema generation 1 не мигрируем. Отправитель приним
 и не выполняет
 физический сценарий;
 положительное E2E двух terminal paths также ещё не получено.
+Read-only device/runtime audit 2026-09-28: clean Windows DID2 UI явно
+показывает только локальный аккаунт и закрытые контакты/сообщения/группы;
+Android DID2 probe запущен, но не является messaging client. Публичный
+Registry и локальный integration Registry отвечают 404 на DID2 admission/proof
+routes; в работающем локальном dev Registry DID2 authority не включён.
+Staking portal отвечает 200. Это исключает трактовку старого `.e2e` V1
+экрана или успешного account-probe как DID2 device E2E.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
