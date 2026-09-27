@@ -67,6 +67,15 @@ Contact rendezvous, mailbox placement и transport credentials являются
 IDs, route descriptors, prekey IDs, call SDP/ICE, payload hashes или стабильные
 device fingerprints.
 
+Выбранные PreKeyClaim-реплики при публикации DID2 XPP1 видят публичный exact
+DID2 как hint для собственного nonce-bound directory proof. Это осознанная
+метаданная поверхность: реплика может связать DID2 с опубликованным случайным
+pre-key service capability. XPP1 не содержит resolver read capability, IP
+клиента или контактный граф, однако видимость сетевого адреса определяется
+фактическим транспортным маршрутом и проверяется отдельно. Реплика не
+маршрутизирует по DID2/DeepAccountId. Публикация не разрешается по одному
+hint, а логи не содержат его или связи.
+
 Account-directory threshold является отдельной metadata boundary: при выпуске
 ADC1/XPA1 он проверяет DID1 hash/address-key ↔ account binding, но не получает
 resolver read capability; запрос приходит

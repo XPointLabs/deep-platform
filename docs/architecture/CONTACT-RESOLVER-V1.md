@@ -803,15 +803,25 @@ V1 bounded XPP1 wire is not accepted as a substitute. Its fields are:
 | 8 | chunk count | 2 |
 | 9 | chunk index, `0xffff` outside Chunk phase | 2 |
 | 10 | chunk hash, ZERO32 outside Chunk phase | 32 |
-| 11 | descriptor-list hash | 32 |
+| 11 | publisher/descriptor commitment | 32 |
 | 12 | phase body | `0..65,536` |
 
 The aggregate hash is
 `SHA256-D("Deep/ContactResolver/V2/exact-xpp1", exact five-tag XPP1)`.
-The manifest body is `exactXPI1(560) || [chunkLength:u32be ||
+The manifest body is `exactDID2(2052) || exactXPI1(560) || [chunkLength:u32be ||
 chunkHash32] * chunkCount`; every descriptor length is the exact slice length
 of the aggregate at that zero-based index. Tag 11 is
-`SHA256-D("Deep/ContactResolver/V2/xpp1-descriptors", exact descriptor list)`.
+`SHA256-D("Deep/ContactResolver/V2/xpp1-descriptors", exactDID2 ||
+exact descriptor list)`. The public DID2 credential is a recipient-specific
+directory lookup hint for the selected PreKeyClaim replicas, not publication
+authority and not a resolver read capability. Before committing inventory, each
+replica MUST obtain its own nonce-bound current DID2 directory proof, verify the
+exact DAB2/ADC1 V2 active device and bind its account/device identity to every
+XPI1/DPK2 member. The common tag-11 commitment makes the hint identical in
+the manifest, chunks and commit of one operation. An unverified or mismatched
+hint MUST NOT advance authoritative inventory or claim state. No stable
+account/DID2 value is used as the placement or routing key; the random service
+capability remains that key.
 For Chunk phase, tag 12 is the exact nonempty aggregate slice of at most
 65,536 bytes and tag 10 is
 `SHA256-D("Deep/ContactResolver/V2/xpp1-chunk",

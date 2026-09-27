@@ -113,6 +113,17 @@ P0 выполняется по законченным пользовательс
    готовы. Protocol уже проверяет exact пару подписанных `XIC1` против
    текущего NETCODEC placement и XPP1, но runtime/client её не потребляют;
    staged aggregate не является публикацией или доказательством E2E.
+   Manifest-фрагмент V2 теперь несёт публичный exact DID2, связанный с каждым
+   фрагментом общим commitment и сохранённый рядом с кандидатом после restart.
+   Это только вход для собственного nonce-bound ADP1 V2 proof выбранной
+   реплики, не подтверждённая личность и не готовый XIC1. Следующий шаг —
+   подключить recipient-specific DID2 proof source и отказать в commit, пока
+   current DAB2/ADC1 V2 не совпадут с XPI1/DPK2.
+   XNode CI проверяет текущие protocol sources через source cutover, а обычный
+   XNode NuGet pin ещё указывает на пакет до DID2 clean-break и не компилирует
+   текущий runtime. Локальный пакетный cutover проверяет совместимость, но не
+   является release evidence; перед выпуском нужен единый новый production
+   package/pin/lock graph для всех потребителей.
 4. Структурный V2 `XPC1` и отдельный verifier теперь проверяют обе подписи
    выбранных NETCODEC/PMT2 реплик для exact V2 claim tuple, но не доказывают
    публикацию inventory или durable claim. Следующий runtime gate —
