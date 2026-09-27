@@ -495,6 +495,48 @@ Crash in `Reserved` reconciles both replicas; it never makes the authorization
 available to different bytes. Same operation/request exact-replays; the same
 authorization or operation with changed bytes returns `Conflict`.
 
+#### DID2 XPU1/XPA1 clean-break candidate (not release-active)
+
+The DID2 publication target keeps the XPU1 sparse tag set
+`1..6,16..27`, XPA1 tag set `1..21`, their field meanings, compare-and-swap
+semantics and closed 93,032-byte XPU1 maximum above. Both records instead use
+canonical version `2`, suite `0x0301`; version `1`/suite `0x0201` and any
+mixed pair reject. The XPU1 tag-16 locator is the DID2 derivation in
+[CONTACT-AND-GROUP-PROTOCOL-V1 section 6](CONTACT-AND-GROUP-PROTOCOL-V1.md#6-permanent-deep-id-resolution-and-one-time-invitation).
+Its tag 21 is exactly the protected DCR1 V2 object from that section, with
+length `9,197..65,575`, so XPU1 has a closed minimum of 14,622 bytes. XPA1
+tags 6/7/8 contain raw SHA-256 of the exact DCR1 V2, DCB1 V2 and XIR1 V2
+respectively; none is a V1 signed object or a substitute for current directory
+proof. XPU1 tag 25 retains the exact six-record reachability/placement closure
+of independently versioned XRR1/XRA1/XRC1/XSS1/PMT2/PMS2. Its DCA1 reference
+must bind the exact V2 DCA1 and its XIR1 binding must name the V2 XIR1.
+
+The XPU1 authorized-body hash is
+`SHA256-D("Deep/ContactResolver/V2/XPU-authorized-body", canonical V2 XPU1
+projection of tags 1..6,16..25,27)`. XPA1 tag 19 equals that hash;
+tag 2 is `SHA256-D("Deep/ContactResolver/V2/publication-authorization-id",
+operationId32 || authorizedBodyHash32 || exactCurrentADH1CoreHash32)`.
+The publisher signature uses
+`SIGINPUT("Deep/ContactResolver/V2/publisher-publication", 0x0301,
+exact208ByteTuple)` and the witness signatures use
+`SIGINPUT("Deep/ContactResolver/V2/publication-authorization", 0x0301,
+unsignedV2XPA1Tags1..20)`. The policy hash uses
+`SHA256-D("Deep/ContactResolver/V2/publication-policy", exactDCA1V2)`.
+The tuple and all other field mappings remain as in the table above. A
+threshold must independently verify current DID2/DAB2/DCA1 V2, exact
+DCB1/DCR1/XIR1, route closure, NETCODEC placement, nonce-bound directory
+freshness and the publisher signature before signing. The invite store must
+verify the resulting threshold and consume the authorization durably before
+commit; a structural parser grants none of those rights.
+
+An internal DID2-only codec currently checks the exact V2 header/tag/size
+grammar, ciphertext and route hashes, XPA1 witness-row shape, authorization ID
+and XPU1/XPA1 body binding. It does **not** validate the six-record route,
+witness signatures, freshness, publisher signature, DCR1 plaintext or replica
+commit. Machine vectors and those authority consumers remain release gates;
+neither old XPU1 nor this structural candidate may be activated as DID2
+publication.
+
 `XPO1` is the only XPU1 result. Status IDs are `1=Committed`, `2=ExactReplay`,
 `3=Expired`, `4=Unauthorized`, `5=StaleView`, `6=Conflict`,
 `7=RateLimited`, `8=OutcomeUnknown`, `9=TemporarilyUnavailable`.

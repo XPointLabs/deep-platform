@@ -89,7 +89,10 @@ P0 выполняется по законченным пользовательс
    Не считать существующий V1 runtime E2E-доказательством DID2.
    DID2-only permanent resolver locator/read-key derivation и DCR1 V2 object
    protection теперь имеют внутренний fail-closed crypto candidate и локальные
-   позитивные/негативные тесты; это не закрывает XPA1/XPU1 или runtime.
+   позитивные/негативные тесты. Внутренний XPU1/XPA1 V2 parser проверяет
+   точный wire, hash/body binding и отказывает на V1, но пока не проверяет
+   threshold signatures, route authority, свежесть и durable runtime. Ни один
+   из этих кандидатов не является device E2E.
 3. Большой exact V2 `XPP1` нельзя просто отправить через ограниченный
    ContactResolve/replica RPC. Использовать уже существующий bounded
    authenticated replica transport как механизм доставки частей; authority
