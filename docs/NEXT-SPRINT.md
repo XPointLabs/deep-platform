@@ -108,11 +108,11 @@ P0 выполняется по законченным пользовательс
    готовы; XNode operation-scoped durable reassembly/replay journal теперь
    структурно собирает exact aggregate, переживает restart, держит fork latch
    и карантин повреждённого состояния; operation scope теперь включает exact
-   view/placement/service capability до первой записи. Его подключение к
-   authenticated replica transport, DID2-only nonce-bound directory proof
-   source (текущий XNode authority snapshot всё ещё ADP1 V1), проверка
-   current authorization/lineage и runtime-проверка финальных `XIC1` ещё не
-   готовы. Protocol уже проверяет exact пару подписанных `XIC1` против
+   view/placement/service capability до первой записи. Отдельный UAT-only
+   receiver теперь подключает его к authenticated peer transport и DID2-only
+   nonce-bound proof/NETCODEC placement без V1 ADP1 authority. Проверка
+   current contact authorization/lineage при финальном commit и runtime-проверка
+   финальных `XIC1` ещё не готовы. Protocol уже проверяет exact пару подписанных `XIC1` против
    текущего NETCODEC placement и XPP1, но runtime/client её не потребляют;
    staged aggregate не является публикацией или доказательством E2E.
    Manifest-фрагмент V2 теперь несёт публичный exact DID2, связанный с каждым
@@ -124,14 +124,14 @@ P0 выполняется по законченным пользовательс
    Протокольный V2 gate теперь связывает эту подсказку с exact DID2 текущей
    DCA1 V2 authority и заново проверяет полный XPI1/DPK2 inventory перед
    promotion кандидата. Подмена DID2 либо inventory отвергается; XNode ещё
-   не вызывает этот gate в runtime, поэтому публикация остаётся закрытой.
+   не вызывает этот gate при финальном runtime commit, поэтому публикация остаётся закрытой.
    Журнал bounded XPP1 теперь и без restart карантинит повреждённый chunk
    при exact commit replay и потерю manifest после сохранения chunk; это
    закрывает локальный replay/reset дефект, но не даёт publication authority.
    В XNode добавлен bounded HTTPS-запрос к существующему V2 Registry proof
    endpoint для exact DID2: wire связывает lookup/nonce/boot ID, HTTP-ответ
-   проверяется по endpoint, типу, размеру и `no-store`. Он пока возвращает
-   только сырые артефакты и не подключён к commit.
+   проверяется по endpoint, типу, размеру и `no-store`. Его сырой ответ
+   потребляет отдельный проверяющий reader, но не final commit.
    Кандидат XNode reader теперь повторно аутентифицирует защищённый V2 head,
    запрашивает proof с собственной nonce/monotonic window, вызывает V2
    verifier и выпускает current-value capability лишь после CAS/durable head
@@ -141,16 +141,16 @@ P0 выполняется по законченным пользовательс
    якоря и неверный genesis pin проверены интеграционными тестами. UAT-only DI
    теперь поднимает независимые XNA1/DTS1/genesis/protected-head assets при
    старте; внутренний gate связывает committed XPP1 candidate с новым DID2
-   proof и полным DCA1/DCR1/XPI1/DPK2 verifier. Но ни replica RPC, ни
-   durable commit/финальные XIC1 пока не вызывают этот gate; публикация
+   proof и полным DCA1/DCR1/XPI1/DPK2 verifier. Peer RPC пока выполняет
+   только staging; durable final commit/XIC1 не вызывают этот gate; публикация
    остаётся закрытой и device E2E этим не подтверждён.
    Отдельный UAT-only XNode source теперь может построить NETCODEC
    `PublishPreKeyInventory` placement из exact XVP1/XNV1/XNH1/XND1/PMT2
    closure и свежего DID2 proof, не пользуясь V1 ADP1 snapshot. Его файлы
    ограничены по размеру и проверяются при старте; вызов Protocol заново
-   проверяет подписи и DTT1 current-view binding на каждом mint. Но это
-   ещё не protected successor-LKG и не активный replica RPC; до включения
-   endpoint требуется отдельная monotonic network custody и V2 receiver.
+   проверяет подписи и DTT1 current-view binding на каждом mint. UAT peer
+   staging уже потребляет этот source; protected successor-LKG ещё нет, а
+   production endpoint и final commit требуют monotonic network custody.
    Совместный откат журнала и якоря остаётся вне гарантий одного локального
    хранилища и требует живого threshold freshness evidence.
    Кроме pre-key, прежний `ContactVerifiedAuthoritySnapshotSource` также
