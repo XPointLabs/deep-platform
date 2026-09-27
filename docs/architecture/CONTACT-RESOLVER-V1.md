@@ -905,9 +905,11 @@ required DCB1/XPS1/XPI1 hashes; `Conflict` only a sanitized fork-evidence hash;
 other non-success payloads are empty. No unsigned device/pre-key list is accepted.
 
 The internal DID2 XPC1 codec implements the closed padded grammar and checks
-the exact V2 request/result tuple and inventory membership. An isolated
-verifier additionally checks both selected replica identities and V2-domain
-signatures against current NETCODEC placement. Neither component proves that
+the exact V2 request/result tuple, inventory membership and that a successful
+result's projected server time lies inside the exact request/XPI1/DPK2
+validity windows. That unsigned time is not a trusted clock or freshness proof.
+An isolated verifier additionally checks both selected replica identities and
+V2-domain signatures against current NETCODEC placement. Neither component proves that
 the referenced inventory was independently authorized and durably published,
 that the claim CAS was committed, or that restart replay is correct. Production
 must remain fail-closed until those checks are composed.
