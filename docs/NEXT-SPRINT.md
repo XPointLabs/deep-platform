@@ -124,6 +124,10 @@ P0 выполняется по законченным пользовательс
    DCR1 у XNode; подмена DID2, XPS1 или root отвергается. Следующий шаг —
    подключить этот verifier к durable final commit и запретить claim до двух
    согласованных XIC1. Пока peer RPC выполняет только staging.
+   Отдельная Protocol-проверка successor XPI1 теперь требует точный hash
+   уже принятого durable predecessor, последовательный epoch и неизменную
+   идентичность pre-key сервиса; XNode ещё не предоставляет ей authoritative
+   predecessor и не фиксирует final receipt.
    Журнал bounded XPP1 теперь и без restart карантинит повреждённый chunk
    при exact commit replay и потерю manifest после сохранения chunk; это
    закрывает локальный replay/reset дефект, но не даёт publication authority.
