@@ -91,8 +91,12 @@ P0 выполняется по законченным пользовательс
    устойчивой фиксации обеих реплик и двух проверенных `XIC1`. Новый
    самостоятельный транспорт или прямой Registry pre-key endpoint не вводить.
    Закрытый V2 12-tag fragment codec/авторинг и негативный round-trip тест
-   готовы; XNode durable reassembly/replay journal, transport wiring и
-   проверенные финальные receipts ещё не готовы.
+   готовы; XNode operation-scoped durable reassembly/replay journal теперь
+   структурно собирает exact aggregate, переживает restart, держит fork latch
+   и карантин повреждённого состояния (source-cutover XNode gate: 107 + 236 +
+   373 tests). Его подключение к authenticated replica transport, проверка
+   current authorization/lineage и два финальных `XIC1` ещё не готовы;
+   staged aggregate не является публикацией или доказательством E2E.
 4. Структурный V2 `XPC1` не проверяет PMT2-bound replica signatures и не
    доказывает durable claim. Следующий runtime gate — exact placement,
    проверенные две подписи, публикация/lineage, CAS/replay, затем DPH2/DAO1
