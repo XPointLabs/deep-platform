@@ -631,8 +631,9 @@ flag, dual reader или автоматический fallback. Нужно:
   responder DPD1;
   изолированный DPK2 V2 decoder/member binding отвергает старые version/suite
   и подписи, сверяет DID2 account, DPD1/agreement, DMD1 head, XPS1 generation,
-  XPI1 epoch/window и три device signatures; Merkle membership и durable
-  publication этим не доказаны;
+  XPI1 epoch/window и три device signatures; отдельная проверка полного
+  inventory сверяет порядок, exact DPK2 hashes, V2 Merkle root, last-resort
+  hash и XPS1 reuse bound. Durable publication этим не доказана;
   публичная проверка принимает только заново проверенную current DCA1 V2
   capability и весь nonce-bound trusted-time interval, а не caller-supplied
   timestamp. Это ещё не XPK1/XPC1 claim и не runtime activation.
@@ -641,7 +642,7 @@ flag, dual reader или автоматический fallback. Нужно:
   DID2/DAB2/DMD1/ADC1, проверяет отзыв authorization ID и продвигает обе
   границы только по тому же boot-specific monotonic clock. Это не contact
   publication authority и не разрешение включить runtime;
-  Полные XPP1 inventory bytes, Merkle membership, two-replica receipts, durable
+  Полные XPP1 inventory bytes, claim inclusion proof, two-replica receipts, durable
   inventory lineage и live claim ещё не подтверждены для DID2 пути;
   device-signed records остаются в account-owned custody, threshold records
   выпускает authority Mr. X, а XPU1 атомарно несёт exact verified route closure;
@@ -681,6 +682,15 @@ private ACL канонизируется отдельно. `Attach` честно
 `PayloadMatrix` проходят конфигурационный preflight, но не запускаются как якобы
 независимое E2E-доказательство, пока этот общий upstream blocker не закрыт.
 Подробный журнал находится в `deep-devops/docs/SURVIVAL_DEV_STACK.md`.
+
+Диагностический снимок 2026-09-27 (не acceptance): физический Android SM-G970F
+доступен по USB/ADB, на нём установлен изолированный DID2-probe с сохранённым
+локальным аккаунтом. Экран probe прямо сообщает, что контакты, сообщения,
+вложения и группы в нём не включены; canary network-admission controls в этой
+установленной сборке отсутствуют. Windows E2E-пакет запускается, но показывает
+старую поверхность `deep1…/DIA1`. Эти наблюдения не подтверждают DID2 device
+E2E; следующий тест требует собранного DID2 transport/runtime на обеих
+платформах, а не переименования существующего пакета.
 
 Снимок 2026-09-20: clean-break MAUI composition собирается для Android, а
 изолированный физический Samsung проверил создание аккаунта одной кнопкой,

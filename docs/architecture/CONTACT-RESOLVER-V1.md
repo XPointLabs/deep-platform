@@ -709,8 +709,10 @@ The suite value in every DPK2 signing input is `0x0301`; a version-1/suite-
 Each member must bind the exact current DID2 account, responder DPD1 and
 agreement key, DMD1 head, XPS1 generation, XPI1 epoch and validity window.
 The isolated member verifier covers that binding and the three device
-signatures only. It does not prove Merkle inclusion, durable two-replica
-publication or a live one-time claim; those remain mandatory release gates.
+signatures. A separate complete-inventory verifier checks the exact sorted
+one-time set, V2 padded Merkle root, last-resort hash and XPS1 reuse bound.
+Neither verifies durable two-replica publication, lineage or a live one-time
+claim; those remain mandatory release gates.
 
 #### 3.3.2 Atomic two-replica inventory publication: `XPP1` / `XIC1`
 
