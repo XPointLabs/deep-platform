@@ -95,7 +95,9 @@ P0 выполняется по законченным пользовательс
    структурно собирает exact aggregate, переживает restart, держит fork latch
    и карантин повреждённого состояния (source-cutover XNode gate: 107 + 236 +
    373 tests). Его подключение к authenticated replica transport, проверка
-   current authorization/lineage и два финальных `XIC1` ещё не готовы;
+   current authorization/lineage и runtime-проверка финальных `XIC1` ещё не
+   готовы. Protocol уже проверяет exact пару подписанных `XIC1` против
+   текущего NETCODEC placement и XPP1, но runtime/client её не потребляют;
    staged aggregate не является публикацией или доказательством E2E.
 4. Структурный V2 `XPC1` не проверяет PMT2-bound replica signatures и не
    доказывает durable claim. Следующий runtime gate — exact placement,
