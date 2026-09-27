@@ -1214,6 +1214,13 @@ inventory lineage и возвращает один подписанный XIC1. 
 проверка обоих final XIC1, затем DPH2 claim/receive и сообщения
 Windows↔Android на физических устройствах.
 V1 inventory store/codec не использовать как обходной путь.
+Shared account owner теперь умеет после проверки DID2-аккаунта и protected
+inventory tip читать exact публичный XPP1 из SQLCipher для повторяемой
+отправки; это не выдаёт sealed DPK2 secrets и само по себе не авторует
+сетевую публикацию. Следующий разрыв: ONION ContactResolve ещё принимает
+retired XPP1 bounded wire, а DID2 UAT receiver пока доступен только через
+peer-authenticated endpoint. Нужен один clean V2 путь от физического клиента
+к обеим выбранным репликам и проверка пары XIC1 до claim.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
