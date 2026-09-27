@@ -412,9 +412,9 @@ Normative source: `CONTACT-RESOLVER-V1.md`.
 
 | Magic | Meaning | Status |
 | --- | --- | --- |
-| `XPU1` | compare-and-swap publication of encrypted DCR1 at an opaque invite locator. | `TARGET_UNFROZEN`; internal DID2-only V2 structural pair with XPA1 exists, but no threshold, route, freshness or runtime authority |
+| `XPU1` | compare-and-swap publication of encrypted DCR1 at an opaque invite locator. | `TARGET_UNFROZEN`; internal DID2-only V2 structural pair with XPA1 and exact-head witness/time checks exists, but no complete account, route, placement or runtime authority |
 | `XPO1` | closed publication outcome for one XPU1 operation. | `TARGET_UNFROZEN` |
-| `XPA1` | short-lived directory-threshold authorization for one opaque XPU1 publication; exposes no Deep ID/account/device. | `TARGET_UNFROZEN`; DID2-only V2 shape/body binding and isolated XNA1 threshold-signature verifier exist, but current directory issuance, freshness/placement authority and runtime remain open |
+| `XPA1` | short-lived directory-threshold authorization for one opaque XPU1 publication; exposes no Deep ID/account/device. | `TARGET_UNFROZEN`; DID2-only V2 shape/body binding, XNA1 threshold signatures and live ADH1/DTT1 head/time binding exist, but current-account issuance, route/placement authority and runtime remain open |
 | `XIQ1` | idempotent permanent-address resolve or one-time invite claim request. | `TARGET_UNFROZEN` |
 | `XIS1` | closed invite resolve result with exact-replay semantics. | `TARGET_UNFROZEN` |
 | `XPS1` | signed per-device prekey service descriptor carried by DCB1. | `TARGET_UNFROZEN` |
@@ -422,7 +422,7 @@ Normative source: `CONTACT-RESOLVER-V1.md`.
 | `XPP1` | bounded atomic publication of one exact XPI1 and its complete DPK2 inventory to both placement replicas. | `TARGET_UNFROZEN`; exact DID2-only V2 aggregate and 12-tag bounded fragment structural codecs exist, but authenticated transport/reassembly journal, verified placement and durable two-replica commit are absent; retired V1 fragment wire is not authority |
 | `XIC1` | replica-signed durable XPI1 inventory commit receipt. | `TARGET_UNFROZEN`; DID2-only 284-byte codec and V2 signature input exist, but verified final receipts and activation are absent |
 | `XPK1` | atomic one-time/last-resort prekey claim request. | `TARGET_UNFROZEN`; fixed-size DID2-only version-2/suite-0x0301 request codec, V2 request hash and structural XPC1 result exist, but verified placement, durable live claim and authenticated XPC1 authority are absent |
-| `XPC1` | witnessed prekey claim/replay/failure result bound into DPH2. | `TARGET_UNFROZEN`; internal DID2 version-2/suite-0x0301 structural codec checks padded status/result matrix, exact V2 XPI1/DPK2 selection, Merkle membership and V2 receipt tuple, but authentic PMT2-bound two-replica signatures, durable CAS, registry/vectors and runtime activation remain open; no V1 mixed-lineage result is accepted |
+| `XPC1` | witnessed prekey claim/replay/failure result bound into DPH2. | `TARGET_UNFROZEN`; internal DID2 version-2/suite-0x0301 structural codec checks padded status/result matrix, exact V2 XPI1/DPK2 selection, Merkle membership and V2 receipt tuple; an isolated verifier checks both selected replica signatures, but inventory publication, durable CAS, registry/vectors and runtime activation remain open; no V1 mixed-lineage result is accepted |
 | `XUW1` | established-contact encrypted successor/update publication. | `TARGET_UNFROZEN` |
 | `XUQ1` | established-contact successor/update query. | `TARGET_UNFROZEN` |
 | `XUS1` | closed established-contact update result. | `TARGET_UNFROZEN` |

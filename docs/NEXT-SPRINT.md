@@ -113,9 +113,10 @@ P0 выполняется по законченным пользовательс
    готовы. Protocol уже проверяет exact пару подписанных `XIC1` против
    текущего NETCODEC placement и XPP1, но runtime/client её не потребляют;
    staged aggregate не является публикацией или доказательством E2E.
-4. Структурный V2 `XPC1` не проверяет PMT2-bound replica signatures и не
-   доказывает durable claim. Следующий runtime gate — exact placement,
-   проверенные две подписи, публикация/lineage, CAS/replay, затем DPH2/DAO1
+4. Структурный V2 `XPC1` и отдельный verifier теперь проверяют обе подписи
+   выбранных NETCODEC/PMT2 реплик для exact V2 claim tuple, но не доказывают
+   публикацию inventory или durable claim. Следующий runtime gate —
+   публикация/lineage, CAS/replay, затем DPH2/DAO1
    send/receive и inbox commit до ACK. Ни один из шагов не заменяется
    старым ContactV1 verified receipt.
 
