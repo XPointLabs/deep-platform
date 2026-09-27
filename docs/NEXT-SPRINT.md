@@ -103,6 +103,14 @@ suite прошёл 137/137, MAUI Clean.Tests — 19/19, оставшиеся MAU
 старого account-пути; DID2 доказан только в отдельных account probes. Его
 нужно перевести на DID2 до сквозной проверки сообщений и релиза.
 
+NETCODEC теперь имеет отдельный DID2 freshness-вход для проверки и точного
+восстановления XNV1/PMT2 network context. Общий внутренний контракт содержит
+только подписанные ADH1/DTT1, ограниченный интервал времени и monotonic boot;
+он не переносит V1 account/contact/message authority. Протокольный тест
+подтверждает сетевой контекст и отказы на чужой сети и просроченном времени,
+но использует изолированную time fixture: это ещё не публикация V2 XPC1 и
+не доказательство физического contact/message E2E.
+
 ### ID-PQ-CB — корень Deep ID до продолжения production-сценария
 
 Первый protocol/identity package выполняет [`DR-0006`](survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md):
