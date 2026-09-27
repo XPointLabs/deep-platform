@@ -1151,11 +1151,12 @@ Protocol теперь имеет локального автора полног�
 SQLCipher, но не делает публикацию. Shared теперь имеет отдельный DID2-only
 SQLCipher primitive для атомарного initial XPP1 inventory + sealed DPK2
 capabilities: crash до commit не оставляет частичных rows, reopen сверяет
-exact scope/member bytes и восстанавливает sealed secrets. Primitive пока не
-подключён к account-owned STORE-V2 protected install marker/rollback floor и
-не выдаёт XPP1 в сеть. Следующий обязательный шаг text vertical — связать
-initial staging с защищённым floor (потеря/rollback SQL должны fail-closed),
-затем verified двухрепличный XIC1 commit и клиентский DPH2 claim/receive.
+exact scope/member bytes и восстанавливает sealed secrets. Теперь он подключён
+к account-owned STORE-V2: отдельный key domain, protected install marker и
+add-only exact-XPP1 tip до SQL commit; потеря staged SQL при сохранённом
+protected state отказывает fail-closed. Это пока не выдаёт XPP1 в сеть.
+Следующий обязательный шаг text vertical — текущий DID2 closure/placement,
+verified двухрепличный XIC1 commit и клиентский DPH2 claim/receive.
 V1 inventory store/codec не использовать как обходной путь.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
