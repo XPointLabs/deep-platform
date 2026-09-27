@@ -629,6 +629,10 @@ flag, dual reader или автоматический fallback. Нужно:
   suite 0x0301 и отдельные V2 signing/hash domains, отклоняя прежние V1
   байты и подписи; он сверяет exact DCR1 V2/XPS1/DMD1/DRS1 и подпись
   responder DPD1;
+  изолированный DPK2 V2 decoder/member binding отвергает старые version/suite
+  и подписи, сверяет DID2 account, DPD1/agreement, DMD1 head, XPS1 generation,
+  XPI1 epoch/window и три device signatures; Merkle membership и durable
+  publication этим не доказаны;
   публичная проверка принимает только заново проверенную current DCA1 V2
   capability и весь nonce-bound trusted-time interval, а не caller-supplied
   timestamp. Это ещё не XPK1/XPC1 claim и не runtime activation.
@@ -637,7 +641,7 @@ flag, dual reader или автоматический fallback. Нужно:
   DID2/DAB2/DMD1/ADC1, проверяет отзыв authorization ID и продвигает обе
   границы только по тому же boot-specific monotonic clock. Это не contact
   publication authority и не разрешение включить runtime;
-  Полные XPP1/DPK2 bytes, Merkle membership, two-replica receipts, durable
+  Полные XPP1 inventory bytes, Merkle membership, two-replica receipts, durable
   inventory lineage и live claim ещё не подтверждены для DID2 пути;
   device-signed records остаются в account-owned custody, threshold records
   выпускает authority Mr. X, а XPU1 атомарно несёт exact verified route closure;

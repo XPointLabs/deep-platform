@@ -702,6 +702,16 @@ Tag 10 is the root. Tag 11 is the exact domain-separated DPK2 hash of the sole
 LastResort record and is not a tree leaf. Thus the manifest commits the complete
 ordered set, not a server-selected subset.
 
+For DID2, each DPK2 member uses wire version `2` and suite `0x0301` with the
+existing 26-tag DPK2 shape and `Deep/Messaging/V2/*` signature/hash labels.
+The suite value in every DPK2 signing input is `0x0301`; a version-1/suite-
+`0x0201` DPK2 or its signatures MUST NOT authorize a DID2 inventory member.
+Each member must bind the exact current DID2 account, responder DPD1 and
+agreement key, DMD1 head, XPS1 generation, XPI1 epoch and validity window.
+The isolated member verifier covers that binding and the three device
+signatures only. It does not prove Merkle inclusion, durable two-replica
+publication or a live one-time claim; those remain mandatory release gates.
+
 #### 3.3.2 Atomic two-replica inventory publication: `XPP1` / `XIC1`
 
 The DID2 release publisher and replicas MUST use the V2 XPI1 bytes and hash
