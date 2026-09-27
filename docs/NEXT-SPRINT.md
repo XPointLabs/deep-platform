@@ -1133,6 +1133,19 @@ offline-root forward chain; независимый floor продвинулся.
 recipient discovery/accept и отображение входящего диалога остаются частью
 этого же text vertical, а не доказанным UX.
 
+Физический аудит 2026-09-27: подключённый Android содержит отдельные `.e2e`
+и `did2probe` пакеты, а запущенное на Windows установленное `.e2e` приложение
+показывает старый экран контактов с адресом `deep1…`/`D1A1` и кнопками
+отправки. Это не текущая clean DID2-композиция: в исходниках MAUI она
+компилирует `MauiProgram.Did2`/`AppShell.Did2`, где пока доступны только
+локальный аккаунт и диагностические DID2 proof-запросы. Старое установленное
+окно нельзя использовать как доказательство V2 message E2E. Перед физическим
+text vertical требуется собрать и установить current-source DID2-клиенты на
+обеих платформах, подключить V2 contact/prekey/DPH2/receive runtime без
+SessionId fallback, затем сверить идентичность установленных сборок и
+проверить доставку в обе стороны. ContactV2 codec/verification classes с
+`RuntimeActivation=false` не означают активированный клиентский путь.
+
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
 contact publication отказала fail-closed с
