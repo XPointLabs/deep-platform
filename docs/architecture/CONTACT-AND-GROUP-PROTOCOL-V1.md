@@ -684,8 +684,9 @@ DAO1 is metadata minimization, not an additional content-security claim.
 
 ## 6. Permanent Deep ID resolution and one-time invitation
 
-The human-facing permanent Deep ID is the `DID1` defined in section 4.1. For
-OfficialXPoint3, the adapter derives, without network access:
+The following DID1 formula is the retired V1 baseline, not the release
+derivation. For OfficialXPoint3, that old adapter derived without network
+access:
 
 ```text
 permanentLocator32 = SHA256-D(
@@ -709,6 +710,34 @@ read key therefore hides DCR1 from the invite store and from non-holders; every
 holder of the full Deep ID can intentionally read it. DCB1/DAB1 signatures provide authenticity. Future
 transport adapters define separate domain labels and never reuse an XPoint
 locator.
+
+For the DID2 release generation, the preceding DID1 derivation is retired and
+is a negative cross-feed input only. The transport-neutral compact DID2 address
+holds `DID2.RecordHash32 || resolverReadCapability16`; the public 2052-byte
+DID2 credential holds only the capability commitment per DR-0007. After
+verifying the exact DID2 record hash and that commitment, OfficialXPoint3
+derives locally:
+
+```text
+permanentLocator32 = SHA256-D(
+  "Deep/ContactResolver/V2/permanent-locator",
+  networkId16 || DID2.RecordHash32)
+readSalt64 = SHA512-D(
+  "Deep/ContactResolver/V2/public-read-salt", networkId16)
+publicResolverKey32 = HKDF-Expand-512(
+  HKDF-Extract-512(readSalt64, resolverReadCapability16),
+  "Deep/ContactResolver/V2/public-read-key" || 0x00 ||
+    LP32(DID2.RecordHash32), 32)
+```
+
+The nonzero network ID is exactly 16 bytes; the DID2 hash is the V2
+domain-separated record hash, not raw SHA-256 of the credential. The locator
+is public-address-derived and network-scoped; the read key additionally needs
+the separately held capability. The publisher and holder must use the same
+verified exact DID2, and neither sends the raw capability or read key to the
+Registry or XNode. This derivation is an isolated candidate: DCR1 V2 object
+protection, XPA1/XPU1 authorization, machine vectors and physical publication
+remain unclosed and MUST NOT be inferred from this formula alone.
 
 For `OfficialXPoint3`, the locator is also the only contact-specific input needed
 to select the first resolver shard. Exact current-view/PMT authority and shard

@@ -131,10 +131,12 @@ network, issuer device, permitted invite kind and complete validity interval
 must agree before promotion. The XRA1/PMT2 route closure is independently
 mandatory. The old XIR1 V1 parser is a negative fixture, not a dual reader.
 
-This is an isolated candidate, **not** permission to publish contacts. DCB1,
-DCR1, the resolver locator/protection derivation and XPA1/XPU1 consumers
-still require a single DID2-only re-freeze with positive and hostile vectors
-before runtime activation.
+This is an isolated candidate, **not** permission to publish contacts. DCB1
+and DCR1 V2 identity/support codecs and the DID2 locator/read-key derivation
+exist as isolated candidates; the derivation is owned by
+[CONTACT-AND-GROUP-PROTOCOL-V1 section 6](CONTACT-AND-GROUP-PROTOCOL-V1.md#6-permanent-deep-id-resolution-and-one-time-invitation).
+DCR1 object protection, XPA1/XPU1 consumers, machine vectors and live
+publication still require one DID2-only re-freeze before runtime activation.
 
 Permanent DID1 has no expiry. Its current first-contact availability ends at the
 minimum of DCB1, DCA1, XIR1, XRA1 and
