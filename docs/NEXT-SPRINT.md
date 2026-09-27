@@ -122,9 +122,16 @@ P0 выполняется по законченным пользовательс
    В XNode добавлен bounded HTTPS-запрос к существующему V2 Registry proof
    endpoint для exact DID2: wire связывает lookup/nonce/boot ID, HTTP-ответ
    проверяется по endpoint, типу, размеру и `no-store`. Он пока возвращает
-   только сырые артефакты и не подключён к commit: требуется защищённый
-   rollback floor, независимый V2 verifier и повторная проверка свежести
-   непосредственно перед durable publication.
+   только сырые артефакты и не подключён к commit.
+   Кандидат XNode reader теперь повторно аутентифицирует защищённый V2 head,
+   запрашивает proof с собственной nonce/monotonic window, вызывает V2
+   verifier и выпускает current-value capability лишь после CAS/durable head
+   commit, повторного чтения и проверки свежести. Production-реализация
+   rollback-floor store и DI ещё отсутствуют, поэтому это не runtime authority.
+   Кроме pre-key, прежний `ContactVerifiedAuthoritySnapshotSource` также
+   питает onion receive/placement и group control: его V1 ADP1 нельзя оставить
+   как скрытый источник authority при DID2 cutover; заменить нужно общий
+   snapshot-consumer граф, а не только один endpoint.
    XNode CI проверяет текущие protocol sources через source cutover, а обычный
    XNode NuGet pin ещё указывает на пакет до DID2 clean-break и не компилирует
    текущий runtime. Локальный пакетный cutover проверяет совместимость, но не
