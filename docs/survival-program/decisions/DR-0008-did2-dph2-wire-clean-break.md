@@ -17,10 +17,12 @@ the old path for a DID2 account is not a release option.
 
 1. The release has **one** DPH2 reader and author: DPH2 record version 2,
    suite `0x0201`, with exact canonical DID2 at tag 20. Version 1 DPH2 is a
-   negative fixture, not a compatibility parser or migration input. DPK2,
-   DTR2 and DPE2 keep their own existing frame versions and primitive suite;
-   the DPH2 frame-version change must be per-record, not a global change to
-   unrelated codecs.
+   negative fixture, not a compatibility parser or migration input. DPK2
+   independently uses its DID2 version-2/suite-`0x0301` envelope and V2
+   signatures as specified by the contact-resolver clean break; the initiator
+   must not consume a version-1 DPK2. DTR2 and DPE2 retain their independently
+   specified frame versions and primitive suite. The DPH2 frame-version
+   change is per-record, not a global codec change.
 2. DPH2 tags 1–19 and 21 retain their reviewed types and order. Tag 20 is
    exactly `DeepIdV2Codec.Did2Length == 2052`, validated as canonical DID2
    before authoring, claim, KEM, DH or durable mutation. The resulting
