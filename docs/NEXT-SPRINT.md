@@ -1215,7 +1215,8 @@ inventory lineage и возвращает один подписанный XIC1. 
 Windows↔Android на физических устройствах.
 V1 inventory store/codec не использовать как обходной путь.
 Shared account owner теперь умеет после проверки DID2-аккаунта и protected
-inventory tip читать exact публичный XPP1 из SQLCipher для повторяемой
+inventory tip читать exact публичный пакет XPP1/DID2/DCA1/XPS1 из SQLCipher
+и верифицированного genesis evidence для повторяемой
 отправки; это не выдаёт sealed DPK2 secrets и само по себе не авторует
 сетевую публикацию. ONION ContactResolve теперь структурно принимает только
 bounded DID2 XPP1 V2, отличает staging ACK от финального XIC1 и отвергает
@@ -1228,8 +1229,12 @@ ONION exit и отдаёт результат только после прове
 Обнаруженный смешанный XPS1 V1 support вынесен в clean-break: DID2 путь теперь
 требует XPS1 version 2/suite `0x0301`, V2 signature domain, generation-1
 genesis и version-2 ArtifactRef; локальный DPD1 signer умеет его авторовать.
-Следующий разрыв: MAUI account flow ещё не передаёт ему точные DCA1/XPS1,
-не сохраняет локально XPS1 support и пару XIC1 для claim и не выполняет
+PKV2 schema generation 2 атомарно сохраняет exact XPS1 V2 с XPP1/DPK2,
+сверяет его подпись, scope и XPI1-reference при записи и reopen; старую
+schema generation 1 не мигрируем. Отправитель принимает только защищённый
+публичный пакет владельца аккаунта. Следующий разрыв: MAUI account flow ещё
+не вызывает этот отправитель, account owner не сохраняет пару XIC1 для claim
+и не выполняет
 физический сценарий;
 положительное E2E двух terminal paths также ещё не получено.
 
