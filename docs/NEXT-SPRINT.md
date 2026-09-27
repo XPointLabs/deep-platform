@@ -91,8 +91,10 @@ P0 выполняется по законченным пользовательс
    protection теперь имеют внутренний fail-closed crypto candidate и локальные
    позитивные/негативные тесты. Внутренний XPU1/XPA1 V2 parser проверяет
    точный wire, hash/body binding и отказывает на V1; отдельный внутренний
-   verifier проверяет XNA1 threshold signatures и failure domains. Проверка
-   route authority, свежести/placement, publisher signature и durable runtime
+   verifier проверяет XNA1 threshold signatures и failure domains. Следующий
+   внутренний gate привязывает их к live DID2 ADH1/DTT1, XNA1 policy, view и
+   полному доверенному интервалу времени; это ещё не проверка current account
+   value/DCA1. Проверка route authority, placement, publisher signature и durable runtime
    остаётся открытой. Ни один из этих кандидатов не является device E2E.
 3. Большой exact V2 `XPP1` нельзя просто отправить через ограниченный
    ContactResolve/replica RPC. Использовать уже существующий bounded

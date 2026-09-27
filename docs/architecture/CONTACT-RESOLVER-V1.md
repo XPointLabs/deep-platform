@@ -533,9 +533,11 @@ An internal DID2-only codec currently checks the exact V2 header/tag/size
 grammar, ciphertext and route hashes, XPA1 witness-row shape, authorization ID
 and XPU1/XPA1 body binding. A separate internal verifier checks V2-domain
 witness signatures against the exact verified XNA1 witness set, threshold and
-failure domains. This still does **not** validate the six-record route,
-current directory freshness, placement, publisher signature, DCR1 plaintext
-or replica commit. Machine vectors and those authority consumers remain release
+failure domains. A further internal gate binds that signed V2 XPA1 to one live,
+nonce-bound DID2 ADH1/DTT1 head, XNA1 policy, network view and complete trusted
+time interval. It does **not** prove a current account value, DCA1 delegation,
+the six-record route, placement, publisher signature, DCR1 plaintext or replica
+commit. Machine vectors and those authority consumers remain release
 gates; neither old XPU1 nor these partial candidates may be activated as DID2
 publication.
 
