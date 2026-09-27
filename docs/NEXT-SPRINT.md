@@ -93,8 +93,10 @@ P0 выполняется по законченным пользовательс
    Закрытый V2 12-tag fragment codec/авторинг и негативный round-trip тест
    готовы; XNode operation-scoped durable reassembly/replay journal теперь
    структурно собирает exact aggregate, переживает restart, держит fork latch
-   и карантин повреждённого состояния (source-cutover XNode gate: 107 + 236 +
-   373 tests). Его подключение к authenticated replica transport, проверка
+   и карантин повреждённого состояния; operation scope теперь включает exact
+   view/placement/service capability до первой записи. Его подключение к
+   authenticated replica transport, DID2-only nonce-bound directory proof
+   source (текущий XNode authority snapshot всё ещё ADP1 V1), проверка
    current authorization/lineage и runtime-проверка финальных `XIC1` ещё не
    готовы. Protocol уже проверяет exact пару подписанных `XIC1` против
    текущего NETCODEC placement и XPP1, но runtime/client её не потребляют;
