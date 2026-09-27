@@ -618,7 +618,10 @@ flag, dual reader или автоматический fallback. Нужно:
   byte-identical verified custody. Это ещё не ADH1/ADP1 freshness, XPI1/DPK2 inventory,
   ContactResolve publication или physical E2E;
   изолированный DID2 XPI1 manifest binding теперь сверяет independently
-  versioned XPI1 с exact DCR1 V2/XPS1/DMD1/DRS1 и подписью responder DPD1.
+  versioned XPI1 с exact DCR1 V2/XPS1/DMD1/DRS1 и подписью responder DPD1;
+  публичная проверка принимает только заново проверенную current DCA1 V2
+  capability и весь nonce-bound trusted-time interval, а не caller-supplied
+  timestamp. Это ещё не XPK1/XPC1 claim и не runtime activation.
   DID2 ADH1/DTT1/ADP1 V2 reader теперь отдаёт аутентифицированный временной
   интервал; отдельная DCA1 V2 capability связывает его с exact current
   DID2/DAB2/DMD1/ADC1, проверяет отзыв authorization ID и продвигает обе
