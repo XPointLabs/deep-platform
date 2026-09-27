@@ -70,6 +70,38 @@ P0 выполняется по законченным пользовательс
 целостности и возобновления; затем создание группы, доставка и смена состава.
 Это порядок выполнения, не сокращение release scope.
 
+Текущий исполняемый разрыв первого инкремента проверен по call path, а не
+по готовности отдельных codec (2026-09-27):
+
+1. Обычный `MauiProgram.Clean` всё ещё создаёт `DeepAccountRuntimeAccessor`
+   и `DeepContactResolveRuntimeAccessor` старого поколения; DID2 account и
+   nonce-bound contact proof существуют только в изолированном probe. Нужно
+   заменить composition на DID2 owner и перевести сохранившийся визуальный
+   chat/contact shell на его capabilities без V1 fallback.
+2. XNode `ContactServiceRuntime.Decode` и `ContactServiceOpaqueFacade.ClaimAsync`
+   читают `XPK1` через V1 `Xpk1Codec`; durable pre-key store принимает V1
+   `XPI1/DPK2` и пишет `contact-service-v1`. Заменить один связанный
+   publication/claim путь на DID2 `XPP1/XIC1/XPK1/XPC1`, новый несовместимый
+   state generation и exact replay/CAS. Не считать существующий V1 runtime
+   E2E-доказательством DID2.
+3. Большой exact V2 `XPP1` нельзя просто отправить через ограниченный
+   ContactResolve/replica RPC. Использовать уже существующий bounded
+   authenticated replica transport как механизм доставки частей; authority
+   возникает только после полной проверки собранного exact V2 `XPP1`,
+   устойчивой фиксации обеих реплик и двух проверенных `XIC1`. Новый
+   самостоятельный транспорт или прямой Registry pre-key endpoint не вводить.
+4. Структурный V2 `XPC1` не проверяет PMT2-bound replica signatures и не
+   доказывает durable claim. Следующий runtime gate — exact placement,
+   проверенные две подписи, публикация/lineage, CAS/replay, затем DPH2/DAO1
+   send/receive и inbox commit до ACK. Ни один из шагов не заменяется
+   старым ContactV1 verified receipt.
+
+Физический gate текста: два DID2-аккаунта на реальных Android и Windows,
+текущий подписанный каталог, один текст в обе стороны, повтор после restart,
+дедупликация/ACK после durable commit и отказ на V1/подменённом claim. Эти
+наблюдения фиксируются только по текущим APK/Windows build и действующей
+policy; локальный TestServer, эмулятор и старые UI-тесты не засчитываются.
+
 Внутри инкремента запускаются быстрые точечные compile/unit/integration проверки
 для изменённого security boundary; fail-closed, canonical wire и негативные
 crypto-векторы проверяются до подключения runtime. Полный package/API/graph

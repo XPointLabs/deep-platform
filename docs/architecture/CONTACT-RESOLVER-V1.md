@@ -734,7 +734,17 @@ tags `1=networkId16`, `2=publicationOperationId32`, `3=placementHash32`,
 `oneTimeCount:u16be || LP32(exactDPK2)[count] || LP32(exactLastResortDPK2)`.
 XPP1 has a closed maximum of 8,362,607 bytes; implementations must parse it
 streaming or under an equivalent hard allocation budget. Both replicas verify
-the complete XPI1 identity/freshness/signature/lineage, every DPK2 signature and
+the complete exact record before mutation. The logical publication is one
+XPP1, but its wire size exceeds the bounded ContactResolve/replica request
+envelope: transport MUST carry bounded authenticated fragments and reconstruct
+the identical exact XPP1 at each selected replica. Fragments, a manifest or a
+single replica receipt grant no publication authority. The DID2 fragment
+envelope, hash domains, restart journal and negative vectors must be frozen
+before runtime activation; the retired V1 bounded XPP1 wire is not accepted as
+a substitute.
+
+The exact-record verification covers complete XPI1
+identity/freshness/signature/lineage, every DPK2 signature and
 binding, exact order/count/root/last-resort hash and current placement before a
 single durable commit. A malformed or partial body changes no state.
 
