@@ -170,12 +170,11 @@ production promotion. Зелёный codec/unit test сам по себе не �
 Физические Android и Windows DID2 probes подтвердили создание нового аккаунта,
 перезапуск с тем же ID и удаление локально сохранённой фразы с сохранением ID.
 Это **не** доказательство контактов или E2E сообщений: оба probe намеренно
-account-only. Следующий блокер не следует маскировать зелёными тестами старого
-клиента: `Dph2InitialClaimPreview.VerifyCurrentAsync` принимает только
-`VerifiedAccountDirectoryFreshness` V1 и возвращает V1 checkpoint, тогда как
-новый каталог выдаёт `VerifiedDeepIdV2DirectoryFreshness`/`VerifiedAdc1V2`.
-Текущий DPH2 tag 20 и transcript/session-ID включают exact DID1: их нельзя
-кормить DID2 или менять один тип без полного wire/transcript re-freeze.
+account-only. После clean-break DPH2 tag 20 и transcript используют exact
+DID2; `Dph2InitialClaimPreview.VerifyCurrentInitiatorAsync` проверяет только
+инициатора по `VerifiedDeepIdV2DirectoryFreshness`/`VerifiedAdc1V2`.
+Получательская публикация, V2 XPC1 и право promotion ещё не замкнуты, поэтому
+этот узкий verifier не открывает отправку или ACK и не является device E2E.
 
 Порядок P0 по [DR-0008](survival-program/decisions/DR-0008-did2-dph2-wire-clean-break.md):
 (1) заморозить DID2-only DPH2/DAO1/contact-publication wire,
@@ -204,9 +203,9 @@ vectors и physical E2E. После удаления смешанных DID1 ф�
 suite прошёл 137/137, MAUI Clean.Tests — 19/19, оставшиеся MAUI SmokeTests
 после удаления source-only проверок старого shell — 118/118;
 это не заменяет package/public-API witness и device E2E. Основной
-`MauiProgram.Clean`/`AppShell.Clean` всё ещё компонует `DeepAccountService`
-старого account-пути; DID2 доказан только в отдельных account probes. Его
-нужно перевести на DID2 до сквозной проверки сообщений и релиза.
+`MauiProgram.Clean` уже входит в DID2-only account owner. Его сетевой и
+message composition остаётся закрытым до V2 contact/prekey/ContactHello
+closure; установленные старые клиентские пакеты не подтверждают новый путь.
 
 NETCODEC теперь имеет отдельный DID2 freshness-вход для проверки и точного
 восстановления XNV1/PMT2 network context. Общий внутренний контракт содержит
