@@ -1097,6 +1097,23 @@ loopback-only контейнере, публичный staking остался 20
 подписанная голова живёт один час; до публичной активации нужен управляемый
 renewal по защищённому trusted time и проверка деградации/восстановления,
 а не ручное продление canary.
+Registry candidate теперь имеет opt-in content-preserving ADH1 renewal с
+protected trusted-time и независимым latest-head floor, включая startup
+renewal перед DID2 readiness и периодический worker. Локальный focused gate
+18/18 проверил no-op до lead, один successor у expiry, точное сохранение
+tree/map/log и отказ invalid-time/floor; полный source-cutover Registry gate
+прошёл 423/423 при повторе. Первый полный прогон дал один невоспроизведённый
+отказ в старом one-use-ledger тесте; это ещё требуется отследить в CI.
+Renewal не ротирует protected time anchor.
+Публичный Registry ещё не обслуживает DID2, а отдельный prod-host probe
+2026-09-27 отвечает 503 из-за stale protected-time anchor. Не заменять его
+OS clock и не считать общий `/health/ready` DID2 evidence.
+Read-only container audit также нашёл три конфликтующих повторения DID2
+environment keys (state path, proof ledger root, PostgreSQL floor DSN) в
+probe. Перед следующим canary-rollout нужно устранить дубли в deployment
+composition и проверить единственность каждого effective key; новый Registry
+startup guard отвергает повторённые raw DID2 environment names даже с
+одинаковым значением, а не выбирает случайное по порядку окружения.
 Операторская команда `refresh-current-head` больше не доверяет системному UTC:
 она читает protected monotonic trusted-time anchor, проверяет uncertainty
 window и закрывается при отсутствующем/просроченном состоянии. Положительный
