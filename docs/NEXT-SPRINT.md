@@ -138,8 +138,12 @@ P0 выполняется по законченным пользовательс
    commit, повторного чтения и проверки свежести. Файловый кандидат
    rollback-floor store сохраняет signed exact ADH1 в защищённом append-only
    журнале с отдельным локальным якорем; restart, потеря индекса, повреждение
-   якоря и неверный genesis pin проверены интеграционными тестами. DI и
-   привязка к runtime commit ещё отсутствуют, поэтому это не runtime authority.
+   якоря и неверный genesis pin проверены интеграционными тестами. UAT-only DI
+   теперь поднимает независимые XNA1/DTS1/genesis/protected-head assets при
+   старте; внутренний gate связывает committed XPP1 candidate с новым DID2
+   proof и полным DCA1/DCR1/XPI1/DPK2 verifier. Но ни replica RPC, ни
+   durable commit/финальные XIC1 пока не вызывают этот gate; публикация
+   остаётся закрытой и device E2E этим не подтверждён.
    Совместный откат журнала и якоря остаётся вне гарантий одного локального
    хранилища и требует живого threshold freshness evidence.
    Кроме pre-key, прежний `ContactVerifiedAuthoritySnapshotSource` также
