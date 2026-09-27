@@ -1225,8 +1225,12 @@ retired V1 carrier. XNode UAT terminal теперь принимает V2-фра
 Shared теперь имеет отдельный, ещё не смонтированный DID2 V2 отправитель:
 он проверяет текущий placement, посылает одну exact sequence к обеим выбранным
 ONION exit и отдаёт результат только после проверки пары подписанных XIC1.
+Обнаруженный смешанный XPS1 V1 support вынесен в clean-break: DID2 путь теперь
+требует XPS1 version 2/suite `0x0301`, V2 signature domain, generation-1
+genesis и version-2 ArtifactRef; локальный DPD1 signer умеет его авторовать.
 Следующий разрыв: MAUI account flow ещё не передаёт ему точные DCA1/XPS1,
-не сохраняет пару XIC1 для claim и не выполняет физический сценарий;
+не сохраняет локально XPS1 support и пару XIC1 для claim и не выполняет
+физический сценарий;
 положительное E2E двух terminal paths также ещё не получено.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное

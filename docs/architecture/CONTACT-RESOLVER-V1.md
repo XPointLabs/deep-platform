@@ -698,6 +698,17 @@ signature domain is `Deep/ContactResolver/V1/prekey-service`. It authorizes the
 store to return only a DPK2 signed by the exact responder DPD1, for the exact
 service generation and current witnessed DMD1/DRS1 head.
 
+For the DID2 release graph, XPS1 is a clean-break version `2`, suite `0x0301`
+record of the same 352-byte twelve-tag shape. Its 280-byte tags-1..11
+projection and device signature use
+`SIGINPUT("Deep/ContactResolver/V2/prekey-service", 0x0301, projection)`.
+Tag 7 is exactly `0x0301`. The initial service generation is `1` with
+ZERO32 predecessor; later generations increase by exactly one, retain the
+same service capability and device, and name `SHA256(exact predecessor XPS1
+V2)`. Its ArtifactRef uses version `2` and raw SHA-256 of the exact V2 record.
+DID2 DCB1, XPI1 and XPP1 MUST reject version-1/suite-`0x0201` XPS1 and V1
+signature domains; the V1 descriptor above is not a compatibility input.
+
 #### 3.3.1 Complete pre-key inventory manifest: `XPI1`
 
 An XPS1 generation is not publication authority for an arbitrary subset of
