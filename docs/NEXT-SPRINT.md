@@ -117,8 +117,14 @@ P0 выполняется по законченным пользовательс
    фрагментом общим commitment и сохранённый рядом с кандидатом после restart.
    Это только вход для собственного nonce-bound ADP1 V2 proof выбранной
    реплики, не подтверждённая личность и не готовый XIC1. Следующий шаг —
-   подключить recipient-specific DID2 proof source и отказать в commit, пока
-   current DAB2/ADC1 V2 не совпадут с XPI1/DPK2.
+   подключить recipient-specific DID2 proof к runtime-verifier и отказать в
+   commit, пока current DAB2/ADC1 V2 не совпадут с XPI1/DPK2.
+   В XNode добавлен bounded HTTPS-запрос к существующему V2 Registry proof
+   endpoint для exact DID2: wire связывает lookup/nonce/boot ID, HTTP-ответ
+   проверяется по endpoint, типу, размеру и `no-store`. Он пока возвращает
+   только сырые артефакты и не подключён к commit: требуется защищённый
+   rollback floor, независимый V2 verifier и повторная проверка свежести
+   непосредственно перед durable publication.
    XNode CI проверяет текущие protocol sources через source cutover, а обычный
    XNode NuGet pin ещё указывает на пакет до DID2 clean-break и не компилирует
    текущий runtime. Локальный пакетный cutover проверяет совместимость, но не
