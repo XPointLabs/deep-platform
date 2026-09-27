@@ -115,16 +115,15 @@ P0 выполняется по законченным пользовательс
    финальных `XIC1` ещё не готовы. Protocol уже проверяет exact пару подписанных `XIC1` против
    текущего NETCODEC placement и XPP1, но runtime/client её не потребляют;
    staged aggregate не является публикацией или доказательством E2E.
-   Manifest-фрагмент V2 теперь несёт публичный exact DID2, связанный с каждым
-   фрагментом общим commitment и сохранённый рядом с кандидатом после restart.
-   Это только вход для собственного nonce-bound ADP1 V2 proof выбранной
-   реплики, не подтверждённая личность и не готовый XIC1. Следующий шаг —
-   подключить recipient-specific DID2 proof к runtime-verifier и отказать в
-   commit, пока current DAB2/ADC1 V2 не совпадут с XPI1/DPK2.
-   Протокольный V2 gate теперь связывает эту подсказку с exact DID2 текущей
-   DCA1 V2 authority и заново проверяет полный XPI1/DPK2 inventory перед
-   promotion кандидата. Подмена DID2 либо inventory отвергается; XNode ещё
-   не вызывает этот gate при финальном runtime commit, поэтому публикация остаётся закрытой.
+   Manifest-фрагмент V2 теперь несёт public exact DID2/DCA1 V2/XPS1,
+   связанные с каждым фрагментом общим commitment и восстановленные рядом с
+   кандидатом после restart. Это untrusted support для собственного
+   nonce-bound ADP1 V2 proof выбранной реплики, не публикация и не XIC1.
+   Отдельный Protocol verifier сверяет current DID2/DAB2/ADC1 V2, подписи
+   DCA1/XPS1/XPI1/DPK2 и полный ordered inventory/Merkle root без plaintext
+   DCR1 у XNode; подмена DID2, XPS1 или root отвергается. Следующий шаг —
+   подключить этот verifier к durable final commit и запретить claim до двух
+   согласованных XIC1. Пока peer RPC выполняет только staging.
    Журнал bounded XPP1 теперь и без restart карантинит повреждённый chunk
    при exact commit replay и потерю manifest после сохранения chunk; это
    закрывает локальный replay/reset дефект, но не даёт publication authority.
@@ -141,9 +140,9 @@ P0 выполняется по законченным пользовательс
    якоря и неверный genesis pin проверены интеграционными тестами. UAT-only DI
    теперь поднимает независимые XNA1/DTS1/genesis/protected-head assets при
    старте; внутренний gate связывает committed XPP1 candidate с новым DID2
-   proof и полным DCA1/DCR1/XPI1/DPK2 verifier. Этот gate теперь сам извлекает
-   DCA1 из exact DCR1 и проверяет его на собственном current DID2 checkpoint,
-   не принимая готовую авторизацию от вызывающего кода. Peer RPC пока выполняет
+   proof и публичными DCA1/XPS1/XPI1/DPK2 support из exact manifest, не
+   принимая готовую авторизацию или plaintext DCR1 от вызывающего кода.
+   Peer RPC пока выполняет
    только staging; durable final commit/XIC1 не вызывают этот gate; публикация
    остаётся закрытой и device E2E этим не подтверждён.
    Отдельный UAT-only XNode source теперь может построить NETCODEC

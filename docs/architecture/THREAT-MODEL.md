@@ -68,9 +68,10 @@ IDs, route descriptors, prekey IDs, call SDP/ICE, payload hashes или стаб
 device fingerprints.
 
 Выбранные PreKeyClaim-реплики при публикации DID2 XPP1 видят публичный exact
-DID2 как hint для собственного nonce-bound directory proof. Это осознанная
-метаданная поверхность: реплика может связать DID2 с опубликованным случайным
-pre-key service capability. XPP1 не содержит resolver read capability, IP
+DID2, DCA1, XPS1, XPI1 и DPK2 для собственного nonce-bound directory proof и
+проверки подписей. Это осознанная метаданная поверхность: реплика может связать
+DID2, account/device identifiers и опубликованный случайный pre-key service
+capability. XPP1 не содержит plaintext DCR1, resolver read capability, IP
 клиента или контактный граф, однако видимость сетевого адреса определяется
 фактическим транспортным маршрутом и проверяется отдельно. Реплика не
 маршрутизирует по DID2/DeepAccountId. Публикация не разрешается по одному

@@ -62,13 +62,15 @@ unknown extension or dual reader is valid.
 
 The service-facing shard key is always 32 bytes: InviteResolver receives the
 domain-separated opaque permanent/one-time locator, while PreKeyClaim and
-ContactUpdate receive a random capability. The service receives that key, opaque
-ciphertext and a derived placement commitment under the verified public
-XNV1/PMT2 closure only; it
-MUST NOT receive or derive DID1, DeepAccountId, device ID, DCR1 plaintext,
-relationship ID, address key or resolver read key. Records carrying device
-references are a client-side closure and are never sent as the service request
-body.
+ContactUpdate receive a random capability. InviteResolver and ContactUpdate
+receive opaque ciphertext and a derived placement commitment under the verified
+public XNV1/PMT2 closure; they MUST NOT receive DCR1 plaintext, relationship ID,
+address key or resolver read key. Selected DID2 PreKeyClaim replicas have the
+narrower, explicit XPP1 metadata exception in section 3.3.2: their signed
+public DID2/DCA1/XPS1/XPI1/DPK2 support necessarily reveals account and device
+identifiers to those replicas for current-value and signature verification.
+Those identifiers MUST NOT become routing/shard keys or enter logs; no plaintext
+DCR1 or contact graph is supplied to either service.
 
 `XIR1`, version 1, suite `0x0201`, is the reachability descriptor embedded in
 DCB1. It is not the current message deposit route.
@@ -808,18 +810,22 @@ V1 bounded XPP1 wire is not accepted as a substitute. Its fields are:
 
 The aggregate hash is
 `SHA256-D("Deep/ContactResolver/V2/exact-xpp1", exact five-tag XPP1)`.
-The manifest body is `exactDID2(2052) || exactXPI1(560) || [chunkLength:u32be ||
+The manifest body is `exactDID2(2052) || exactDCA1V2(473) ||
+exactXPS1(352) || exactXPI1(560) || [chunkLength:u32be ||
 chunkHash32] * chunkCount`; every descriptor length is the exact slice length
 of the aggregate at that zero-based index. Tag 11 is
 `SHA256-D("Deep/ContactResolver/V2/xpp1-descriptors", exactDID2 ||
-exact descriptor list)`. The public DID2 credential is a recipient-specific
+exactDCA1V2 || exactXPS1 || exact descriptor list)`. The public DID2 credential is a recipient-specific
 directory lookup hint for the selected PreKeyClaim replicas, not publication
 authority and not a resolver read capability. Before committing inventory, each
 replica MUST obtain its own nonce-bound current DID2 directory proof, verify the
-exact DAB2/ADC1 V2 active device and bind its account/device identity to every
-XPI1/DPK2 member. The common tag-11 commitment makes the hint identical in
+exact DAB2/ADC1 V2 active device, authenticate the supplied DCA1 against that
+checkpoint, verify the signed XPS1 against the same active DPD1 and bind its
+account/device identity to every XPI1/DPK2 member. DCA1 and XPS1 are public
+support, not a license to open or receive plaintext DCR1. The common tag-11
+commitment makes all three support records identical in
 the manifest, chunks and commit of one operation. An unverified or mismatched
-hint MUST NOT advance authoritative inventory or claim state. No stable
+hint/support MUST NOT advance authoritative inventory or claim state. No stable
 account/DID2 value is used as the placement or routing key; the random service
 capability remains that key.
 For Chunk phase, tag 12 is the exact nonempty aggregate slice of at most
