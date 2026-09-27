@@ -90,6 +90,9 @@ P0 выполняется по законченным пользовательс
    возникает только после полной проверки собранного exact V2 `XPP1`,
    устойчивой фиксации обеих реплик и двух проверенных `XIC1`. Новый
    самостоятельный транспорт или прямой Registry pre-key endpoint не вводить.
+   Закрытый V2 12-tag fragment codec/авторинг и негативный round-trip тест
+   готовы; XNode durable reassembly/replay journal, transport wiring и
+   проверенные финальные receipts ещё не готовы.
 4. Структурный V2 `XPC1` не проверяет PMT2-bound replica signatures и не
    доказывает durable claim. Следующий runtime gate — exact placement,
    проверенные две подписи, публикация/lineage, CAS/replay, затем DPH2/DAO1

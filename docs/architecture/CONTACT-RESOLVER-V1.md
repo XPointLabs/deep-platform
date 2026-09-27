@@ -739,9 +739,46 @@ XPP1, but its wire size exceeds the bounded ContactResolve/replica request
 envelope: transport MUST carry bounded authenticated fragments and reconstruct
 the identical exact XPP1 at each selected replica. Fragments, a manifest or a
 single replica receipt grant no publication authority. The DID2 fragment
-envelope, hash domains, restart journal and negative vectors must be frozen
-before runtime activation; the retired V1 bounded XPP1 wire is not accepted as
-a substitute.
+envelope is the second closed `XPP1` version-2/suite-`0x0301` shape,
+distinguished from the five-tag aggregate by exactly twelve tags. The retired
+V1 bounded XPP1 wire is not accepted as a substitute. Its fields are:
+
+| Tag | Bounded transport value | Size |
+|---:|---|---:|
+| 1 | phase: `1=Manifest`, `2=Chunk`, `3=Commit` | 1 |
+| 2 | network ID | 16 |
+| 3 | publication operation ID | 32 |
+| 4 | current view-core hash | 32 |
+| 5 | placement hash | 32 |
+| 6 | exact aggregate XPP1 hash | 32 |
+| 7 | exact aggregate length | 4 |
+| 8 | chunk count | 2 |
+| 9 | chunk index, `0xffff` outside Chunk phase | 2 |
+| 10 | chunk hash, ZERO32 outside Chunk phase | 32 |
+| 11 | descriptor-list hash | 32 |
+| 12 | phase body | `0..65,536` |
+
+The aggregate hash is
+`SHA256-D("Deep/ContactResolver/V2/exact-xpp1", exact five-tag XPP1)`.
+The manifest body is `exactXPI1(560) || [chunkLength:u32be ||
+chunkHash32] * chunkCount`; every descriptor length is the exact slice length
+of the aggregate at that zero-based index. Tag 11 is
+`SHA256-D("Deep/ContactResolver/V2/xpp1-descriptors", exact descriptor list)`.
+For Chunk phase, tag 12 is the exact nonempty aggregate slice of at most
+65,536 bytes and tag 10 is
+`SHA256-D("Deep/ContactResolver/V2/xpp1-chunk",
+chunkIndex:u16be || tag12)`; it must match its manifest descriptor. Commit has
+empty tag 12. Tag 7 is within the aggregate's closed size, tag 8 equals its
+ceiling division by 65,536 and is at most 128, and every bounded record is at
+most 65,861 bytes. The fragment request hash is
+`SHA256-D("Deep/ContactResolver/V2/xpp1-fragment", exact bounded record)`.
+Every phase binds the same network, operation, view, placement, aggregate
+hash/length, chunk count and descriptor hash. The manifest XPI1 hash and
+service capability must bind the exact reassembled aggregate. Missing,
+changed, duplicated or conflicting parts fail closed; exact replay is stable
+across restart. Only a fully reassembled, independently verified exact
+aggregate may reach durable commit and produce the final XIC1. Stage
+acknowledgements are never XIC1 publication receipts.
 
 The exact-record verification covers complete XPI1
 identity/freshness/signature/lineage, every DPK2 signature and
