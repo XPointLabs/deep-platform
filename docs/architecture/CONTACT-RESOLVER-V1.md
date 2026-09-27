@@ -531,10 +531,12 @@ commit; a structural parser grants none of those rights.
 
 An internal DID2-only codec currently checks the exact V2 header/tag/size
 grammar, ciphertext and route hashes, XPA1 witness-row shape, authorization ID
-and XPU1/XPA1 body binding. It does **not** validate the six-record route,
-witness signatures, freshness, publisher signature, DCR1 plaintext or replica
-commit. Machine vectors and those authority consumers remain release gates;
-neither old XPU1 nor this structural candidate may be activated as DID2
+and XPU1/XPA1 body binding. A separate internal verifier checks V2-domain
+witness signatures against the exact verified XNA1 witness set, threshold and
+failure domains. This still does **not** validate the six-record route,
+current directory freshness, placement, publisher signature, DCR1 plaintext
+or replica commit. Machine vectors and those authority consumers remain release
+gates; neither old XPU1 nor these partial candidates may be activated as DID2
 publication.
 
 `XPO1` is the only XPU1 result. Status IDs are `1=Committed`, `2=ExactReplay`,

@@ -90,9 +90,10 @@ P0 выполняется по законченным пользовательс
    DID2-only permanent resolver locator/read-key derivation и DCR1 V2 object
    protection теперь имеют внутренний fail-closed crypto candidate и локальные
    позитивные/негативные тесты. Внутренний XPU1/XPA1 V2 parser проверяет
-   точный wire, hash/body binding и отказывает на V1, но пока не проверяет
-   threshold signatures, route authority, свежесть и durable runtime. Ни один
-   из этих кандидатов не является device E2E.
+   точный wire, hash/body binding и отказывает на V1; отдельный внутренний
+   verifier проверяет XNA1 threshold signatures и failure domains. Проверка
+   route authority, свежести/placement, publisher signature и durable runtime
+   остаётся открытой. Ни один из этих кандидатов не является device E2E.
 3. Большой exact V2 `XPP1` нельзя просто отправить через ограниченный
    ContactResolve/replica RPC. Использовать уже существующий bounded
    authenticated replica transport как механизм доставки частей; authority

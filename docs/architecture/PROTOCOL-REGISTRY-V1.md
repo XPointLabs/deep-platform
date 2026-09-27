@@ -414,7 +414,7 @@ Normative source: `CONTACT-RESOLVER-V1.md`.
 | --- | --- | --- |
 | `XPU1` | compare-and-swap publication of encrypted DCR1 at an opaque invite locator. | `TARGET_UNFROZEN`; internal DID2-only V2 structural pair with XPA1 exists, but no threshold, route, freshness or runtime authority |
 | `XPO1` | closed publication outcome for one XPU1 operation. | `TARGET_UNFROZEN` |
-| `XPA1` | short-lived directory-threshold authorization for one opaque XPU1 publication; exposes no Deep ID/account/device. | `TARGET_UNFROZEN`; DID2-only V2 shape/body binding exists, witness signatures and current directory issuance remain open |
+| `XPA1` | short-lived directory-threshold authorization for one opaque XPU1 publication; exposes no Deep ID/account/device. | `TARGET_UNFROZEN`; DID2-only V2 shape/body binding and isolated XNA1 threshold-signature verifier exist, but current directory issuance, freshness/placement authority and runtime remain open |
 | `XIQ1` | idempotent permanent-address resolve or one-time invite claim request. | `TARGET_UNFROZEN` |
 | `XIS1` | closed invite resolve result with exact-replay semantics. | `TARGET_UNFROZEN` |
 | `XPS1` | signed per-device prekey service descriptor carried by DCB1. | `TARGET_UNFROZEN` |
