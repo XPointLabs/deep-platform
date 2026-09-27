@@ -1063,6 +1063,19 @@ Shared production suite теперь прошёл 183/183; DID2 proof client с�
 сценарий. DID2 peer lookup теперь повторно проверяет локальный admission
 перед каждым запросом; UI-флаг прошлой успешной проверки не является
 долгоживущим authority. Это ещё не acceptance и не доставка.
+Clean-break входа 2026-09-27: default MAUI Windows/Android composition теперь
+монтирует DID2 account owner и DID2 shell вместо V1 account/message graph;
+отдельный минимальный DID2 UI-core заменяет V1 ViewModel assembly в клиенте,
+а старые MAUI ContactV1/Session services исключены из компиляции;
+V1 startup и shell удалены из исходного release graph;
+V1 welcome/group signer тесты удалены из clean gate и заменены проверкой
+актуального DID2 startup graph;
+изолированный debug probe сохраняет отдельный package/data root. Локальные
+создание и recovery подключены в основной клиент и прошли сборку, но их
+физический прогон в новом package ещё не выполнен. Verified production
+authority, contact acceptance, prekey publication/claim, DPH2 dispatch,
+receive и группы пока не подключены. Поэтому ни обычный клиент, ни probe
+ещё не дают DID2 device E2E; старые V1 UI-тесты не считаются доказательством.
 Для DID2 добавлен отдельный `GET /health/did2/ready`: он повторно проверяет
 protected trusted time, полную ADA2 lineage, независимый latest-head floor и
 срок текущей подписанной головы до возможности выпустить новый proof.
