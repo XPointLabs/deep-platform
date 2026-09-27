@@ -1195,8 +1195,13 @@ add-only exact-XPP1 tip до возврата publication eligibility. Полн�
 state отказывает fail-closed. Marker-only сбой первого открытия без tip
 восстанавливает только пустую базу, не сбрасывая аккаунт. Это пока не выдаёт
 XPP1 в сеть.
-Следующий обязательный шаг text vertical — текущий DID2 closure/placement,
-verified двухрепличный XIC1 commit и клиентский DPH2 claim/receive.
+Текущий DID2 closure/placement теперь имеет отдельный UAT-only peer receiver:
+он после HTTP/2 peer authentication повторно проверяет signed current
+NETCODEC placement и долговечно собирает XPP1 V2 на выбранной реплике.
+`CandidateReady` доказывает только локальную сборку кандидата; это не XIC1,
+не активация inventory и не device E2E. Следующий обязательный шаг text
+vertical — verified двухрепличный final XIC1 commit и клиентский DPH2
+claim/receive, затем сообщения Windows↔Android на физических устройствах.
 V1 inventory store/codec не использовать как обходной путь.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
