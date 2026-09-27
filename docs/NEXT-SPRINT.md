@@ -82,8 +82,11 @@ P0 выполняется по законченным пользовательс
    читают `XPK1` через V1 `Xpk1Codec`; durable pre-key store принимает V1
    `XPI1/DPK2` и пишет `contact-service-v1`. Заменить один связанный
    publication/claim путь на DID2 `XPP1/XIC1/XPK1/XPC1`, новый несовместимый
-   state generation и exact replay/CAS. Не считать существующий V1 runtime
-   E2E-доказательством DID2.
+   state generation и exact replay/CAS. Перед приёмом XPP1 нужен DID2-only
+   DCR1/XPU1 publication и проверенный lookup service capability → exact
+   recipient closure: `DeepIdV2PreKeyInventoryVerifier` не может принять
+   XPI1/DPK2 без текущих DCR1 и nonce-bound DID2 directory authority.
+   Не считать существующий V1 runtime E2E-доказательством DID2.
 3. Большой exact V2 `XPP1` нельзя просто отправить через ограниченный
    ContactResolve/replica RPC. Использовать уже существующий bounded
    authenticated replica transport как механизм доставки частей; authority
