@@ -634,6 +634,11 @@ flag, dual reader или автоматический fallback. Нужно:
   XPI1 epoch/window и три device signatures; отдельная проверка полного
   inventory сверяет порядок, exact DPK2 hashes, V2 Merkle root, last-resort
   hash и XPS1 reuse bound. Durable publication этим не доказана;
+  DID2 account-owned pre-key author теперь выпускает one-time и last-resort
+  DPK2 version 2/suite 0x0301 с тремя V2 device signatures. Exact V2 offering
+  можно зашифровать в локальном pre-key secret blob и восстановить после
+  restart только с совпадающими exact bytes, hash и scope. Локальный
+  authoring/seal не заменяет XPP1/XIC1, XPC1, DID2 DPH2 или device E2E;
   публичная проверка принимает только заново проверенную current DCA1 V2
   capability и весь nonce-bound trusted-time interval, а не caller-supplied
   timestamp. Это ещё не XPK1/XPC1 claim и не runtime activation.
