@@ -1076,6 +1076,12 @@ V1 welcome/group signer тесты удалены из clean gate и замен�
 authority, contact acceptance, prekey publication/claim, DPH2 dispatch,
 receive и группы пока не подключены. Поэтому ни обычный клиент, ни probe
 ещё не дают DID2 device E2E; старые V1 UI-тесты не считаются доказательством.
+Нормальный non-Release `.e2e` package получает отдельный opt-in для
+подписанного DID2 admission/peer-proof по DNS HTTPS без loopback и без V1
+fallback. Он использует те же точные public XNA1/DTS1/genesis ADH1 assets и
+compiled pins; Release без утверждённой crypto/runtime authority остаётся
+закрытым. Это только подготовка account/peer proof, не contact acceptance,
+DPK2 publication или физический message E2E.
 Для DID2 добавлен отдельный `GET /health/did2/ready`: он повторно проверяет
 protected trusted time, полную ADA2 lineage, независимый latest-head floor и
 срок текущей подписанной головы до возможности выпустить новый proof.
