@@ -1113,7 +1113,10 @@ environment keys (state path, proof ledger root, PostgreSQL floor DSN) в
 probe. Перед следующим canary-rollout нужно устранить дубли в deployment
 composition и проверить единственность каждого effective key; новый Registry
 startup guard отвергает повторённые raw DID2 environment names даже с
-одинаковым значением, а не выбирает случайное по порядку окружения.
+одинаковым значением, но Docker нормализует `Config.Env` до запуска процесса,
+поэтому он не ловит найденные дубли. Host-side preflight в `deep-devops`
+проверяет исходный Docker inspect без вывода значений и сейчас отвергает
+probe; его нужно запускать до promotion каждого Registry-контейнера.
 Операторская команда `refresh-current-head` больше не доверяет системному UTC:
 она читает protected monotonic trusted-time anchor, проверяет uncertainty
 window и закрывается при отсутствующем/просроченном состоянии. Положительный
