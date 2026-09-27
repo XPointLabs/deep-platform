@@ -1045,7 +1045,10 @@ commit matrix и проверяет композицию; отдельные к�
   его через отдельную одноразовую store-авторизацию; оба proof сверяются с
   защищённой текущей головой каталога перед операцией. HTTP-интеграционный
   Windows HTTP-интеграционный тест с двумя аккаунтами подтверждает отказ старому/чужому proof, подменённому DPK2 и replay
-  device-DH1. Это не публикация XPK1/XPC1 и не отправленный DPH2:
+  device-DH1. Перед расходованием одноразовой device-lease claim также
+  повторно связывается с точным текущим DID2/DMD1 initiator; stale proof,
+  смена boot и уже использованный claim отвергаются без расходования lease.
+  Это не публикация XPK1/XPC1 и не отправленный DPH2:
   MAUI production caller/current-DMD1 композиция ещё не подключена.
   DID2 STORE-V2 выдаёт только verifier-bound локальную X25519 capability;
   public-forgeable provider и raw keys запрещены. Готовые account-wide DPK2 prekey owner,
