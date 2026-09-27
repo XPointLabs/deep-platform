@@ -70,6 +70,20 @@ P0 выполняется по законченным пользовательс
 целостности и возобновления; затем создание группы, доставка и смена состава.
 Это порядок выполнения, не сокращение release scope.
 
+Срочный prerequisite физического инкремента (2026-09-28): закрытый Registry
+UAT после обновления protected time и ADH1 отвечает DID2 readiness, а новый
+Android-аккаунт довёл floor/ADA2 до generation 9/tree 6. Proof остаётся
+fail-closed: текущий XNV1 не покрывает время, и его XVP1/XND1/XNV1 closure
+истёк 2026-09-25. Реализовать monotonic successor/renewal для operational
+пакета: root-authorized XVP1 при необходимости, node-signed XND1 с актуальными
+origin/onion интервалами, threshold-signed XNV1 и зависимые XNH1/placement
+артефакты. Проверять полную predecessor/hash/time/threshold closure, отдельный
+rollback floor и атомарную публикацию до Registry/XNode; не выпускать новую
+generation-zero цепочку и не расширять срок жизни только в proof verifier.
+После этого повторить nonce-fresh proof на Android и Windows и лишь затем
+считать доступным contact/message vertical. Сохранённые UAT ADA2 и внешний
+floor согласованы и имеют отдельные приватные копии для восстановления.
+
 Текущий исполняемый разрыв первого инкремента проверен по call path, а не
 по готовности отдельных codec (2026-09-27):
 
@@ -1254,15 +1268,12 @@ multi-hop ADF1→текущий ADH1 прошёл с локальным Protocol
 Приватные ADF1-кандидаты ещё не сопоставлены с exact ADA2/floor текущего
 контура. Это отдельный обязательный gate перед возобновлением canary;
 результат теста не является разрешением включать production route.
-Позднейшая read-only сверка того же дня уточнила состояние: loopback UAT
-forward-probe действительно запущен и содержит ADF1 path, но использует
-старый образ и три конфликтующих дубля DID2-параметров. Независимый UAT floor
-и новая сохранённая копия ADA2 сходятся на exact head generation 7/tree 5;
-локальный ADF1 указывает на проверенный ancestor generation 4. Текущий head
-истёк 2026-09-25. Новый CI-образ загружен на Registry, но не запущен.
-Перед возобновлением canary обязательны однозначный env, preflight на
-дубликаты, обновление head через trusted time и floor CAS и физический
-nonce-fresh клиентский proof; это всё ещё не message E2E.
+Последующая UAT-проверка уже создала отдельный loopback probe на новом
+CI-образе. Шесть конфликтующих ключей окружения сведены к единственным
+проверенным значениям; protected time и ADH1 обновлены через независимый
+floor CAS. DID2 readiness прошёл. Android admission добавил следующий leaf
+и совпал с внешним floor, но proof отвергнут из-за истёкшей operational
+XNV1 closure, описанной выше. Это всё ещё не message E2E.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
