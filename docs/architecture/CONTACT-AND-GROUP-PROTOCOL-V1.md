@@ -735,9 +735,17 @@ domain-separated record hash, not raw SHA-256 of the credential. The locator
 is public-address-derived and network-scoped; the read key additionally needs
 the separately held capability. The publisher and holder must use the same
 verified exact DID2, and neither sends the raw capability or read key to the
-Registry or XNode. This derivation is an isolated candidate: DCR1 V2 object
-protection, XPA1/XPU1 authorization, machine vectors and physical publication
-remain unclosed and MUST NOT be inferred from this formula alone.
+Registry or XNode. DID2-only DCR1 V2 object protection uses a fresh CSPRNG
+24-byte nonce and exact `nonce24 || XChaCha20-Poly1305-IETF(ciphertext ||
+tag16)` framing with `publicResolverKey32` above, plaintext equal to the exact
+canonical DCR1 V2 and AAD equal to `networkId16 || DID2.RecordHash32`. The
+protected object is at most 65,575 bytes. Opening authenticates the object,
+decodes only DCR1 V2 and checks its DCB1 network, exact DID2 record/hash and
+the derivation context before returning a parsed closure. It does not prove
+directory freshness, publisher authorization or XNode publication. Both
+derivation and protection remain isolated internal candidates: machine vectors,
+XPA1/XPU1 authorization and physical publication are unclosed and MUST NOT be
+inferred from these formulas alone.
 
 For `OfficialXPoint3`, the locator is also the only contact-specific input needed
 to select the first resolver shard. Exact current-view/PMT authority and shard

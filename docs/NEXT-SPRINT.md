@@ -87,9 +87,9 @@ P0 выполняется по законченным пользовательс
    recipient closure: `DeepIdV2PreKeyInventoryVerifier` не может принять
    XPI1/DPK2 без текущих DCR1 и nonce-bound DID2 directory authority.
    Не считать существующий V1 runtime E2E-доказательством DID2.
-   DID2-only permanent resolver locator/read-key derivation теперь имеет
-   отдельный fail-closed codec и локальные позитивные/негативные тесты;
-   это не закрывает DCR1 V2 object protection, XPA1/XPU1 или runtime.
+   DID2-only permanent resolver locator/read-key derivation и DCR1 V2 object
+   protection теперь имеют внутренний fail-closed crypto candidate и локальные
+   позитивные/негативные тесты; это не закрывает XPA1/XPU1 или runtime.
 3. Большой exact V2 `XPP1` нельзя просто отправить через ограниченный
    ContactResolve/replica RPC. Использовать уже существующий bounded
    authenticated replica transport как механизм доставки частей; authority
