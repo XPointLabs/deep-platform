@@ -843,6 +843,16 @@ changed, duplicated or conflicting parts fail closed; exact replay is stable
 across restart. Only a fully reassembled, independently verified exact
 aggregate may reach durable commit and produce the final XIC1. Stage
 acknowledgements are never XIC1 publication receipts.
+At an ONION ContactResolve exit, only the bounded V2 twelve-tag fragment is
+admitted as XPP1; the retired V1 bounded request and the five-tag aggregate
+are rejected. A successful Manifest or Chunk result is exactly one byte:
+`1=Staged` or `3=ExactReplay`. This is transport progress only. A successful
+Commit result is exactly one V2 XIC1 whose network, publication operation and
+placement hash match that fragment; incomplete/conflicting commit attempts
+return failure, never a successful staging acknowledgement. The terminal
+parser performs only this structural request/result binding. The client MUST
+still verify both selected replica signatures and the full XPP1/placement
+pair before making the inventory claimable.
 
 The exact-record verification covers complete XPI1
 identity/freshness/signature/lineage, every DPK2 signature and

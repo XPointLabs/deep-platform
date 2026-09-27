@@ -1217,10 +1217,14 @@ V1 inventory store/codec не использовать как обходной �
 Shared account owner теперь умеет после проверки DID2-аккаунта и protected
 inventory tip читать exact публичный XPP1 из SQLCipher для повторяемой
 отправки; это не выдаёт sealed DPK2 secrets и само по себе не авторует
-сетевую публикацию. Следующий разрыв: ONION ContactResolve ещё принимает
-retired XPP1 bounded wire, а DID2 UAT receiver пока доступен только через
-peer-authenticated endpoint. Нужен один clean V2 путь от физического клиента
-к обеим выбранным репликам и проверка пары XIC1 до claim.
+сетевую публикацию. ONION ContactResolve теперь структурно принимает только
+bounded DID2 XPP1 V2, отличает staging ACK от финального XIC1 и отвергает
+retired V1 carrier. XNode UAT terminal теперь принимает V2-фрагмент только
+на локально выбранной реплике по заново полученному DID2/NETCODEC proof,
+сохраняет его в тот же журнал и после полного Commit может вернуть один XIC1.
+Следующий разрыв: физический клиент ещё не отправляет одну exact sequence к
+обеим выбранным ONION exit и не проверяет пару XIC1 до claim; положительное
+E2E этих двух terminal paths также ещё не получено.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
