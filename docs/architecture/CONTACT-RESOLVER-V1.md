@@ -760,7 +760,10 @@ V2 artifacts. A V1 request, receipt, manifest or DPK2 is a hard rejection;
 V2 machine-registry entries, bounded wire sizes, vectors and replica state
 remain release gates. The sender-ephemeral domain label below is intentionally
 unchanged under [DR-0008](../survival-program/decisions/DR-0008-did2-dph2-wire-clean-break.md):
-its preimage contains the canonical DID2-bearing DPH2 V2 inputs.
+its preimage contains the canonical DID2-bearing DPH2 V2 inputs. XPK1 tag 20
+is exactly `0x0301`, and the request hash used by XPC1 is
+`SHA256-D("Deep/ContactResolver/V2/request", exact canonical XPK1 V2)`.
+The fixed canonical XPK1 V2 request is exactly 438 bytes.
 
 `XPK1` uses common request tags plus:
 

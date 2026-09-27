@@ -649,6 +649,9 @@ flag, dual reader или автоматический fallback. Нужно:
   complete body lengths и V2 receipt signing input. Они пока не выдают
   publication authority: нужны authenticated placement, два final receipt,
   durable replica commit/replay и live XPC1;
+  DID2-only XPK1 V2 request codec теперь фиксирует exact 438-byte wire,
+  suite `0x0301` и V2 request-hash domain; XPC1 result, replica CAS и
+  защищённая отправка DPH2 ещё не активированы;
   публичная проверка принимает только заново проверенную current DCA1 V2
   capability и весь nonce-bound trusted-time interval, а не caller-supplied
   timestamp. Это ещё не XPK1/XPC1 claim и не runtime activation.
