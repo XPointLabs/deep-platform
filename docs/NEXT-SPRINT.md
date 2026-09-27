@@ -1235,10 +1235,11 @@ device/generation/policy/time отвергаются до генерации pri
 PKV2 schema generation 2 атомарно сохраняет exact XPS1 V2 с XPP1/DPK2,
 сверяет его подпись, scope и XPI1-reference при записи и reopen; старую
 schema generation 1 не мигрируем. Отправитель принимает только защищённый
-публичный пакет владельца аккаунта. Следующий разрыв: MAUI account flow ещё
-не вызывает этот отправитель, account owner не сохраняет пару XIC1 для claim
-и не выполняет
-физический сценарий;
+публичный пакет владельца аккаунта. Account service теперь вызывает этот
+отправитель и add-only сохраняет exact verified XIC1 pair в защищённом слоте,
+привязанном к exact XPP1; запись не заменяет свежую проверку placement/claim.
+Следующий разрыв: MAUI account flow ещё не вызывает этот путь, нет удалённого
+claim и не выполнен физический сценарий;
 положительное E2E двух terminal paths также ещё не получено.
 Read-only device/runtime audit 2026-09-28: clean Windows DID2 UI явно
 показывает только локальный аккаунт и закрытые контакты/сообщения/группы;
