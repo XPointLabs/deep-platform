@@ -144,6 +144,13 @@ P0 выполняется по законченным пользовательс
    proof и полным DCA1/DCR1/XPI1/DPK2 verifier. Но ни replica RPC, ни
    durable commit/финальные XIC1 пока не вызывают этот gate; публикация
    остаётся закрытой и device E2E этим не подтверждён.
+   Отдельный UAT-only XNode source теперь может построить NETCODEC
+   `PublishPreKeyInventory` placement из exact XVP1/XNV1/XNH1/XND1/PMT2
+   closure и свежего DID2 proof, не пользуясь V1 ADP1 snapshot. Его файлы
+   ограничены по размеру и проверяются при старте; вызов Protocol заново
+   проверяет подписи и DTT1 current-view binding на каждом mint. Но это
+   ещё не protected successor-LKG и не активный replica RPC; до включения
+   endpoint требуется отдельная monotonic network custody и V2 receiver.
    Совместный откат журнала и якоря остаётся вне гарантий одного локального
    хранилища и требует живого threshold freshness evidence.
    Кроме pre-key, прежний `ContactVerifiedAuthoritySnapshotSource` также
