@@ -1097,6 +1097,16 @@ fallback. Он использует те же точные public XNA1/DTS1/gene
 compiled pins; Release без утверждённой crypto/runtime authority остаётся
 закрытым. Это только подготовка account/peer proof, не contact acceptance,
 DPK2 publication или физический message E2E.
+XNode получил отдельный opt-in UAT/development DID2 proof boundary: он
+повторно проверяет точную подписанную XNA1/DTS1 lineage от независимого
+genesis pin, восстанавливает подписанный DID2 genesis и защищённый head
+journal, а на старте отказывает при неполной конфигурации, V1
+`ContactAuthority` или production profile. Локальный XNode gate прошёл
+241 unit, 396 integration и 107 profile tests. Это ещё не подключено к
+XPP1/XIC1 публикации или XPK1/XPC1 claim, не включает сообщения и не
+является физическим E2E. Следующий шаг — включить этот proof reader в
+operation-scoped V2 publication/claim с текущей DCA1 capability, затем
+проверить текст на новой Windows↔Android паре до media и групп.
 Для DID2 добавлен отдельный `GET /health/did2/ready`: он повторно проверяет
 protected trusted time, полную ADA2 lineage, независимый latest-head floor и
 срок текущей подписанной головы до возможности выпустить новый proof.
