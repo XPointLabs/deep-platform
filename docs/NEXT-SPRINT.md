@@ -639,6 +639,12 @@ flag, dual reader или автоматический fallback. Нужно:
   можно зашифровать в локальном pre-key secret blob и восстановить после
   restart только с совпадающими exact bytes, hash и scope. Локальный
   authoring/seal не заменяет XPP1/XIC1, XPC1, DID2 DPH2 или device E2E;
+  DID2 DPH2 pre-claim теперь проверяет V2 offering только относительно
+  nonce-fresh current DID2 directory proof адресата, сохраняет exact V2
+  DPK2 bytes в verified capability и использует их для DPH2 selection,
+  transcript и initial-payload AAD. Двухаккаунтный Registry/Shared тест
+  отвергает старый DPK2 envelope. V2 XPP1/XPC1 и durable message transport
+  остаются открытыми gates; pre-claim не является отправленным сообщением;
   публичная проверка принимает только заново проверенную current DCA1 V2
   capability и весь nonce-bound trusted-time interval, а не caller-supplied
   timestamp. Это ещё не XPK1/XPC1 claim и не runtime activation.
