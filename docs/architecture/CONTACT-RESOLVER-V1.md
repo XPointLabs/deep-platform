@@ -672,11 +672,13 @@ DPK2. Every published epoch therefore has one device-signed XPI1 manifest:
 | 15 | expires-at Unix seconds | 8 |
 | 16 | publisher device signature | 64 |
 
-XPI1 is exactly 560 bytes. Its 488-byte canonical projection is tags 1..15;
+The DID2 release XPI1 uses canonical version `2` and suite `0x0301`;
+version `1`/suite `0x0201` bytes and V1 signatures MUST reject. XPI1 is
+exactly 560 bytes. Its 488-byte canonical projection is tags 1..15;
 tag 16 is `Ed25519.Sign(deviceSigningKey,
-SIGINPUT("Deep/ContactResolver/V1/prekey-inventory", 0x0201, projection))`.
+SIGINPUT("Deep/ContactResolver/V2/prekey-inventory", 0x0301, projection))`.
 Every XPI1 predecessor, receipt and claim binding uses exactly
-`xpi1Hash32 = SHA256-D("Deep/ContactResolver/V1/exact-xpi1", exactXPI1)`;
+`xpi1Hash32 = SHA256-D("Deep/ContactResolver/V2/exact-xpi1", exactXPI1)`;
 raw SHA-256 and the CONTACT-CODEC ArtifactRef hash are not interchangeable.
 Tags 1..6 must equal the exact verified XPS1/DPD1 closure. Tag 7 is `1..14`,
 tag 8 is ZERO32 iff tag 7 is 1 and otherwise names the exact accepted prior
@@ -691,16 +693,23 @@ successors permanently fork-latch that service generation.
 
 One-time DPK2 records are sorted by their nonzero tag-19 pre-key ID; duplicate
 IDs or hashes reject. For zero-based position `i`, the leaf is
-`SHA256-D("Deep/ContactResolver/V1/prekey-inventory-leaf",
+`SHA256-D("Deep/ContactResolver/V2/prekey-inventory-leaf",
 i:u16be || dpk2Hash32)`. The tree is padded to the next power of two with
-`SHA256-D("Deep/ContactResolver/V1/prekey-inventory-empty", i:u16be)` leaves;
+`SHA256-D("Deep/ContactResolver/V2/prekey-inventory-empty", i:u16be)` leaves;
 an internal node is
-`SHA256-D("Deep/ContactResolver/V1/prekey-inventory-node", left32 || right32)`.
+`SHA256-D("Deep/ContactResolver/V2/prekey-inventory-node", left32 || right32)`.
 Tag 10 is the root. Tag 11 is the exact domain-separated DPK2 hash of the sole
 LastResort record and is not a tree leaf. Thus the manifest commits the complete
 ordered set, not a server-selected subset.
 
 #### 3.3.2 Atomic two-replica inventory publication: `XPP1` / `XIC1`
+
+The DID2 release publisher and replicas MUST use the V2 XPI1 bytes and hash
+defined above. The existing V1 XPP1/XIC1 implementation is retired for this
+path. The target XPP1/XIC1 envelope uses version `2`, suite `0x0301`, and
+the V2 receipt domain below; its replacement codec, Merkle proof and durable
+replica flow remain a release gate and cannot be inferred from an XPI1 parser
+alone.
 
 The client sends one operation-bound XPP1 to both exact PreKeyClaim placement
 replicas over authenticated replica transport. XPP1 uses CONTACT-CODEC with
@@ -717,7 +726,7 @@ Each replica returns one 284-byte XIC1 with tags `1=networkId16`,
 `2=publicationOperationId32`, `3=exactXPI1Hash32`, `4=placementHash32`,
 `5=replicaId32`, `6=committedAt:u64be`, `7=replicaSignature64`. Tag 7 signs the
 212-byte tags-1..6 projection under
-`SIGINPUT("Deep/ContactResolver/V1/prekey-inventory-commit", 0x0201,
+`SIGINPUT("Deep/ContactResolver/V2/prekey-inventory-commit", 0x0301,
 projection)`. Success requires two valid XIC1 records from the exact ranked
 replicas, identical tags 1..4 and a committed time inside XPI1 validity. Same
 operation and identical XPP1 exact-replays byte-identically after restart;

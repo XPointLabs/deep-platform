@@ -625,8 +625,10 @@ flag, dual reader или автоматический fallback. Нужно:
   упорядоченный набор DRS1/DPD1 для всех DMD1 devices, а promotion требует
   byte-identical verified custody. Это ещё не ADH1/ADP1 freshness, XPI1/DPK2 inventory,
   ContactResolve publication или physical E2E;
-  изолированный DID2 XPI1 manifest binding теперь сверяет independently
-  versioned XPI1 с exact DCR1 V2/XPS1/DMD1/DRS1 и подписью responder DPD1;
+  изолированный DID2 XPI1 manifest binding теперь принимает только version 2,
+  suite 0x0301 и отдельные V2 signing/hash domains, отклоняя прежние V1
+  байты и подписи; он сверяет exact DCR1 V2/XPS1/DMD1/DRS1 и подпись
+  responder DPD1;
   публичная проверка принимает только заново проверенную current DCA1 V2
   capability и весь nonce-bound trusted-time interval, а не caller-supplied
   timestamp. Это ещё не XPK1/XPC1 claim и не runtime activation.
