@@ -125,6 +125,9 @@ P0 выполняется по законченным пользовательс
    DCA1 V2 authority и заново проверяет полный XPI1/DPK2 inventory перед
    promotion кандидата. Подмена DID2 либо inventory отвергается; XNode ещё
    не вызывает этот gate в runtime, поэтому публикация остаётся закрытой.
+   Журнал bounded XPP1 теперь и без restart карантинит повреждённый chunk
+   при exact commit replay и потерю manifest после сохранения chunk; это
+   закрывает локальный replay/reset дефект, но не даёт publication authority.
    В XNode добавлен bounded HTTPS-запрос к существующему V2 Registry proof
    endpoint для exact DID2: wire связывает lookup/nonce/boot ID, HTTP-ответ
    проверяется по endpoint, типу, размеру и `no-store`. Он пока возвращает
