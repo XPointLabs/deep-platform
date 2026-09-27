@@ -1153,8 +1153,12 @@ SQLCipher primitive для атомарного initial XPP1 inventory + sealed 
 capabilities: crash до commit не оставляет частичных rows, reopen сверяет
 exact scope/member bytes и восстанавливает sealed secrets. Теперь он подключён
 к account-owned STORE-V2: отдельный key domain, protected install marker и
-add-only exact-XPP1 tip до SQL commit; потеря staged SQL при сохранённом
-protected state отказывает fail-closed. Это пока не выдаёт XPP1 в сеть.
+add-only exact-XPP1 tip до возврата publication eligibility. Полный SQL commit
+предшествует tip, поэтому прерывание между ними восстанавливается из
+проверенного staged inventory; потеря SQL после tip при сохранённом protected
+state отказывает fail-closed. Marker-only сбой первого открытия без tip
+восстанавливает только пустую базу, не сбрасывая аккаунт. Это пока не выдаёт
+XPP1 в сеть.
 Следующий обязательный шаг text vertical — текущий DID2 closure/placement,
 verified двухрепличный XIC1 commit и клиентский DPH2 claim/receive.
 V1 inventory store/codec не использовать как обходной путь.
