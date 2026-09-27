@@ -73,11 +73,13 @@ P0 выполняется по законченным пользовательс
 Текущий исполняемый разрыв первого инкремента проверен по call path, а не
 по готовности отдельных codec (2026-09-27):
 
-1. Обычный `MauiProgram.Clean` всё ещё создаёт `DeepAccountRuntimeAccessor`
-   и `DeepContactResolveRuntimeAccessor` старого поколения; DID2 account и
-   nonce-bound contact proof существуют только в изолированном probe. Нужно
-   заменить composition на DID2 owner и перевести сохранившийся визуальный
-   chat/contact shell на его capabilities без V1 fallback.
+1. Обычный `MauiProgram.Clean` уже входит в DID2-only account owner, но этот
+   граф пока не содержит отправку/приём сообщений. Установленный ранее
+   Windows `.e2e` package остаётся отдельной старой V1-сборкой и не является
+   доказательством DID2. Нужно подключить nonce-bound contact proof и
+   DID2-транспорт к production composition, перевести сохранившийся
+   визуальный chat/contact shell на его capabilities без V1 fallback и
+   установить новую физическую сборку перед device E2E.
 2. XNode `ContactServiceRuntime.Decode` и `ContactServiceOpaqueFacade.ClaimAsync`
    читают `XPK1` через V1 `Xpk1Codec`; durable pre-key store принимает V1
    `XPI1/DPK2` и пишет `contact-service-v1`. Заменить один связанный
@@ -126,8 +128,13 @@ P0 выполняется по законченным пользовательс
    Кандидат XNode reader теперь повторно аутентифицирует защищённый V2 head,
    запрашивает proof с собственной nonce/monotonic window, вызывает V2
    verifier и выпускает current-value capability лишь после CAS/durable head
-   commit, повторного чтения и проверки свежести. Production-реализация
-   rollback-floor store и DI ещё отсутствуют, поэтому это не runtime authority.
+   commit, повторного чтения и проверки свежести. Файловый кандидат
+   rollback-floor store сохраняет signed exact ADH1 в защищённом append-only
+   журнале с отдельным локальным якорем; restart, потеря индекса, повреждение
+   якоря и неверный genesis pin проверены интеграционными тестами. DI и
+   привязка к runtime commit ещё отсутствуют, поэтому это не runtime authority.
+   Совместный откат журнала и якоря остаётся вне гарантий одного локального
+   хранилища и требует живого threshold freshness evidence.
    Кроме pre-key, прежний `ContactVerifiedAuthoritySnapshotSource` также
    питает onion receive/placement и group control: его V1 ADP1 нельзя оставить
    как скрытый источник authority при DID2 cutover; заменить нужно общий
