@@ -645,6 +645,10 @@ flag, dual reader или автоматический fallback. Нужно:
   transcript и initial-payload AAD. Двухаккаунтный Registry/Shared тест
   отвергает старый DPK2 envelope. V2 XPP1/XPC1 и durable message transport
   остаются открытыми gates; pre-claim не является отправленным сообщением;
+  bounded V2 XPP1/XIC1 structural codecs теперь закрывают exact envelope,
+  complete body lengths и V2 receipt signing input. Они пока не выдают
+  publication authority: нужны authenticated placement, два final receipt,
+  durable replica commit/replay и live XPC1;
   публичная проверка принимает только заново проверенную current DCA1 V2
   capability и весь nonce-bound trusted-time interval, а не caller-supplied
   timestamp. Это ещё не XPK1/XPC1 claim и не runtime activation.

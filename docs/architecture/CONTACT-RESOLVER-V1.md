@@ -719,9 +719,13 @@ claim; those remain mandatory release gates.
 The DID2 release publisher and replicas MUST use the V2 XPI1 bytes and hash
 defined above. The existing V1 XPP1/XIC1 implementation is retired for this
 path. The target XPP1/XIC1 envelope uses version `2`, suite `0x0301`, and
-the V2 receipt domain below; its replacement codec, Merkle proof and durable
-replica flow remain a release gate and cannot be inferred from an XPI1 parser
-alone.
+the V2 receipt domain below; its complete authoritative pipeline, including
+Merkle proof and durable replica flow, remains a release gate and cannot be
+inferred from an XPI1 parser alone.
+The bounded V2 XPP1 and 284-byte V2 XIC1 structural codecs now reject old
+envelopes and malformed embedded inventories. Their parsers do not grant
+publication or claim authority: authenticated placement, two signed final
+receipts, durable replica state and restart replay still have to be wired.
 
 The client sends one operation-bound XPP1 to both exact PreKeyClaim placement
 replicas over authenticated replica transport. XPP1 uses CONTACT-CODEC with
@@ -748,6 +752,15 @@ the epoch claimable. Registry publication, a single receipt or caller-provided
 inventory metadata is never authority.
 
 ### 3.4 Atomic pre-key claim: `XPK1` / `XPC1`
+
+For DID2 this is a clean-break V2 request/result pair (record version `2`,
+suite `0x0301`), not a dual-reader for the retired V1 claim. All DCB1, XPI1
+and DPK2 references and embedded bytes below mean the exact DID2-generation
+V2 artifacts. A V1 request, receipt, manifest or DPK2 is a hard rejection;
+V2 machine-registry entries, bounded wire sizes, vectors and replica state
+remain release gates. The sender-ephemeral domain label below is intentionally
+unchanged under [DR-0008](../survival-program/decisions/DR-0008-did2-dph2-wire-clean-break.md):
+its preimage contains the canonical DID2-bearing DPH2 V2 inputs.
 
 `XPK1` uses common request tags plus:
 
@@ -781,12 +794,12 @@ sibling path of the padded XPI1 tree (direction follows index bits). For the
 last-resort DPK2, tag 27 is `0xffff` and tag 28 is empty; its hash must equal
 XPI1 tag 11. Receipt grammar is
 the two sorted `(replicaId32, signature64)` entries; each replica signs
-`SIGINPUT("Deep/ContactResolver/V1/prekey-claim-commit", 0x0201,
+`SIGINPUT("Deep/ContactResolver/V2/prekey-claim-commit", 0x0301,
 requestHash32 || dpk2Hash32 || xpi1Hash32 || oneTimePreKeyId32 ||
 claimCommitGeneration:u64be || lastResortUseCounter:u16be)` where
 `dpk2Hash32 = SHA256-D("Deep/Messaging/V2/exact-dpk2", exactDPK2)`. The unsigned
 tuple is exactly 138 bytes. Tag 18 is exactly
-`SHA256-D("Deep/ContactResolver/V1/prekey-claim-receipt", that138ByteTuple)`;
+`SHA256-D("Deep/ContactResolver/V2/prekey-claim-receipt", that138ByteTuple)`;
 neither tag 18 nor replica signatures are part of the tuple, so the derivation is
 non-circular. The claim receipt hash commits that complete input and
 is included in the DPH2 handshake transcript. `StaleBundle` returns only the
