@@ -123,10 +123,27 @@ Protocol/DevOps теперь продолжают исходный ADF1 стро
 ADF1 generation 0 и добавлен generation 1 с coverage 4–21 → head 22/tree 8;
 root-ключ остался локально. Реальная XNode trace подтвердила DPQ proof HTTP 200,
 первая нода стала healthy, negative frame корректно получает HTTP 400 через H2.
-Windows publication теперь доходит до outcome-unknown после forwarding:
-нужно завершить peer/terminal delivery и получить точную durable XIC1 pair.
-Idle receive-authority refresh также должен сохранять nonce-fresh readiness
-без зависимости от входящего прикладного трафика.
+Следующая Windows попытка получила аутентифицированный terminal отказ:
+трёхузловая trace показала peer/proof HTTP 200 и exact inventory-verifier reject
+на конечной ноде. Оба сохранённых тестовых inventory уже истекли; обнаружено
+ошибочное ограничение authoring expiry коротким ADH1. Исправление в Shared
+сохраняет signed DCA1/device bounds и exact retry; свежая локальная проверка
+должна отвергать expired/changed support до отправки manifest. Полный Shared
+Release gate финального изменения прошёл 182/182; новая device попытка ещё
+обязательна. Не изменять
+подписанные staged bytes: нужен нормальный successor/replenishment lifecycle,
+не silent re-key или ослабление terminal verifier. Durable XIC1 pair отсутствует.
+XNode `f7caf73` реализовал idle receive-authority refresh без I/O из health-read,
+с fail-closed recovery и cancellation/late-result protection. Полный source-cutover
+gate прошёл 455 integration / 107 profile / 262 unit; CI также прошёл.
+Immutable-image сборка через существующий package-owner DevOps workflow
+завершилась успешно. Все три production-ноды обновлены installer; XNode,
+ingress и прежний storage healthy, зарегистрированные ключи сохранены.
+Это не device delivery gate.
+Production Registry ADH1 штатно продолжен до generation 23/tree 8 без сброса
+floor; readiness снова HTTP 200. В текущей конфигурации HeadRenewalEnabled
+не включён: постоянное renewal wiring остаётся обязательным, как и независимые
+operator time observations и periodic offline-root checkpoints.
 Account-owned durable DNH2 custody по DR-0012 также остаётся release prerequisite:
 live full-history cache не обеспечивает advance изменившегося tip после restart.
 Не заменять это reset, rehydration только по tuple или потерей policy/PMT lineage.

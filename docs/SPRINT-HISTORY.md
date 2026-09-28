@@ -1,5 +1,45 @@
 # История спринтов
 
+## 2026-09-28 — authenticated terminal diagnosis и idle receive refresh
+
+- Трёхузловая private trace подтвердила реальные peer и DID2 proof HTTP 200;
+  Windows получил sealed authenticated terminal failure, а terminal reject
+  сопоставлен с `DeepIdV2ReplicaPreKeyInventoryVerifier`. Закрытая metadata
+  проверка установила истёкшие интервалы двух staged test inventories. Exact
+  bytes, account credentials, payloads и trace не помещались в Git.
+- XNode `f7caf73` добавил сериализованное background refresh через прежний
+  verified authority source, очистку readiness при ошибке и bounded retry,
+  отмену и запрет reactivation поздним result после stop. Health-read остаётся
+  side-effect-free. Focused gate 19/19, полный source-cutover gate:
+  455 integration / 107 profile / 262 unit; owner CI success.
+  Build/publish из XNode workflow отвергнут GHCR package permission;
+  существующий package-owner DevOps workflow `36447887244` завершился успешно
+  без изменения `latest`. Проверена source revision и опубликованный amd64
+  digest. Installer `ea169fe` обновил все три production-ноды; XNode, ingress
+  и прежний storage healthy, зарегистрированные Ed25519/BLS/X25519 ключи
+  byte-identical. Общий OCI-index не скачался на seed1; выбран проверенный
+  amd64 manifest того же image, не mutable tag или другая source revision.
+- Registry кратковременно fail-closed вернул readiness 503 после expiry ADH1;
+  поддерживаемый operator refresh продолжил тот же floor до 23/tree 8 и
+  readiness HTTP 200. HeadRenewalEnabled в этой конфигурации не включён.
+  Попытка ранней trusted-time rotation отвергнута monotonic guard; state hash
+  остался прежним и guard не обходился. После независимой UTC/NTP/no-reboot
+  проверки штатный operator `989edd` в одноразовом network-disabled контейнере
+  с прежними protected mounts выполнил explicit interval refinement через
+  exact-state CAS: uncertainty 8 → 4, новый state generation 13; readiness 200.
+  Runtime Registry image/listener и genesis остались прежними.
+- Shared `7c5ee55` исправил lifetime начального inventory и проверку live
+  support до отправки. Первый focused path gate прошёл 16/16; финальный полный
+  Release gate — 182/182, включая expired-before-dispatch и exact retry/reopen.
+  Подписанные expired inventory не переписаны. Successor lifecycle,
+  новая physical publication/XIC1 pair и text/media/group E2E остаются открытыми.
+- MAUI `753ab13` добавил подтверждаемый UI reset только для изолированных
+  диагностических аккаунтов; обычный клиент не содержит этого control.
+  Clean gate 35/35 и smoke 119/119 прошли. Reset/create проверен локальным
+  ViewModel/store тестом, не заявлен как выполненный на устройствах.
+  Новые device builds выполняются; параллельный Windows build столкнулся с
+  Android restore в общем obj/assets и должен быть повторён последовательно.
+
 ## 2026-09-28 — periodic DID2 root checkpoint без сброса production floors
 
 - Реальный Registry failure связан с ADF1, покрывавшим только directory heads
