@@ -1,5 +1,32 @@
 # История спринтов
 
+## 2026-09-28 — новые physical аккаунты и bounded proof refresh
+
+- После ручного удаления тестовых аккаунтов Mr. X новые Windows/Android
+  HTTPS QA аккаунты созданы через name/Create; recovery сохранена зашифрованно
+  и не раскрывалась. Обе device сборки Shared `7c5ee55` завершились без
+  warnings/errors. Это account-creation evidence, не messaging E2E.
+- Новый ADF1 generation 2 продолжает прежние checkpoint, покрывает головы
+  22–24 и ведёт к independently pinned head 25/tree 10. Registry recomposed
+  на том же runtime image со всеми 13 mounts и прежним listener. Readiness,
+  три XNode и staking portal успешны после импорта; root остался локально.
+  Подробности принадлежат
+  [DevOps runbook](../deep-devops/docs/DID2_FLOOR_PRODUCTION_CANDIDATE.md).
+- Production trace обнаружила исчерпание DID2 proof budget фоновыми запросами
+  трёх XNode каждые пять секунд. XNode `6764cbf` использует десятисекундный
+  refresh и exact live local binding в пределах этого интервала, без продления
+  signed lease; отказ refresh очищает binding, stop блокирует late result.
+  Focused gate 21/21; полный source-cutover: 457 integration, 107 profile,
+  262 unit. Один первый concurrent-lock test сообщил protected-storage-rejected;
+  isolated и полный повтор прошли, причина нестабильности ещё не установлена.
+  Docker multi-node rehearsal прошёл с настоящим Xray и fail-closed authority
+  boundary после выбора незанятых локальных портов. Owner CI image ожидается;
+  новый rollout и device publication пока не подтверждены.
+- MAUI `d1f9ef9` добавил closed Android `networkOutcome`: null stageFailure
+  не считается успехом, произвольный UI error text не экспортируется.
+  Clean 35/35, smoke 119/119 и восемь classifier cases прошли.
+  Durable XIC1 pair, контакты, text/media/group device E2E ещё открыты.
+
 ## 2026-09-28 — authenticated terminal diagnosis и idle receive refresh
 
 - Трёхузловая private trace подтвердила реальные peer и DID2 proof HTTP 200;

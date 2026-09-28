@@ -62,6 +62,20 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ### Ритм вертикальных проверок
 
+Текущий prerequisite (2026-09-28): после ручного reset созданы новые physical
+Windows/Android HTTPS QA аккаунты. Directory checkpoint продолжен до head
+25/tree 10 без reset floors. Следующий production rollout — XNode `6764cbf`,
+устраняющий исчерпание proof budget idle polling; source-cutover tests 826/826
+и локальная трёхузловая репетиция прошли. Нужны immutable owner CI image,
+rollout поддерживаемым installer и повторная physical XIC1 pair. Раздельные
+показания Android stageFailure/networkOutcome не приравнивать к delivery.
+Оставить отдельной задачей выяснение причины intermittent Windows
+concurrent authority-lock rejection: isolated и полный повтор passed, причина
+первого protected-storage-rejected не доказана. Актуальные service facts — в
+[DevOps runbook](../deep-devops/docs/DID2_FLOOR_PRODUCTION_CANDIDATE.md),
+device observations — в
+[MAUI evidence note](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
+
 P0 выполняется по законченным пользовательским сценариям, а не по числу
 изменённых файлов. Первый инкремент — DID2 contact/bootstrap и текстовое
 сообщение Android↔Windows: публикация pre-key, атомарный claim, DPH2,
