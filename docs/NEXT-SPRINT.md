@@ -139,20 +139,27 @@ contact/message vertical и не закрывают release/device messaging gat
    nonce-bound ADP1 V2 proof выбранной реплики, не публикация и не XIC1.
    Отдельный Protocol verifier сверяет current DID2/DAB2/ADC1 V2, подписи
    DCA1/XPS1/XPI1/DPK2 и полный ordered inventory/Merkle root без plaintext
-   DCR1 у XNode; подмена DID2, XPS1 или root отвергается. Следующий шаг —
-   подключить этот verifier к durable final commit и запретить claim до двух
-   согласованных XIC1. Пока peer RPC выполняет только staging.
+   DCR1 у XNode; подмена DID2, XPS1 или root отвергается. Guarded final commit
+   уже вызывает этот verifier и повторно mint-ит current placement перед
+   одним XIC1. Локальный snapshot теперь атомарно хранит exact inventory с
+   DPK2 и receipt под подписью прежнего node identity; metadata-only state
+   отвергается без migration. Проверены restart/exact replay, ограничения и
+   отказ на подмену подписанного tuple. Следующий gate — полный положительный
+   authority-bound final commit, две выбранные реплики и client-side проверка
+   пары XIC1; claim остаётся закрыт.
    Отдельная Protocol-проверка successor XPI1 теперь требует точный hash
    уже принятого durable predecessor, последовательный epoch и неизменную
-   идентичность pre-key сервиса; XNode ещё не предоставляет ей authoritative
-   predecessor и не фиксирует final receipt.
+   идентичность pre-key сервиса; XNode предоставляет ей durable predecessor
+   и фиксирует final receipt через service-capability-keyed CAS. Полный
+   authority-bound положительный integration/device gate ещё не подтверждён.
    Журнал bounded XPP1 теперь и без restart карантинит повреждённый chunk
    при exact commit replay и потерю manifest после сохранения chunk; это
    закрывает локальный replay/reset дефект, но не даёт publication authority.
    В XNode добавлен bounded HTTPS-запрос к существующему V2 Registry proof
    endpoint для exact DID2: wire связывает lookup/nonce/boot ID, HTTP-ответ
    проверяется по endpoint, типу, размеру и `no-store`. Его сырой ответ
-   потребляет отдельный проверяющий reader, но не final commit.
+   потребляет проверяющий reader; final commit получает только его verified
+   current-value capability, а не сырой ответ.
    Кандидат XNode reader теперь повторно аутентифицирует защищённый V2 head,
    запрашивает proof с собственной nonce/monotonic window, вызывает V2
    verifier и выпускает current-value capability лишь после CAS/durable head
@@ -164,9 +171,9 @@ contact/message vertical и не закрывают release/device messaging gat
    старте; внутренний gate связывает committed XPP1 candidate с новым DID2
    proof и публичными DCA1/XPS1/XPI1/DPK2 support из exact manifest, не
    принимая готовую авторизацию или plaintext DCR1 от вызывающего кода.
-   Peer RPC пока выполняет
-   только staging; durable final commit/XIC1 не вызывают этот gate; публикация
-   остаётся закрытой и device E2E этим не подтверждён.
+   Guarded peer/ONION final commit теперь вызывает этот gate перед durable
+   inventory commit/XIC1. Один receipt не открывает публикацию или claim;
+   end-to-end two-replica/client/device gate пока не подтверждён.
    Отдельный UAT-only XNode source теперь может построить NETCODEC
    `PublishPreKeyInventory` placement из exact XVP1/XNV1/XNH1/XND1/PMT2
    closure и свежего DID2 proof, не пользуясь V1 ADP1 snapshot. Его файлы
