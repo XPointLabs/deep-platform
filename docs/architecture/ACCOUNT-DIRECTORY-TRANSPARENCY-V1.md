@@ -810,6 +810,19 @@ Artifact time validation succeeds only when the complete merged interval lies wi
 arithmetic. Thus uncertainty fails closed near either boundary and a signed hint can
 neither move the protected lower bound backward nor extend signed expiry.
 
+Registry operator custody may explicitly refine its separately protected issuance
+anchor after an independently observed UTC measurement. Refinement requires the
+exact protected-state compare-and-swap, a nondecreasing platform monotonic sample,
+strictly smaller uncertainty and a proposed interval wholly inside the advanced
+prior interval. The representative center may decrease only under this subset
+rule; the protected lower bound cannot decrease and the upper bound cannot widen.
+The operator MUST confirm the host has not rebooted; this path is not reboot
+recovery and a monotonic sample check alone does not detect every reboot.
+This is an operator action, never an automatic OS-clock correction, history reset,
+client secure-time merge input or permission to ignore signed uncertainty/expiry.
+Disjoint observations fail closed without mutation. Normal non-refinement rotation
+retains its existing monotonic-center guard.
+
 An OS clock outside the merged authenticated interval is a displayed clock warning,
 not an alternate merge input. If authenticated DTT1/protected inputs cannot establish a
 non-empty interval, the client enters `ClockCorrectionRequired`; it may perform

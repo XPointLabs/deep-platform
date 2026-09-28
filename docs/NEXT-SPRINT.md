@@ -88,6 +88,23 @@ descriptor-bound keys на нодах с проверкой отдельного
 расширять срок жизни только в proof verifier. Эти результаты не открывают
 contact/message vertical и не закрывают release/device messaging gate.
 
+Уточнение контура и следующий prerequisite (2026-09-28): Registry и seed1–seed3
+являются production, отдельного удалённого UAT нет. До явного сообщения Mr. X
+о появлении пользователей production разрешён для тестирования; имя `UAT`
+в диагностической конфигурации не означает другой стенд. Новая immutable
+multi-architecture XNode-сборка опубликована через owner CI без GitHub Release
+и без изменения `latest`. Отдельный seed1 canary сохраняет зарегистрированную
+identity и не заменяет существующий node/ingress. Startup пока fail-closed:
+protected time uncertainty 30 секунд превышает signed DTT1 maximum 10 секунд.
+Следующий шаг — explicit CAS interval refinement по независимо проверенному UTC
+в пределах прежнего интервала, без reset истории/floors и без ослабления verifier;
+правило принадлежит
+[`ACCOUNT-DIRECTORY-TRANSPARENCY-V1`](architecture/ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md).
+Затем проверить актуальный offline-authorized forward checkpoint, nonce-fresh
+host proof и same-image restart с сохранённым protected state. Публикация двух
+replicas, peer TLS и Android↔Windows messaging ещё не подтверждены; успешный
+CI build или HTTP readiness не закрывают эти device/release gates.
+
 Текущий исполняемый разрыв первого инкремента проверен по call path, а не
 по готовности отдельных codec (2026-09-27):
 
