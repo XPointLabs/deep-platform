@@ -72,17 +72,21 @@ P0 выполняется по законченным пользовательс
 
 Срочный prerequisite физического инкремента (2026-09-28): закрытый Registry
 UAT после обновления protected time и ADH1 отвечает DID2 readiness, а новый
-Android-аккаунт довёл floor/ADA2 до generation 9/tree 6. Proof остаётся
-fail-closed: текущий XNV1 не покрывает время, и его XVP1/XND1/XNV1 closure
-истёк 2026-09-25. Реализовать monotonic successor/renewal для operational
-пакета: root-authorized XVP1 при необходимости, node-signed XND1 с актуальными
-origin/onion интервалами, threshold-signed XNV1 и зависимые XNH1/placement
-артефакты. Проверять полную predecessor/hash/time/threshold closure, отдельный
-rollback floor и атомарную публикацию до Registry/XNode; не выпускать новую
-generation-zero цепочку и не расширять срок жизни только в proof verifier.
-После этого повторить nonce-fresh proof на Android и Windows и лишь затем
-считать доступным contact/message vertical. Сохранённые UAT ADA2 и внешний
-floor согласованы и имеют отдельные приватные копии для восстановления.
+Android-аккаунт довёл floor/ADA2 до generation 9/tree 6. Подготовлен и проверен
+строго монотонный operational successor с новыми node origin/onion ключами
+и прежними зарегистрированными node identities; его exact XNV1 атомарно
+подключён только к закрытому DID2 UAT. После обновления protected time и
+renewal ADH1 до generation 10/tree 6 физический Android получил nonce-fresh
+подписанный proof и повторил его после перезапуска с сохранённым protected
+состоянием. Это diagnostic loopback lane, не production transport evidence.
+Windows canary собран с отдельным per-network хранилищем, его admission/proof
+ещё не подтверждён. Public ContactResolve source остаётся на прежнем closure,
+новые origin/onion private keys на XNode ещё не установлены. Следующие шаги:
+завершить Windows proof, согласовать общий current source и установить exact
+descriptor-bound keys на нодах с проверкой отдельного rollback floor и
+атомарной публикации. Не выпускать новую generation-zero цепочку и не
+расширять срок жизни только в proof verifier. Эти результаты не открывают
+contact/message vertical и не закрывают release/device messaging gate.
 
 Текущий исполняемый разрыв первого инкремента проверен по call path, а не
 по готовности отдельных codec (2026-09-27):
