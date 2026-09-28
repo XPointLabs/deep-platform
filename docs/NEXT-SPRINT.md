@@ -96,8 +96,14 @@ contact/message vertical и не закрывают release/device messaging gat
 same-image restart с сохранённым protected state. Ограничения и exact inputs
 зафиксированы в
 [операторском наблюдении](../deep-devops/docs/DID2-HOST-CANARY-2026-09-28.md).
-Следующий связанный инкремент — DID2 wiring поддерживаемого installer и реальный
-signed-origin peer TLS, затем публикация двух replicas и Android↔Windows text.
+Installer DID2 wiring и отдельные H2 proxy-trust listeners реализованы и
+проверены локально; owner CI собрал immutable image. Проверка реальных входов
+нашла недостающий IP SAN: шесть origin-сертификатов перевыпущены локально с
+прежними ключами/SPKI и исходным сроком действия, все три пакета прошли строгий
+ingress preflight. Следующий связанный инкремент — rollout поддерживаемым
+installer с сохранением production volumes и реальный signed-origin peer TLS,
+затем публикация двух replicas и Android↔Windows text. Exact checks/non-claims:
+[installer/H2 checkpoint](../deep-devops/docs/DID2-INGRESS-INSTALLER-2026-09-28.md).
 Files/images и группы выполняются на этом же проверенном пути. Canary не
 заменяет существующий production node/ingress и не закрывает device/release gates.
 

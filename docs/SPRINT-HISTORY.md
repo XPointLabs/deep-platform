@@ -1,5 +1,18 @@
 # История спринтов
 
+## 2026-09-28 — DID2 installer/H2 и сохранённые origin keys
+
+- Поддерживаемый installer выбирает immutable DID2 inputs без замены
+  зарегистрированных Ed25519/BLS/Reality и production state volume. Новый
+  image успешно собран owner CI; отдельное доверие proxy ограничено H2 listeners.
+- Исправлен IP SAN в шести origin-сертификатах без изменения ключей, SPKI,
+  onion seeds или исходного срока действия. Все три реальных локальных пакета
+  прошли custody staging и строгий TLS preflight. Исходные inputs сохранены.
+- Проверки и оставшиеся ограничения описаны в
+  [DevOps checkpoint](../deep-devops/docs/DID2-INGRESS-INSTALLER-2026-09-28.md).
+  Served production peer TLS и device delivery пока не подтверждены;
+  GitHub Releases/`latest` не опубликованы.
+
 ## 2026-09-28 — authenticated DID2 startup на трёх production-хостах
 
 - Registry issuance time исправлено explicit CAS interval refinement после
