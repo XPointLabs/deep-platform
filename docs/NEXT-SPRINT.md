@@ -100,9 +100,16 @@ Installer DID2 wiring и отдельные H2 proxy-trust listeners реали�
 проверены локально; owner CI собрал immutable image. Проверка реальных входов
 нашла недостающий IP SAN: шесть origin-сертификатов перевыпущены локально с
 прежними ключами/SPKI и исходным сроком действия, все три пакета прошли строгий
-ingress preflight. Следующий связанный инкремент — rollout поддерживаемым
-installer с сохранением production volumes и реальный signed-origin peer TLS,
-затем публикация двух replicas и Android↔Windows text. Exact checks/non-claims:
+ingress preflight. Все три production-проекта обновлены поддерживаемым installer,
+сервисы здоровы; public origin certificate/SPKI проверены на всех трёх.
+Реальный вход затем выявил несоответствие HTTPS `:scheme` внутреннему h2c и
+ошибку длины bodyless GET capabilities. Исправления прошли owner CI и повторный
+rollout поддерживаемым installer на всех трёх нодах. Реальные внешние HTTP/2
+GET без Content-Length возвращают 200/ready с проверенными сертификатами и SPKI.
+Следующий инкремент — physical HTTPS admission и двух-replica publication,
+затем Android↔Windows text на DID2-only client composition.
+Проверка здоровья не закрывает authenticated peer/application/device gate.
+Exact checks/non-claims:
 [installer/H2 checkpoint](../deep-devops/docs/DID2-INGRESS-INSTALLER-2026-09-28.md).
 Files/images и группы выполняются на этом же проверенном пути. Canary не
 заменяет существующий production node/ingress и не закрывает device/release gates.

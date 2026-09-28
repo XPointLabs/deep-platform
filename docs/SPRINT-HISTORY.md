@@ -10,7 +10,12 @@
   прошли custody staging и строгий TLS preflight. Исходные inputs сохранены.
 - Проверки и оставшиеся ограничения описаны в
   [DevOps checkpoint](../deep-devops/docs/DID2-INGRESS-INSTALLER-2026-09-28.md).
-  Served production peer TLS и device delivery пока не подтверждены;
+  Все три production-проекта затем обновлены installer; public served origin
+  certificate/SPKI проверены. Прикладной H2 запрос выявил scheme/bodyless-GET
+  дефекты; исправления прошли 822 XNode tests, owner CI `36410301823` и повторный
+  rollout на всех трёх нодах. Внешние HTTP/2 bodyless capabilities GET дали
+  200/ready с проверкой сертификата и protected SPKI. Authenticated peer operations
+  и device delivery не подтверждены;
   GitHub Releases/`latest` не опубликованы.
 
 ## 2026-09-28 — authenticated DID2 startup на трёх production-хостах
