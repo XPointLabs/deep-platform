@@ -20,12 +20,20 @@
   262 unit. Один первый concurrent-lock test сообщил protected-storage-rejected;
   isolated и полный повтор прошли, причина нестабильности ещё не установлена.
   Docker multi-node rehearsal прошёл с настоящим Xray и fail-closed authority
-  boundary после выбора незанятых локальных портов. Owner CI image ожидается;
-  новый rollout и device publication пока не подтверждены.
+  boundary после выбора незанятых локальных портов. Owner CI `36459171075`
+  собрал immutable image без `latest`; installer обновил все три production
+  seed с byte-identical зарегистрированными ключами и non-image settings.
 - MAUI `d1f9ef9` добавил closed Android `networkOutcome`: null stageFailure
   не считается успехом, произвольный UI error text не экспортируется.
   Clean 35/35, smoke 119/119 и восемь classifier cases прошли.
-  Durable XIC1 pair, контакты, text/media/group device E2E ещё открыты.
+  После rollout Windows (~17:49 UTC) и Android (~17:55 UTC) завершили
+  authenticated publication с verified durable XIC1 pair от двух выбранных
+  replicas. Обе программы перезапущены без reset; аккаунты и скрытая recovery
+  сохранены. Independent floor остался 25/tree 10, затем штатное renewal
+  продолжило неизменённый directory content до 26/tree 10. Эти результаты
+  не подтверждают XPK1 claim, контакты или text/media/group device E2E.
+  Подробности device build/наблюдений — в
+  [MAUI evidence note](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 
 ## 2026-09-28 — authenticated terminal diagnosis и idle receive refresh
 

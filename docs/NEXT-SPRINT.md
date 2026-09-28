@@ -64,11 +64,14 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 Текущий prerequisite (2026-09-28): после ручного reset созданы новые physical
 Windows/Android HTTPS QA аккаунты. Directory checkpoint продолжен до head
-25/tree 10 без reset floors. Следующий production rollout — XNode `6764cbf`,
-устраняющий исчерпание proof budget idle polling; source-cutover tests 826/826
-и локальная трёхузловая репетиция прошли. Нужны immutable owner CI image,
-rollout поддерживаемым installer и повторная physical XIC1 pair. Раздельные
-показания Android stageFailure/networkOutcome не приравнивать к delivery.
+25/tree 10 без reset floors. XNode `6764cbf` прошёл source-cutover tests 826/826,
+owner CI и rollout installer на всех трёх seed с сохранёнными ключами.
+Оба physical клиента завершили verified durable XIC1 pair и restart без reset.
+Один traffic HTTP 429 всё ещё наблюдался: отсутствие rate limiting не заявлено.
+Штатное renewal продолжило directory до 26/tree 10. Следующий незакрытый
+инкремент — DID2 atomic claim/DPH2 и доставка текста; durable client DNH2,
+inventory successor и автоматический operational lifecycle остаются нужны.
+Раздельные показания Android stageFailure/networkOutcome не приравнивать к delivery.
 Оставить отдельной задачей выяснение причины intermittent Windows
 concurrent authority-lock rejection: isolated и полный повтор passed, причина
 первого protected-storage-rejected не доказана. Актуальные service facts — в
@@ -84,252 +87,66 @@ P0 выполняется по законченным пользовательс
 целостности и возобновления; затем создание группы, доставка и смена состава.
 Это порядок выполнения, не сокращение release scope.
 
-Предыдущая loopback-диагностика DID2 admission/proof и restart сохранена в
-[`SPRINT-HISTORY.md`](SPRINT-HISTORY.md); она не является production transport
-evidence. Текущий prerequisite — полная physical HTTPS проверка и
-двух-replica publication на уже обновлённых трёх production XNode. Не выпускать
-новую generation-zero цепочку и не расширять срок жизни только в verifier.
-До этого contact/message vertical и release/device messaging gate остаются
-открытыми.
+Результаты прежних loopback/HTTPS/ingress диагностики находятся в
+[`SPRINT-HISTORY.md`](SPRINT-HISTORY.md) и repository evidence notes; они не
+заменяют delivery gate. Registry и seed1–seed3 — production, не удалённый UAT;
+тестирование разрешено Mr. X до явного появления пользователей. Сохранять
+зарегистрированные ключи, genesis и rollback floors. Не выпускать новую
+generation-zero цепочку и не продлевать подписанные интервалы в verifier.
 
-Уточнение контура и следующий prerequisite (2026-09-28): Registry и seed1–seed3
-являются production, отдельного удалённого UAT нет. До явного сообщения Mr. X
-о появлении пользователей production разрешён для тестирования; имя `UAT`
-в диагностической конфигурации не означает другой стенд. Устранён time-input
-блокер; отдельные canary всех трёх seed прошли nonce-fresh host bootstrap и
-same-image restart с сохранённым protected state. Ограничения и exact inputs
-зафиксированы в
-[операторском наблюдении](../deep-devops/docs/DID2-HOST-CANARY-2026-09-28.md).
-Installer DID2 wiring и отдельные H2 proxy-trust listeners реализованы и
-проверены локально; owner CI собрал immutable image. Проверка реальных входов
-нашла недостающий IP SAN: шесть origin-сертификатов перевыпущены локально с
-прежними ключами/SPKI и исходным сроком действия, все три пакета прошли строгий
-ingress preflight. Все три production-проекта обновлены поддерживаемым installer,
-сервисы здоровы; public origin certificate/SPKI проверены на всех трёх.
-Реальный вход затем выявил несоответствие HTTPS `:scheme` внутреннему h2c и
-ошибку длины bodyless GET capabilities. Исправления прошли owner CI и повторный
-rollout поддерживаемым installer на всех трёх нодах. Реальные внешние HTTP/2
-GET без Content-Length возвращают 200/ready с проверенными сертификатами и SPKI.
-Следующий инкремент — physical HTTPS admission и двух-replica publication,
-затем Android↔Windows text на DID2-only client composition.
-Windows HTTPS diagnostic создал новый аккаунт одним действием после ввода имени
-и сохранил его после UI close/restart; recovery осталась скрытой и зашифрованной.
-Registry принял admission (floor generation 18/tree 7); Windows подтвердил
-AccountProof. Повторный HTTPS response терял тело при reuse соединения.
-HTTP/2 и IPv4-first не устранили обрыв;
-независимый identity-neutral diagnostic воспроизводит его с plain HttpClient,
-а три fresh-client запроса завершились. Следующий diagnostic изолирует
-public-service соединения существующей lifetime policy без retry/downgrade.
-На реальном Windows это позволило завершить обе proof-загрузки. Исправление
-повторной full-history NETCODEC проверки прошло полный Shared gate 172/172;
-Windows теперь прошёл NetworkVerification и дошёл до PreKeyPublication.
-Это не подтверждение production-wide исправления reuse: canonical ingress
-отверг публикацию до пересылки, проверенная receipt pair пока отсутствует.
-Повторные попытки выявили create-only запись в два чередующихся ONION marker
-слота: с третьей записи возникал entropy-ledger-failed. Exact-value atomic
-SecureStorage CAS реализован; focused проверки более двух резервирований,
-reopen, rollback и marker-before-SQL crash прошли; полный Shared gate — 181/181.
-Следующая Windows physical сборка дошла до ingress без прежней local marker
-ошибки и получила canonical Unavailable BeforeForward. Private receive trace
-установила отсутствие root-checkpoint coverage для поздних protected heads.
-Protocol/DevOps теперь продолжают исходный ADF1 строго подписанным successor,
-не переиздают genesis и не сбрасывают floors. В production Registry сохранён
-ADF1 generation 0 и добавлен generation 1 с coverage 4–21 → head 22/tree 8;
-root-ключ остался локально. Реальная XNode trace подтвердила DPQ proof HTTP 200,
-первая нода стала healthy, negative frame корректно получает HTTP 400 через H2.
-Следующая Windows попытка получила аутентифицированный terminal отказ:
-трёхузловая trace показала peer/proof HTTP 200 и exact inventory-verifier reject
-на конечной ноде. Оба сохранённых тестовых inventory уже истекли; обнаружено
-ошибочное ограничение authoring expiry коротким ADH1. Исправление в Shared
-сохраняет signed DCA1/device bounds и exact retry; свежая локальная проверка
-должна отвергать expired/changed support до отправки manifest. Полный Shared
-Release gate финального изменения прошёл 182/182; новая device попытка ещё
-обязательна. Не изменять
-подписанные staged bytes: нужен нормальный successor/replenishment lifecycle,
-не silent re-key или ослабление terminal verifier. Durable XIC1 pair отсутствует.
-XNode `f7caf73` реализовал idle receive-authority refresh без I/O из health-read,
-с fail-closed recovery и cancellation/late-result protection. Полный source-cutover
-gate прошёл 455 integration / 107 profile / 262 unit; CI также прошёл.
-Immutable-image сборка через существующий package-owner DevOps workflow
-завершилась успешно. Все три production-ноды обновлены installer; XNode,
-ingress и прежний storage healthy, зарегистрированные ключи сохранены.
-Это не device delivery gate.
-Production Registry ADH1 штатно продолжен до generation 23/tree 8 без сброса
-floor; readiness снова HTTP 200. В текущей конфигурации HeadRenewalEnabled
-не включён: постоянное renewal wiring остаётся обязательным, как и независимые
-operator time observations и periodic offline-root checkpoints.
-Account-owned durable DNH2 custody по DR-0012 также остаётся release prerequisite:
-live full-history cache не обеспечивает advance изменившегося tip после restart.
-Не заменять это reset, rehydration только по tuple или потерей policy/PMT lineage.
-В adapter добавлена безопасная fixed-stage классификация HTTP/timeout ошибок,
-а для Android — отдельный пакет, system trust, pinned APK signing и guarded UI
-phases без изменения других установленных клиентов. Сборка и физические
-наблюдения учитываются отдельно в
-[device checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
-Android HTTPS account создан, пережил restart и guarded update с сохранением
-encrypted recovery; proof блокирует TLS AuthenticationException /
-RevocationStatusUnknown. Отдельная всегда отвергающая handshake-диагностика
-уточнила флаг без отправки прикладного запроса. Новый Android diagnostic
-проверяет достижимость подписанного CRL текущего публичного CA через исключение
-только для точного CRL host; остальные cleartext origins запрещены, system trust
-и revocation сохранены. Guarded update сохранил аккаунт/recovery, однако два
-запуска AccountProof завершились Timeout. После checkpoint import следующий
-Android запуск получил directory-authority unavailable; proof/XIC1 success
-по-прежнему не доказан.
-Причину нужно установить без ослабления platform trust/revocation. Диагностическая
-сборка обоих клиентов и local gates прошли, но это не message device E2E.
-Проверка здоровья не закрывает authenticated peer/application/device gate.
-Exact checks/non-claims:
-[installer/H2 checkpoint](../deep-devops/docs/DID2-INGRESS-INSTALLER-2026-09-28.md).
-Files/images и группы должны быть проверены на этом же production пути.
-Диагностический checkpoint/readiness не закрывает device/release gates.
+Account-owned durable DNH2 custody по DR-0012 остаётся prerequisite:
+process-local full-history cache не обеспечивает advance изменившегося tip
+после restart. Нужны защищённый полный policy/PMT predecessor, exact CAS,
+crash/rollback/fork tests и физический restart с изменившимся signed tip.
+Inventory successor/replenishment должен сохранять одноразовость и lineage,
+а operational head/time/checkpoint lifecycle — независимые observations и
+existing predecessor. Ни reset, ни silent re-key не заменяют эти задачи.
+Files/images и группы проверяются на том же production messaging пути.
 
-Текущий исполняемый разрыв первого инкремента проверен по call path, а не
-по готовности отдельных codec (2026-09-27):
+Незакрытые call-path задачи первого инкремента (2026-09-28):
 
-1. Обычный `MauiProgram.Clean` уже входит в DID2-only account owner, но этот
-   граф пока не содержит отправку/приём сообщений. Установленный ранее
-   Windows `.e2e` package остаётся отдельной старой V1-сборкой и не является
-   доказательством DID2. Нужно подключить nonce-bound contact proof и
-   DID2-транспорт к production composition, перевести сохранившийся
-   визуальный chat/contact shell на его capabilities без V1 fallback и
-   установить новую физическую сборку перед device E2E.
-2. XNode `ContactServiceRuntime.Decode` и `ContactServiceOpaqueFacade.ClaimAsync`
-   читают `XPK1` через V1 `Xpk1Codec`; durable pre-key store принимает V1
-   `XPI1/DPK2` и пишет `contact-service-v1`. Заменить один связанный
-   publication/claim путь на DID2 `XPP1/XIC1/XPK1/XPC1`, новый несовместимый
-   state generation и exact replay/CAS. Перед приёмом XPP1 нужен DID2-only
-   DCR1/XPU1 publication и проверенный lookup service capability → exact
-   recipient closure: `DeepIdV2PreKeyInventoryVerifier` не может принять
-   XPI1/DPK2 без текущих DCR1 и nonce-bound DID2 directory authority.
-   Не считать существующий V1 runtime E2E-доказательством DID2.
-   DID2-only permanent resolver locator/read-key derivation и DCR1 V2 object
-   protection теперь имеют внутренний fail-closed crypto candidate и локальные
-   позитивные/негативные тесты. Внутренний XPU1/XPA1 V2 parser проверяет
-   точный wire, hash/body binding и отказывает на V1; отдельный внутренний
-   verifier проверяет XNA1 threshold signatures и failure domains. Следующий
-   внутренний gate привязывает их к live DID2 ADH1/DTT1, XNA1 policy, view и
-   полному доверенному интервалу времени; это ещё не проверка current account
-   value/DCA1. Проверка route authority, placement, publisher signature и durable runtime
-   остаётся открытой. Ни один из этих кандидатов не является device E2E.
-3. Большой exact V2 `XPP1` нельзя просто отправить через ограниченный
-   ContactResolve/replica RPC. Использовать уже существующий bounded
-   authenticated replica transport как механизм доставки частей; authority
-   возникает только после полной проверки собранного exact V2 `XPP1`,
-   устойчивой фиксации обеих реплик и двух проверенных `XIC1`. Новый
-   самостоятельный транспорт или прямой Registry pre-key endpoint не вводить.
-   Закрытый V2 12-tag fragment codec/авторинг и негативный round-trip тест
-   готовы; XNode operation-scoped durable reassembly/replay journal теперь
-   структурно собирает exact aggregate, переживает restart, держит fork latch
-   и карантин повреждённого состояния; operation scope теперь включает exact
-   view/placement/service capability до первой записи. Отдельный UAT-only
-   receiver теперь подключает его к authenticated peer transport и DID2-only
-   nonce-bound proof/NETCODEC placement без V1 ADP1 authority. Проверка
-   current contact authorization/lineage при guarded финальном commit уже
-   проверяются; активация клиентского runtime через финальную пару `XIC1`
-   ещё не готова. Protocol уже проверяет exact пару подписанных `XIC1` против
-   текущего NETCODEC placement и XPP1, но default MAUI messaging graph её
-   ещё не потребляет;
-   staged aggregate не является публикацией или доказательством E2E.
-   Manifest-фрагмент V2 теперь несёт public exact DID2/DCA1 V2/XPS1,
-   связанные с каждым фрагментом общим commitment и восстановленные рядом с
-   кандидатом после restart. Это untrusted support для собственного
-   nonce-bound ADP1 V2 proof выбранной реплики, не публикация и не XIC1.
-   Отдельный Protocol verifier сверяет current DID2/DAB2/ADC1 V2, подписи
-   DCA1/XPS1/XPI1/DPK2 и полный ordered inventory/Merkle root без plaintext
-   DCR1 у XNode; подмена DID2, XPS1 или root отвергается. Guarded final commit
-   уже вызывает этот verifier и повторно mint-ит current placement перед
-   одним XIC1. Локальный snapshot теперь атомарно хранит exact inventory с
-   DPK2 и receipt под подписью прежнего node identity; metadata-only state
-   отвергается без migration. Проверены restart/exact replay, ограничения и
-   отказ на подмену подписанного tuple. Положительный XNode integration gate
-   теперь проходит через настоящий ML-DSA DID2 root, подписанные account/device/
-   directory/network closure, guarded final commit обеих выбранных реплик
-   (ONION terminal и decoded peer wire projection) и Protocol-проверку пары
-   XIC1. Reopen возвращает exact исходный receipt только после текущего proof;
-   отсутствие/истечение proof и изменённый public XPS1 support не активируют
-   inventory. Это test-owned ceremony с in-memory proof fetch/clock, не TLS,
-   KEM exchange, client transport или device E2E. Следующий gate — реальная
-   двухрепличная отправка из клиента и fresh-authority claim; claim остаётся закрыт.
-   XNode checkpoint `38074fc`: локальная source-cutover регрессия —
-   411 integration / 107 profile / 257 unit, новые 4 authority-bound cases
-   дополнительно пройдены после проверки отказа replay без текущего proof.
-   CI предыдущего inventory-custody checkpoint `e4b9ef4` завершён success;
-   новый XNode CI `36365290106` для `38074fc` также завершён success.
-   Отдельная Protocol-проверка successor XPI1 теперь требует точный hash
-   уже принятого durable predecessor, последовательный epoch и неизменную
-   идентичность pre-key сервиса; XNode предоставляет ей durable predecessor
-   и фиксирует final receipt через service-capability-keyed CAS. Полный
-   authority-bound положительный integration gate подтверждён для genesis;
-   полный successor/device gate ещё не подтверждён.
-   Журнал bounded XPP1 теперь и без restart карантинит повреждённый chunk
-   при exact commit replay и потерю manifest после сохранения chunk; это
-   закрывает локальный replay/reset дефект, но не даёт publication authority.
-   В XNode добавлен bounded HTTPS-запрос к существующему V2 Registry proof
-   endpoint для exact DID2: wire связывает lookup/nonce/boot ID, HTTP-ответ
-   проверяется по endpoint, типу, размеру и `no-store`. Его сырой ответ
-   потребляет проверяющий reader; final commit получает только его verified
-   current-value capability, а не сырой ответ.
-   Кандидат XNode reader теперь повторно аутентифицирует защищённый V2 head,
-   запрашивает proof с собственной nonce/monotonic window, вызывает V2
-   verifier и выпускает current-value capability лишь после CAS/durable head
-   commit, повторного чтения и проверки свежести. Файловый кандидат
-   rollback-floor store сохраняет signed exact ADH1 в защищённом append-only
-   журнале с отдельным локальным якорем; restart, потеря индекса, повреждение
-   якоря и неверный genesis pin проверены интеграционными тестами. UAT-only DI
-   теперь поднимает независимые XNA1/DTS1/genesis/protected-head assets при
-   старте; внутренний gate связывает committed XPP1 candidate с новым DID2
-   proof и публичными DCA1/XPS1/XPI1/DPK2 support из exact manifest, не
-   принимая готовую авторизацию или plaintext DCR1 от вызывающего кода.
-   Guarded peer/ONION final commit теперь вызывает этот gate перед durable
-   inventory commit/XIC1. Один receipt не открывает публикацию или claim;
-   end-to-end two-replica/client/device gate пока не подтверждён.
-   Отдельный UAT-only XNode source теперь может построить NETCODEC
-   `PublishPreKeyInventory` placement из exact XVP1/XNV1/XNH1/XND1/PMT2
-   closure и свежего DID2 proof, не пользуясь V1 ADP1 snapshot. Его файлы
-   ограничены по размеру и проверяются при старте; вызов Protocol заново
-   проверяет подписи и DTT1 current-view binding на каждом mint. UAT peer
-   staging уже потребляет этот source. DR-0012 добавляет защищённый network
-   floor с отдельным якорем и восстановление предшественника через полностью
-   подписанную историю, без оживления старого DTT1. Локальные restart/CAS/
-   corruption/crash проверки проходят; operator assets и живой TLS rollout
-   этого source ещё не подтверждены. Production endpoint и final commit
-   должны потреблять именно его, не пересоздавать predecessor=null.
-   Совместный откат журнала и якоря остаётся вне гарантий одного локального
-   хранилища и требует живого threshold freshness evidence.
-   Onion receive переведён на независимый DID2-only network source с заранее
-   настроенным public observer; request не выбирает freshness authority.
-   `ContactVerifiedAuthoritySnapshotSource` ещё остаётся в других consumers,
-   включая group control: его V1 ADP1 нельзя оставить как скрытый источник
-   authority при DID2 cutover. Общий consumer graph ещё требует удаления V1.
-   XNode CI проверяет текущие protocol sources через source cutover, а обычный
-   XNode NuGet pin ещё указывает на пакет до DID2 clean-break и не компилирует
-   текущий runtime. Локальный пакетный cutover проверяет совместимость, но не
-   является release evidence; перед выпуском нужен единый новый production
-   package/pin/lock graph для всех потребителей. Новый публичный verifier
-   меняет surface `Deep.Protocol`: XNode, Registry и клиент должны перейти
-   на один пересобранный пакет и согласованные lock-файлы, без старого pin.
-4. Структурный V2 `XPC1` и отдельный verifier теперь проверяют обе подписи
-   выбранных NETCODEC/PMT2 реплик для exact V2 claim tuple, но не доказывают
-   публикацию inventory или durable claim. Следующий runtime gate —
-   публикация/lineage, CAS/replay, затем DPH2/DAO1
-   send/receive и inbox commit до ACK. Ни один из шагов не заменяется
-   старым ContactV1 verified receipt.
+1. Подключить DID2 contact/bootstrap и отправку/приём к
+   `MauiProgram.Clean`: сейчас это account-only граф. Сохранить существующий
+   chat/contact shell, но связать controls только с новыми capabilities.
+   Старый Windows `.e2e` package не является DID2 evidence. Перед проверкой
+   установить текущие физические сборки через supported scripts.
+2. Заменить V1 `Xpk1Codec` в `ContactServiceRuntime.Decode` и
+   `ContactServiceOpaqueFacade.ClaimAsync` новым DID2-only claim owner.
+   Verified V2 publication уже работает в отдельном
+   `DeepIdV2InventoryCommitStore`, не в V1 `contact-service-v1`.
+   Нужны общий quorum prepare/commit journal, current publisher/device proof,
+   две проверенные publication receipts, manifest/member binding, atomic
+   one-time selection, bounded last-resort counter, operation/request exact
+   replay и conflict/fork/crash/restart tests. Изменение одного parser не
+   активирует claim. Удалить старый runtime из release graph, не адаптировать
+   его к новому account ID.
+3. Завершить DID2 permanent resolver publication/resolution:
+   `DCR1/XPU1/XPA1` V2 candidate должен потреблять current account/DCA1,
+   route authority, verified placement и publisher signature, затем durable
+   two-replica commit. Локальный crypto/parser candidate не является
+   contact acceptance. Public DID2 locator/read-key derivation не заменяет
+   current recipient closure.
+4. Соединить verified V2 `XPC1` с DID2-only DPH2/DAO1, ContactHello и DPE2
+   send/receive. Проверить обе replica signatures, exact inventory/member,
+   текущий peer proof и handshake transcript. Inbox durable commit должен
+   предшествовать ACK; resend/restart не создаёт второй handshake или message.
+   Старые ContactV1 receipt и DPH2-пути не являются fallback.
+5. Завершить inventory successor/replenishment с exact durable predecessor,
+   monotonic epoch и сохранённой one-time custody; физически проверить
+   successor, exhaustion и lost-response replay. Успешная initial publication
+   не закрывает этот lifecycle.
+6. Удалить V1 ADP1 `ContactVerifiedAuthoritySnapshotSource` из остальных
+   consumers, включая group control. Согласовать единый новый production
+   Protocol package/pin/lock graph для XNode, Registry и клиентов:
+   source-cutover CI не доказывает готовность обычного NuGet build.
 
-Физический gate текста: два DID2-аккаунта на реальных Android и Windows,
-текущий подписанный каталог, один текст в обе стороны, повтор после restart,
-дедупликация/ACK после durable commit и отказ на V1/подменённом claim. Эти
-наблюдения фиксируются только по текущим APK/Windows build и действующей
-policy; локальный TestServer, эмулятор и старые UI-тесты не засчитываются.
-
-Локальный host gate 2026-09-28 проверяет все шесть signed three-node
-permutations через настоящие DID2/NETCODEC, encrypted vault и durable
-entropy/replay. Он выявил и исправил несовместимость replay adapter с
-16-byte network ID; `XONRPL02` отвергает старое состояние без reader/migration.
-Exit возвращает проверяемый unavailable response: этот gate не заявляет
-staged inventory, две публикации XIC1, live TLS, claim, сообщение или device E2E.
-Следующий обязательный шаг — wire/config/authority rollout того же host source,
-два финальных XIC1, затем DID2-only XPK1/XPC1 и DPH2 client composition.
+Физический gate текста: два текущих DID2-аккаунта Android/Windows, текущий
+подписанный каталог, контакт/bootstrap, текст в обе стороны, restart,
+дедупликация и ACK после durable commit, отказ на V1 и подменённом claim.
+Следом на том же пути — image/file integrity/resume и группы с membership
+change. Эмулятор, TestServer и старые UI-тесты не засчитываются. Результаты
+готовых host/source/publication gates находятся в истории и owner evidence,
+не повторяются здесь как незавершённые rollout задачи.
 
 Внутри инкремента запускаются быстрые точечные compile/unit/integration проверки
 для изменённого security boundary; fail-closed, canonical wire и негативные
