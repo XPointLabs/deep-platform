@@ -1284,11 +1284,20 @@ DAB2/DMD1, проверяет подписанную NETCODEC closure, фикс�
 network LKG; cold restart допускает только exact current-floor rehydration.
 Shared production-регрессия: 146 passed, включая 6 новых source/API cases.
 Это реальные native ML-DSA/account SQLCipher checks с in-memory HTTP/network
-test adapters, не TLS/ONION/device evidence. Реальный closure fetch provider,
-account-owned network-floor composition и монтаж в MAUI остаются открыты.
+test adapters, не TLS/ONION/device evidence. Реальный closure fetch provider
+и монтаж в MAUI остаются открыты. Account-owned network floor теперь
+подключён к DSV2 SQLCipher под account lease: отдельный root-kind, проверка
+instance/account/genesis pin и add-only SecureStorage marker перед SQL CAS.
+Новые проверки проходят через настоящий durable network floor; fork latch
+не очищается, rollback/подмена/потеря SQL и сбой marker-before-SQL отказывают.
+Focused source/custody gate: 8 passed; полный Shared gate — 148 passed,
+включая отказ старого store после explicit account reset. Shared custody
+checkpoint `ae2503f` запушен; зависимые MAUI clean — 19 passed,
+Windows build — 0 warnings/errors. MAUI smoke и Shared CI `36368366668`
+ещё выполняются; их результаты пока не являются подтверждённым gate.
 Shared checkpoint `6da623b` запушен; MAUI dependent gates: 19 clean /
 118 smoke passed, Windows build — 0 warnings/errors. Shared CI
-`36366966402` запущен, но ещё не подтверждён как success.
+`36366966402` завершился success.
 Следующий разрыв: MAUI account flow ещё не вызывает этот путь, нет удалённого
 claim и не выполнен физический сценарий;
 положительное E2E двух terminal paths также ещё не получено.
@@ -1330,6 +1339,11 @@ ADH1 не покрывала новый proof. Защищённый `refresh-cur
 последующий DID2 readiness вернул `ok=true`. Автоматическое renewal в этом
 probe не включено; восстановленный readiness не означает device E2E или
 production cutover. Production Registry и staking portal не изменялись.
+Физическая диагностика USB Android DID2 probe в тот же день: повторный
+nonce-fresh proof прошёл, в том числе после force-stop/relaunch без нового
+аккаунта. Проверялся существующий установленный probe, не новый messaging
+runtime и не текущие изменения network-floor custody. Windows UAT canary
+остаётся на Welcome; action-time подтверждение создания аккаунта ещё ожидается.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
