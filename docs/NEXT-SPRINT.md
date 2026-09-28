@@ -1345,6 +1345,27 @@ DevOps `f283db6`; исходные деревья этих repos чистые. �
 Следующий разрыв: полный bundle теперь развёрнут по HTTPS UAT, но MAUI publisher
 и удалённый claim не подключены, физический сценарий не выполнен;
 положительное E2E двух terminal paths также ещё не получено.
+Локально реализован account-owned `EnsureOwnInitialPreKeyInventoryAsync`: он связывает
+новый nonce-bound proof, точные локальные DMD1/DRS1, текущий NETCODEC placement
+и native V2 authoring с защищённым staging. Повтор возвращает тот же XPP1,
+а не новые ключи. HTTPS UAT composition вызывает подготовку, но не отправку;
+контакты/сообщения/вложения/группы остаются закрытыми до настоящего remote
+publication/claim и device E2E. Windows Shared production gate — 155 passed;
+MAUI clean — 19, smoke — 118 passed. HTTPS-conditional Windows win-arm64 и
+Android ARM64 builds — 0 warnings/errors. Native/SQLCipher fixture проверяет
+полный initial authoring и exact retry после restart; в clock negative
+использована точная verifier-derived freshness deadline, не случайная отметка.
+Android APK пока не установлен, новые device claims отсутствуют; это не sign-off.
+Проверенный шаг запушен в RC: Shared `3ecfdd8`, MAUI `af74ed3`.
+Следующий вертикальный шаг — DID2-only protected ONION host и live publication
+на обеих выбранных репликах, затем claim/DPH2 и двусторонний device text E2E.
+Старый MAUI host с V1 identity/secure slots не переносить адаптером; native
+agreement/entropy/entry-guard custody должна принадлежать текущему DID2 account.
+CI DevOps `36375906887` завершился success; в unit run `36375906895`
+security-gate и release-gate-contracts успешны, но общий unit job failed:
+XNode ProfileGenerator fixture вызывает `git.exe` на Linux; отдельный
+package-source negative также failed. Assertions не ослаблять: исправить
+portable test/tool boundary и повторить настоящий Linux CI.
 Read-only device/runtime audit 2026-09-28: clean Windows DID2 UI явно
 показывает только локальный аккаунт и закрытые контакты/сообщения/группы;
 Android DID2 probe запущен, но не является messaging client. Публичный
