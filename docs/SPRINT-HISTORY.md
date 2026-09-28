@@ -1,5 +1,63 @@
 # История спринтов
 
+## 2026-09-28 — repeated NETCODEC mint и ONION marker rotation
+
+- Shared `14d7a9d` исправил передачу полной подписанной successor-истории как
+  incremental suffix на повторном mint; полный Release gate прошёл 172/172.
+  Windows `343ac23` с тем же сохранённым аккаунтом прошёл NetworkVerification,
+  дошёл до PreKeyPublication и получил отказ ingress до forwarding. Receipt pair
+  отсутствует; сообщения, файлы/изображения и группы не заявлены проверенными.
+- Последующая private trace сопоставила фиксированную ошибку
+  entropy-ledger-failed с повторной записью rotating marker в create-only storage.
+  Shared `9485198` добавил обязательный exact-value atomic CAS в journaled и
+  in-memory storage, сохранив create-only начальную запись и marker-before-SQL
+  fail-closed порядок. Focused custody/storage проверки прошли 8/8; отдельные
+  CAS и canonical ingress error-классификации — 7/7. Это локальные проверки;
+  полный Release gate прошёл 181/181. Следующая Windows device проверка с
+  сохранённым аккаунтом дошла до ingress и установила canonical Unavailable
+  BeforeForward; прежняя entropy-marker ошибка в этом запуске не повторилась.
+  Это ещё не publication receipt и не доказательство готовности транспорта.
+- Android `343ac23` сохранил аккаунт/recovery после guarded update; остальные
+  три установленных пакета не изменились. Всегда отвергающий отдельный TLS
+  handshake установил RevocationStatusUnknown. MAUI `c88f8cd` диагностирует
+  только closed detail labels и тестирует доступ к подписанному CRL текущего
+  публичного CA через точный host exception, исключительно в non-Release DID2
+  HTTPS lane. System trust и revocation не отключены; clean gate — 35/35,
+  smoke — 119/119. Обе device сборки завершились без warnings/errors.
+  Android guarded update сохранил аккаунт/recovery, остальные пакеты неизменны;
+  два запуска AccountProof завершились Timeout, TLS success не подтверждён.
+- Все три реальные production XNode работают, но health стал unhealthy.
+  На первой ноде readiness сообщает privacyRouting=unavailable при готовых
+  required terminals. Receive-authority/proof path требует диагностики;
+  protected floors не сбрасывались. Registry trusted time штатно продолжено
+  до generation 12 через strict expected-hash CAS после UTC/no-reboot проверки.
+- Registry продолжил прежнюю подписанную историю до generation 21/tree 7.
+  Durable client DNH2 custody для restart/advance изменившегося tip остаётся
+  незавершённой; live cache не заменяет этот release gate. Точные ограничения:
+  [device checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
+
+## 2026-09-28 — Windows HTTPS account continuity и Android diagnostic lane
+
+- Реальный Windows portable DID2 diagnostic создал аккаунт через UI и открыл
+  тот же аккаунт после закрытия и запуска следующей committed сборки; recovery
+  не показывалась и не копировалась. Registry floor вырос до generation 18/tree 7.
+  AccountProof завершён; NetworkVerification выявил оборванное тело повторного
+  HTTPS proof. Runtime trace не показал account/SQL lease timeout. HTTP/2 не
+  устранил обрыв; independent plain HttpClient также воспроизвёл connection-reuse
+  failure, тогда как три fresh-client closure запроса завершились. Корневой
+  виновник runtime/network/proxy пока не установлен; publication не заявлена.
+- MAUI adapter классифицирует HTTP/timeout по фиксированным этапам без вывода
+  адресов, идентификаторов или private exception messages. Поддерживаемые
+  Android build/install/UI scripts используют отдельный пакет, system trust,
+  PKCS12 signing и аудит неизменности остальных установленных клиентов.
+  Реальный Android аккаунт создан через UI, сохранился после restart и guarded
+  update вместе с encrypted recovery. TLS AccountProof всё ещё отвергается
+  (AuthenticationException / Chain Unknown); проверки сертификатов не ослаблены.
+  Shared full Release gate — 171/171, MAUI clean — 25/25, smoke — 119/119.
+  Это не подтверждение Android device delivery или готовности релиза.
+- Точные результаты и оставшиеся physical gates:
+  [MAUI checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
+
 ## 2026-09-28 — DID2 installer/H2 и сохранённые origin keys
 
 - Поддерживаемый installer выбирает immutable DID2 inputs без замены

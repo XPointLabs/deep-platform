@@ -70,23 +70,13 @@ P0 выполняется по законченным пользовательс
 целостности и возобновления; затем создание группы, доставка и смена состава.
 Это порядок выполнения, не сокращение release scope.
 
-Срочный prerequisite физического инкремента (2026-09-28): закрытый Registry
-UAT после обновления protected time и ADH1 отвечает DID2 readiness, а новый
-Android-аккаунт довёл floor/ADA2 до generation 9/tree 6. Подготовлен и проверен
-строго монотонный operational successor с новыми node origin/onion ключами
-и прежними зарегистрированными node identities; его exact XNV1 атомарно
-подключён только к закрытому DID2 UAT. После обновления protected time и
-renewal ADH1 до generation 10/tree 6 физический Android получил nonce-fresh
-подписанный proof и повторил его после перезапуска с сохранённым protected
-состоянием. Это diagnostic loopback lane, не production transport evidence.
-Windows canary собран с отдельным per-network хранилищем, его admission/proof
-ещё не подтверждён. Public ContactResolve source остаётся на прежнем closure,
-новые origin/onion private keys на XNode ещё не установлены. Следующие шаги:
-завершить Windows proof, согласовать общий current source и установить exact
-descriptor-bound keys на нодах с проверкой отдельного rollback floor и
-атомарной публикации. Не выпускать новую generation-zero цепочку и не
-расширять срок жизни только в proof verifier. Эти результаты не открывают
-contact/message vertical и не закрывают release/device messaging gate.
+Предыдущая loopback-диагностика DID2 admission/proof и restart сохранена в
+[`SPRINT-HISTORY.md`](SPRINT-HISTORY.md); она не является production transport
+evidence. Текущий prerequisite — полная physical HTTPS проверка и
+двух-replica publication на уже обновлённых трёх production XNode. Не выпускать
+новую generation-zero цепочку и не расширять срок жизни только в verifier.
+До этого contact/message vertical и release/device messaging gate остаются
+открытыми.
 
 Уточнение контура и следующий prerequisite (2026-09-28): Registry и seed1–seed3
 являются production, отдельного удалённого UAT нет. До явного сообщения Mr. X
@@ -108,6 +98,46 @@ rollout поддерживаемым installer на всех трёх нодах
 GET без Content-Length возвращают 200/ready с проверенными сертификатами и SPKI.
 Следующий инкремент — physical HTTPS admission и двух-replica publication,
 затем Android↔Windows text на DID2-only client composition.
+Windows HTTPS diagnostic создал новый аккаунт одним действием после ввода имени
+и сохранил его после UI close/restart; recovery осталась скрытой и зашифрованной.
+Registry принял admission (floor generation 18/tree 7); Windows подтвердил
+AccountProof. Повторный HTTPS response терял тело при reuse соединения.
+HTTP/2 и IPv4-first не устранили обрыв;
+независимый identity-neutral diagnostic воспроизводит его с plain HttpClient,
+а три fresh-client запроса завершились. Следующий diagnostic изолирует
+public-service соединения существующей lifetime policy без retry/downgrade.
+На реальном Windows это позволило завершить обе proof-загрузки. Исправление
+повторной full-history NETCODEC проверки прошло полный Shared gate 172/172;
+Windows теперь прошёл NetworkVerification и дошёл до PreKeyPublication.
+Это не подтверждение production-wide исправления reuse: canonical ingress
+отверг публикацию до пересылки, проверенная receipt pair пока отсутствует.
+Повторные попытки выявили create-only запись в два чередующихся ONION marker
+слота: с третьей записи возникал entropy-ledger-failed. Exact-value atomic
+SecureStorage CAS реализован; focused проверки более двух резервирований,
+reopen, rollback и marker-before-SQL crash прошли; полный Shared gate — 181/181.
+Следующая Windows physical сборка дошла до ingress без прежней local marker
+ошибки и получила canonical Unavailable BeforeForward. Все три реальные
+production XNode работают, но health сейчас unhealthy; первая нода сообщает
+privacyRouting=unavailable. Нужно диагностировать receive-authority/proof path,
+не сбрасывая protected floors и не добавляя permissive fallback.
+Account-owned durable DNH2 custody по DR-0012 также остаётся release prerequisite:
+live full-history cache не обеспечивает advance изменившегося tip после restart.
+Не заменять это reset, rehydration только по tuple или потерей policy/PMT lineage.
+В adapter добавлена безопасная fixed-stage классификация HTTP/timeout ошибок,
+а для Android — отдельный пакет, system trust, pinned APK signing и guarded UI
+phases без изменения других установленных клиентов. Сборка и физические
+наблюдения учитываются отдельно в
+[device checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
+Android HTTPS account создан, пережил restart и guarded update с сохранением
+encrypted recovery; proof блокирует TLS AuthenticationException /
+RevocationStatusUnknown. Отдельная всегда отвергающая handshake-диагностика
+уточнила флаг без отправки прикладного запроса. Новый Android diagnostic
+проверяет достижимость подписанного CRL текущего публичного CA через исключение
+только для точного CRL host; остальные cleartext origins запрещены, system trust
+и revocation сохранены. Guarded update сохранил аккаунт/recovery, однако два
+запуска AccountProof завершились Timeout. Успешный TLS/proof не доказан.
+Причину нужно установить без ослабления platform trust/revocation. Диагностическая
+сборка обоих клиентов и local gates прошли, но это не message device E2E.
 Проверка здоровья не закрывает authenticated peer/application/device gate.
 Exact checks/non-claims:
 [installer/H2 checkpoint](../deep-devops/docs/DID2-INGRESS-INSTALLER-2026-09-28.md).
