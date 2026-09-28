@@ -1285,9 +1285,11 @@ network LKG; cold restart допускает только exact current-floor re
 Shared production-регрессия: 146 passed, включая 6 новых source/API cases.
 Это реальные native ML-DSA/account SQLCipher checks с in-memory HTTP/network
 test adapters, не TLS/ONION/device evidence. Identity-neutral closure fetch
-теперь реализован отдельным bounded NCQ2/NCP2 HTTP adapter; монтаж в MAUI,
-операторская подготовка полного public bundle и его TLS deployment остаются
-открыты. Account-owned network floor теперь
+теперь реализован отдельным bounded NCQ2/NCP2 HTTP adapter. HTTPS UAT MAUI
+вызывает полную проверку network context после admission; loopback probe
+остаётся admission-only. Операторский full-history public bundle подготовлен;
+TLS deployment и physical проверка этого пути остаются открыты.
+Account-owned network floor теперь
 подключён к DSV2 SQLCipher под account lease: отдельный root-kind, проверка
 instance/account/genesis pin и add-only SecureStorage marker перед SQL CAS.
 Новые проверки проходят через настоящий durable network floor; fork latch
@@ -1311,14 +1313,37 @@ checkpoints: Protocol `5e548ef`, Shared `f3992cc`, Registry `31d7a14`.
 Windows win-arm64 build — 0 warnings/errors, smoke — 118 passed.
 Protocol Debug/Release actual graph gates прошли; DNP1 evidence ownership
 mapped=219/packageMissing=0. CI `36370954972` (Protocol), `36370957918`
-(Shared), `36370961815` (Registry) на последней проверке ещё in-progress.
+(Shared), `36370961815` (Registry) завершились success для указанных checkpoints.
 Ни adapter, ни его кодовые проверки
 не являются physical messaging, masked acquisition или production evidence.
 Shared checkpoint `6da623b` запушен; MAUI dependent gates: 19 clean /
 118 smoke passed, Windows build — 0 warnings/errors. Shared CI
 `36366966402` завершился success.
-Следующий разрыв: MAUI account flow ещё не вызывает этот путь, нет удалённого
-claim и не выполнен физический сценарий;
+Новый HTTPS UAT account flow использует Shared `VerifyCurrentNetworkAsync`
+без искусственного service capability: тот же nonce-fresh account proof,
+подписанная closure, account-owned network floor CAS/reread и один monotonic
+clock. Publication mint остаётся отдельным свежим запросом под тем же gate;
+прошлый UI/network success не переиспользуется как authority. Shared Release
+gate — 152 passed без compiler warnings; MAUI clean — 19, smoke — 118 passed.
+Обычный и HTTPS-conditional Windows win-arm64 builds — 0 warnings/errors.
+HTTPS-conditional build выполнен как local diagnostic compile, не deployment,
+TLS или device evidence. DevOps public export теперь отдельно собирает NCP2
+из genesis и последовательных operational successors, проверяя independent
+genesis pin, bounded source inventory и точный XNV1 prefix; предшественники
+XNH1/XVP1/PMT2 не теряются. Четыре offline operator groups прошли, включая
+настоящие подписанные genesis/successor, gap/replay/подмена/pin/size negatives.
+Фактический public genesis bundle — 8151 bytes, successor bundle — 11300 bytes;
+они оставлены только в operator custody, не в репозитории. Это distribution,
+не fresh network capability. DevOps release-gate contract harness прошёл
+51 command; настоящий production readiness остаётся blocked (10 отсутствующих
+evidence inputs), а его synthetic harness success не является sign-off.
+Shared compose smoke не запускался: topology здесь не менялась, а его
+compat/default cleanup удаляет общие dev volumes и не даёт DID2 evidence.
+Проверенный checkpoint запушен: Shared `298ec46`, MAUI `06096c7`,
+DevOps `f283db6`; исходные деревья этих repos чистые. Новый device E2E
+и TLS deployment этими commits не заявляются.
+Следующий разрыв: полный bundle ещё не развёрнут по HTTPS, MAUI publisher
+и удалённый claim не подключены, физический сценарий не выполнен;
 положительное E2E двух terminal paths также ещё не получено.
 Read-only device/runtime audit 2026-09-28: clean Windows DID2 UI явно
 показывает только локальный аккаунт и закрытые контакты/сообщения/группы;
