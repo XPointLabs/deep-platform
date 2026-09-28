@@ -1324,7 +1324,7 @@ signer policy. Операторский порядок — в
 network/placement pins, установить matching traffic keys на UAT ноды,
 обновить trusted time и получить nonce-fresh DID2 proof на обоих устройствах.
 Этот code gate не подтверждает contact publication или физические сообщения.
-UAT runtime 2026-09-28 01:43 UTC: readiness вновь отказал, поскольку текущая
+UAT runtime 2026-09-28: readiness вновь отказал, поскольку текущая
 ADH1 не покрывала новый proof. Защищённый `refresh-current-head` сохранил
 содержимое и продвинул generation/tree до 11/6 через внешний floor;
 последующий DID2 readiness вернул `ok=true`. Автоматическое renewal в этом
