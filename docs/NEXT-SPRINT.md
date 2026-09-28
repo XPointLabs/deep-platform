@@ -1307,7 +1307,11 @@ Registry добавляет выключенную по умолчанию HTTPS
 без signing keys/account input/route selection; HTTP pipeline gate — 8 passed,
 полный Shared — 152 passed, Registry source-cutover — 431 passed. Новые
 checkpoints: Protocol `5e548ef`, Shared `f3992cc`, Registry `31d7a14`.
-Зависимые MAUI clean — 19 passed; Windows build/smoke ещё выполняются.
+Все три checkpoints запушены. Зависимые MAUI clean — 19 passed,
+Windows win-arm64 build — 0 warnings/errors, smoke — 118 passed.
+Protocol Debug/Release actual graph gates прошли; DNP1 evidence ownership
+mapped=219/packageMissing=0. CI `36370954972` (Protocol), `36370957918`
+(Shared), `36370961815` (Registry) на последней проверке ещё in-progress.
 Ни adapter, ни его кодовые проверки
 не являются physical messaging, masked acquisition или production evidence.
 Shared checkpoint `6da623b` запушен; MAUI dependent gates: 19 clean /
