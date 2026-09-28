@@ -1342,7 +1342,7 @@ compat/default cleanup удаляет общие dev volumes и не даёт DI
 Проверенный checkpoint запушен: Shared `298ec46`, MAUI `06096c7`,
 DevOps `f283db6`; исходные деревья этих repos чистые. Новый device E2E
 и TLS deployment этими commits не заявляются.
-Следующий разрыв: полный bundle ещё не развёрнут по HTTPS, MAUI publisher
+Следующий разрыв: полный bundle теперь развёрнут по HTTPS UAT, но MAUI publisher
 и удалённый claim не подключены, физический сценарий не выполнен;
 положительное E2E двух terminal paths также ещё не получено.
 Read-only device/runtime audit 2026-09-28: clean Windows DID2 UI явно
@@ -1388,6 +1388,49 @@ nonce-fresh proof прошёл, в том числе после force-stop/relau
 аккаунта. Проверялся существующий установленный probe, не новый messaging
 runtime и не текущие изменения network-floor custody. Windows UAT canary
 остаётся на Welcome; action-time подтверждение создания аккаунта ещё ожидается.
+
+HTTPS UAT checkpoint 2026-09-28: новый Registry CI image `31d7a14`
+развёрнут отдельным upstream по immutable digest, без замены основного
+Registry/staking. Exact container environment preflight прошёл (18 unique
+DID2 keys); новая public NCP2 directory смонтирована read-only вне custody.
+Защищённое время ротировано штатным CAS без отката; `refresh-current-head`
+продвинул ADH1 generation/tree до 12/6 через независимый floor.
+В существующем Registry HTTPS server переключены только четыре exact V2
+routes; certificate/certbot и staking server blocks не изменялись. Baseline
+ingress сохранён и hash-checked, `nginx -t` и reload прошли. Публичный DID2
+readiness — `ok=true`; cleartext closure — 403. Protocol-generated NCQ2
+по публичному HTTPS получил exact exported NCP2 (11300 bytes, SHA-256
+`177a94f06865f558a03c0900c67013dc2ae2af0e8d6b0255e7ba0c80b697b2fd`),
+no-store и четыре negative checks (wrong network/query/media/malformed)
+прошли. Это транспортная выдача public bytes, не current network capability
+и не device E2E. Staking HEAD вернул 200; полная GET-передача достигла
+HTTP 200, но превысила 15-second диагностический deadline, поэтому complete
+portal load этим запросом не заявляется. Android USB device доступен.
+MAUI publisher/remote claim и matching node rollover keys ещё не подключены.
+
+CI checkpoint: Shared `298ec46` — success, MAUI `06096c7` — Android/Windows
+build и unit lanes success, но compiled release guard failure: он проверяет
+прежнюю direct composition вместо DID2 helper. Пока полного DID2 transport
+graph нет, этот failure не заменяется зелёным account-only release claim.
+DevOps `f283db6` integration success, unit workflow failed: отсутствовал
+Shared checkout для Registry fixtures, брались frozen docs из main вместо
+выбранной RC-ветки, source-role gate пропускал PMA2. Эти wiring defects
+исправлены вместе с fail-fast native test execution; focused workflow tests
+2/2, env tests 9/9, canonical source-role gate и 10 upload contracts прошли.
+Offline operator gate (4 groups) расширен transport/shape negatives; build
+0 warnings/errors. Release contract harness снова прошёл 51 command, настоящий
+readiness остаётся blocked на 10 absent evidence inputs.
+Security audit отдельно воспроизвёл единственный high advisory
+`GHSA-7q85-xj36-vmfc` в transitive `adm-zip` контрактного tooling. Override
+обновлён до 0.6.1, lockfile diff ограничен этой зависимостью; повторный audit
+high=0/critical=0 (low/moderate остаются). Solidity/ABI/deployment не менялись.
+Локальный Hardhat build не выполнен: Windows ARM64 analyzer отсутствует;
+compile/test/export должны быть подтверждены поддерживаемым x64 CI.
+Фиксации запушены в RC-ветку: DevOps `323c3d8`, contracts `f001984`.
+Полный локальный security gate завершился `ok`: 67 dependency audits,
+dependencyFailures=0, secretFindings=0. Он не заменяет независимый security
+sign-off и device evidence. Побочные restore-изменения трёх probe lockfiles
+от dependency audit возвращены к исходному содержимому; Protocol code не менялся.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
