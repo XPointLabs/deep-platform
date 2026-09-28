@@ -1,5 +1,37 @@
 # История спринтов
 
+## 2026-09-28 — повторная проверка protected publication на устройствах
+
+- Shared `c5b97ef` проверяет completed XIC1 pair против свежего DID2/device
+  proof и текущего NETCODEC placement, не отправляя повторно inventory.
+  Подписи, операция, manifest, две selected replicas и интервалы проверяются;
+  после protected read повторно проверяются freshness, cancellation и floor.
+  Это завершённая историческая операция, не свидетельство текущей retention
+  или claim authority. Неверная сохранённая пара не заменяется молча.
+- Первый focused набор: 22 pass и один failed тест с неверно выбранным
+  временем expiry. Исправлен только тест: теперь используется существующий
+  verifier TTL и проверяется вызов delayed read. Повтор исправленного теста
+  вместе с двумя дополнительными negative cases прошёл 3/3. Это раздельные
+  запуски, не единый полный зелёный local gate. Последующий полный CI
+  `36467218566` завершился успешно: Windows 190/190 (20 min 25 sec),
+  Linux portable filter 160/160 (5 min 57 sec). Windows-only crypto cases
+  не приравниваются к Linux runtime coverage.
+- MAUI Clean 35/35 и Smoke 119/119; обе supported diagnostic сборки готовы.
+  Windows reopened тот же аккаунт; Android guarded update сохранил данные и
+  неизменность трёх остальных пакетов. Новая network verification успешна
+  на Windows (~18:57 UTC) и Android (~18:58 UTC). Recovery не раскрывалась,
+  reset и новая account creation не выполнялись. Подробности и hash binaries —
+  [MAUI evidence note](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
+- Штатный Registry refresh продолжил неизменённый directory до 27/tree 10;
+  independent floor совпал, DID2 readiness и staking HTTP 200.
+  [DevOps runbook](../deep-devops/docs/DID2_FLOOR_PRODUCTION_CANDIDATE.md)
+  остаётся владельцем operational observations. V2 atomic claim, DPH2,
+  сообщения, файлы/картинки и группы на устройствах ещё не подтверждены.
+- После сверки фактических ingress backends остановлены три устаревших
+  изолированных diagnostic XNode процесса; контейнеры и состояние сохранены,
+  все production service trios остались healthy. Причина прежних 429 этим
+  действием не доказана; подробности у DevOps owner.
+
 ## 2026-09-28 — новые physical аккаунты и bounded proof refresh
 
 - После ручного удаления тестовых аккаунтов Mr. X новые Windows/Android

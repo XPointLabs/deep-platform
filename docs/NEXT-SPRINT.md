@@ -68,7 +68,9 @@ Windows/Android HTTPS QA аккаунты. Directory checkpoint продолже
 owner CI и rollout installer на всех трёх seed с сохранёнными ключами.
 Оба physical клиента завершили verified durable XIC1 pair и restart без reset.
 Один traffic HTTP 429 всё ещё наблюдался: отсутствие rate limiting не заявлено.
-Штатное renewal продолжило directory до 26/tree 10. Следующий незакрытый
+Штатное renewal продолжило directory до 27/tree 10. Обновлённые устройства
+повторно проверили protected publication completion со свежей authority;
+это не новый claim или доставка сообщения. Следующий незакрытый
 инкремент — DID2 atomic claim/DPH2 и доставка текста; durable client DNH2,
 inventory successor и автоматический operational lifecycle остаются нужны.
 Раздельные показания Android stageFailure/networkOutcome не приравнивать к delivery.
