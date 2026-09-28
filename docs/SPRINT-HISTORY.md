@@ -1,5 +1,31 @@
 # История спринтов
 
+## 2026-09-28 — periodic DID2 root checkpoint без сброса production floors
+
+- Реальный Registry failure связан с ADF1, покрывавшим только directory heads
+  0–3. Независимый PostgreSQL floor и authenticated ADA2 export совпали на
+  generation 22/tree 8; импортированный predecessor hash-matched с локальным
+  оригиналом. Новый root-signed ADF1 generation 1 покрывает 4–21 и продолжает
+  сохранённый generation 0. Ключи нод, account state и floors не сбрасывались,
+  offline root seed не переносился на сервер.
+- Protocol `acfdf7a` проверяет predecessor pin/root receipt, original coverage,
+  полный signed-head lineage и все intervening heads до signer callback.
+  Focused author/полный DID2 reader — 10/10; production solution — 2 100 pass,
+  11 platform skips; exact public API/package graph прошёл. Wire/domain не менялись.
+- DevOps `ce7b075` добавил paired predecessor inputs в offline tool и closed
+  environment append с сохранением всех прежних значений. Три helper tests и
+  release contract gate (51 commands) прошли. Production readiness остаётся
+  blocked по реальным недостающим evidence. Docker smoke дошёл до healthy
+  сервисов и scenario checks, но итоговый artifact secret scan не прошёл из-за
+  смешанных ранее сохранённых diagnostic binaries; aggregate pass не заявлен.
+- Registry recomposed на прежнем immutable image с обоими checkpoint и теми
+  же mounts/listener. DID2 readiness и staking portal вернули HTTP 200. Реальная
+  XNode trace установила DPQ proof HTTP 200; seed1 healthy и negative H2 frame
+  HTTP 400. Windows теперь получает outcome-unknown после forwarding, Android
+  — directory-authority unavailable. Durable XIC1 pair и messaging/media/group
+  device E2E остаются открытыми. Exact observation:
+  [DevOps checkpoint](../deep-devops/docs/DID2_FLOOR_PRODUCTION_CANDIDATE.md).
+
 ## 2026-09-28 — repeated NETCODEC mint и ONION marker rotation
 
 - Shared `14d7a9d` исправил передачу полной подписанной successor-истории как

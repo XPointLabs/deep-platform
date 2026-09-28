@@ -116,10 +116,17 @@ Windows теперь прошёл NetworkVerification и дошёл до PreKeyP
 SecureStorage CAS реализован; focused проверки более двух резервирований,
 reopen, rollback и marker-before-SQL crash прошли; полный Shared gate — 181/181.
 Следующая Windows physical сборка дошла до ingress без прежней local marker
-ошибки и получила canonical Unavailable BeforeForward. Все три реальные
-production XNode работают, но health сейчас unhealthy; первая нода сообщает
-privacyRouting=unavailable. Нужно диагностировать receive-authority/proof path,
-не сбрасывая protected floors и не добавляя permissive fallback.
+ошибки и получила canonical Unavailable BeforeForward. Private receive trace
+установила отсутствие root-checkpoint coverage для поздних protected heads.
+Protocol/DevOps теперь продолжают исходный ADF1 строго подписанным successor,
+не переиздают genesis и не сбрасывают floors. В production Registry сохранён
+ADF1 generation 0 и добавлен generation 1 с coverage 4–21 → head 22/tree 8;
+root-ключ остался локально. Реальная XNode trace подтвердила DPQ proof HTTP 200,
+первая нода стала healthy, negative frame корректно получает HTTP 400 через H2.
+Windows publication теперь доходит до outcome-unknown после forwarding:
+нужно завершить peer/terminal delivery и получить точную durable XIC1 pair.
+Idle receive-authority refresh также должен сохранять nonce-fresh readiness
+без зависимости от входящего прикладного трафика.
 Account-owned durable DNH2 custody по DR-0012 также остаётся release prerequisite:
 live full-history cache не обеспечивает advance изменившегося tip после restart.
 Не заменять это reset, rehydration только по tuple или потерей policy/PMT lineage.
@@ -135,14 +142,16 @@ RevocationStatusUnknown. Отдельная всегда отвергающая 
 проверяет достижимость подписанного CRL текущего публичного CA через исключение
 только для точного CRL host; остальные cleartext origins запрещены, system trust
 и revocation сохранены. Guarded update сохранил аккаунт/recovery, однако два
-запуска AccountProof завершились Timeout. Успешный TLS/proof не доказан.
+запуска AccountProof завершились Timeout. После checkpoint import следующий
+Android запуск получил directory-authority unavailable; proof/XIC1 success
+по-прежнему не доказан.
 Причину нужно установить без ослабления platform trust/revocation. Диагностическая
 сборка обоих клиентов и local gates прошли, но это не message device E2E.
 Проверка здоровья не закрывает authenticated peer/application/device gate.
 Exact checks/non-claims:
 [installer/H2 checkpoint](../deep-devops/docs/DID2-INGRESS-INSTALLER-2026-09-28.md).
-Files/images и группы выполняются на этом же проверенном пути. Canary не
-заменяет существующий production node/ingress и не закрывает device/release gates.
+Files/images и группы должны быть проверены на этом же production пути.
+Диагностический checkpoint/readiness не закрывает device/release gates.
 
 Текущий исполняемый разрыв первого инкремента проверен по call path, а не
 по готовности отдельных codec (2026-09-27):
