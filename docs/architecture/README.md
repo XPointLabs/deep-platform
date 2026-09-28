@@ -110,6 +110,11 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   разрешает различать Ingress/Core только по проверенному содержимому после
   AEAD, с закрытым pre-commit error contract и ограниченным position retry.
   Внешний Relay header не даёт уникальную receive position; wire/API не меняются.
+- [`DR-0012`](../survival-program/decisions/DR-0012-protected-network-history.md)
+  задаёт restart-safe protected network history и проверку установленного onion
+  public key через Protocol. DID2 host больше не принимает V1 snapshot или
+  fixed-role configuration; local replay generation также clean-broken под
+  настоящий 16-byte NETCODEC network ID. TLS/device rollout остаётся отдельным gate.
 - Текущие Session-derived identity, DPE1/DMC1 и group bytes не являются
   production compatibility surface и не ограничивают новый дизайн.
 - Первый публичный релиз использует новое поколение account/device/database,

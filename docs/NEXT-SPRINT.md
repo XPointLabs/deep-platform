@@ -193,14 +193,19 @@ contact/message vertical и не закрывают release/device messaging gat
    closure и свежего DID2 proof, не пользуясь V1 ADP1 snapshot. Его файлы
    ограничены по размеру и проверяются при старте; вызов Protocol заново
    проверяет подписи и DTT1 current-view binding на каждом mint. UAT peer
-   staging уже потребляет этот source; protected successor-LKG ещё нет, а
-   production endpoint и final commit требуют monotonic network custody.
+   staging уже потребляет этот source. DR-0012 добавляет защищённый network
+   floor с отдельным якорем и восстановление предшественника через полностью
+   подписанную историю, без оживления старого DTT1. Локальные restart/CAS/
+   corruption/crash проверки проходят; operator assets и живой TLS rollout
+   этого source ещё не подтверждены. Production endpoint и final commit
+   должны потреблять именно его, не пересоздавать predecessor=null.
    Совместный откат журнала и якоря остаётся вне гарантий одного локального
    хранилища и требует живого threshold freshness evidence.
-   Кроме pre-key, прежний `ContactVerifiedAuthoritySnapshotSource` также
-   питает onion receive/placement и group control: его V1 ADP1 нельзя оставить
-   как скрытый источник authority при DID2 cutover; заменить нужно общий
-   snapshot-consumer граф, а не только один endpoint.
+   Onion receive переведён на независимый DID2-only network source с заранее
+   настроенным public observer; request не выбирает freshness authority.
+   `ContactVerifiedAuthoritySnapshotSource` ещё остаётся в других consumers,
+   включая group control: его V1 ADP1 нельзя оставить как скрытый источник
+   authority при DID2 cutover. Общий consumer graph ещё требует удаления V1.
    XNode CI проверяет текущие protocol sources через source cutover, а обычный
    XNode NuGet pin ещё указывает на пакет до DID2 clean-break и не компилирует
    текущий runtime. Локальный пакетный cutover проверяет совместимость, но не
@@ -220,6 +225,15 @@ contact/message vertical и не закрывают release/device messaging gat
 дедупликация/ACK после durable commit и отказ на V1/подменённом claim. Эти
 наблюдения фиксируются только по текущим APK/Windows build и действующей
 policy; локальный TestServer, эмулятор и старые UI-тесты не засчитываются.
+
+Локальный host gate 2026-09-28 проверяет все шесть signed three-node
+permutations через настоящие DID2/NETCODEC, encrypted vault и durable
+entropy/replay. Он выявил и исправил несовместимость replay adapter с
+16-byte network ID; `XONRPL02` отвергает старое состояние без reader/migration.
+Exit возвращает проверяемый unavailable response: этот gate не заявляет
+staged inventory, две публикации XIC1, live TLS, claim, сообщение или device E2E.
+Следующий обязательный шаг — wire/config/authority rollout того же host source,
+два финальных XIC1, затем DID2-only XPK1/XPC1 и DPH2 client composition.
 
 Внутри инкремента запускаются быстрые точечные compile/unit/integration проверки
 для изменённого security boundary; fail-closed, canonical wire и негативные

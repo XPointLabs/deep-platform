@@ -406,6 +406,16 @@ rejects. This is a frozen architecture choice; NETCODEC-01 supplies machine
   distinct; proof manifests carry refs and separately supplied exact closures rather
   than nesting records that could exceed the 65,535-byte canonical limit.
 
+### 6.5.1 Local network custody
+
+The separately frozen [DR-0012](../survival-program/decisions/DR-0012-protected-network-history.md)
+allocates local custody names `DNH2` (Protocol-exported protected network history)
+and `DNF2` (XNode floor/independent-anchor plaintext envelope). They are distinct
+from network records and must never be accepted as network authority. Their exact
+local layouts and public API extension belong to that decision; runtime activation
+remains blocked on the live TLS/device closure. The local replay format is
+`XONRPL02`; the retired generation is rejection-only, with no migration.
+
 ### 6.6 Contact resolver and prekey service records
 
 Owner: exact codecs/vectors in `deep-protocol`; service runtime in `xnode`;

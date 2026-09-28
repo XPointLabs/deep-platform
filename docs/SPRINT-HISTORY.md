@@ -1,5 +1,23 @@
 # История спринтов
 
+## 2026-09-28 — DID2 restart-safe signed multi-role host candidate
+
+- [DR-0012](survival-program/decisions/DR-0012-protected-network-history.md)
+  фиксирует проверяемую protected network history и host floor/anchor без
+  восстановления старого time/key capability. Повторный startup/mint больше
+  не стирает predecessor через null; другой installed key отклоняется до записи.
+- ONION host получает только DID2 authority и роли подписанного XND1.
+  Fixed-role options/CLI/compose удалены, неизвестная host configuration
+  отклоняется. Reflection-created positive network fixture удалён из host tests.
+- Настоящий signed three-host test обнаружил неверную 32-byte ширину network ID
+  в replay adapter. Новый несовместимый local generation принимает 16-byte
+  NETCODEC ID, отвергает старое состояние и replay после restart. Все шесть
+  permutations проверены с durable replay/entropy и encrypted key vault.
+- Локальные Protocol/package/host/config проверки и изолированный no-mock
+  Xray rehearsal проходят; точные результаты и non-claims принадлежат DR-0012.
+  Это не live publication, messaging device E2E или готовый релиз; оставшиеся
+  activation задачи сохранены в [NEXT-SPRINT.md](NEXT-SPRINT.md).
+
 ## 2026-09-09 — official Windows ML-KEM/Braid runtime acceptance
 
 - Official GitHub Actions artifact `10106322624` из run `34356754852`, attempt
