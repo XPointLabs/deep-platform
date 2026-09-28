@@ -1274,6 +1274,19 @@ CI-образе. Шесть конфликтующих ключей окруже
 floor CAS. DID2 readiness прошёл. Android admission добавил следующий leaf
 и совпал с внешним floor, но proof отвергнут из-за истёкшей operational
 XNV1 closure, описанной выше. Это всё ещё не message E2E.
+Для снятия этого blocker Protocol уже авторует строго монотонный operational
+successor с проверкой полной подписанной closure и append-only network log;
+offline DevOps tool теперь использует реальные custody signers, сохраняет
+идентичности трёх нод и проверяет installable TLS certificate/key pairs.
+Исправлены отдельные дефекты operator tool: отсутствовавший PMA2 в inventory
+и отказ root signer подписывать разрешённый PMA2. Синтетический offline gate
+проверяет genesis и successor теми же FileSigner/NodeSigner, а не заменой
+signer policy. Операторский порядок — в
+[`PRODUCTION_AUTHORITY_CUSTODY.md`](../deep-devops/docs/PRODUCTION_AUTHORITY_CUSTODY.md).
+Новый bundle пока не опубликован: ещё нужно сопоставить независимые защищённые
+network/placement pins, установить matching traffic keys на UAT ноды,
+обновить trusted time и получить nonce-fresh DID2 proof на обоих устройствах.
+Этот code gate не подтверждает contact publication или физические сообщения.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
