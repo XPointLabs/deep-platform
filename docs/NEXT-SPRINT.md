@@ -91,19 +91,15 @@ contact/message vertical и не закрывают release/device messaging gat
 Уточнение контура и следующий prerequisite (2026-09-28): Registry и seed1–seed3
 являются production, отдельного удалённого UAT нет. До явного сообщения Mr. X
 о появлении пользователей production разрешён для тестирования; имя `UAT`
-в диагностической конфигурации не означает другой стенд. Новая immutable
-multi-architecture XNode-сборка опубликована через owner CI без GitHub Release
-и без изменения `latest`. Отдельный seed1 canary сохраняет зарегистрированную
-identity и не заменяет существующий node/ingress. Startup пока fail-closed:
-protected time uncertainty 30 секунд превышает signed DTT1 maximum 10 секунд.
-Следующий шаг — explicit CAS interval refinement по независимо проверенному UTC
-в пределах прежнего интервала, без reset истории/floors и без ослабления verifier;
-правило принадлежит
-[`ACCOUNT-DIRECTORY-TRANSPARENCY-V1`](architecture/ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md).
-Затем проверить актуальный offline-authorized forward checkpoint, nonce-fresh
-host proof и same-image restart с сохранённым protected state. Публикация двух
-replicas, peer TLS и Android↔Windows messaging ещё не подтверждены; успешный
-CI build или HTTP readiness не закрывают эти device/release gates.
+в диагностической конфигурации не означает другой стенд. Устранён time-input
+блокер; отдельные canary всех трёх seed прошли nonce-fresh host bootstrap и
+same-image restart с сохранённым protected state. Ограничения и exact inputs
+зафиксированы в
+[операторском наблюдении](../deep-devops/docs/DID2-HOST-CANARY-2026-09-28.md).
+Следующий связанный инкремент — DID2 wiring поддерживаемого installer и реальный
+signed-origin peer TLS, затем публикация двух replicas и Android↔Windows text.
+Files/images и группы выполняются на этом же проверенном пути. Canary не
+заменяет существующий production node/ingress и не закрывает device/release gates.
 
 Текущий исполняемый разрыв первого инкремента проверен по call path, а не
 по готовности отдельных codec (2026-09-27):

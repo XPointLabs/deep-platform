@@ -1,5 +1,23 @@
 # История спринтов
 
+## 2026-09-28 — authenticated DID2 startup на трёх production-хостах
+
+- Registry issuance time исправлено explicit CAS interval refinement после
+  независимой UTC/no-reboot проверки; signed uncertainty/expiry verifier не
+  ослаблен, directory history и внешний floor не сбрасывались. Registry full
+  source-cutover gate — 440 passed, focused authority — 24 passed.
+- Immutable owner-CI XNode кандидат прошёл authenticated startup и same-image
+  restart на seed1–seed3: nonce-fresh proof, installed onion-key binding,
+  protected directory/network state и прежний key ring. Старые зарегистрированные
+  identities и production node/ingress/storage сохранены.
+- Remote UAT отсутствует: диагностический профиль находится на production.
+  По решению Mr. X production testing разрешён до его явного сообщения о
+  появлении пользователей. Exact images, наблюдения и non-claims находятся в
+  [DevOps evidence](../deep-devops/docs/DID2-HOST-CANARY-2026-09-28.md).
+- Peer TLS, live two-replica publication и physical messaging ещё не доказаны;
+  GitHub Releases и `latest` не публиковались. Следующий инкремент остаётся в
+  [NEXT-SPRINT.md](NEXT-SPRINT.md).
+
 ## 2026-09-28 — Windows portable startup checkpoint
 
 - Исправлена зависимость unpackaged Windows-сборки от установленного App Runtime:
