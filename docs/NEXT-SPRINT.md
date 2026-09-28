@@ -159,7 +159,7 @@ contact/message vertical и не закрывают release/device messaging gat
    411 integration / 107 profile / 257 unit, новые 4 authority-bound cases
    дополнительно пройдены после проверки отказа replay без текущего proof.
    CI предыдущего inventory-custody checkpoint `e4b9ef4` завершён success;
-   новый CI ещё не является подтверждённым gate.
+   новый XNode CI `36365290106` для `38074fc` также завершён success.
    Отдельная Protocol-проверка successor XPI1 теперь требует точный hash
    уже принятого durable predecessor, последовательный epoch и неизменную
    идентичность pre-key сервиса; XNode предоставляет ей durable predecessor
@@ -1277,6 +1277,18 @@ schema generation 1 не мигрируем. Отправитель приним
 публичный пакет владельца аккаунта. Account service теперь вызывает этот
 отправитель и add-only сохраняет exact verified XIC1 pair в защищённом слоте,
 привязанном к exact XPP1; запись не заменяет свежую проверку placement/claim.
+Клиентский account publisher теперь принимает только отдельный DID2
+`DeepIdV2ContactPathAuthoritySource`, без pre-cutover DID1 source/overload.
+Каждый mint получает независимый nonce-bound proof защищённого локального
+DAB2/DMD1, проверяет подписанную NETCODEC closure, фиксирует и перечитывает
+network LKG; cold restart допускает только exact current-floor rehydration.
+Shared production-регрессия: 146 passed, включая 6 новых source/API cases.
+Это реальные native ML-DSA/account SQLCipher checks с in-memory HTTP/network
+test adapters, не TLS/ONION/device evidence. Реальный closure fetch provider,
+account-owned network-floor composition и монтаж в MAUI остаются открыты.
+Shared checkpoint `6da623b` запушен; MAUI dependent gates: 19 clean /
+118 smoke passed, Windows build — 0 warnings/errors. Shared CI
+`36366966402` запущен, но ещё не подтверждён как success.
 Следующий разрыв: MAUI account flow ещё не вызывает этот путь, нет удалённого
 claim и не выполнен физический сценарий;
 положительное E2E двух terminal paths также ещё не получено.
@@ -1312,6 +1324,12 @@ signer policy. Операторский порядок — в
 network/placement pins, установить matching traffic keys на UAT ноды,
 обновить trusted time и получить nonce-fresh DID2 proof на обоих устройствах.
 Этот code gate не подтверждает contact publication или физические сообщения.
+UAT runtime 2026-09-28 01:43 UTC: readiness вновь отказал, поскольку текущая
+ADH1 не покрывала новый proof. Защищённый `refresh-current-head` сохранил
+содержимое и продвинул generation/tree до 11/6 через внешний floor;
+последующий DID2 readiness вернул `ok=true`. Автоматическое renewal в этом
+probe не включено; восстановленный readiness не означает device E2E или
+production cutover. Production Registry и staking portal не изменялись.
 
 Физическая диагностическая проверка Windows UAT 2026-09-23: новое локальное
 name-only account создалось и открыло clean Contacts UI, но фоновая genesis
