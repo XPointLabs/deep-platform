@@ -1396,6 +1396,31 @@ multi-role binding, с durable network LKG, без V1 snapshot adapter,
 header-derived authority или `protectedPrevious:null` в steady-state.
 До этого remote rollout/publish не считать проверенными. Зарегистрированные
 node identities и certbot сохранить.
+Уточнение receive contract по
+[DR-0011](survival-program/decisions/DR-0011-authenticated-relay-position.md):
+Ingress/Core имеют одинаковый наружный Relay header, поэтому unique-header
+selection из раннего DR-0010 невозможен. Protocol теперь отличает позиции
+после AEAD и полной проверки XRL1/inner-header/подписанных local+next roles,
+до replay commit. Только `receive-position-mismatch` разрешает bounded retry
+уже подписанной другой relay position с новым lease; auth/grammar/expiry/
+commit/disposal failures не разрешают retry. Ошибка disposal также очищает
+lease scope. Удалён единственный transitional receive-fixture bridge; тест
+использует текущий factory напрямую. Signed NETCODEC fixture проверяет шесть
+перестановок с canonical DID2 XPP1 V2 commit-carriage, не заявляя staged
+inventory, issuer proof или XIC1 publication. Host loop, durable NETCODEC source,
+TLS и physical device сценарий ещё должны быть завершены как один следующий
+server composition пакет; fixed-position/V1 host пока не развёрнут повторно.
+Полный Protocol gate после изменения: 1842 passed / 11 native skipped;
+MembershipRoutes 131, ProfileCarrier 105. Debug/Release builds — 0 warnings/errors;
+оба actual graph gates и package evidence mapped=219/packageMissing=0 прошли.
+API snapshots не изменялись. Frozen vector manifest integrity тоже проверена;
+это не runtime/device authority и не release sign-off.
+Protocol checkpoint: `ba0b710` (RC branch).
+Отдельно подтверждён следующий claim-path gap: ONION closed payload verifier
+сейчас принимает V2 XPP1, но направляет XPK1 в V1 parser и отвергает V2 XPK1.
+Это нельзя обходить V1 bytes или превращать в successful claim. Подключать V2
+request/result pair вместе с durable two-replica claim authority, затем DPH2;
+структурный parser или local claim result не является E2EE authority.
 CI DevOps `36375906887` завершился success; в unit run `36375906895`
 security-gate и release-gate-contracts успешны, но общий unit job failed:
 XNode ProfileGenerator fixture вызывает `git.exe` на Linux; отдельный

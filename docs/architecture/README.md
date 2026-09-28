@@ -106,6 +106,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   заменяет V1 receive snapshot и fixed-position host на DID2-only свежую
   authority с durable NETCODEC floor и signed multi-role receive. Реализация
   и all-six-permutations/live/device evidence ещё обязательны.
+- [`DR-0011`](../survival-program/decisions/DR-0011-authenticated-relay-position.md)
+  разрешает различать Ingress/Core только по проверенному содержимому после
+  AEAD, с закрытым pre-commit error contract и ограниченным position retry.
+  Внешний Relay header не даёт уникальную receive position; wire/API не меняются.
 - Текущие Session-derived identity, DPE1/DMC1 и group bytes не являются
   production compatibility surface и не ограничивают новый дизайн.
 - Первый публичный релиз использует новое поколение account/device/database,

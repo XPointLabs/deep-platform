@@ -38,11 +38,15 @@ the existing six-permutation requirement in `XPOINT-NETWORK-V1`.
    positions. Remove the fixed `ReceivePosition` configuration cleanly, including
    installer/topology inputs and obsolete assertions. Do not add an old-field
    reader or translate it into the new policy.
-5. Use existing Protocol local-node-key factories and frame/context selectors
-   for each signed allowed position. Require one unique matching capability;
-   an unauthenticated frame hint cannot create authority. Replay reservation,
-   AEAD opening and terminal dispatch occur only after this selection. The node
-   still never selects or rewrites the client's route.
+5. Use Protocol local-node-key factories for the signed allowed positions.
+   The header selector distinguishes Relay from Exit, not Ingress from Core:
+   both relay positions share the same outer header/key. Resolve that ambiguity
+   only through the authenticated-position contract in
+   [DR-0011](DR-0011-authenticated-relay-position.md). A unique header match is
+   not required and must not be invented. Each open still requires its own
+   position-bound durable replay lease; only complete validation and replay
+   commit release a forward/dispatch capability. The node never selects or
+   rewrites the client's route.
 6. Preflight and live probes must match installed independent traffic/TLS keys
    to signed descriptors. Preserve registered Ed25519/BLS identities, state
    protection, node data, Reality configuration and certbot. Do not replace them
