@@ -1,5 +1,18 @@
 # История спринтов
 
+## 2026-09-28 — Windows portable startup checkpoint
+
+- Исправлена зависимость unpackaged Windows-сборки от установленного App Runtime:
+  оба runtime включены в output, пакетный Deployment Manager исключён только
+  для Windows `None`, registration-free activation остаётся у SDK.
+- ARM64 Debug build — 0 warnings/errors; полный smoke — 119, clean account — 19.
+  Реальное окно открыло существующий DID2 probe без reset и без восстановления
+  удалённой локальной фразы. Точный hash и ограничения проверки находятся в
+  [MAUI evidence](../deep-client-maui/docs/DID2-WINDOWS-PROBE-2026-09-24.md).
+- Только закрытый Registry UAT получил CAS-renewal protected time и ADH1
+  generation 13/tree 6. Genesis, account history и production-ноды не сбрасывались.
+  Startup/renewal не закрывают Windows admission или Android↔Windows messaging E2E.
+
 ## 2026-09-28 — DID2 restart-safe signed multi-role host candidate
 
 - [DR-0012](survival-program/decisions/DR-0012-protected-network-history.md)
