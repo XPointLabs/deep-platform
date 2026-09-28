@@ -97,6 +97,15 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   задаёт один DID2-only DPH2 version-2 target с exact DID2 в tag 20.
   Исторический DID1 DPH2 и его DAO1 размеры не входят в release graph;
   machine registry, vectors и consumers ещё должны быть перевыпущены вместе.
+- [`DR-0009`](../survival-program/decisions/DR-0009-did2-selected-entry-transport.md)
+  связывает TLS entry с фактически выбранным трёх-hop DID2 путём, а локальные
+  guards и entropy — с текущим account/database instance. Это отдельное
+  frozen API extension без изменения ONION wire; live publication и device
+  E2E ещё не подтверждены.
+- [`DR-0010`](../survival-program/decisions/DR-0010-did2-onion-host-authority.md)
+  заменяет V1 receive snapshot и fixed-position host на DID2-only свежую
+  authority с durable NETCODEC floor и signed multi-role receive. Реализация
+  и all-six-permutations/live/device evidence ещё обязательны.
 - Текущие Session-derived identity, DPE1/DMC1 и group bytes не являются
   production compatibility surface и не ограничивают новый дизайн.
 - Первый публичный релиз использует новое поколение account/device/database,

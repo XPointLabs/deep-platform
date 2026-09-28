@@ -1359,8 +1359,43 @@ Android APK пока не установлен, новые device claims отс�
 Проверенный шаг запушен в RC: Shared `3ecfdd8`, MAUI `af74ed3`.
 Следующий вертикальный шаг — DID2-only protected ONION host и live publication
 на обеих выбранных репликах, затем claim/DPH2 и двусторонний device text E2E.
-Старый MAUI host с V1 identity/secure slots не переносить адаптером; native
-agreement/entropy/entry-guard custody должна принадлежать текущему DID2 account.
+Старый MAUI host с V1 identity/secure slots не переносить адаптером;
+entropy/entry-guard custody должна принадлежать текущему DID2 account.
+Текущий candidate по [DR-0009](survival-program/decisions/DR-0009-did2-selected-entry-transport.md)
+соединяет account-owned DSV2 custody и Protocol-derived selected-entry TLS:
+entry выбирается после required-exit path selection, не фиксируется старым URL.
+Protocol сам генерирует request ephemeral/reply keys; client не читает
+device scalar или XNode receive vault. Два фиксированных защищённых floor
+slots на root записываются перед SQL; rollback/crash fail closed. Entropy
+commitments не удаляются и имеют закрытый capacity bound, retirement/recovery
+остаётся release gate. Focused Protocol — 16 passed; Shared TLS/guard/owner
+gate — 13 passed. Реальный native DID2 inventory + SQLCipher fixture отдельно
+прошёл локальный BuildAsync для обеих выбранных реплик, duplicate reservation
+и reopen с теми же guards/entropy. Это local sealing, не network send/XIC1/TLS
+или device evidence. MAUI HTTPS UAT теперь монтирует publisher и ждёт
+independently verified XIC1 pair, затем durable account-owned запись.
+Live publication ещё не подтверждена; новые origin/onion ключи XNode ещё
+нужно установить. Restore/build Protocol — 0 warnings/errors. Actual graph
+сначала отверг новый API snapshot; выполнен reviewed DR-0009 repin
+Debug/Release. Из Protocol gate удалены 144 исторических API snapshots;
+принимается только текущий API, проверки целостности/negative witness не
+отключены. Повторный full Protocol — 1824 passed / 11 native skipped,
+MembershipRoutes — 131, ProfileCarrier — 105 passed; Debug/Release actual
+graph и evidence ownership mapped=219/packageMissing=0 прошли. Full Shared
+Release — 167 passed, MAUI clean — 19, smoke — 118; HTTPS UAT Windows
+win-arm64 и Android ARM64 builds — 0 warnings/errors. Compile artifacts не
+установлены на устройства. Проверенные commits: Protocol `876e39d`,
+Shared `cb02a54`, MAUI `3062a77`.
+Следующий P0 по [DR-0010](survival-program/decisions/DR-0010-did2-onion-host-authority.md):
+подтверждённый разрыв в XNode — fixed ReceivePosition не
+допускает required-exit перестановки в трёх-node сети. Кроме того, ONION
+receive host требует V1 `IContactVerifiedAuthoritySnapshotSource`, который
+не может одновременно работать с DID2 proof boundary. Заменить это на
+DID2-only свежую identity-neutral receive authority и подписанный
+multi-role binding, с durable network LKG, без V1 snapshot adapter,
+header-derived authority или `protectedPrevious:null` в steady-state.
+До этого remote rollout/publish не считать проверенными. Зарегистрированные
+node identities и certbot сохранить.
 CI DevOps `36375906887` завершился success; в unit run `36375906895`
 security-gate и release-gate-contracts успешны, но общий unit job failed:
 XNode ProfileGenerator fixture вызывает `git.exe` на Linux; отдельный
