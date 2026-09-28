@@ -381,6 +381,8 @@ Normative source: `XPOINT-NETWORK-V1.md`.
 | `XMC1` | closed mailbox-grant acquisition result carrying exactly one current-epoch MCG2 only on success. | ContactResolve authority authors; contact client verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XUR1` | established-contact update rendezvous capability/record. | contact owner authors; update-rendezvous service hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XCP1` | local protected client path plan. Never uploaded. | `deep-client-shared` | `TARGET_UNFROZEN`; local DB generation only |
+| `NCQ2` | identity-neutral network closure distribution request; no account/locator input. | `deep-client-shared` authors; Registry/mirrors consume | `TARGET_UNFROZEN`; exact envelope owner is XPOINT-NETWORK-V1 section 8.1 |
+| `NCP2` | bounded exact public network closure distribution response; not freshness or route authority. | Registry/mirrors distribute; client verifies records independently | `TARGET_UNFROZEN`; exact envelope owner is XPOINT-NETWORK-V1 section 8.1 |
 | `XCD1` | signed CallRelay target-auth plus replica/quorum authority descriptor with exact per-node CallRelay role-key generations and proofs of possession. | CallRelay authors; XNV1 witnesses authorize/publish the exact core ref | `FROZEN_TARGET_NOT_ACTIVE`; exact codec owner is NETCODEC-01 |
 | `XRA1` | long-lived recipient reachability authorization. | recipient authors; directory threshold verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XRC1` | short-lived XNV/PMT/PMS-bound live route closure. | directory threshold authors | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |

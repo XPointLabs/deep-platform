@@ -799,6 +799,34 @@ reachable signed acquisition/import path. Therefore V1 claims bounded bootstrap
 recovery under update-channel blocking, not continued messaging when every current
 control-plane path is withheld.
 
+### 8.1 Identity-neutral network closure distribution (NCQ2/NCP2)
+
+This candidate transport envelope is `TARGET_UNFROZEN`; it does not change any
+signed NETCODEC record or activate a release claim. Its sole purpose is to carry
+exact public records without the retired account-proof package. Registry/mirrors
+do not select routes or mint publication authority by distributing it.
+
+Both frames use `magicASCII4 || version:u16be=2 || suite:u16be=0x0201 ||
+chainCount:u16be || reserved:u16be=0 || networkId16`. The network ID is nonzero.
+`NCQ2` is exactly 28 bytes with chainCount=0, and contains no account ID,
+locator, read capability, nonce or protected floor. `NCP2` has chainCount=7 and
+appends seven nonempty ordered chains: XNA1, DTS1, XVP1, XNV1, XNH1, active
+XND1 descriptors, PMT2. Each chain is `count:u32be || (length:u32be || exactRecord)*`.
+Counts are 1..4096; each record is 12..65535 bytes with the corresponding magic;
+the total record bytes of each chain are at most 16 MiB and the complete frame
+is at most 68 MiB. XNA1/DTS1 counts and XNV1/XNH1 counts must match. Unknown
+header values, wrong order/magic, truncation, hostile sizes and trailing bytes
+reject before copying any record. These are envelope shape checks, not record
+signature or semantic verification; records retain their own canonical codecs.
+
+There is no freshness in the envelope. A replayed package cannot bypass pinned
+authority, signed lineage, protected network floor, nonce-fresh DID2 proof or
+current placement verification. NCP2 contains no ADP1, DTT1, account admission
+receipt or selected route. A cold client cannot use it to skip missing history.
+The source restrictions in section 8 apply unchanged, including masked policy.
+HTTP distribution uses the exact media types exposed by the Protocol codec;
+bounded transport and TLS checks remain consumer-owned.
+
 ## 9. Mailbox placement and storage swarms
 
 Production generation 1 uses clean-break `PMA2/PMT2/PMS2` records. It ports the

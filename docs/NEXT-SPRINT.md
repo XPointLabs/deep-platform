@@ -1284,8 +1284,10 @@ DAB2/DMD1, проверяет подписанную NETCODEC closure, фикс�
 network LKG; cold restart допускает только exact current-floor rehydration.
 Shared production-регрессия: 146 passed, включая 6 новых source/API cases.
 Это реальные native ML-DSA/account SQLCipher checks с in-memory HTTP/network
-test adapters, не TLS/ONION/device evidence. Реальный closure fetch provider
-и монтаж в MAUI остаются открыты. Account-owned network floor теперь
+test adapters, не TLS/ONION/device evidence. Identity-neutral closure fetch
+теперь реализован отдельным bounded NCQ2/NCP2 HTTP adapter; монтаж в MAUI,
+операторская подготовка полного public bundle и его TLS deployment остаются
+открыты. Account-owned network floor теперь
 подключён к DSV2 SQLCipher под account lease: отдельный root-kind, проверка
 instance/account/genesis pin и add-only SecureStorage marker перед SQL CAS.
 Новые проверки проходят через настоящий durable network floor; fork latch
@@ -1294,7 +1296,20 @@ Focused source/custody gate: 8 passed; полный Shared gate — 148 passed,
 включая отказ старого store после explicit account reset. Shared custody
 checkpoint `ae2503f` запушен; зависимые MAUI clean — 19 passed,
 Windows build — 0 warnings/errors, MAUI smoke — 118 passed.
-Shared CI `36368366668` ещё выполняется и пока не является подтверждённым gate.
+Shared CI `36368366668` завершился success для checkpoint `ae2503f`.
+Новый distribution-only NCQ2/NCP2 candidate не меняет подписанные NETCODEC
+bytes, account/freshness authority или protected floor. Protocol focused codec
+gate: 20 passed; полный Protocol gate: 1821 passed / 11 native skipped,
+MembershipRoutes — 131 passed, ProfileCarrier — 105 passed. Actual assembly/API
+graph и строгий global registry gate прошли. Реальный native ML-DSA + SQLCipher
+source/custody fixture теперь проходит через тот же HTTP wire adapter: 8 passed.
+Registry добавляет выключенную по умолчанию HTTPS выдачу одного public bundle
+без signing keys/account input/route selection; HTTP pipeline gate — 8 passed,
+полный Shared — 152 passed, Registry source-cutover — 431 passed. Новые
+checkpoints: Protocol `5e548ef`, Shared `f3992cc`, Registry `31d7a14`.
+Зависимые MAUI clean — 19 passed; Windows build/smoke ещё выполняются.
+Ни adapter, ни его кодовые проверки
+не являются physical messaging, masked acquisition или production evidence.
 Shared checkpoint `6da623b` запушен; MAUI dependent gates: 19 clean /
 118 smoke passed, Windows build — 0 warnings/errors. Shared CI
 `36366966402` завершился success.
