@@ -129,9 +129,11 @@ contact/message vertical и не закрывают release/device messaging gat
    view/placement/service capability до первой записи. Отдельный UAT-only
    receiver теперь подключает его к authenticated peer transport и DID2-only
    nonce-bound proof/NETCODEC placement без V1 ADP1 authority. Проверка
-   current contact authorization/lineage при финальном commit и runtime-проверка
-   финальных `XIC1` ещё не готовы. Protocol уже проверяет exact пару подписанных `XIC1` против
-   текущего NETCODEC placement и XPP1, но runtime/client её не потребляют;
+   current contact authorization/lineage при guarded финальном commit уже
+   проверяются; активация клиентского runtime через финальную пару `XIC1`
+   ещё не готова. Protocol уже проверяет exact пару подписанных `XIC1` против
+   текущего NETCODEC placement и XPP1, но default MAUI messaging graph её
+   ещё не потребляет;
    staged aggregate не является публикацией или доказательством E2E.
    Manifest-фрагмент V2 теперь несёт public exact DID2/DCA1 V2/XPS1,
    связанные с каждым фрагментом общим commitment и восстановленные рядом с
@@ -144,14 +146,26 @@ contact/message vertical и не закрывают release/device messaging gat
    одним XIC1. Локальный snapshot теперь атомарно хранит exact inventory с
    DPK2 и receipt под подписью прежнего node identity; metadata-only state
    отвергается без migration. Проверены restart/exact replay, ограничения и
-   отказ на подмену подписанного tuple. Следующий gate — полный положительный
-   authority-bound final commit, две выбранные реплики и client-side проверка
-   пары XIC1; claim остаётся закрыт.
+   отказ на подмену подписанного tuple. Положительный XNode integration gate
+   теперь проходит через настоящий ML-DSA DID2 root, подписанные account/device/
+   directory/network closure, guarded final commit обеих выбранных реплик
+   (ONION terminal и decoded peer wire projection) и Protocol-проверку пары
+   XIC1. Reopen возвращает exact исходный receipt только после текущего proof;
+   отсутствие/истечение proof и изменённый public XPS1 support не активируют
+   inventory. Это test-owned ceremony с in-memory proof fetch/clock, не TLS,
+   KEM exchange, client transport или device E2E. Следующий gate — реальная
+   двухрепличная отправка из клиента и fresh-authority claim; claim остаётся закрыт.
+   XNode checkpoint `38074fc`: локальная source-cutover регрессия —
+   411 integration / 107 profile / 257 unit, новые 4 authority-bound cases
+   дополнительно пройдены после проверки отказа replay без текущего proof.
+   CI предыдущего inventory-custody checkpoint `e4b9ef4` завершён success;
+   новый CI ещё не является подтверждённым gate.
    Отдельная Protocol-проверка successor XPI1 теперь требует точный hash
    уже принятого durable predecessor, последовательный epoch и неизменную
    идентичность pre-key сервиса; XNode предоставляет ей durable predecessor
    и фиксирует final receipt через service-capability-keyed CAS. Полный
-   authority-bound положительный integration/device gate ещё не подтверждён.
+   authority-bound положительный integration gate подтверждён для genesis;
+   полный successor/device gate ещё не подтверждён.
    Журнал bounded XPP1 теперь и без restart карантинит повреждённый chunk
    при exact commit replay и потерю manifest после сохранения chunk; это
    закрывает локальный replay/reset дефект, но не даёт publication authority.
