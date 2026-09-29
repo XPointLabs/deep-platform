@@ -74,8 +74,18 @@ owner CI и rollout installer на всех трёх seed с сохранённ�
 инкремент — DID2 atomic claim/DPH2 и доставка текста; физическая проверка
 durable client DNH2, inventory successor и автоматический operational lifecycle
 остаются нужны. На 2026-09-29 свежие device proof-запросы fail-closed:
-подписанный XNV1 не покрывает текущий issuance interval. Directory head 28/tree 10
-и readiness 200 не закрывают этот operational blocker.
+подписанный XNV1 не покрывал текущий issuance interval. Этот конкретный blocker
+устранён monotonic successor: три ноды получили view generation 2 через
+поддерживаемый installer, protected DNH2 revision продвинулась до 2 без reset.
+Полная история распределяется через HTTPS; directory checkpoint продолжен
+до target head 29. Текущие Shared DNH2 builds открыты на Windows и Android,
+но physical restart/changed-tip gate ещё не закрыт. Старые projection-only
+QA accounts ожидаемо отвергнуты без migration; Windows сброшен через UI по
+подтверждению владельца и новый аккаунт создан им. Свежие physical попытки
+пока не завершили publication: Windows сообщает request aborted или bounded
+AccountProof timeout, Android — bounded PreKeyPublication timeout. Network
+authority и три healthy XNode сами по себе не доказывают XIC1 completion,
+claim, handshake или delivery.
 Раздельные показания Android stageFailure/networkOutcome не приравнивать к delivery.
 Оставить отдельной задачей выяснение причины intermittent Windows
 concurrent authority-lock rejection: isolated и полный повтор passed, причина
@@ -101,8 +111,9 @@ generation-zero цепочку и не продлевать подписанны
 
 Account-owned durable DNH2 custody по DR-0012 реализована в локальном candidate:
 полный защищённый policy/PMT predecessor заменяет process-local cache и
-tuple-only restart fallback. Ещё нужны текущие committed device builds и
-физический restart с изменившимся signed tip; локальные gate results находятся
+tuple-only restart fallback. Текущие committed diagnostic device builds
+собраны и открыты; ещё нужен физический restart с изменившимся signed tip.
+Локальные gate results находятся
 в истории, не считаются physical evidence. Старые projection-only QA accounts
 несовместимы и требуют explicit application-owned reset, не migration.
 Inventory successor/replenishment должен сохранять одноразовость и lineage,
@@ -111,8 +122,10 @@ existing predecessor. Ни reset, ни silent re-key не заменяют эт�
 Обновить proof-aware Registry readiness: при включённом proof endpoint
 проверять пригодность текущего подписанного view/issuance interval без
 расходования клиентского nonce ledger. До этой проверки directory readiness
-200 не подтверждает proof readiness. Завершить штатный operational successor
-с retained lineage и installed traffic keys; не исправлять expiry в verifier.
+200 не подтверждает proof readiness. Завершить автоматический operational
+lifecycle поверх уже выполненного successor с retained lineage и installed
+traffic keys; не исправлять expiry в verifier. Снять текущий physical
+publication abort/timeout до подключения следующего инкремента.
 Files/images и группы проверяются на том же production messaging пути.
 
 Сохранить отдельное regression investigation для transient Windows

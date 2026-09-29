@@ -1,5 +1,62 @@
 # История спринтов
 
+## 2026-09-29 — authenticated successor rollout и текущие device builds
+
+- XNode `0a9ffbd` добавляет read-only offline floor/anchor/key-ring audit с
+  тем же Data Protection scope и без автоматической генерации ключей. Общий
+  decoder теперь отвергает authenticated anchor с другой history length.
+  Focused tests: 21/21; полный source-cutover gate: 872/872 без пропусков
+  (485 integration, 280 core, 107 profile). Deployed image пока от `44387ca`,
+  audit выполнялся локально над независимыми приватными снимками.
+- DevOps `a2a939a` и installer `0fb8711` исправляют stage growing signed
+  history: новый immutable bundle не требует новых файлов внутри старого.
+  Exact rerun по-прежнему отвергает отсутствующий retained record. Node tests
+  10/10, installer syntax и shell gates passed. Full release contract gate
+  прошёл 51 команду; readiness-status остаётся blocked на десяти отсутствующих
+  real release/device/ops/security/GA evidence, это не release approval.
+- Независимые authenticated DNH2 export на трёх нодах согласованы на revision 1
+  до authoring. Подписан monotonic operational successor с полным retained
+  NCP2, новым traffic key/certificate epoch и тем же registered/root custody.
+  После checkpoint continuation все три ноды прошли supported installer
+  health gate на immutable `c54cafd…` image. Registered Ed25519/BLS bytes
+  hash-matched к исходным backup. Protected DNH2 advanced до revision 2/view 2,
+  одинаковый capsule SHA на всех трёх нодах. Ни floor, ни genesis не сброшены.
+  Подробное operational evidence и отрицательный first activation находятся
+  в [DevOps runbook](../deep-devops/docs/DID2_FLOOR_PRODUCTION_CANDIDATE.md).
+- Certificate-validated HTTPS distribution совпало с независимым новым NCP2
+  (14,449 bytes) и прошло четыре negative checks. Live certificate-only audit
+  подтвердил signed SPKI/SAN/validity/H2 для всех трёх endpoint без application
+  exchange; это не подписанный message-path ответ. Registry readiness, три
+  XNode health и staking passed; root private custody не отправлялась на hosts.
+- Shared CI `36529522694` завершился success. MAUI `d116644` с Shared
+  `72a78b7` собраны через supported scripts для Windows ARM64 и Android ARM64.
+  Android build: zero warnings/errors, signer exact-match; установлен только
+  dedicated HTTPS package, hashes остальных трёх пакетов unchanged. Clean
+  tests 35/35 и smoke 119/119 passed. Это Debug diagnostics, не Release assets.
+- Новый Windows build сохранил старый аккаунт, но ожидаемо отверг его
+  projection-only custody без migration. После action-time подтверждения
+  изолированный QA сброшен через UI; новый аккаунт создал владелец. Android
+  также наблюдался на fresh onboarding, позднее — retained recovery и проверке;
+  неизвестный исход SetName не повторялся автоматически. Fresh publication
+  пока failed: Android PreKeyPublication timeout; Windows request aborted/
+  AccountProof timeout. Приватная HTTP trace локализует Windows proof response
+  wait; Registry одновременно выдаёт другие proof responses 200. Read-only
+  plain HttpClient H2 probe повторил прежний second-response abort, не только
+  product orchestration. Причина ещё не доказана; downgrade/retry bypass нет.
+  Follow-up Node.js control также повторил truncation на workstation, тогда
+  как три reused-connection ответа с Registry host и три fresh локальных
+  ответа совпали с независимым NCP2. Детальные device hashes и controlled
+  observations находятся в [MAUI checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md#dnh2-builds-after-the-authenticated-operational-successor).
+- MAUI `00a089f` закрывает утечку сырого IOException в diagnostic UI:
+  фиксированный stage/TransportIo вместо private exception text, исходная
+  причина сохранена внутри. Clean tests 42/42, smoke 119/119, selected-file
+  secret scan 10/10 без findings. DevOps rollout observation закоммичен как
+  `a365590`. Новый Windows diagnostic build компилирует actual DID2 graph;
+  это не исправление сетевого truncation и не physical publication success.
+- Device changed-tip restart, новый XIC1 pair, live claim, DPH2, text,
+  images/files/groups остаются открыты. GitHub Releases, latest, main merges
+  и cutover attestation не выполнялись.
+
 ## 2026-09-29 — account-owned DNH2 и текущие production prerequisites
 
 - Shared `72a78b7` сохраняет полный DR-0012 predecessor вместе с LKG
