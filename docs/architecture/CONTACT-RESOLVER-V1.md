@@ -969,6 +969,21 @@ and both old-replica signatures. New replicas import and verify the complete
 unexpired CAS/replay set before serving; a lease or an unreplicated Registry
 decision cannot authorize a second claim.
 
+Local prepare is a durable reservation, not `DurablyCommitted` claim authority.
+Pending reservations consume the selected one-time ID and the last-resort use
+counter; expiry, cancellation, lost replies and restart MUST NOT release them.
+The last-resort counter belongs to the signed XPS1 service generation: advancing
+XPI1 alone MUST NOT reset it. Last-resort admission requires exhaustion of usable
+one-time members, including pending reservations. A selected replica can record
+the exact completed result only against its own exact durable proposal and both
+verified selected-replica signatures. The coordinator still requires both
+replicas' durable completion read-backs before exposing `Claimed/Replay`; one
+local journal or signature pair alone cannot satisfy that outcome. An uncertain
+write is reconciled by the same exact operation, never a new key selection.
+Protected reservation state shares the publication custody lock; lost or corrupt
+activated state fails closed. Quotas, complete protected rollback/handover state
+and current publication/placement authority remain separate activation gates.
+
 ### 3.5 Established-contact update service: `XUR1` / `XUW1` / `XUQ1` / `XUS1`
 
 `XUR1`, version 1, suite `0x0201`, is direction-specific and shared only inside

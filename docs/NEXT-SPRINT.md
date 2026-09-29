@@ -122,6 +122,14 @@ Files/images и группы проверяются на том же production 
    replay и conflict/fork/crash/restart tests. Изменение одного parser не
    активирует claim. Удалить старый runtime из release graph, не адаптировать
    его к новому account ID.
+   Локальная V2 reservation/completion custody реализована отдельно от V1:
+   общий inventory lock, signed snapshot, exact proposal replay, one-time burn,
+   persistent last-resort counter и completion от typed two-signature verifier.
+   Это не работающий endpoint или распределённый quorum: ещё соединить
+   authenticated coordinator/peer prepare+commit, оба durable read-back,
+   independently refreshed publisher/device proof, verified XIC1 pair и
+   admission/rollback/handover. Exact DCB1 closure проверяет клиент; XNode
+   не должен получать plaintext DCR1/DCB1 для её замены.
 3. Завершить DID2 permanent resolver publication/resolution:
    `DCR1/XPU1/XPA1` V2 candidate должен потреблять current account/DCA1,
    route authority, verified placement и publisher signature, затем durable

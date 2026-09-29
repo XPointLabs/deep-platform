@@ -1,5 +1,33 @@
 # История спринтов
 
+## 2026-09-29 — DID2 local claim reservation/completion custody
+
+- XNode получил DID2-only локальный журнал claim proposals в том же custody
+  lock, что и inventory. Signed snapshot связывает exact XPK1/DPK2/XPI1,
+  generation и counter; новый proposal должен быть членом retained inventory.
+  Pending one-time keys не освобождаются после expiry/cancellation/restart.
+  Last-resort допускается только после exhaustion и сохраняет counter в
+  signed service generation, включая смену inventory epoch.
+- Local completion принимает только opaque Protocol capability после проверки
+  обеих selected-replica signatures, требует exact durable reservation,
+  сохраняет первый exact XPC1 result и rereads snapshot. Это local completion,
+  не распределённый quorum или permission отправлять DPH2. Signed state не
+  обнаруживает rollback целого валидного backup; admission capacity ограничена.
+- Первый focused reservation запуск: 11 pass / 2 fail. Tests выявили отсутствие
+  durable fault latch для InvalidDataException; исправлен catch, assertions
+  сохранены. После добавления completion/exhaustion/semantic corruption cases
+  полный source-cutover `dotnet test XNode.slnx` прошёл **850/850**:
+  unit 280, integration 463, profile 107; warnings/errors не наблюдались.
+  Real DID2/network/inventory ceremony проверена для двух local journals,
+  one-time Merkle inclusion и last-resort, включая restart и crash на replace.
+  Это in-process local-storage evidence, не peer HTTP/2 или physical delivery.
+- Documentation gate прошёл 172 checks. Никаких production rollout, account
+  resets, main merges или GitHub Releases этим инкрементом не выполнено.
+  V1 claim dispatch не активируется для DID2; новый endpoint, authenticated
+  coordinator/peer prepare+commit, оба durable completion read-backs и
+  independent current publisher/publication authority остаются в NEXT-SPRINT.
+  Обычный pinned NuGet release graph также ещё требует согласования.
+
 ## 2026-09-28 — повторная проверка protected publication на устройствах
 
 - Shared `c5b97ef` проверяет completed XIC1 pair против свежего DID2/device
