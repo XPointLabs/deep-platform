@@ -60,6 +60,62 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ## Обязательный порядок исполнения
 
+### P0: стабилизация и автоматическое восстановление сети (2026-09-29)
+
+По решению Mr. X следующий инкремент — **сначала стабильная сеть, затем
+Android↔Windows E2E сообщений**. Запуск новых physical messaging прогонов
+приостановлен до закрытия `NET-STAB-GATE`; готовые message/claim задачи и
+негативные проверки не отменяются. Этот порядок имеет приоритет над прежними
+формулировками «следующий инкремент — claim/текст» ниже.
+
+Остановка контейнера — штатная временная недоступность, а не повод сбрасывать
+authority, аккаунты или зарегистрированные ключи. После явного запуска
+контейнера с сохранёнными volumes, восстановления зависимостей и получения
+проверенного актуального состояния нода должна самостоятельно догнать сеть.
+В профиле из трёх нод exact-three-hop доставка временно недоступна при остановке
+любой из них; это не обещание доставки при двух нодах. Остальные процессы
+не должны падать каскадом, терять durable state или требовать ручного repair.
+Явно остановленный оператором контейнер не обязан самопроизвольно запускаться.
+
+Agent-sized задачи, владельцы и зависимости находятся в
+[`IMPLEMENTATION-PLAN-V1.md`, §1.1](architecture/IMPLEMENTATION-PLAN-V1.md#11-network-stability-first-execution-override-2026-09-29):
+
+| Порядок | Задача | Что должно стать проверяемым |
+| --- | --- | --- |
+| P0 / 1 | `NET-STAB-SPEC` | Причины отказов воспроизведены; согласованы restart/catch-up и безопасное обновление времени/истории |
+| P0 / 2 | `NET-STAB-HISTORY` | Проверенный bounded catch-up не ломается после 64 head successors и не требует регулярного ручного root repair |
+| P0 / 2 | `NET-STAB-AUTH` | Registry обновляет operational heads и обслуживает proofs после expiry/restart без reset |
+| P0 / 2 | `NET-STAB-OPS` | Автоматический lifecycle времени, views и traffic keys; предупреждения до исчерпания ресурса |
+| P0 / 3 | `NET-STAB-NODE` | Нода переживает недоступность зависимостей и восстанавливается с прежней identity и durable state |
+| P0 / 3 | `NET-STAB-CLIENT` | Клиент переживает остановку сети; reconnect не требует нового аккаунта или потери очереди |
+| P0 / 4 | `NET-STAB-INSTALL` | Supported installer и Docker restart/recreate сохраняют state, права и recovery inputs |
+| P0 / 5 | `NET-STAB-GATE` | Реальная Docker fault matrix, длительный soak и локальный Android/Windows reconnect подтверждены |
+| Затем | DID2 claim → DPH2 → текст | Возвращение к существующему physical messaging gate на стабильной commit matrix |
+| P1, отдельный инкремент | `NET-MEMBERSHIP-DESIGN` | Децентрализация membership/distribution с текущим контрактом, без изменения ABI |
+
+Начальные проблемные наблюдения для воспроизведения: stale protected trusted-time
+anchor у Registry; истёкшая DEV mailbox authority при запуске XNode; расхождение
+общего health и proof/ONION readiness; proof HTTP 429 и фоновые polling budgets;
+ограниченный хвост signed history при регулярном renewal. Это входы расследования,
+не доказательство исправления и не новый live health snapshot.
+
+`NET-STAB-GATE` возвращает разрешение продолжить messaging E2E только после
+повторяемого stop/start каждой ноды, restart Registry, полного Docker restart,
+простоя дольше действующих operational TTL и нескольких key/view/head rotations.
+Проверяется также возврат после более 64 head successors, отсутствие ручного
+reset/re-key/перевыпуска genesis и сохранение anti-rollback/fork protection.
+Точные fault cases и evidence requirements принадлежат пакету gate, не
+дублируют wire или retention semantics в этом файле.
+
+Мосты, новые carriers и anti-censorship matrix (`WP6`) отложены за пределы
+текущего инкремента «стабильность → сообщения»; они не блокируют этот recovery
+gate. Это не разрешает direct/plaintext downgrade и не закрывает соответствующие
+будущие release gates. Финальный public-release scope автоматически не сокращён.
+Расширение смарт-контракта, on-chain IP/контакты и переход на новый DID не входят
+в стабилизацию. Полная замена Registry распределённым account consensus не
+добавляется как prerequisite первого текстового E2E: membership и account
+freshness остаются разными задачами.
+
 ### Ритм вертикальных проверок
 
 Текущий prerequisite (2026-09-28): после ручного reset созданы новые physical
@@ -98,8 +154,8 @@ concurrent authority-lock rejection: isolated и полный повтор passe
 device observations — в
 [MAUI evidence note](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 
-P0 выполняется по законченным пользовательским сценариям, а не по числу
-изменённых файлов. Первый инкремент — DID2 contact/bootstrap и текстовое
+После `NET-STAB-GATE` P0 выполняется по законченным пользовательским сценариям,
+а не по числу изменённых файлов. Первый messaging инкремент — DID2 contact/bootstrap и текстовое
 сообщение Android↔Windows: публикация pre-key, атомарный claim, DPH2,
 зашифрованная отправка, приём, durable inbox commit до ACK и повтор после
 перезапуска. После него — тот же транспорт для изображения/файла с проверкой
@@ -1702,6 +1758,9 @@ load test на принятом максимуме.
 
 ## WP5 — XPoint directory, routing и storage
 
+- Ближайший обязательный этап — P0 стабилизация по
+  [`NET-STAB-*`](architecture/IMPLEMENTATION-PLAN-V1.md#11-network-stability-first-execution-override-2026-09-29);
+  кратковременный healthy snapshot или ручной successor не закрывает recovery gate.
 - Отделить публичную verifiable router/storage membership от неэнумеруемых
   access bridges. Registry является cache/distribution service, а не
   единственным источником truth или клиентским path selector.
@@ -1738,6 +1797,10 @@ malicious directory/fork/rollback, storage repair и route latency/load. Gate
 заявляет защиту от cross-role timing correlation.
 
 ## WP6 — anti-censorship carriers и bootstrap
+
+Отложено за пределы текущего инкремента по решению Mr. X от 2026-09-29:
+сначала автоматическое восстановление сети и E2E сообщений. Ниже сохранены
+будущие требования; их выполнение не является prerequisite `NET-STAB-GATE`.
 
 - Реализовать единый stream/datagram carrier boundary. XPoint onion frame не
   знает Reality/VLESS, WebTunnel-like HTTPS или будущий MASQUE carrier.

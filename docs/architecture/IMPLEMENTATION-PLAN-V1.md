@@ -40,6 +40,211 @@ Rules for every package:
     may consume immutable Session reference vectors, but may not introduce a
     compiled `LegacyV1`, migration assembly, compatibility adapter or fallback.
 
+### 1.1 Network stability-first execution override (2026-09-29)
+
+Mr. X changed the immediate execution order: network recovery first, physical
+Android/Windows message E2E second. This overlay takes precedence over the
+historical shortest-path order in section 2. It does not mark existing packages
+complete, activate new wire formats or reduce the final public-release scope.
+The unfinished milestone status has one owner: [NEXT-SPRINT.md](../NEXT-SPRINT.md).
+
+The immediate milestone is restart-safe recovery with retained volumes, not
+continuous delivery while one of the three required route nodes is absent.
+Transient dependency/authority unavailability must not erase identity or crash
+the rest of the network. Explicit operator stop remains stopped until operator
+start. Deleted volumes, lost protection keys, corrupt state and cryptographic
+forks are different recovery cases, not ordinary automatic reconnect.
+
+Normative inputs are [XPOINT-NETWORK-V1.md](XPOINT-NETWORK-V1.md),
+[ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md](ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md),
+[RETENTION-AND-RECOVERY-V1.md](RETENTION-AND-RECOVERY-V1.md),
+[DEPLOYMENT-PROFILES.md](DEPLOYMENT-PROFILES.md) and
+[DR-0012](../survival-program/decisions/DR-0012-protected-network-history.md).
+These tasks implement their existing semantics; a required security/wire change
+first updates the single normative owner, decision and frozen producer fixtures.
+No task extends validity in a verifier, trusts unsigned latest state, clears a
+rollback/fork floor, creates a replacement genesis, changes registered node
+identity, disables TLS verification or brings an offline root key online.
+
+#### NET-STAB-SPEC — recovery contract and reproducible failure baseline (P0)
+
+- **ownerRepository:** `XPointLabs` (architecture/specification only).
+- **dependsOn:** existing frozen Protocol inputs and committed service evidence;
+  no new runtime dependency is assumed complete.
+- **consumes:** actual Registry/XNode/client startup and refresh call paths,
+  current installer/Compose profiles and retention/time/fork rules above.
+- **produces:** reproducible, sanitized failure baseline and fault matrix;
+  classified retryable-unavailable versus permanent corruption/fork states;
+  reviewed catch-up, trusted-time bootstrap and operational renewal design.
+  Locate the reported stale time anchor, expired DEV authority, proof readiness
+  discrepancy, polling-budget pressure and finite signed-head tail in code/tests.
+- **review gate:** remove circular recovery prerequisites (fresh time needed to
+  obtain fresh time; expired view needed to fetch its successor). Use independent
+  authenticated observations and retained predecessors, never wall-clock trust.
+  Specify restart boot identity, signer availability, expiry margins and measured
+  recovery budgets. Quantitative product SLO changes belong to the existing
+  deployment/release owners, not a duplicated table in this plan.
+- **handoff:** exact APIs/fixtures for the packages below. A protocol change
+  requiring new bytes stops consumers until `NET-STAB-HISTORY` freezes them.
+
+#### NET-STAB-HISTORY — bounded catch-up beyond the current head tail (P0)
+
+- **ownerRepository:** `deep-protocol`.
+- **dependsOn:** NET-STAB-SPEC; existing NETCODEC/account-directory codecs.
+- **produces:** verified bounded catch-up contract and fixtures across more than
+  64 head successors, including renewals with an unchanged account tree; retained
+  lineage/source binding, fork/rollback rejection and crash-resumable progress.
+  Reuse existing canonical proofs where sufficient; if insufficient, freeze one
+  reviewed clean-break extension with its normative owner before consumers emit it.
+- **unit gate:** stale/historical source cannot authorize current operations;
+  wrong source/network, missing segment, reordered/duplicate heads, two competing
+  successors and interrupted merge reject or resume without losing protected floors.
+- **handoff:** author/client APIs and vectors consumed by AUTH/NODE/CLIENT.
+  Do not solve a 64-head bound by merely raising a count, deleting history or
+  requiring an offline-root ceremony every few days. Scheduled root-policy
+  renewal stays distinct from routine operational refresh and node restart.
+
+#### NET-STAB-AUTH — restart-safe Registry authoring and proof admission (P0)
+
+- **ownerRepository:** `deep-registry-api`.
+- **dependsOn:** NET-STAB-SPEC, NET-STAB-HISTORY.
+- **produces:** proactive operational-head renewal with durable predecessor/CAS;
+  independent-observation trusted-time recovery after process/host restart;
+  validated authoring configuration and bounded retry after dependency return;
+  proof-aware readiness that consumes no client nonce/one-use issuance entry;
+  catch-up publication using reviewed history APIs.
+- **resource gate:** measure background versus foreground proof demand; separate
+  internal readiness from issuance; bound concurrency, single-flight duplicate
+  refresh and fair admission. Test burst/retry/nonce-ledger exhaustion and capacity
+  recovery without disabling abuse limits. Honor typed throttling/Retry-After.
+- **unit/integration gate:** disabled/misconfigured renewal is visible before
+  expiry; expired anchor/head, signer outage, process restart during CAS, clock
+  rollback and catch-up beyond 64 successors preserve lineage and recover only
+  with verified inputs. Health=200 alone is not proof readiness.
+- **handoff:** executable service tests plus sanitized recovery/budget evidence.
+
+#### NET-STAB-OPS — automated operational authority and key lifecycle (P0)
+
+- **ownerRepository:** `deep-devops`.
+- **dependsOn:** NET-STAB-SPEC, NET-STAB-HISTORY, NET-STAB-AUTH.
+- **produces:** supported reconciliation/orchestration for time observations,
+  current+next traffic keys and signed network views, installed-key/descriptor
+  matching, atomic publication/read-back and bounded overlap; restart-safe
+  schedules and alerts before expiry/history or ledger capacity exhaustion.
+  Wire dev/UAT/prod configurations explicitly; expired DEV artifacts must not
+  require repeated one-off resets after Docker downtime.
+- **integration gate:** restart the authoring host during every install/publish
+  boundary; safely resume or retain the prior verified state. Observe multiple
+  view/head/key rotations with no manual floor edits or silent identity re-key.
+  Separate offline root/policy custody from delegated online operational signers;
+  an expired root-signed policy requires its authorized successor, not auto-sign
+  with copied root secrets. Expose this limit before expiry, not as a surprise.
+- **handoff:** production-like Docker orchestration, monitoring and operator
+  runbook; authority lifecycle must continue during node/client downtime.
+
+#### NET-STAB-NODE — live process and durable restart/catch-up (P0)
+
+- **ownerRepository:** `xnode`.
+- **dependsOn:** NET-STAB-SPEC, NET-STAB-HISTORY, NET-STAB-AUTH.
+- **produces:** retryable unavailable/recovering readiness instead of fatal
+  startup for transient authority/peer unavailability; cancelable jitter/backoff;
+  protected-history/time/key-ring load and verified catch-up before serving;
+  durable operation/replica reconciliation and stale peer/H2 connection recovery.
+- **unit/integration gate:** retain registered Ed25519/BLS identity, protection
+  keys, DNH2 lineage, replay/fork floors and journals across graceful stop and kill;
+  restart on old traffic epochs after dependencies return; rotate without
+  descriptor/key mismatch. Recovery admission must remain possible while business
+  operations are correctly unavailable. A stale/lost key or corrupt/forked state
+  never becomes healthy by retry, deleting a file or falling back to old runtime.
+- **handoff:** typed readiness/failure observations, restart/crash tests and exact
+  service commits for INSTALL/GATE. Storage catch-up is not a duplicate prekey claim.
+
+#### NET-STAB-CLIENT — automatic reconnect without account reset (P0)
+
+- **ownerRepository:** `deep-client-shared`.
+- **dependsOn:** NET-STAB-SPEC, NET-STAB-HISTORY, NET-STAB-AUTH, NET-STAB-NODE.
+- **produces:** foreground/resume and pre-operation verified refresh; durable
+  DNH2/time floors, bounded single-flight retry with jitter and Retry-After;
+  connection invalidation after server restart; outcome-unknown reconciliation
+  using stable operation IDs. Preserve account/device identity and staged
+  inventory/outbox across network absence and process restart.
+- **unit/integration gate:** node/Registry downtime and more than 64 successors;
+  Android suspend/resume and Windows stale H2 connection reproduction; reject
+  expired proof for mutations while allowing authenticated recovery acquisition.
+  Neither a reconnect event nor transport HTTP success proves publication/delivery.
+- **handoff:** Shared tests/API and diagnostic state for physical gate. Any MAUI
+  adapter/UI change is a separately committed consumer follow-up owned by
+  `deep-client-maui`; do not author platform code in Shared.
+
+#### NET-STAB-INSTALL — supported Docker restart/recreate and upgrade (P0)
+
+- **ownerRepository:** `xpoint-node-installer`.
+- **dependsOn:** NET-STAB-OPS, NET-STAB-NODE.
+- **produces:** idempotent supported install/start/upgrade preserving identity,
+  mounts, protected-state secrets and data volumes; runtime UID/permissions
+  validated before startup; explicit startup ordering/readiness and recovery
+  diagnostics. Inspect engine-restart behavior separately from operator stop.
+- **integration gate:** install/upgrade and recreate on retained volumes;
+  repeated stop/start, daemon restart and interrupted install; no stale authority
+  pins copied over current durable state, no volume deletion and no silent re-key.
+  Rollback rehearsal must honor signed security/anti-rollback floors rather than
+  reinstall an older image and rewind state. Do not alter certbot configuration.
+- **handoff:** supported commands and operator docs; local/UAT Compose consumer
+  edits remain separately owned by `deep-devops` under NET-STAB-OPS.
+
+#### NET-STAB-GATE — Docker fault matrix and permission to resume messaging (P0)
+
+- **ownerRepository:** `deep-tests-e2e`.
+- **dependsOn:** NET-STAB-AUTH, NET-STAB-OPS, NET-STAB-NODE,
+  NET-STAB-CLIENT, NET-STAB-INSTALL and any required MAUI consumer follow-up.
+- **consumes:** exact committed service/client/installer artifacts; real Docker
+  orchestration from `deep-devops`, no TestServer/mock-authority substitute.
+- **produces:** repeatable sanitized commit-bound fault evidence: stop/start each
+  node separately; graceful stop and forced kill; Registry outage/restart; entire
+  Docker stack/engine restart; dependency return in different orders; downtime
+  beyond all short-lived operational TTLs and seven-day virtual-time catch-up;
+  more than 64 signed-head successors; outage during key/view rotation and during
+  durable publication/claim boundaries without enabling unready claim features.
+- **acceptance gate:** at least 20 automated stop/start cycles per node, a real
+  72-hour unattended soak including scheduled renewals, and recovered functional
+  authenticated ONION/publication probes, not just green health endpoints.
+  Record dependency-restored-to-ready and functional recovery latency against
+  budgets from SPEC; bounded retries/resources, no idle admission starvation,
+  cascade crashes, state loss, duplicate one-time consumption or manual reset.
+  Accelerated fixtures do not substitute for the real soak.
+- **physical handoff:** Android/Windows recovery probes run locally on Mr. X's
+  devices/desktop, not CI. Reconnect with the same accounts after node/Registry
+  restart, preserving protected history and verified publication. These probes
+  do not claim message delivery; after the gate, resume the existing atomic
+  claim → DPH2 → bidirectional text → restart/dedup/durable-ACK device E2E.
+- **deployment boundary:** stage destructive faults in local/UAT retained-volume
+  topology first. Production fault injection/rollout needs explicit authorization
+  for that run; this planning change performs neither.
+
+#### NET-MEMBERSHIP-DESIGN — current-contract decentralization follow-up (P1)
+
+- **ownerRepository:** `XPointLabs` (reviewed architecture only).
+- **dependsOn:** NET-STAB-SPEC; not a prerequisite of NET-STAB-GATE or first text E2E.
+- **produces:** design using the existing staking contract/ABI and registered
+  node keys: verified chain/finality anchor and complete roster; independently
+  signed off-chain descriptors; multiple distribution sources with local
+  verification. Verify deployed contract/source correspondence before relying
+  on its getters. Registry can become an optional network-distribution mirror.
+- **review gate:** distinguish membership proof from account freshness, trusted
+  time and atomic prekey consensus. Define partitions/quorum/fork behavior and
+  RPC failure/reorg handling; BLS aggregation alone is not consensus. Do not
+  introduce on-chain IPs, account records, directory roots or new slashing claims.
+- **handoff:** separate producer/consumer packages for Protocol, staking
+  projection, Registry, XNode and Shared after reviewed design. Do not expand this
+  stability fix into an unbounded simultaneous consensus rewrite.
+
+Execution order: SPEC → HISTORY → AUTH → OPS/NODE → CLIENT/INSTALL → GATE →
+existing physical message E2E. Only independent, reviewed package inputs permit
+overlap; these labels do not authorize spawning agents or production mutations.
+Bridge acquisition, new carriers and censorship experiments are deferred from
+this immediate milestone. Existing final-release security gates and transport
+policy still apply; no new direct/plaintext fallback is authorized.
+
 ## 2. Dependency overview
 
 ```text
