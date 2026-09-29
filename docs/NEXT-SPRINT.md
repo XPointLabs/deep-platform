@@ -99,29 +99,49 @@ anchor у Registry; истёкшая DEV mailbox authority при запуске
 ограниченный хвост signed history при регулярном renewal. Это входы расследования,
 не доказательство исправления и не новый live health snapshot.
 
-Частичный локальный инкремент от 2026-09-29 **не закрывает пункты 1–4 целиком**.
+Локальный инкремент от 2026-09-29 **не закрывает пункты 1–4 целиком**.
 Причины и fault matrix записаны в
 [DevOps recovery runbook](../deep-devops/docs/NETWORK_STABILITY_RECOVERY.md),
 read-only API заморожен в
 [DR-0013](survival-program/decisions/DR-0013-readonly-directory-issuance-readiness.md).
 Завершённые component changes и проверки ведутся в `SPRINT-HISTORY.md`.
+Автоматический authenticated NTS acquisition, защищённый lower time floor,
+повторное получение upper interval после boot, sealed исторический catch-up,
+delegated operational-view renewal и single-flight DID2 network reconnect
+реализованы как проверенные component candidates. Локальная сеть теперь
+находится в [едином `deep-dev`](../deep-devops/docs/DEEP_DEV.md): нативный ARM64,
+Registry, независимый PostgreSQL floor, publisher и три ноды. ML-DSA включён
+точным бинарником из GitHub CI, без локальной пересборки C++.
+
+Реальная короткая Docker matrix: stop/start каждой ноды, Registry, floor,
+publisher и всех контейнеров вместе прошли с сохранёнными mounts/state;
+восстановление current proof/ONION capabilities заняло 3–27 секунд.
+Она не является 20-cycle, Docker-engine restart, long-TTL или physical MSG gate.
+Длинный admission/catch-up прогон выявил дорогой повторный replay каждого
+исторического префикса: исправлены incremental sparse-map update и единая
+проверка всех prefix roots/capability sets. Повторный Docker прогон на
+сохранённом journal прошёл: 130 настоящих DEV admissions при трёх offline
+нодах, successor span 129, все три verified ONION capabilities восстановились
+за 46 секунд без reset/rekey.
+
 Остаток P0:
 
-- `NET-STAB-SPEC/HISTORY`: reviewed bounded historical catch-up producer/consumer
-  contract и реализация вместо зависимости от root checkpoint + 64-head tail;
-- `NET-STAB-AUTH/OPS`: реальный NTS acquisition, re-attestation после reboot,
-  защищённый time floor и автоматические signed view/current+next key rotations;
-  исправленный startup/readiness этого не заменяет;
-- `NET-STAB-NODE/CLIENT`: завершить оставшиеся single-flight retry/resume,
-  connection invalidation и outcome-unknown reconciliation по contracts пакетов;
-  затем подтвердить reconnect/durable state на настоящей DID2 Docker topology
-  и Windows/Android. Shared typed retry metadata само по себе не является
-  автоматическим reconnect; локальные transport/SQLCipher tests не закрывают
-  physical очередь/доставку;
+- `NET-STAB-SPEC/HISTORY`: multi-page crash/fork Docker evidence для DR-0014;
+  обычный >64-head restart/catch-up уже проверен, negative fork/CAS — unit gates;
+- `NET-STAB-AUTH/OPS`: несколько настоящих current+next traffic/TLS key
+  promotions с безопасным staging следующего slot, long-TTL outage, crash
+  boundaries и предупреждение до исчерпания offline delegation. Retention
+  installed current/next и renewal view не заменяют бесконечную key rotation;
+- `NET-STAB-NODE/CLIENT`: завершить shipping DID2 MSG inbox/outbox/session
+  composition и outcome-unknown reconciliation; новый reconnect пока
+  восстанавливает изолированный proof/closure/pre-key diagnostic composition.
+  Physical Windows/Android очередь и доставка выполняются отдельным агентом,
+  не CI и не unit scheduling delegate;
 - `NET-STAB-INSTALL`: проверить supported installer/recreate на этой topology,
   сохраняя identities и protection volumes; shell/config regression уже есть;
-- `NET-STAB-GATE`: реальная fault matrix и 72 фактических часа soak пока
-  **NOT-RUN**. Legacy `deep-survival-dev` не является подходящим стендом.
+- `NET-STAB-GATE`: расширенная fault matrix и 72 фактических часа soak пока
+  **NOT-RUN**. Soak выполняет Mr. X; device E2E — отдельный агент локально.
+  Legacy `deep-survival-dev` удалён из работающих stacks и не является стендом.
 
 Дополнительной operator authority для этих задач не требуется; существующая
 делегация Mr. X сохраняется. Production rollout, изменение контракта, reset

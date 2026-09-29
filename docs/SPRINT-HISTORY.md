@@ -1,5 +1,51 @@
 # История спринтов
 
+## 2026-09-29 — ARM64 deep-dev и bounded automatic recovery candidate
+
+- DR-0014: canonical bounded historical transport, independently verified
+  contiguous signed heads and consistency proofs, sealed durable floor commit,
+  then a new nonce-bound current proof. History never grants freshness.
+- DR-0015: delegated operational view renewal without an online root; retained
+  current/announced-next slots can be selected by a verified view. Unlimited
+  future traffic/TLS key staging and offline-policy rollover remain open.
+- Registry: owned two-family authenticated NTS acquisition, protected lower
+  time floor and new bounded upper interval after boot; no OS/HTTPS-Date fallback.
+  Explicit first-time floor provisioning is separate from acquisition; deleted
+  or corrupt floor cannot silently restart at zero. Full Release source-cutover
+  tests: 449/449.
+- Real historical Docker exercise initially timed out on repeated full-prefix
+  journal replay. Single-pass replay with incremental sparse-map updates now
+  verifies every original prefix root and capability set; negative coverage and
+  comparison against full map rebuild retained. No journal reset was performed.
+- Only `deep-dev` remains among Deep compose projects: native ARM64, Registry,
+  independent TLS PostgreSQL floor, delegated publisher and three nodes. Old
+  scoped containers/empty networks removed, ephemeral node filesystems backed
+  up privately first; volumes/images and unrelated local containers retained.
+- Real six-service stop/start matrix: seven cases passed, recovery 3–27 seconds,
+  unchanged custody/state mount bindings. Real 130 disposable DEV admissions
+  with all three nodes offline: successor span 129, three independently verified
+  ONION capabilities recovered in 46 seconds, no custody/floor reset.
+- Linux ARM64 ML-DSA included as an exact hash/size-pinned binary from successful
+  project CI run 35858379369; no local C++ build. Actual ARM64 managed/native
+  consumer tests: 7/7. No Apple build enabled.
+- Full Protocol Release: 1870 + 131 + 105 passed, 11 conditional native skips;
+  Debug/Release actual public graph gates passed. Exact314 ownership with all
+  applicable fragments: mapped219, packageMissing0. Package payload policy
+  includes the reviewed linux-arm64 asset, not an unchecked directory wildcard.
+- Shared full Release: 209/209; XNode full source-cutover: 885/885, then affected
+  runtime 27/27 after safe logging/key cleanup. MAUI Clean 46/46, Smoke 119/119;
+  Windows ARM64 and Android ARM64 Debug builds passed with zero warnings/errors.
+- MAUI single-flight reconnect preserves account/floors and serializes confirmed
+  reset with in-flight closure work. It currently reopens diagnostic DID2
+  proof/closure/pre-key composition, not shipping MSG inbox/outbox/session.
+  Optional HTTPS build still requires the real compiled operator trust pin.
+- DevOps contracts 51 passed; compose build checks 8/8 and deep-dev scope checks
+  3/3 passed. Production readiness remains blocked by missing actual release,
+  device/ops/audit/GA evidence; contract fixtures do not substitute for it.
+- No production changes, no physical message/device claim, no Docker-engine
+  restart/20-cycle/beyond-TTL/multi-key crash evidence. Mr. X owns the 72-hour
+  soak; device E2E runs locally in the separate agent, never CI.
+
 ## 2026-09-29 — локальный recovery/readiness инкремент, не полный NET-STAB gate
 
 - Protocol `40a8273`: DR-0013 read-only issuance-context boundary использует

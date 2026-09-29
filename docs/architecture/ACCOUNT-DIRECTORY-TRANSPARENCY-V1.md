@@ -960,3 +960,34 @@ ADF1 procedure. This restores account/control trust, not old contacts or content
 8. Established-contact revocation TTL expiry fails closed and resumes only from a
    fresh monotonic proof.
 9. 10,000-contact lookup/load and proof-size bounds on the weakest Android target.
+
+## Historical DID2 catch-up (DR-0014 candidate freeze)
+
+An expired reader-2 ADH1 is authenticated history, not current authority. A
+consumer may advance its protected floor through pages of exact successors
+using `DeepIdV2DirectoryCatchupVerifier`; it must not erase or reset the floor
+after downtime. Each page has 1..64 heads (each 1..4096 bytes), exact +1
+generations and predecessor hashes, threshold signatures, nondecreasing tree
+size, unchanged roots for equal sizes, and RFC6962 consistency from the exact
+source root. Persist using CAS on the exact prior head, flush, reauthenticate,
+then request the next page. Current use still requires a new nonce-bound proof.
+
+The candidate `/api/v2/account-directory/history` POST uses DHQ2 and DHR2.
+Integers are unsigned big-endian. Both start with magic(4), version=2(u16),
+reserved=0(u16), total exact length(u32), network ID(16), source generation(u64),
+source core hash(32). DHQ2 is exactly 68 bytes; network/hash must be nonzero.
+DHR2 repeats this exact source binding, then head count(u16, 0..64), each
+LP32 head(1..4096), consistency-node count(u8, 0..64), nodes(count*32).
+Maximum response length is 264519 bytes. Zero heads requires zero nodes and
+means no progress only; it grants no freshness. Unknown versions/reserved bits,
+wrong source, malformed lengths and trailing bytes reject before mutation.
+Media types are `application/vnd.deep.directory-history-request.v2+octet-stream`
+and `application/vnd.deep.directory-history.v2+octet-stream` respectively.
+This identity-neutral public exchange uses normal authenticated TLS and the
+same bounded authority admission gate. It contains no leaf, account or nonce.
+The publisher serves only independently rollback-protected ADA2 history;
+an unknown source returns 409, unavailable state 503, rate limit 429, with
+bounded delta Retry-After. Clients limit one attempt to 16 pages, persist
+progress, and resume on their bounded reconnect worker; no hot/infinite loop.
+No wire layout or domain of existing ADH1/DTT1/ADP1 changes. Release activation
+and global registry closure remain separately gated, not implied by this freeze.

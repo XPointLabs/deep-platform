@@ -420,7 +420,7 @@ XNV1. It has exact tags:
 | 9 | minimum confirmed-guard retention seconds | `u32`; exactly 2592000 |
 | 10 | maximum circuit lifetime seconds | `u16`; `60..3600` |
 | 11 | mailbox-projection profile | `u16`; exactly `1=RendezvousPmt2V1` |
-| 12 | required PMT2 generation | `u64` |
+| 12 | minimum required PMT2 generation | `u64`; terminal PMT2 generation MUST be at least this floor |
 | 13 | exact XCCCoreRef38 | 38; stable XCC1 unsigned-core reference |
 | 14 | minimum active carrier-binding count | `u16`, `1..512` |
 | 15 | issued-at | `u64` |
@@ -490,6 +490,10 @@ Tag 9 resolves a threshold-complete XVP1 envelope with that exact core. XVP1 tag
 must equal XNV1 tag 7; it must be current at XNV1 tag 20 and its XCC1,
 PMT2-generation rule, role mask, hop/replica/route/guard/circuit limits and minimum
 carrier count are applied exactly when deriving the view. XND1 refs sort by the resolved XND1 node ID and have distinct node IDs/hashes.
+Routine XND1/XNV1/XNH1/PMT2 renewal MAY retain exact live XVP1/PMA2 policies;
+root custody is offline. PMT2 MUST still bind the exact terminal XNV1 and its
+protected predecessor. See the separately frozen delegated producer contract
+[DR-0015](../survival-program/decisions/DR-0015-delegated-operational-renewal.md).
 Revoked IDs are distinct and sorted. Service refs sort by `(magic,coreHash)` with no
 duplicate. XCB1 artifact refs sort bytewise and every binding target
 resolves to an XND1/XCD1 core committed by tags 12/16. Invalid or unresolved

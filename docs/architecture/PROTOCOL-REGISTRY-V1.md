@@ -355,6 +355,8 @@ Normative source: `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`.
 | `DGR1` | operation-bound account-directory genesis admission receipt carrying exact ADH1. | `TARGET_UNFROZEN` |
 | `DPQ2` | exact DID2 account-directory proof request frame, with one-use nonce and boot ID. | `TARGET_UNFROZEN` |
 | `DPP2` | bounded account-directory proof response frame carrying ADH1, DTT1 and ADP1 V2. | `TARGET_UNFROZEN` |
+| `DHQ2` | account-directory historical catch-up request, bound to the exact protected source. | `TARGET_UNFROZEN` |
+| `DHR2` | bounded historical ADH1 page and append-log consistency proof; never freshness. | `TARGET_UNFROZEN` |
 
 These records are mandatory freshness inputs to first contact and group member
 directory verification. A valid old DMD1 signature without a current ADP1/ADH1
