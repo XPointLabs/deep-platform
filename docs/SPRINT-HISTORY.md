@@ -57,6 +57,25 @@
   images/files/groups остаются открыты. GitHub Releases, latest, main merges
   и cutover attestation не выполнялись.
 
+### Follow-up — Android protected completion после restart
+
+- MAUI `00a089f` actual Windows/Android builds проверены на устройствах:
+  Windows сохранил профиль/identity/recovery после замены процесса, но network
+  action завершился AccountProof/TransportIo. Android update сохранил account
+  и recovery; три protected package snapshots unchanged.
+- Android Inspect около 08:07 UTC подтвердил account-owned XIC1 completion.
+  После supported restart без reset и одного verification action Inspect
+  около 08:13 UTC подтвердил fresh reauthentication protected pair. Это
+  same-history restart, не changed-tip gate, current replica availability
+  или новый claim. Неизвестные post-action hierarchy reads не привели к
+  повторному tap. Device hashes и scope находятся в
+  [MAUI evidence](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md#corrected-diagnostic-on-the-physical-devices).
+- Local Linux ARM64 Docker identity-neutral control прошёл три reused H2
+  responses с exact NCP2 hash; native Windows control всё ещё truncates.
+  Windows-dependent path требует отдельной диагностики, системные настройки
+  не менялись. Три XNode healthy, Registry и staking HTTP 200 на повторном
+  read-only check. Полный messaging/attachment/group vertical не закрыт.
+
 ## 2026-09-29 — account-owned DNH2 и текущие production prerequisites
 
 - Shared `72a78b7` сохраняет полный DR-0012 predecessor вместе с LKG

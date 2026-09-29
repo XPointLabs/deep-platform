@@ -82,8 +82,12 @@ durable client DNH2, inventory successor и автоматический operati
 но physical restart/changed-tip gate ещё не закрыт. Старые projection-only
 QA accounts ожидаемо отвергнуты без migration; Windows сброшен через UI по
 подтверждению владельца и новый аккаунт создан им. Свежие physical попытки
-пока не завершили publication: Windows сообщает request aborted или bounded
-AccountProof timeout, Android — bounded PreKeyPublication timeout. Network
+сначала не завершили publication: Windows сообщает request aborted или bounded
+AccountProof timeout, Android — bounded PreKeyPublication timeout. Последующий
+Android candidate подтвердил protected XIC1 completion и fresh reauthentication
+после process restart без reset; changed-tip restart остаётся отдельным gate.
+Windows пока получает AccountProof/TransportIo; local Linux Docker control
+проходит на том же host. Причина Windows-dependent path ещё не доказана. Network
 authority и три healthy XNode сами по себе не доказывают XIC1 completion,
 claim, handshake или delivery.
 Раздельные показания Android stageFailure/networkOutcome не приравнивать к delivery.
@@ -124,7 +128,7 @@ existing predecessor. Ни reset, ни silent re-key не заменяют эт�
 расходования клиентского nonce ledger. До этой проверки directory readiness
 200 не подтверждает proof readiness. Завершить автоматический operational
 lifecycle поверх уже выполненного successor с retained lineage и installed
-traffic keys; не исправлять expiry в verifier. Снять текущий physical
+traffic keys; не исправлять expiry в verifier. Снять текущий Windows physical
 publication abort/timeout до подключения следующего инкремента.
 Files/images и группы проверяются на том же production messaging пути.
 
