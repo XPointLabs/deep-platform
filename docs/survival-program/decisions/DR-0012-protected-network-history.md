@@ -72,7 +72,9 @@ local store's guarantee and must be documented, not claimed detectable.
 
 Local DNF2 plaintext has a 68-byte header: `DNF2`, u16 version 2, u16 kind
 (0 floor / 1 anchor), u64 revision, random instance16, SHA-256(history)32,
-u32 history length. The floor appends exact DNH2; the anchor appends nothing.
+u32 history length. Both kinds retain the same nonzero history length and
+digest; the floor appends exact DNH2 and the anchor appends nothing. The length
+is the authenticated history length, not the envelope's appended payload size.
 The caller authenticates both with the separately scoped Data Protection purpose.
 
 The real signed three-host gate also exposed a replay adapter width mismatch:
@@ -88,6 +90,39 @@ account data or directory/network rollback floors. ONION network wire is unchang
 No node identity, registered BLS key, certbot, carrier configuration, account
 identity or application database is migrated or reset. Observer DID2 is public
 and independently configured; it is never selected from an incoming request.
+
+## Client account custody extension (2026-09-29)
+
+Accepted under the same delegated Mr. X authority; not release activation.
+The existing DID2 SQLCipher account writer lease owns the complete DNH2 and
+its LKG projection in one transaction. Root kind 3 retains the current NLK2
+projection; root kind 7 contains the unchanged canonical DNF2 kind-0 envelope
+and exact DNH2. Both SQL revisions must agree. The DNF2 instance is the first
+16 bytes of the already protected random database instance. Its kind-1 anchor
+is stored in account-scoped SecureStorage, separately from SQL, with a purpose
+bound to account/network/genesis. Both this anchor and the existing exact
+projection marker are written before either SQL row commits. Split, missing,
+corrupt or rolled-back halves fail closed. Coordinated rollback/deletion of
+SQL and protected storage remains outside this local guarantee.
+
+Only an internal account-owned store accepting a complete
+`VerifiedOnionNetworkContext` can initialize or advance history. Under the
+writer lease it compares the exact protected predecessor, including
+`BindsPredecessor`, before CAS; current capability and cancellation are
+rechecked before markers and after durable re-read. Generic raw LKG CAS may
+only preserve the same floor/history and monotonically latch a fork; it
+cannot initialize or advance a DID2 account's network authority.
+
+Every current-proof mint, including after restart, uses the durably retained
+DNH2 through `VerifyFromProtectedHistoryAsync`; a process-local cache or
+tuple-only rehydration is not a fallback. The verified prior tuple must match
+the retained projection. Expired historical view/policy/PMT records remain
+lineage evidence, never fresh traffic permission. The signed terminal proof
+and verifier time windows are unchanged. An initialized projection without
+its full-history row is incompatible and rejected without migration, silent
+bootstrap, repair or deletion. Disposable pre-activation clients may use
+their explicit application-owned reset; production network/directory floors
+and registered node identities are not reset by this client change.
 
 ## Required evidence
 

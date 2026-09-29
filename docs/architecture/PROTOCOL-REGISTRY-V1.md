@@ -410,7 +410,9 @@ rejects. This is a frozen architecture choice; NETCODEC-01 supplies machine
 
 The separately frozen [DR-0012](../survival-program/decisions/DR-0012-protected-network-history.md)
 allocates local custody names `DNH2` (Protocol-exported protected network history)
-and `DNF2` (XNode floor/independent-anchor plaintext envelope). They are distinct
+and `DNF2` (host floor/independent-anchor plaintext envelope). The client
+account custody extension reuses the same canonical envelope under its own
+protected purpose; it does not introduce another wire meaning. They are distinct
 from network records and must never be accepted as network authority. Their exact
 local layouts and public API extension belong to that decision; runtime activation
 remains blocked on the live TLS/device closure. The local replay format is

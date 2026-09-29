@@ -1,5 +1,56 @@
 # История спринтов
 
+## 2026-09-29 — account-owned DNH2 и текущие production prerequisites
+
+- Shared `72a78b7` сохраняет полный DR-0012 predecessor вместе с LKG
+  projection в одной SQLCipher transaction; independent projection/history
+  anchors записываются до SQL commit. Только typed verified network может
+  инициализировать/продвигать custody. Raw CAS не заменяет authority;
+  process-local cache и tuple-only restart fallback удалены из этого пути.
+  Projection-only состояние несовместимо: migration/repair не добавлены.
+- Первый полный local production gate прошёл 201/201 без пропусков за
+  36 min 24 sec. Добавлены exact CAS/account scope, changed-tip restart с
+  expired historical keys, omission, split/crash/rollback/anchor и hostile
+  envelope negatives. После финального review DNF2 anchor выровнен с
+  existing host format и добавлен byte-level assertion; финальный полный
+  прогон прошёл 201/201 без пропусков за 37 min 46 sec.
+  Solution теперь явно включает три Protocol projects: новый build output
+  подтверждает Release для всех dependencies вместо прежнего Debug mapping.
+  Ускорение этим замером не подтверждено; никакие тесты не исключались.
+- Один промежуточный focused test failed из-за corruption fixture,
+  пытавшейся переписать immutable SecureStorage slot. Исправлена только
+  fault injection (delete собственной test slot до corrupt write);
+  production create-only семантика сохранена. Отдельный concurrent build
+  получил MSB3027/3021 из-за live testhost DLL lock; он не считается gate pass.
+- Contracts `5b4b84b` фиксирует только `fast-uri` 3.1.7 и exact lock,
+  без Solidity/ABI/deployment изменений. Frozen install, Linux ARM64 Docker
+  compile (82 files), 182/182 Hardhat tests и ABI export passed.
+  Native host gate не стартовал из-за отсутствующего Windows ARM64 analyzer;
+  он не является assertion pass. Audit: high/critical=0, low=2/moderate=7.
+  Три Contracts CI runs passed. DevOps security rerun
+  `36520717871`, attempt 3, завершился success после этой dependency fix;
+  предыдущий failed upload gate не обходился.
+- Production ordinary time/head renewal сохранило existing custody,
+  image/listener/mounts, node keys, genesis и floor scope. Independent floor
+  и authenticated ADA2 export согласованы на head 28/tree 10. Staking и
+  directory readiness отвечали 200, но свежий Windows proof failed:
+  signed XNV1 не покрывает issuance interval. Все три production XNode
+  running/unhealthy. Это не исправляется reset floors или verifier expiry.
+- Windows HTTPS QA уже существовал и не пересоздавался. Android после
+  unavailable UI hierarchy просмотрен без повторного tap и также показал
+  `proof-authority-unavailable`; protected package hashes совпадают до/после.
+  Эти устройства ещё на предыдущих Debug builds, без нового durable DNH2.
+  Contact/claim/handshake/text/files/images/groups device E2E остаётся открыт.
+- XNode image run `36525603771` failed на GHCR `write_package` для repository
+  GITHUB_TOKEN, не на product test. Проверен прежний успешный owner workflow
+  в DevOps; новый run `36526067828` завершился success с immutable tag
+  `did2-claim-44387ca-devops-057c0cf-20260929`, `push_latest=false`.
+  OCI index: `sha256:c54cafd4737274326e2e3583da6be9081e2188dc09c02742489875da4882aa0d`;
+  amd64: `sha256:28c9d814191cb93a73e118ddfba3a03f6b44e168194a26eb9769ce4dc2661b4f`;
+  arm64: `sha256:36af56736a3d36e8d9ebe07209747cac05a1a578d860d71ec75026994dfc29f6`.
+  Это CI/distribution evidence, не live V2 claim. Permission/secret settings,
+  production image rollout, main merges и GitHub Releases не менялись.
+
 ## 2026-09-29 — DID2 selected-coordinator claim candidate
 
 - XNode `7ab73cd` соединяет opt-in Development/UAT claim runtime с текущей

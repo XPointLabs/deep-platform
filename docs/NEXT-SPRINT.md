@@ -71,8 +71,11 @@ owner CI и rollout installer на всех трёх seed с сохранённ�
 Штатное renewal продолжило directory до 27/tree 10. Обновлённые устройства
 повторно проверили protected publication completion со свежей authority;
 это не новый claim или доставка сообщения. Следующий незакрытый
-инкремент — DID2 atomic claim/DPH2 и доставка текста; durable client DNH2,
-inventory successor и автоматический operational lifecycle остаются нужны.
+инкремент — DID2 atomic claim/DPH2 и доставка текста; физическая проверка
+durable client DNH2, inventory successor и автоматический operational lifecycle
+остаются нужны. На 2026-09-29 свежие device proof-запросы fail-closed:
+подписанный XNV1 не покрывает текущий issuance interval. Directory head 28/tree 10
+и readiness 200 не закрывают этот operational blocker.
 Раздельные показания Android stageFailure/networkOutcome не приравнивать к delivery.
 Оставить отдельной задачей выяснение причины intermittent Windows
 concurrent authority-lock rejection: isolated и полный повтор passed, причина
@@ -96,13 +99,20 @@ P0 выполняется по законченным пользовательс
 зарегистрированные ключи, genesis и rollback floors. Не выпускать новую
 generation-zero цепочку и не продлевать подписанные интервалы в verifier.
 
-Account-owned durable DNH2 custody по DR-0012 остаётся prerequisite:
-process-local full-history cache не обеспечивает advance изменившегося tip
-после restart. Нужны защищённый полный policy/PMT predecessor, exact CAS,
-crash/rollback/fork tests и физический restart с изменившимся signed tip.
+Account-owned durable DNH2 custody по DR-0012 реализована в локальном candidate:
+полный защищённый policy/PMT predecessor заменяет process-local cache и
+tuple-only restart fallback. Ещё нужны текущие committed device builds и
+физический restart с изменившимся signed tip; локальные gate results находятся
+в истории, не считаются physical evidence. Старые projection-only QA accounts
+несовместимы и требуют explicit application-owned reset, не migration.
 Inventory successor/replenishment должен сохранять одноразовость и lineage,
 а operational head/time/checkpoint lifecycle — независимые observations и
 existing predecessor. Ни reset, ни silent re-key не заменяют эти задачи.
+Обновить proof-aware Registry readiness: при включённом proof endpoint
+проверять пригодность текущего подписанного view/issuance interval без
+расходования клиентского nonce ledger. До этой проверки directory readiness
+200 не подтверждает proof readiness. Завершить штатный operational successor
+с retained lineage и installed traffic keys; не исправлять expiry в verifier.
 Files/images и группы проверяются на том же production messaging пути.
 
 Сохранить отдельное regression investigation для transient Windows
