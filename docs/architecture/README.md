@@ -115,6 +115,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   public key через Protocol. DID2 host больше не принимает V1 snapshot или
   fixed-role configuration; local replay generation также clean-broken под
   настоящий 16-byte NETCODEC network ID. TLS/device rollout остаётся отдельным gate.
+- [`DR-0013`](../survival-program/decisions/DR-0013-readonly-directory-issuance-readiness.md)
+  замораживает read-only Protocol API для proof-aware readiness без signing,
+  nonce consumption и mutation capability. Временный отказ зависимостей не
+  должен прекращать recovery worker; NTS lifecycle и live soak этим не закрыты.
 - Текущие Session-derived identity, DPE1/DMC1 и group bytes не являются
   production compatibility surface и не ограничивают новый дизайн.
 - Первый публичный релиз использует новое поколение account/device/database,

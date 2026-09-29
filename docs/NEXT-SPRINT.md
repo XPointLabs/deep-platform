@@ -99,6 +99,34 @@ anchor у Registry; истёкшая DEV mailbox authority при запуске
 ограниченный хвост signed history при регулярном renewal. Это входы расследования,
 не доказательство исправления и не новый live health snapshot.
 
+Частичный локальный инкремент от 2026-09-29 **не закрывает пункты 1–4 целиком**.
+Причины и fault matrix записаны в
+[DevOps recovery runbook](../deep-devops/docs/NETWORK_STABILITY_RECOVERY.md),
+read-only API заморожен в
+[DR-0013](survival-program/decisions/DR-0013-readonly-directory-issuance-readiness.md).
+Завершённые component changes и проверки ведутся в `SPRINT-HISTORY.md`.
+Остаток P0:
+
+- `NET-STAB-SPEC/HISTORY`: reviewed bounded historical catch-up producer/consumer
+  contract и реализация вместо зависимости от root checkpoint + 64-head tail;
+- `NET-STAB-AUTH/OPS`: реальный NTS acquisition, re-attestation после reboot,
+  защищённый time floor и автоматические signed view/current+next key rotations;
+  исправленный startup/readiness этого не заменяет;
+- `NET-STAB-NODE/CLIENT`: завершить оставшиеся single-flight retry/resume,
+  connection invalidation и outcome-unknown reconciliation по contracts пакетов;
+  затем подтвердить reconnect/durable state на настоящей DID2 Docker topology
+  и Windows/Android. Shared typed retry metadata само по себе не является
+  автоматическим reconnect; локальные transport/SQLCipher tests не закрывают
+  physical очередь/доставку;
+- `NET-STAB-INSTALL`: проверить supported installer/recreate на этой topology,
+  сохраняя identities и protection volumes; shell/config regression уже есть;
+- `NET-STAB-GATE`: реальная fault matrix и 72 фактических часа soak пока
+  **NOT-RUN**. Legacy `deep-survival-dev` не является подходящим стендом.
+
+Дополнительной operator authority для этих задач не требуется; существующая
+делегация Mr. X сохраняется. Production rollout, изменение контракта, reset
+или включение macOS не выполнялись этим инкрементом.
+
 `NET-STAB-GATE` возвращает разрешение продолжить messaging E2E только после
 повторяемого stop/start каждой ноды, restart Registry, полного Docker restart,
 простоя дольше действующих operational TTL и нескольких key/view/head rotations.

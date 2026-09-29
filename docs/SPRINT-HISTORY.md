@@ -1,5 +1,58 @@
 # История спринтов
 
+## 2026-09-29 — локальный recovery/readiness инкремент, не полный NET-STAB gate
+
+- Protocol `40a8273`: DR-0013 read-only issuance-context boundary использует
+  тот же signed-head/time/XNV1 verifier, что authoring, без signing, nonce
+  consumption, записи state или freshness capability. Wire/crypto/identity
+  generation не меняются; consumer source/package repin не требует reset.
+  Full Protocol solution: 2101 passed, 11 native skips; actual production
+  assembly/resource/public-API graph passed. Замороженные predecessor API
+  snapshots заменены reviewed DR-0013 Debug/Release, negative gates сохранены.
+- Registry `0d4367a`, `aed10b9`: production host не завершается до старта renewal worker
+  при временном отказе floor/time; операции закрыты, liveness/readiness
+  разделены. Proof-aware readiness не создаёт nonce ledger и не меняет ADA2.
+  Dependency-owned cancellation воспроизведена как завершение background task;
+  исправление сохраняет worker/host lifetime, caller/host cancellation не подавлена.
+  Full source-cutover Release gate: 443/443. Host/DI floor outage/recreation
+  tests используют подмену DB transport и не являются PostgreSQL/TLS evidence.
+  Client test с настоящими PQ/SQLCipher checks подтверждает прежний account/floor
+  и новую DTT1 после injected 503/timeout; physical device claims отсутствуют.
+- XNode `cb8fb9a`, `945d01c`: initial outage/expiry и HTTP timeout не прекращают bounded
+  receive refresh; typed 429/503 сохраняет ограниченный delta Retry-After,
+  traffic/background разделяют monotonic backoff и для transport failure/timeout.
+  Reproduction: 20 local calls вызывали 21 upstream attempts вместе со startup;
+  теперь во время одной паузы остаётся один attempt, затем idle recovery.
+  Никакого stale-authority revival или reset. Full Release source-cutover gate:
+  885/885 (498 integration, 107 profile, 280 core); focused runtime 27/27.
+  Первые два Windows durable-store
+  Access-denied failures не маскировались: isolated rerun 2/2 и полный final
+  gate passed без правок/ослабления этих storage assertions.
+- Shared `1b787fc`: typed retryable proof failure/status/bounded delay;
+  transport не replay-ит nonce, HTTP-date hint не становится trusted time.
+  Focused transport/proof/SQLCipher floor gate: 19/19. Final полный production
+  Release gate запущен отдельно и ещё не записан как passed; предыдущий
+  obsolete run остановлен после обновления exact exception assertion.
+- Installer `df53e38`: 27 shell/config cases и syntax passed в Linux container
+  с Node/OpenSSL; durable named state mount, unless-stopped, retained keys,
+  rerun и recreate/no-volume-deletion contracts проверены. Это не live rollout.
+- DevOps `d7e1ef0`: причины отказов и обязательная fault matrix в
+  [NETWORK_STABILITY_RECOVERY.md](../deep-devops/docs/NETWORK_STABILITY_RECOVERY.md).
+  Stage/UAT custody contracts 10/10; release contract suite 51 commands passed
+  на synthetic fixtures. Actual readiness-status остаётся blocked на десяти
+  отсутствующих release/device/ops/security/GA evidence, не на fixture summary.
+  Read-only TLS 1.3/`ntske/1` preflight двух bootstrap NTS endpoints прошёл с
+  platform certificate validation и exact SPKI match. Это не deployed DTS1
+  audit, NTS-KE/NTP observation или обновление CRT1.
+- Public docs `b794e5a`: restart/no-reset operator/user behavior отмечено как
+  candidate, без утверждения физического reconnect. Rendered docs gate 243
+  checks, npm audit 0 vulnerabilities. Из-за npm child PATH render gate
+  выполнен эквивалентными прямыми Node/PowerShell commands.
+- E2E fixture validation и clean-break contract suite 10/10 passed, не device
+  E2E. Production hosts/keys/certbot не менялись, push/deploy не выполнялись.
+  Automated NTS, long-history catch-up, view/traffic-key lifecycle и реальные
+  20-cycle/72-hour/device gates остаются в `NEXT-SPRINT.md`; soak NOT-RUN.
+
 ## 2026-09-29 — authenticated successor rollout и текущие device builds
 
 - XNode `0a9ffbd` добавляет read-only offline floor/anchor/key-ring audit с

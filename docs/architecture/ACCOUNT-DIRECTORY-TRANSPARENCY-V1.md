@@ -830,6 +830,16 @@ read-only bootstrap but MUST NOT authorize account-directory, node, pre-key or
 mailbox mutation. Account creation remains fully offline and independent of secure
 time.
 
+### 4.1 Read-only issuance readiness
+
+[DR-0013](../survival-program/decisions/DR-0013-readonly-directory-issuance-readiness.md)
+freezes the additive `AccountDirectoryProofAuthor.RequireIssuanceReady` API.
+It shares the existing authoring head/time/reader/authority and signed-current-view
+checks without witness signing, nonce consumption, state mutation or a returned
+freshness capability. Service liveness is separate from this readiness check.
+Every actual operation still independently verifies its complete inputs;
+readiness neither proves witness availability nor authorizes mutation.
+
 ## 5. Retention and recovery
 
 Witnesses apply the `ADC1/ADH1 account-directory history` and indefinite root-lineage
