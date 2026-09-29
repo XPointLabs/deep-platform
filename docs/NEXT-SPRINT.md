@@ -105,6 +105,12 @@ Inventory successor/replenishment должен сохранять однораз
 existing predecessor. Ни reset, ни silent re-key не заменяют эти задачи.
 Files/images и группы проверяются на том же production messaging пути.
 
+Сохранить отдельное regression investigation для transient Windows
+`Access denied` на durable replace старого ContactRouteClosure fork test:
+focused и полный неизменённый повтор passed, но причина первого отказа не
+доказана. Не добавлять catch/retry, который позволяет выдавать authority
+раньше durable fork latch. Evidence текущего инкремента — в истории.
+
 Незакрытые call-path задачи первого инкремента (2026-09-28):
 
 1. Подключить DID2 contact/bootstrap и отправку/приём к
@@ -125,10 +131,15 @@ Files/images и группы проверяются на том же production 
    Локальная V2 reservation/completion custody реализована отдельно от V1:
    общий inventory lock, signed snapshot, exact proposal replay, one-time burn,
    persistent last-resort counter и completion от typed two-signature verifier.
-   Это не работающий endpoint или распределённый quorum: ещё соединить
-   authenticated coordinator/peer prepare+commit, оба durable read-back,
-   independently refreshed publisher/device proof, verified XIC1 pair и
-   admission/rollback/handover. Exact DCB1 closure проверяет клиент; XNode
+   Opt-in Development/UAT V2 claim endpoint теперь соединяет первый ranked
+   coordinator, authenticated peer prepare+complete, оба durable read-back,
+   independently verified current publisher/device proof и verified XIC1 pair.
+   Outer ONION request/result и Shared path authority читают XPK1/XPC1 только
+   как V2. In-process HTTP endpoint tests не являются socket/TLS/device E2E.
+   Ещё подтвердить реальный authenticated H2/ONION deployment, закрыть global
+   admission/rollback/handover и recovery expired pending operations, затем
+   соединить account-owned claim/outbox с DPH2. Production activation flag
+   остаётся закрытым. Exact DCB1 closure проверяет клиент; XNode
    не должен получать plaintext DCR1/DCB1 для её замены.
 3. Завершить DID2 permanent resolver publication/resolution:
    `DCR1/XPU1/XPA1` V2 candidate должен потреблять current account/DCA1,

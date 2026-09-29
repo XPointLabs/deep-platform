@@ -1,5 +1,65 @@
 # История спринтов
 
+## 2026-09-29 — DID2 selected-coordinator claim candidate
+
+- XNode `7ab73cd` соединяет opt-in Development/UAT claim runtime с текущей
+  DID2 authority, verified inventory/XIC1 pair и двумя durable journals.
+  Prepare/complete используют существующий authenticated peer transport;
+  потерянный ответ сохраняет reservation, exact retry возвращает те же bytes.
+  Forwarding second replica проверяет обе подписи; completion divergence
+  сохраняет persistent fork latch. Production activation остаётся закрытой.
+- Focused runtime tests прошли 11/11; полный source-cutover XNode gate —
+  861/861 (unit 280, integration 474, profile 107). HTTP handler in-process
+  упражняет настоящий peer codec/authentication/endpoint, но не socket/TLS,
+  live ONION deployment или physical device delivery. Обычный pinned NuGet
+  graph пока не согласован; этот gate использует `DeepProtocolSourceCutover`.
+- Protocol `aa8fdb1` удаляет V1 XPK1/XPC1 acceptance из ONION claim boundary.
+  Старый positive V1 test заменён explicit negative; требования не ослаблены.
+  Полный Protocol gate: 2,100 passed / 11 native-harness skipped; production
+  assembly/API/resource graph passed; DNP1 package mapping — 219/219,
+  packageMissing=0. Это parser/verifier evidence, не release activation.
+- Shared `b0bf585`: focused claim-path test passed 1/1 — fresh account proof,
+  exact V2 placement и реальный frame codec с durable entropy. Полный Windows
+  production gate прошёл 191/191 без пропусков за 26 min 36 sec. Изменение
+  lock-файла нормализует только final newline; dependency/RID graph сохранён.
+- DevOps `e85aedc` выделяет новый per-run artifact root одновременно для
+  контейнера, collector и неизменённого secret scan. Default smoke сначала
+  failed на 923 findings в общей исторической artifacts tree; она сохранена,
+  не исключена из сканера и не одобрена для upload. Final isolated smoke
+  прошёл: 10 contract tests, runtime failed checks=0, selected secret scan
+  passed. Artifact-scope/upload tests — 8/8; release contract fixtures —
+  51 commands passed. Реальная production readiness остаётся blocked
+  по десяти отсутствующим release/device/ops/security/GA evidence inputs.
+- Multi-node rehearsal сначала failed из-за занятого локального порта;
+  повтор на свободных isolated ports прошёл с тремя real non-mocked Xray
+  routers. Claim authority в этом стенде не активировалась: это startup/
+  generic transport/fail-closed evidence, не DID2 claim или сообщение.
+  Smoke cleanup удалил только local deep-integration containers/volumes.
+- Windows HTTPS QA account уже существует; повторное создание не выполнялось.
+  Android Inspect preflight и bounded UI phase подтвердили установленный
+  HTTPS package и прежний экран verified-publication; protected packages
+  до/после совпадают. Это сохранённый статус, не свежая доставка. Registry
+  DID2 readiness отвечает 503, staking portal — 200. Production rollout,
+  account reset, main merges и GitHub Releases этим инкрементом не выполнены.
+- GitHub Protocol/XNode и DevOps integration CI passed. DevOps unit выявил
+  14 failures в ProfileGenerator harness: Windows-only subprocess names и
+  truncated PowerShell rejection output. Native OS tool selection исправлен;
+  security assertions сохранены, error adapter возвращает полный exception
+  message. PowerShell 7 focused tests также воспроизвели оставшуюся пустую
+  `GIT_ATTR_NOSYSTEM` после snapshot: originally absent overrides теперь
+  удаляются, не восстанавливаются пустыми. Focused набор прошёл 25/25 под
+  Windows PowerShell 7 и Linux ARM64 в network-disabled Docker. Docker SDK
+  ARM64 apphost сначала дал exec-format error; только этот локальный probe
+  запускал тот же pwsh DLL через dotnet wrapper. Это не GitHub runner result.
+- Первый полный повтор XNode после harness fix дал unit 280/280,
+  ProfileGenerator 107/107 и integration 473/474: durable replace в старом
+  ContactRouteClosure fork test получил Windows Access denied. Focused
+  unchanged test затем passed 1/1; причина transient file failure не доказана,
+  runtime retry/обход durable barrier не добавлялся. Полный повтор тех же
+  binaries под PowerShell 7 прошёл 861/861 (474 integration, 107 profile,
+  280 unit). Harness fix `44387ca` отправлен; DevOps failed job перезапущен,
+  итог CI attempt 2 пока не получен. Shared CI также выполняется.
+
 ## 2026-09-29 — DID2 local claim reservation/completion custody
 
 - XNode получил DID2-only локальный журнал claim proposals в том же custody
