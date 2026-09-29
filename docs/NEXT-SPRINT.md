@@ -126,6 +126,17 @@ publisher и всех контейнеров вместе прошли с сох
 
 Остаток P0:
 
+Уточнение от 2026-09-30: full Docker Desktop shutdown воспроизвёл отсутствие
+автозапуска при `unless-stopped`; в `deep-dev` исправлено на `always` с отдельным
+persistent maintenance Stop/Start. Один полный Engine cycle прошёл, включая
+60 секунд current proof/ONION readiness и неизменность custody/mounts.
+Повторный цикл **BLOCKED**: Docker Desktop 4.45.0 Windows ARM64 падает на своём
+`dockerInference` IPC socket ещё до старта Linux Engine. После перезапуска Windows
+нужно повторить EngineFault и новый ExpiryFault; latter построен/contract-tested,
+но Docker прогон **NOT-RUN**. Это host-runtime blocker, а не разрешение на reset,
+продление expired authority или ослабление TLS/подписей. Полный NET-STAB gate
+и messaging E2E остаются открытыми; подробности — в DevOps recovery runbook.
+
 - `NET-STAB-SPEC/HISTORY`: multi-page crash/fork Docker evidence для DR-0014;
   обычный >64-head restart/catch-up уже проверен, negative fork/CAS — unit gates;
 - `NET-STAB-AUTH/OPS`: несколько настоящих current+next traffic/TLS key

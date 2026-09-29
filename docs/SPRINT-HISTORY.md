@@ -1,5 +1,38 @@
 # История спринтов
 
+## 2026-09-30 — полный Docker restart и честная readiness диагностика
+
+- Сохранён и проверен локальный NTS-коммит другого агента `8c6eeb8`.
+  Его NTS/TLS/SPKI/quorum/sample-age проверки не ослаблены.
+- Полный Docker Desktop stop/start выявил, что `unless-stopped` оставляет все
+  шесть сервисов остановленными. `deep-dev` теперь использует `always`;
+  явный script Stop сохраняет maintenance stop, Start/Up возвращает автозапуск.
+- Добавлен EngineFault с проверкой отдельного local engine, отсутствия чужих
+  running containers, устойчивой readiness, прежних container IDs/canonical
+  mount bindings и приватным сравнением online custody. Один цикл прошёл с
+  60-секундным стабильным current proof/ONION окном. Raw mount JSON ordering
+  corrected в harness; custody-check не снят.
+- Второй цикл BLOCKED из-за Docker Desktop 4.45.0 Windows ARM64:
+  inaccessible `dockerInference` AF_UNIX endpoint прерывает backend до старта
+  Linux Engine. Clean force quit/one detached start воспроизвели host error;
+  factory reset, volume/key/floor deletion не выполнялись. Нужен перезапуск
+  Windows и повторный прогон. CLI hang теперь ограничен host-process deadline.
+- Новый DEV ExpiryFault создаёт настоящий delegated 180-секундный signed view,
+  затем 200-секундный engine outage. Он построен/contract-tested, но Docker
+  прогон NOT-RUN: host отказал до его начала. Это не one-hour head/7-day policy gate.
+- Registry: startup/live time loss и transient floor unavailable остаются
+  warning + 503; crypto/custody/configuration failures остаются Error. Worker
+  отмечает возврат protected authority. Проверки подписей/floor/status неизменны.
+- XNode: enabled privacy readiness требует реальной verified capability даже
+  в Development. Cleartext management HTTP/1.1 настроен явно; TLS ALPN и
+  dedicated authenticated HTTP/2 не изменены.
+- Registry full Release source-cutover: 451/451; focused time/HTTP/diagnostics:
+  16/16. XNode full Release: 107 + 280 + 502 = 889/889; focused listener/readiness:
+  73/73. DEV tool Release build: 0 warnings/errors; compose/deep-dev contracts:
+  13/13; DevOps release contracts 51/51 (fixtures only), source secret scan
+  432 selected files passed, documentation gate 174 checks. Soak/device/production
+  rollout не выполнялись, NET-STAB не закрыт.
+
 ## 2026-09-29 — ARM64 deep-dev и bounded automatic recovery candidate
 
 - DR-0014: canonical bounded historical transport, independently verified
