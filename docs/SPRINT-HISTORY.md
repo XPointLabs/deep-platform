@@ -7,7 +7,7 @@
   consumption, записи state или freshness capability. Wire/crypto/identity
   generation не меняются; consumer source/package repin не требует reset.
   Full Protocol solution: 2101 passed, 11 native skips; actual production
-  assembly/resource/public-API graph passed. Замороженные predecessor API
+  assembly/resource/public-API graph passed в Debug и Release. Замороженные predecessor API
   snapshots заменены reviewed DR-0013 Debug/Release, negative gates сохранены.
 - Registry `0d4367a`, `aed10b9`: production host не завершается до старта renewal worker
   при временном отказе floor/time; операции закрыты, liveness/readiness
@@ -31,8 +31,9 @@
 - Shared `1b787fc`: typed retryable proof failure/status/bounded delay;
   transport не replay-ит nonce, HTTP-date hint не становится trusted time.
   Focused transport/proof/SQLCipher floor gate: 19/19. Final полный production
-  Release gate запущен отдельно и ещё не записан как passed; предыдущий
-  obsolete run остановлен после обновления exact exception assertion.
+  Release gate: 209/209, без пропусков, 36 m 31 s; previous obsolete run
+  остановлен после обновления exact exception assertion. Typed metadata
+  само по себе не закрывает полный CLIENT retry/resume/reconnect package.
 - Installer `df53e38`: 27 shell/config cases и syntax passed в Linux container
   с Node/OpenSSL; durable named state mount, unless-stopped, retained keys,
   rerun и recreate/no-volume-deletion contracts проверены. Это не live rollout.
