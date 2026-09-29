@@ -131,9 +131,20 @@ publisher и всех контейнеров вместе прошли с сох
 persistent maintenance Stop/Start. Один полный Engine cycle прошёл, включая
 60 секунд current proof/ONION readiness и неизменность custody/mounts.
 Повторный цикл **BLOCKED**: Docker Desktop 4.45.0 Windows ARM64 падает на своём
-`dockerInference` IPC socket ещё до старта Linux Engine. После перезапуска Windows
-нужно повторить EngineFault и новый ExpiryFault; latter построен/contract-tested,
-но Docker прогон **NOT-RUN**. Это host-runtime blocker, а не разрешение на reset,
+`dockerInference` IPC socket ещё до старта Linux Engine. Затем оператор восстановил
+Docker без перезагрузки Windows; этот blocker больше не текущий. По его указанию
+routine recovery теперь только через stop/start контейнеров `deep-dev`; EngineFault
+требует отдельного явного разрешения и `-ConfirmEngineShutdown`. Два StackFault
+цикла прошли: 20 секунд offline, восстановление 26/16 секунд, 30 секунд stable,
+custody/IDs/mounts сохранены. Scoped ExpiryFault тоже прошёл на свежей ARM64 сборке:
+signed 180-second view, 200 секунд offline всех контейнеров, recovery 15 секунд,
+stable current proof + 3 ONION 60 секунд, прежние Registry/node keys/IDs/mounts.
+Registry retry после transient NTS/floor loss ускорен до bounded backoff 5/10/20/40
+секунд с cap обычным interval; crypto/custody checks не ослаблены. Старый startup
+CryptographicException burst в этих scoped прогонах не повторился; добавлены
+закрытые safe reason codes для следующего recurrence. One-hour head/7-day root
+outage и полный NET-STAB этим не закрыты.
+Это не разрешение на reset,
 продление expired authority или ослабление TLS/подписей. Полный NET-STAB gate
 и messaging E2E остаются открытыми; подробности — в DevOps recovery runbook.
 

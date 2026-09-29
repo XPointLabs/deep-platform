@@ -15,14 +15,25 @@
 - Второй цикл BLOCKED из-за Docker Desktop 4.45.0 Windows ARM64:
   inaccessible `dockerInference` AF_UNIX endpoint прерывает backend до старта
   Linux Engine. Clean force quit/one detached start воспроизвели host error;
-  factory reset, volume/key/floor deletion не выполнялись. Нужен перезапуск
-  Windows и повторный прогон. CLI hang теперь ограничен host-process deadline.
+  factory reset, volume/key/floor deletion не выполнялись. Позже оператор
+  восстановил Docker без Windows reboot. CLI hang ограничен host-process deadline.
+  По указанию оператора routine faults теперь ограничены `deep-dev`; полный
+  Desktop shutdown требует отдельного разрешения и guard switch.
 - Новый DEV ExpiryFault создаёт настоящий delegated 180-секундный signed view,
-  затем 200-секундный engine outage. Он построен/contract-tested, но Docker
-  прогон NOT-RUN: host отказал до его начала. Это не one-hour head/7-day policy gate.
+  затем 200-секундный stop/start только шести `deep-dev` контейнеров. Первый
+  запуск не состоялся из-за host отказа; повторный scoped прогон прошёл:
+  recovery 15 секунд, stable 60 секунд, Registry + 3 ONION ready,
+  прежние node/Registry keys, IDs/mounts, без Docker Desktop restart.
+  Это не one-hour head/7-day policy gate.
+  Два коротких StackFault прошли: recovery 26/16 секунд, stable 30 секунд,
+  custody/IDs/mounts неизменны, Docker Desktop не перезапускался.
 - Registry: startup/live time loss и transient floor unavailable остаются
   warning + 503; crypto/custody/configuration failures остаются Error. Worker
   отмечает возврат protected authority. Проверки подписей/floor/status неизменны.
+  Transient worker retry теперь 5/10/20/40 секунд с cap maintenance interval;
+  crypto/custody/configuration errors остаются на обычном interval. Добавлены
+  закрытые reason codes без echo exception messages. Старый startup crypto burst
+  не воспроизведён в новых scoped прогонах; это не полный long-TTL gate.
 - XNode: enabled privacy readiness требует реальной verified capability даже
   в Development. Cleartext management HTTP/1.1 настроен явно; TLS ALPN и
   dedicated authenticated HTTP/2 не изменены.
@@ -32,6 +43,14 @@
   13/13; DevOps release contracts 51/51 (fixtures only), source secret scan
   432 selected files passed, documentation gate 174 checks. Soak/device/production
   rollout не выполнялись, NET-STAB не закрыт.
+- Scoped follow-up gates: Registry final Release source-cutover 462/462, включая
+  самостоятельный retry после transient floor return без health request/restart,
+  отказ expired head и выпуск свежего threshold-signed successor. Последнее —
+  unit evidence с управляемым trusted-time fixture, не long-TTL Docker evidence.
+  ARM64 images построены; compose contracts 13/13, release contracts 51 commands
+  (fixtures only), changed-source scan 13 files/0 findings, documentation 174.
+  Final strict Verify: Registry + 3 ONION ready, все шесть services healthy;
+  последние пять минут Registry crypto/NTS acquisition failures 0.
 
 ## 2026-09-29 — ARM64 deep-dev и bounded automatic recovery candidate
 
