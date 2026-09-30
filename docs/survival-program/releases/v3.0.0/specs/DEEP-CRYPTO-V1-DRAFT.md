@@ -706,6 +706,9 @@ The smaller outer wire bucket remains a structural/negative fixture, not an
 alternate event-only or unpadded-XPC1 format. Closed V2 promotion and the
 current-device/recheck boundary are frozen by
 [DR-0017](../../../decisions/DR-0017-did2-initial-claim-promotion.md).
+The sole sender completion API and its initial/final protected-time checks
+of both endpoints are frozen by
+[DR-0018](../../../decisions/DR-0018-did2-initiator-completion.md).
 
 After tag 21 exists, define the distinct replay value:
 

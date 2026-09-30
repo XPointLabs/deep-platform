@@ -1750,9 +1750,11 @@ commit matrix и проверяет композицию; отдельные к�
   node keys, genesis и protected network floors не сбрасывать.
   [DR-0017](survival-program/decisions/DR-0017-did2-initial-claim-promotion.md)
   реализован для V2 prefix/current responder promotion и neutral claim lanes.
-  Остались initiator Complete, его exact V2/recovery fixtures вместо старого
-  event-only test seam, полный live claim/result custody, ContactHello V2
-  и shipping caller; один responder component gate не закрывает WP2.
+  [DR-0018](survival-program/decisions/DR-0018-did2-initiator-completion.md)
+  переводит initiator CompleteAsync и recovery fixtures на тот же exact V2
+  prefix, без event-only test seam или V1 receipt overload. Остались полный
+  live claim/result и protected pending custody, ContactHello V2, shipping
+  caller и physical delivery; локальный sender/responder gate не закрывает WP2.
 
 - DID2 genesis уже авторует `AuthorGenesisDmd1`; Shared account owner теперь
   передаёт заново проверенный genesis DMD1 в durable current-device store

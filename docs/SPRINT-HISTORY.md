@@ -1,5 +1,34 @@
 # История спринтов
 
+## 2026-09-30 — V2 initiator completion and exact recovery fixtures
+
+- DR-0018 замораживает единственный CompleteAsync с V2 receipt, current
+  initiator proof и protected time. Оба endpoints повторно проверяются перед
+  выдачей DPH2/TRS1 capability; expiry, cancellation и Dispose во время await
+  не оставляют доступного результата. События ограничены и скопированы до await.
+- Удалены synchronous V1 Complete, synthetic recovery receipt, фабрика
+  вымышленного DID2 и event-only reader/author seam. Старый Shared V1 caller
+  не адаптирован: удалён его переход к Protocol completion и открытию store.
+  Текущий V2 shipping composition остаётся отдельной незавершённой задачей.
+- Recovery assertions перенесены на подписанные V2 XPK1/XPC1/DPK2 и точный
+  current identity fixture: оба prekey kind, 16/32-КиБ buckets, SessionInit/
+  first event recovery, AEAD tamper, неверные claim/stream, одноразовые
+  capability/receipt, ownership cleanup, initial/final expiry, cancellation,
+  concurrent Dispose и caller-buffer mutation. Assertions сгруппированы в
+  переиспользуемый V2 fixture lane; уменьшение числа discovered xUnit cases
+  не является удалением этих проверок. PQ/network/directory seams не
+  заменяют native/physical evidence.
+- Full Protocol Debug: 1852 passed / 11 прежних platform/provider skips;
+  Routes 131/131, Carrier 105/105. Actual API/resource graph Debug/Release
+  pass с reviewed DR-0018 snapshots; ownership mapped219/packageMissing0.
+  Shared production Release project build — 0 warnings/errors. Docs 174
+  checks и пять machine/spec consistency gates pass; source-only scan
+  10 файлов, 0 findings. Предыдущая Shared matrix c834bdfe прошла локально
+  216/216 и hosted CI; новый полный Shared прогон ещё идёт и не заявлен pass.
+- Protected pending preparation/result custody, ContactHello V2/inbox/ACK,
+  shipping UI и physical контакты/сообщения/медиа/группы остаются blockers.
+  Production не изменён; GitHub Releases не опубликованы.
+
 ## 2026-09-30 — V2 encrypted claim prefix and current responder promotion
 
 - DR-0017 замораживает один V2-only encrypted-prefix reader и закрытый

@@ -529,14 +529,15 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   (`124 passed / 11 platform skips`). Production activation remains false until
   the Shared authority adapter, approved native assets, safe journal rollover
   and authenticated DPE2 runtime composition are present. The pre-cutover
-  initiator `PrepareClaim → Complete` mechanics retain exact DPH2+DMC2/TRS1
-  atomic persistence coverage, but their old receipt and event-only recovery
-  fixture are not current DID2 sender evidence. They must be replaced together,
-  not exposed as a legacy release path.
+  initiator `PrepareClaim → CompleteAsync` mechanics use the exact V2 receipt
+  and mandatory encrypted claim prefix, with preserved DPH2/DMC2/TRS1 recovery
+  and ownership coverage. There is no old receipt overload or event-only
+  recovery format; [DR-0018](../survival-program/decisions/DR-0018-did2-initiator-completion.md)
+  freezes the current initiator/recipient initial and final operation checks.
   [DR-0017](../survival-program/decisions/DR-0017-did2-initial-claim-promotion.md)
   supplies the single V2 encrypted-prefix and current responder promotion,
   with final protected-time checks of both endpoints and neutral two-lane
-  handoff. Sender completion, protected preparation/result custody and full
+  handoff. Protected preparation/result custody, shipping composition and full
   physical initialization remain activation gates.
 - **wire/API:** Deep canonical records only; ordinary messages have no
   transferable long-term signature; no classical/PQ fallback.
