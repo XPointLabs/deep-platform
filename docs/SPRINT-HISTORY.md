@@ -1,5 +1,25 @@
 # История спринтов
 
+## 2026-09-30 — исправление GHCR credential в ручных image workflows
+
+- Сохранённый операторский GitHub PAT проверен через API: identity совпадает с
+  `zhigubigule`, scope `write:packages` присутствует. GHCR выдал credentials для
+  обоих существующих package scopes; это ещё не доказательство успешного upload.
+- В обоих repositories уже есть secret `XPOINTLABS_CI_TOKEN`. Ручные XNode и
+  Registry publishers ошибочно использовали отдельный `github.token`; старый
+  Registry candidate publisher использует CI secret. Ручные workflows приведены
+  к этому существующему механизму без нового токена или расширения его прав.
+- Предыдущие `write_package` отказы не доказывали нехватку прав операторского
+  PAT. Запрос ручной настройки Actions package access больше не является
+  обязательным шагом для этого исправления. Успешный CI upload, digest и
+  production readiness после retained upgrade остаются отдельными проверками.
+- Исправления: XNode `e840810`, Registry `040fa99`; новые manual runs
+  `36666182032` и `36666185488` запущены на этих revisions. У XNode GHCR login
+  прошёл, image build/upload ещё выполняется; Registry ещё выполняет tests.
+  Старые failed runs не перезапускались: rerun использовал бы старый workflow.
+  `latest`, GitHub Releases и production deployment не изменены. Docs gate:
+  174 checks; source-only secret scan пяти изменённых файлов: 0 findings.
+
 ## 2026-09-30 — возобновление physical E2E и V2 claim boundary
 
 - Mr. X возобновил физические контакты/сообщения/вложения/группы и разрешил
