@@ -528,11 +528,16 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   exact attempt-bound durable receipt before exposing a send/receive capability
   (`124 passed / 11 platform skips`). Production activation remains false until
   the Shared authority adapter, approved native assets, safe journal rollover
-  and authenticated DPE2 runtime composition are present. Production initiator
-  initialization is now implemented as `PrepareClaim → Complete` over verified
-  DPK2/XPC1/device-agreement capabilities and yields self-verified exact
-  DPH2+DMC2, canonical TRS1 and a single-use atomic persistence capability
-  (`68/68` expanded crypto/integration gate).
+  and authenticated DPE2 runtime composition are present. The pre-cutover
+  initiator `PrepareClaim → Complete` mechanics retain exact DPH2+DMC2/TRS1
+  atomic persistence coverage, but their old receipt and event-only recovery
+  fixture are not current DID2 sender evidence. They must be replaced together,
+  not exposed as a legacy release path.
+  [DR-0017](../survival-program/decisions/DR-0017-did2-initial-claim-promotion.md)
+  supplies the single V2 encrypted-prefix and current responder promotion,
+  with final protected-time checks of both endpoints and neutral two-lane
+  handoff. Sender completion, protected preparation/result custody and full
+  physical initialization remain activation gates.
 - **wire/API:** Deep canonical records only; ordinary messages have no
   transferable long-term signature; no classical/PQ fallback.
 - **DB impact/removals:** returns sealed state deltas and deletion obligations,
@@ -688,11 +693,12 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   inbox retention. Protocol now derives the safety number from two verified
   non-forked DAB1 lineages and separately checks ContactHello's exact
   DAB1/DMD1 fields and XUR1 author, DPD1 signature and creation-time validity.
-  Production DPH2/XPC1 promotion now retains the verified current initiator
-  checkpoint and recipient bundle; the Shared unsolicited responder invokes
-  this endpoint check before opening a conversation store. MAUI receive does
-  not invoke that path yet. It does not close XUR1's PMT2 placement reference
-  and cannot grant ACK. Durable relationship state and
+  DID2 DPH2/XPC1 promotion now retains the current V2 initiator checkpoint
+  and recipient DCR1 closure under DR-0017. Shared consumes that closed
+  result, but the old ContactHello/DAB1 endpoint checker cannot satisfy the
+  V2 boundary and rejects before opening a new conversation store. MAUI
+  receive does not invoke a current V2 path yet. ContactHello V2/safety-number,
+  XUR1's PMT2 placement reference, durable relationship state and
   ACK authority remain missing. The separate relationship-bound responder
   API requires a pre-existing verified relationship. For a
   new contact, the relationship ID exists only inside that authenticated
