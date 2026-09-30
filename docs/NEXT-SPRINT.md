@@ -71,6 +71,13 @@ message/claim вертикалью. Перед каждым прогоном н�
 authority и работоспособный трёхузловой маршрут; готовые негативные проверки
 и требования durable commit/ACK сохраняются.
 
+Read-only production check от 2026-09-30 снова получил DID2 readiness 503 при
+работающем staking. NTS helper теперь упаковывается в Registry candidate,
+но не активирован на production. До device-прогона нужны безопасный first-time
+time-floor upgrade существующего manual-anchor deployment, актуальная signed
+authority и verified readiness; initialized ADA2/genesis/head floors/nonce
+ledger не перепровижинировать. Component DEV recovery не закрывает этот live gate.
+
 Остановка контейнера — штатная временная недоступность, а не повод сбрасывать
 authority, аккаунты или зарегистрированные ключи. После явного запуска
 контейнера с сохранёнными volumes, восстановления зависимостей и получения

@@ -1,5 +1,31 @@
 # История спринтов
 
+## 2026-09-30 — source-bound NTS observer packaging for Registry candidate
+
+- Read-only production preflight: Registry DID2 readiness 503, staking 200;
+  Android USB device доступен. Первый health probe ошибочно использовал
+  стандартный loopback port; после read-only inspect повторён на фактическом
+  binding. Ни контейнеры, ни authority/volumes/certbot не изменены.
+- Registry candidate image теперь собирает reviewed DevOps observer из exact
+  named source context, pinned Go builder и проверенных `go.sum` modules;
+  поддерживает actual TARGETARCH amd64/arm64, выполняет Go unit tests и
+  маркирует точный DevOps revision отдельно от Protocol. .NET exact-three
+  Protocol graph не расширяется. Оба publisher workflows передают этот source
+  context/revision; GHCR credential совпадает с рабочим ручным publisher.
+- Focused Registry gate 9/9; полный Release source-cutover gate 465/465, 0 skips,
+  3m31s. Реальный local Docker `nts` build target для linux/amd64 и linux/arm64
+  прошёл locked-module verification, Go tests и cross-compilation. Это не полный
+  deployed Registry image или NTS source acquisition/physical E2E evidence.
+  Docs gate 174 checks, source-only scan 10 файлов 0 findings.
+- Packaged executable не включает automatic time и не создаёт NTS floor.
+  Existing manual-anchor deployment требует отдельного безопасного first-time
+  time-floor upgrade; initialized ADA2, независимый head floor, nonce ledger,
+  genesis, node identities и signed intervals должны сохраниться. Нельзя
+  повторять `provision-state`, брать OS/HTTP time или reset для обхода readiness.
+- Hosted Protocol CI для `fa4e47f`: build-test `36677371751` и native ML-DSA
+  candidate `36677371772` success. Root docs CI `36677806231` для `23d8b66`
+  success. Эти CI результаты не объявлены delivery/release evidence.
+
 ## 2026-09-30 — documentation CI without retired prose snapshots
 
 - Предыдущий root CI `36673204459` прошёл checkout/render/public-doc checks,
