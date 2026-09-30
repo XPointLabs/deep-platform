@@ -1,5 +1,32 @@
 # История спринтов
 
+## 2026-09-30 — exact V2 claim result custody
+
+- Shared account journal сохраняет не только точный XPK1, но и успешный
+  padded XPC1 после Protocol-проверки двух выбранных replica signatures и
+  inclusion. Transport не выдаёт результат до локальной фиксации. После
+  owner restart используется та же точная пара с повторной проверкой current
+  placement/signatures, без второго сетевого claim и переупаковки Replay.
+- Snapshot generation 3 — clean break без reader/migration generation 2.
+  Request/result CAS идемпотентен; конфликт whole wire, включая смену статуса
+  при том же signed tuple, необратимо блокирует журнал. Зарезервированная
+  ёмкость учитывает максимальный result bucket каждой операции. Старые
+  несовместимые QA журналы требуют изолированного reset; node keys, genesis
+  и protected network floors не меняются.
+- Focused Debug — 10/10: request/result restart, concurrent CAS, отказ без
+  reservation, cancellation, подмена, SQL rollback, сбой result-floor до SQL,
+  old/malformed snapshot и отсутствие незаметного repair/повторного claim.
+  Production Release project build — 0 warnings/errors. Docs 174 и пять
+  root spec consistency gates pass; source-only scan 8 файлов/0 findings.
+  Предыдущая полная Shared matrix 374e85f/Protocol1954525 прошла локально
+  216/216 и hosted Windows/Linux CI. Полный Release-прогон с новым custody
+  запущен отдельно и пока не заявлен pass.
+- Это public-byte custody, не current-recipient proof, independent replica
+  storage read-back или секретная DPH2 preparation. Окно device-DH burn до
+  сохранения preparation, ContactHello V2/inbox/ACK, shipping caller и полный
+  физический Windows/Android цикл остаются незавершёнными. Production не
+  изменён; GitHub Releases не опубликованы.
+
 ## 2026-09-30 — V2 initiator completion and exact recovery fixtures
 
 - DR-0018 замораживает единственный CompleteAsync с V2 receipt, current

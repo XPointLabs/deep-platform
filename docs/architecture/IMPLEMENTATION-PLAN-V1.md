@@ -537,7 +537,9 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   [DR-0017](../survival-program/decisions/DR-0017-did2-initial-claim-promotion.md)
   supplies the single V2 encrypted-prefix and current responder promotion,
   with final protected-time checks of both endpoints and neutral two-lane
-  handoff. Protected preparation/result custody, shipping composition and full
+  handoff. Shared now retains the exact successful public claim pair before
+  transport return and reverifies it after owner restart without another claim;
+  protected secret preparation, independent replica completion, shipping composition and full
   physical initialization remain activation gates.
 - **wire/API:** Deep canonical records only; ordinary messages have no
   transferable long-term signature; no classical/PQ fallback.

@@ -1753,8 +1753,14 @@ commit matrix и проверяет композицию; отдельные к�
   [DR-0018](survival-program/decisions/DR-0018-did2-initiator-completion.md)
   переводит initiator CompleteAsync и recovery fixtures на тот же exact V2
   prefix, без event-only test seam или V1 receipt overload. Остались полный
-  live claim/result и protected pending custody, ContactHello V2, shipping
+  live durable claim completion и protected pending secret custody, ContactHello V2, shipping
   caller и physical delivery; локальный sender/responder gate не закрывает WP2.
+  Shared сохраняет exact успешный XPC1 после проверки двух replica signatures
+  и inclusion; после restart перечитывает ту же пару без нового claim с
+  повторной проверкой current placement/signatures. Это public-byte custody,
+  не current-recipient receipt, read-back с обеих нод или сохранение секретов
+  подготовки. Request-only QA journal generation 2 отвергается; необходим
+  изолированный QA reset, не сброс network authority/genesis/node keys.
 
 - DID2 genesis уже авторует `AuthorGenesisDmd1`; Shared account owner теперь
   передаёт заново проверенный genesis DMD1 в durable current-device store

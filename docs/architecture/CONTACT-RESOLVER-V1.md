@@ -979,6 +979,17 @@ response, both durable completion read-backs and local exact request/result
 custody remain mandatory; a parsed success or signature pair cannot bypass
 those gates.
 
+The local client MUST retain the exact successful request/result pair before
+returning it to handshake composition. A retained pair does not become fresh
+authority after restart: current placement, replica signatures and the
+current-recipient verification above remain mandatory. Local replay uses the
+retained whole wire rather than issuing a new claim or replacing it with a
+re-encoded `Replay` response. A conflicting successful whole result under the
+same retained operation MUST fail closed; refusal or outcome-unknown bytes
+MUST NOT be promoted to a successful stored receipt. This public-byte custody
+does not replace protected initiator secret preparation or permit repeating
+a spent device agreement lease.
+
 Before serializing the retained V2 claim pair into a DPH2 initial payload,
 Protocol must check its correlation with the exact proposed DPH2 header:
 the retained exact V2 offering and selection, network/recipient device,
