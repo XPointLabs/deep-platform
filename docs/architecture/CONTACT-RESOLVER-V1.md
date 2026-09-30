@@ -979,6 +979,16 @@ response, both durable completion read-backs and local exact request/result
 custody remain mandatory; a parsed success or signature pair cannot bypass
 those gates.
 
+Before serializing the retained V2 claim pair into a DPH2 initial payload,
+Protocol must check its correlation with the exact proposed DPH2 header:
+the retained exact V2 offering and selection, network/recipient device,
+claim operation, receipt hash, counter and sender-ephemeral commitment.
+Re-encoding a projected DPK2 through a V1 codec is not an exact offering.
+This internal read-only check neither consumes the claim nor verifies the
+initiator, AEAD or semantic events. The independent current-initiator/device
+and durable session/inbox gates in [DR-0008](../survival-program/decisions/DR-0008-did2-dph2-wire-clean-break.md)
+remain mandatory before promotion or ACK.
+
 The first quorum-committed result for one `claimOperationId32` wins. The durable
 CAS key is `(serviceCapability32, serviceGeneration, claimOperationId32)` and
 its value is `(requestHash32, selectedPreKeyId32, DPK2Hash32,

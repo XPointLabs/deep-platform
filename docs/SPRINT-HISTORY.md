@@ -1,5 +1,35 @@
 # История спринтов
 
+## 2026-09-30 — exact V2 claim/header and current initiator device binding
+
+- Protocol `f91cab8` связывает retained V2 claim pair с точным предложенным
+  DPH2 header до выдачи копии transcript. Проверены оба prekey kind и все
+  три ciphertext buckets; отвергаются подменённые recipient/network/key IDs,
+  offering hash, operation, receipt hash, sender commitment и counter.
+  V1 re-encoding projected DPK2 не воспроизводит exact V2 offering hash.
+  Guard не расходует claim и не выдаёт session, AEAD или ACK capability.
+- Current initiator check теперь отдельно связывает exact active DPD1,
+  device generation и agreement key с V2 checkpoint. Полный device validity
+  interval проверяется после checked monotonic delta; wrong boot/sample/head,
+  unknown device, changed generation/key/reference, exact expiry и overflow
+  fail closed. Sender commitment не включает device generation, поэтому
+  этот независимый current-device guard обязателен.
+- В обеих фазах initiator author исправлено неверное CONTACT-style encoding
+  DPD1 reference: используется уже нормативный identity ArtifactRef из DNP1.
+  Wire version, sizes, domains, primitive suites и public API не изменены.
+  Старые несовместимые QA pending requests не мигрировать; isolated reset
+  выполняется перед новым device-прогоном, не затрагивая node/network custody.
+- Focused gate: 19/19. Полный Protocol Debug: 1871 passed, 11 прежних
+  platform/provider skips, 2m15s; Routes 131/131 и Carrier 105/105.
+  Release build и Shared production Release rebuild: 0 warnings/errors.
+  Actual assembly/API/resource graph Debug/Release pass; ownership
+  exact314/package219/final95, mapped219, packageMissing0. Docs 174 checks;
+  source-only scan 9 файлов, 0 findings. Новый full Shared test run, native
+  platform gate, raw artifact scan и physical delivery этим не заявлены.
+- Coherent V2 encrypted prefix, sender completion, responder promotion,
+  protected pending custody, ContactHello/inbox/ACK и shipping UI всё ещё
+  не соединены. Production не изменён, Releases не опубликованы.
+
 ## 2026-09-30 — source-bound NTS observer packaging for Registry candidate
 
 - Read-only production preflight: Registry DID2 readiness 503, staking 200;

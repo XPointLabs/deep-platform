@@ -44,6 +44,12 @@ the old path for a DID2 account is not a release option.
    exact initiator DID2, DAB2, ADC1 V2 and current DMD1. Its verified contact
    publication and XPC1 placement must be DID2-bound too. A V1 freshness,
    contact or checkpoint capability cannot satisfy this verifier.
+   At the operation sample it must also match the exact active initiator
+   DPD1 reference, device generation and X25519 agreement key, and advance
+   both authenticated time bounds by the checked monotonic delta. The entire
+   interval must fit that device certificate's validity. Tag 5 retains the
+   identity ArtifactRef owned by DNP1; a CONTACT-CODEC reference is not an
+   interchangeable encoding even when its final hash matches.
 5. The account-owned protected current-DMD1 ledger must burn one purpose- and
    operation-bound agreement lease before using the local X25519 private key.
    Fetching a signed proof, installing genesis DMD1 or opening a local key

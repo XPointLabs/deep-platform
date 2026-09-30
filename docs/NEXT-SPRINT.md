@@ -1739,6 +1739,16 @@ Gate каждого WP создаёт переиспользуемый black-box
 commit matrix и проверяет композицию; отдельные копии harness/tests для WP9 не
 создаются.
 
+- Завершить coherent DID2-only encrypted claim prefix и sender/responder
+  promotion: заменить старый receipt во всех production consumers, связать
+  current initiator/device proof с V2 recipient claim, затем подключить
+  protected pending preparation, ContactHello/inbox commit и ACK. Read-only
+  header/device checks из последнего инкремента не заменяют эту композицию.
+  Перед device-прогоном старые несовместимые QA pending handshake requests
+  явно удалить только через изолированный QA reset; не мигрировать commitment
+  или persisted DPH2 после исправления identity ArtifactRef. Network authority,
+  node keys, genesis и protected network floors не сбрасывать.
+
 - DID2 genesis уже авторует `AuthorGenesisDmd1`; Shared account owner теперь
   передаёт заново проверенный genesis DMD1 в durable current-device store
   идемпотентной account-bound операцией. Конкретный SQLCipher device-state
