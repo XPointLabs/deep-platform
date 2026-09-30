@@ -62,11 +62,14 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ### P0: стабилизация и автоматическое восстановление сети (2026-09-29)
 
-По решению Mr. X следующий инкремент — **сначала стабильная сеть, затем
-Android↔Windows E2E сообщений**. Запуск новых physical messaging прогонов
-приостановлен до закрытия `NET-STAB-GATE`; готовые message/claim задачи и
-негативные проверки не отменяются. Этот порядок имеет приоритет над прежними
-формулировками «следующий инкремент — claim/текст» ниже.
+Решение Mr. X от 2026-09-30 возобновляет **физический Android↔Windows E2E
+контактов, сообщений, вложений и групп** после component recovery инкремента.
+Он также явно разрешил обновить production и тестировать этот сценарий там.
+Длительный soak и остаток `NET-STAB-GATE` продолжают блокировать итоговые
+release/stability claims, но больше не являются запретом на работу над
+message/claim вертикалью. Перед каждым прогоном нужна актуальная проверенная
+authority и работоспособный трёхузловой маршрут; готовые негативные проверки
+и требования durable commit/ACK сохраняются.
 
 Остановка контейнера — штатная временная недоступность, а не повод сбрасывать
 authority, аккаунты или зарегистрированные ключи. После явного запуска
@@ -169,7 +172,7 @@ outage и полный NET-STAB этим не закрыты.
 делегация Mr. X сохраняется. Production rollout, изменение контракта, reset
 или включение macOS не выполнялись этим инкрементом.
 
-`NET-STAB-GATE` возвращает разрешение продолжить messaging E2E только после
+Итоговое закрытие `NET-STAB-GATE` требует evidence для
 повторяемого stop/start каждой ноды, restart Registry, полного Docker restart,
 простоя дольше действующих operational TTL и нескольких key/view/head rotations.
 Проверяется также возврат после более 64 head successors, отсутствие ручного
@@ -294,6 +297,14 @@ focused и полный неизменённый повтор passed, но пр�
    соединить account-owned claim/outbox с DPH2. Production activation flag
    остаётся закрытым. Exact DCB1 closure проверяет клиент; XNode
    не должен получать plaintext DCR1/DCB1 для её замены.
+   Инкремент 2026-09-30: добавлена внутренняя Shared V2 claim transport
+   boundary: один exact XPK1 через выбранный ONION coordinator, повторная
+   проверка current placement после ответа, обе replica signatures и
+   inventory inclusion. Refusal/unknown/cancellation не выдают capability
+   и не запускают автоматический второй claim. Целевой прогон: 4/4 теста,
+   11 сценариев; полный Shared gate запускается отдельно. Это не account-owned
+   durable request journal, current peer/DBC closure, DPH2, shipping activation
+   или physical evidence; эти пункты остаются следующей работой.
 3. Завершить DID2 permanent resolver publication/resolution:
    `DCR1/XPU1/XPA1` V2 candidate должен потреблять current account/DCA1,
    route authority, verified placement и publisher signature, затем durable

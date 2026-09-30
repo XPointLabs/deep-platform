@@ -43,7 +43,11 @@ Rules for every package:
 ### 1.1 Network stability-first execution override (2026-09-29)
 
 Mr. X changed the immediate execution order: network recovery first, physical
-Android/Windows message E2E second. This overlay takes precedence over the
+Android/Windows message E2E second. On 2026-09-30 he explicitly resumed physical
+contact/message/attachment/group E2E following the component recovery work and
+authorized production updates for that testing. Outstanding stability/soak
+evidence remains a final release gate rather than a prohibition on implementing
+and testing the message vertical. This overlay takes precedence over the
 historical shortest-path order in section 2. It does not mark existing packages
 complete, activate new wire formats or reduce the final public-release scope.
 The unfinished milestone status has one owner: [NEXT-SPRINT.md](../NEXT-SPRINT.md).
@@ -215,8 +219,10 @@ identity, disables TLS verification or brings an offline root key online.
 - **physical handoff:** Android/Windows recovery probes run locally on Mr. X's
   devices/desktop, not CI. Reconnect with the same accounts after node/Registry
   restart, preserving protected history and verified publication. These probes
-  do not claim message delivery; after the gate, resume the existing atomic
-  claim → DPH2 → bidirectional text → restart/dedup/durable-ACK device E2E.
+  do not claim message delivery. Under the 2026-09-30 execution authorization,
+  continue the existing atomic claim → DPH2 → bidirectional text →
+  restart/dedup/durable-ACK device E2E while remaining stability evidence is
+  collected independently; neither result substitutes for the other.
 - **deployment boundary:** stage destructive faults in local/UAT retained-volume
   topology first. Production fault injection/rollout needs explicit authorization
   for that run; this planning change performs neither.

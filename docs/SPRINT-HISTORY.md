@@ -1,5 +1,39 @@
 # История спринтов
 
+## 2026-09-30 — возобновление physical E2E и V2 claim boundary
+
+- Mr. X возобновил физические контакты/сообщения/вложения/группы и разрешил
+  production update для этих проверок. Остаток network soak остаётся итоговым
+  release gate, не запретом на message vertical.
+- Shared `6682437`: внутренняя exact V2 XPK1/XPC1 transport boundary, один
+  ONION coordinator, current placement до/после ответа, обе подписи и inclusion;
+  отказ/unknown/отмена не выдают grant и не запускают второй claim.
+  4 focused tests покрыли 11 сценариев за 3m16s вместо 11m25s: дорогая fixture
+  повторно используется внутри немутирующих сценариев, все assertions сохранены.
+  Первый прогон имел 2 неверных assertions типа исключения; исправлены тесты,
+  production validation не ослаблена. Полный Shared Release gate запущен отдельно.
+- MAUI `d1689e6`: настоящий HTTPS Android build нашёл missing compile include
+  для connectivity adapter нового reconnect. Исправлен clean allow-list и
+  добавлена regression coverage. Clean 47/47, Smoke 119/119; supported Windows
+  ARM64 и signed Android ARM64 diagnostic builds успешны, не Release packages.
+- Свежая APK установлена по USB только в отдельный HTTPS package, Windows
+  кандидат открыт на реальном desktop. Аккаунты и скрытые encrypted phrases
+  сохранены; protected Android package path/metadata snapshots совпали.
+  Оба device network действия остановились на AccountProof/TransportIo.
+  Android post-action hierarchy unavailable обработана последующим read-only
+  Inspect без повторного tap. Никакой message/contact/group delivery не заявлен.
+- Production DID2 readiness: HTTP 503, closed code `did2-authority-unavailable`;
+  staking HTTP 200. DEV Verify: current Registry proof + 3 verified ONION nodes.
+  Эти результаты не доказывают причину каждого client IO wrapper и не
+  подменяют production/device evidence.
+- XNode `59fbae7` и Registry `29698a9` source-bound image workflows собрали
+  образы, но GHCR upload rejected `permission_denied: write_package`.
+  Запрошен Actions Write access соответствующих repositories к existing packages.
+  Обновление prod, key/floor reset, main merge и GitHub Releases не выполнялись.
+- Полный physical scope остаётся открытым: durable V2 caller journal,
+  current recipient closure, DPH2/MSG composition, затем двусторонний текст,
+  restart/dedup/durable ACK, image/file integrity/resume и membership changes.
+
 ## 2026-09-30 — полный Docker restart и честная readiness диагностика
 
 - Сохранён и проверен локальный NTS-коммит другого агента `8c6eeb8`.
