@@ -11,7 +11,12 @@
   4 focused tests покрыли 11 сценариев за 3m16s вместо 11m25s: дорогая fixture
   повторно используется внутри немутирующих сценариев, все assertions сохранены.
   Первый прогон имел 2 неверных assertions типа исключения; исправлены тесты,
-  production validation не ослаблена. Полный Shared Release gate запущен отдельно.
+  production validation не ослаблена. Полный Shared Release gate прошёл
+  213/213, 38m20s, без skips. CI Linux выявил недостающую native-runtime
+  метку у четырёх новых integration tests; `b01260a` добавляет существующий
+  `RequiresApprovedMlKemRuntime` trait. Debug compile/discovery подтвердили
+  четыре случая в approved-runtime lane и ноль в portable-only selection;
+  полный Windows gate их не исключает. Новый CI запущен, не объявлен зелёным.
 - MAUI `d1689e6`: настоящий HTTPS Android build нашёл missing compile include
   для connectivity adapter нового reconnect. Исправлен clean allow-list и
   добавлена regression coverage. Clean 47/47, Smoke 119/119; supported Windows

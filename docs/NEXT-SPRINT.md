@@ -302,7 +302,10 @@ focused и полный неизменённый повтор passed, но пр�
    проверка current placement после ответа, обе replica signatures и
    inventory inclusion. Refusal/unknown/cancellation не выдают capability
    и не запускают автоматический второй claim. Целевой прогон: 4/4 теста,
-   11 сценариев; полный Shared gate запускается отдельно. Это не account-owned
+   11 сценариев; полный Shared Release gate прошёл 213/213 (38m20s).
+   Native integration cases имеют существующую runtime-dependency метку и
+   остаются в полном Windows gate; portable Linux gate их не исполняет.
+   Это не account-owned
    durable request journal, current peer/DBC closure, DPH2, shipping activation
    или physical evidence; эти пункты остаются следующей работой.
 3. Завершить DID2 permanent resolver publication/resolution:
