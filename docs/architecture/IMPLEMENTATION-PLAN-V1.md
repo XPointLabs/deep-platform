@@ -1345,6 +1345,13 @@ No other NETCODEC record inherits frozen status from that slice.
   view with the same logical operation.
 - **integration consumer/evidence:** GROUP-CODEC-01, CALL-SIGNAL-01 and E2E-01;
   arbitrary-contact cold-restart evidence.
+- **request-custody increment (2026-09-30):** internal V2 claim transport now
+  reserves the exact request in account/instance-bound SQLCipher before network
+  dispatch. Two protected floor slots, bounded capacity, exact operation replay
+  and durable substitution latch are implemented without the V1 claim journal.
+  Logical contact-intent binding, initiator-secret/preparation persistence,
+  authenticated completion and physical cold-restart delivery remain open;
+  request reservation alone does not close this package.
 
 ### GROUP-CODEC-01 — small-group closure and governance protocol
 

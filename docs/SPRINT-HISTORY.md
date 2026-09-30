@@ -1,5 +1,32 @@
 # История спринтов
 
+## 2026-09-30 — account-owned V2 exact claim request reservation
+
+- Внутренний V2 claim transport теперь требует account-owned custody и
+  сохраняет exact XPK1 в DSV2 до запроса path authority и ONION dispatch.
+  SQL root связан с account/device/database instance и двумя protected floors;
+  нет per-operation OS slots, V1 reader или silent reset/eviction.
+- Exact replay и lookup сохраняются при reopen; same-operation substitution
+  durably fork-latches journal. Capacity refusal, cancellation и malformed/
+  foreign-network input не выдают dispatch capability. Floor-before-SQL
+  interruption и SQL rollback проверены на настоящем SQLCipher owner.
+- Первый focused run: 6/7 pass, найден собственный nullable-memory defect
+  missing-request lookup (empty memory вместо null). Исправлен explicit return,
+  assertions не ослаблялись. Повторный compiled custody subset: 3/3, 1m53s.
+  Четыре transport tests первого run прошли; полный gate свежего build запущен
+  и ещё не завершён. Предыдущий 213/213 не выдаётся за результат новых изменений.
+  Docs gate: 174 checks; source-only secret scan 10 файлов: 0 findings.
+- Это request reservation, не полный interrupted-handshake recovery: ещё нужны
+  logical contact intent, Protocol-owned initiator secret/preparation custody,
+  authenticated result/session completion и shipping MSG composition. Физические
+  контакты/сообщения/вложения/группы не объявлены пройденными.
+- Новый Registry digest скачан на production-хост и проверен по source/Protocol
+  labels; sorted mount/image/running snapshot подтвердил сохранение текущего
+  контейнера. Первый preflight ошибочно сравнивал неупорядоченный Mounts JSON;
+  исправлен порядок, повторный preflight прошёл. На этом этапе был только image
+  pull, не deployment. Локальный pull Registry дважды отказал с EOF, удалённый
+  pull прошёл; отказ локального download не выдан за проблему production runtime.
+
 ## 2026-09-30 — исправление GHCR credential в ручных image workflows
 
 - Сохранённый операторский GitHub PAT проверен через API: identity совпадает с
@@ -19,6 +46,12 @@
   Старые failed runs не перезапускались: rerun использовал бы старый workflow.
   `latest`, GitHub Releases и production deployment не изменены. Docs gate:
   174 checks; source-only secret scan пяти изменённых файлов: 0 findings.
+- Оба новых image runs завершились success. GHCR index digests проверены:
+  XNode `sha256:fadb285929666bbbc0c1e78f1f36208b77d14fcda018e5cc7de9b700d23e4969`,
+  Registry `sha256:6694e5cb75e2d4bab119166866870361580e4749eb09966599502e5ab5963bd0`.
+  Shared CI `36664964666` для `b01260a` также success. Production read-only
+  inspection подтвердил ручной trusted-time path без включённого automatic NTS;
+  замена образа сама по себе не закрывает протухшую authority.
 
 ## 2026-09-30 — возобновление physical E2E и V2 claim boundary
 

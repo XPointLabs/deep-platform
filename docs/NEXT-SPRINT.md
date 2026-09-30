@@ -305,9 +305,13 @@ focused и полный неизменённый повтор passed, но пр�
    11 сценариев; полный Shared Release gate прошёл 213/213 (38m20s).
    Native integration cases имеют существующую runtime-dependency метку и
    остаются в полном Windows gate; portable Linux gate их не исполняет.
-   Это не account-owned
-   durable request journal, current peer/DBC closure, DPH2, shipping activation
-   или physical evidence; эти пункты остаются следующей работой.
+   Следующий инкремент соединяет этот transport с account/instance-bound
+   exact-request SQLCipher journal до сетевого вызова: replay, concurrency,
+   protected floor-before-SQL и substitution latch. Это только reservation;
+   ещё нужны durable logical contact intent, initiator secret/preparation
+   recovery, authenticated result custody, current peer/DBC closure, DPH2,
+   shipping activation и physical evidence. Полный gate нового инкремента
+   нельзя подменять указанным выше результатом 213/213.
 3. Завершить DID2 permanent resolver publication/resolution:
    `DCR1/XPU1/XPA1` V2 candidate должен потреблять current account/DCA1,
    route authority, verified placement и publisher signature, затем durable
