@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param()
+param([switch] $MachineOnly)
 
 $ErrorActionPreference = 'Stop'
 $specRoot = Join-Path $PSScriptRoot '..\docs\survival-program\releases\v3.0.0\specs'
@@ -63,6 +63,11 @@ foreach ($magic in @('GSR1','GSW1','GSQ1','GSS1')) {
     if (-not $generatedRegistry.Contains($expectedGeneratedRow, [StringComparison]::Ordinal)) {
         throw "GROUP-CODEC-01 generated registry does not freeze $magic."
     }
+}
+
+if ($MachineOnly) {
+    Write-Host "GROUP-CODEC-01 machine consistency passed. Records: $(@($vectors.records).Count); hostile: $(@($vectors.hostileCases).Count); executable tests not run."
+    return
 }
 
 dotnet restore $vectorTool --locked-mode

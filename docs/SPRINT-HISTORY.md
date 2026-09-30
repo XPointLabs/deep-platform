@@ -1,5 +1,20 @@
 # История спринтов
 
+## 2026-09-30 — documentation CI without retired prose snapshots
+
+- Предыдущий root CI `36673204459` прошёл checkout/render/public-doc checks,
+  но отказал на machine-contract step. Локально воспроизведено: CONTACT
+  checker требовал дословное `MUST NOT receive or derive DID1` в prose после
+  DID2 clean-break. Это устаревший текстовый контракт, не отказ wire validation.
+- CONTACT/ONION prose snapshots удалены согласно documentation CI policy.
+  Schema/digest/bounds/domain/enum/lifecycle/negative mapping и source boundary
+  checks сохранены. Документационные navigation/render checks остаются отдельно.
+  Group checker получил явный `-MachineOnly` для docs CI; default executable
+  vector/test gate не изменён, Protocol CI продолжает полный production test run.
+- Все пять machine checker commands и 174 documentation checks прошли локально.
+  Machine-only mode явно не заявляет executable/group/device evidence; native
+  и physical release gates не закрыты этим CI исправлением.
+
 ## 2026-09-30 — current-recipient V2 pre-key claim receipt
 
 - [DR-0016](survival-program/decisions/DR-0016-did2-prekey-claim-receipt.md)

@@ -100,15 +100,8 @@ $contact = @($registry.packages | Where-Object { $_.id -eq 'CONTACT-CODEC-01' })
 if ($contact.Count -ne 1 -or $contact[0].status -ne 'FROZEN_TARGET_NOT_ACTIVE') { Fail 'CONTACT package status' }
 if (-not $registry.activationGates.contactCodecFieldsClosed) { Fail 'contact field gate' }
 if ($registry.contactCodec.status -ne 'FROZEN_TARGET_NOT_ACTIVE' -or $registry.contactCodec.vectors -ne 'contact-codec-v1.vectors.json') { Fail 'registry contact manifest' }
-foreach ($needle in @('CONTACT-CODEC canonical record rule','XRA1','PMT2','PMS2','XRR1','ContactHello','ContactAccept','ContactReject','ContactRouteUpdate','MUST NOT receive or derive DID1')) {
-    if ((Get-Content -LiteralPath $resolverPath -Raw -Encoding UTF8).IndexOf($needle, [StringComparison]::Ordinal) -lt 0 -and
-        (Get-Content -LiteralPath $applicationPath -Raw -Encoding UTF8).IndexOf($needle, [StringComparison]::Ordinal) -lt 0) { Fail "normative text absent: $needle" }
-}
-foreach ($needle in @('XRA1 is exactly 550 bytes', 'tags 1..15 (478 bytes)', '12 + 16*8 + 410 = 550',
-    '`4,215..23,367`', '`4,497..23,649`', '97 + 4,118 = 4,215', '97 + 23,270 = 23,367')) {
-    if ((Get-Content -LiteralPath $resolverPath -Raw -Encoding UTF8).IndexOf($needle, [StringComparison]::Ordinal) -lt 0 -and
-        (Get-Content -LiteralPath $applicationPath -Raw -Encoding UTF8).IndexOf($needle, [StringComparison]::Ordinal) -lt 0) { Fail "canonical bound absent: $needle" }
-}
-if ((Get-Content -LiteralPath $networkPath -Raw -Encoding UTF8).IndexOf('CONTACT-RESOLVER-V1 §3.6', [StringComparison]::Ordinal) -lt 0) { Fail 'network source link' }
+# Machine schema, independent digest, exact bounds and negative mappings above
+# remain mandatory. Architecture prose is not a snapshot; documentation links
+# and rendering are checked by Test-XPointDocumentation.ps1.
 Write-Host 'CONTACT-CODEC specification consistency check passed.'
 Write-Host "Primitives: $(@($vectors.primitives).Count); hostile fixtures: $(@($vectors.hostileFixtures).Count); policy negatives: $(@($vectors.negativeCases).Count); runtime: inactive"

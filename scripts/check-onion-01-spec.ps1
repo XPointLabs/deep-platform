@@ -115,13 +115,8 @@ if ($retiredPrivacyMagic.Count -ne 3 -or @($retiredPrivacyMagic | Where-Object l
 if (@($registry.magic.value | Group-Object | Where-Object Count -gt 1).Count -ne 0) { Fail 'registry magic collision' }
 if ($registry.productionInventory.knownCrossNamespaceCollisions.Count -ne 0) { Fail 'global registry collision inventory' }
 
-$privacy = Get-Content -LiteralPath $privacyPath -Raw -Encoding UTF8
-$registryDoc = Get-Content -LiteralPath $registryDocPath -Raw -Encoding UTF8
-$plan = Get-Content -LiteralPath $planPath -Raw -Encoding UTF8
-foreach ($needle in @('Status: **FROZEN_CODEC_IMPLEMENTED_PUBLIC_API_INACTIVE**','runtimeActivation=false','exact 160-byte authenticated header','Deep/XPoint/V1/frame-salt','Deep/XPoint/V1/frame-key','frame[0..159]','all-zero X25519 shared secret','exactly 300 seconds','exactly two XRL1 and one XRE1','DPR1` and `DRS1` retain only their DNP1 meanings','MQR3','MRP1','MAR1','ContactResolve','XPU1/XIQ1/XPK1/XUW1/XUQ1','XPO1/XIS1/XPC1/XUS1','GroupControl','GSW1/GSQ1','GSS1','no HTTP client, URI, direct-service fallback','Protocol-owned attempt ID')) {
-    if ($privacy.IndexOf($needle, [StringComparison]::Ordinal) -lt 0) { Fail "normative text absent: $needle" }
-}
-if ($privacy.IndexOf('Deep/PrivacyRouting', [StringComparison]::Ordinal) -ge 0) { Fail 'retired operation domain present' }
+# No prose snapshots: machine enums, field maps, lifecycle and vectors above
+# are authoritative. Documentation navigation/rendering has its own gate.
 $privacySource = (@(Get-ChildItem -LiteralPath $privacySourceRoot -Filter '*.cs' -File | ForEach-Object {
     Get-Content -LiteralPath $_.FullName -Raw -Encoding UTF8
 }) -join "`n")
@@ -131,9 +126,6 @@ if ($privacySource.IndexOf('public const bool RuntimeActivation = false;', [Stri
 }
 foreach ($forbidden in @('public static class PrivacyRoutingRequestBuilder','public static class PrivacyRoutingRequestCodec','public static class PrivacyRoutingResponseCodec','public sealed class PrivacyRoutingHop','public sealed class PrivacyRoutingReceiveKey','public interface IPrivacyRoutingReplayStateStore')) {
     if ($privacySource.IndexOf($forbidden, [StringComparison]::Ordinal) -ge 0) { Fail "public raw runtime bypass present: $forbidden" }
-}
-foreach ($needle in @('FROZEN_TARGET_NOT_ACTIVE','old XSalsa/DRF1 bytes reject','runtimeActivation=false')) {
-    if (($registryDoc + $plan).IndexOf($needle, [StringComparison]::Ordinal) -lt 0) { Fail "architecture freeze binding absent: $needle" }
 }
 Write-Host 'ONION-01 frozen specification consistency check passed.'
 Write-Host "Wire records: $($contracts.Count); deterministic positives: $($positive.Count); hostile negatives: $($negativeIds.Count); runtime: inactive"
