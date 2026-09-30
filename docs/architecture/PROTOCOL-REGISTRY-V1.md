@@ -291,7 +291,7 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | `MBM1` | local managed ML-KEM-Braid state-machine snapshot. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
 | `TRC1` | local managed Triple-Ratchet component-provider snapshot. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
 | `TRS1` | complete account-scoped durable Triple-Ratchet session state. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network; maximum 2 MiB |
-| `IPK2` | local sealed DID2 pre-XPK1 secret state; never a network record or claim authority. | Bounded local format/API frozen by [DR-0019](../survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md); Protocol seal/current restore implemented, durable Shared intent owner and post-claim preparation commit remain gates |
+| `IPK2` | local sealed DID2 pre-XPK1 secret state; never a network record or claim authority. | Bounded local format/API frozen by [DR-0019](../survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md); Protocol seal/current restore and Shared intent owner implemented; atomic post-claim local custody is owned by [DR-0020](../survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md), final batch/shipping/device gates remain open |
 | `DMD1` | account-authorized messaging device directory. | `FROZEN_TARGET_NOT_ACTIVE`; exact `356+70*N`, `N=1..16` |
 | `DID1` | historical Ed25519-only permanent ID; replaced by DR-0006. | `RETIRED_REJECT`; 76-byte/Bech32m vectors become negative fixtures |
 | `DAB1` | historical Ed25519-only permanent-address/current-account binding. | `RETIRED_REJECT`; 394-byte vectors and ArtifactRef type `0x1001` become negative fixtures |

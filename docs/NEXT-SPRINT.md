@@ -1763,9 +1763,16 @@ commit matrix и проверяет композицию; отдельные к�
   изолированный QA reset, не сброс network authority/genesis/node keys.
   [DR-0019](survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md)
   добавляет Protocol-only seal/current restore секретного pre-XPK1 состояния.
-  Следом связать его с durable account/database-instance/logical-intent owner
-  до dispatch; закрыть device-DH burn/prepared-secret commit без повторной
-  выдачи spent lease или незаметного выбора другого prekey. После durable
+  Shared candidate связывает его с protected account/database-instance/intent
+  journal до возврата capability; focused restart/interruption gate прошёл,
+  shipping sender ещё не подключён. Candidate
+  [DR-0020](survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md)
+  заменяет burn-then-return на закрытую account-owned фиксацию полного
+  DPH2/TRS1 и device burn с protected pending -> SQL -> stable.
+  Девять структурных custody-проверок и один approved-native completion/
+  restart/crash gate прошли (loopback/HTTP fixture, не device E2E). Итоговый
+  Release batch gate на фиксированном SHA ещё не завершён. Schema generation 4 — явный QA reset,
+  без старого reader. Не выдавать spent lease и не выбирать другой prekey. После durable
   DPH2/TRS1 фиксации допустим только exact ciphertext retry.
 
 - DID2 genesis уже авторует `AuthorGenesisDmd1`; Shared account owner теперь

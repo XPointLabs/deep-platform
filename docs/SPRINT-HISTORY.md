@@ -1,5 +1,49 @@
 # История спринтов
 
+## 2026-09-30 — atomic DID2 initial-session custody candidate
+
+- Принят bounded local contract
+  [DR-0020](survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md).
+  Burn-then-return preparation удалён из Shared service API. Закрытый
+  account-owned путь сохраняет полный DPH2/TRS1 и agreement burn через
+  protected pending -> SQL transaction -> stable, до возврата ciphertext.
+- Device SQL schema generation 4, без reader/migration generation 3.
+  Checkpoint создаётся атомарно с protected device marker; пропажа и stable
+  rollback не ремонтируются. Exact pending допускает только roll-forward
+  прежнего результата, без нового DH/KEM/шифрования.
+- Production Debug build: 0 warnings / 0 errors. Focused structural custody:
+  **9/9 passed**; проверены восстановление до/после SQL commit, отсутствие
+  checkpoint, чужое TRS device binding, подмена agreement burn и rollback.
+  Это structural SQLCipher evidence, не authenticated handshake/device E2E.
+- Native completion gate **1/1 passed**, 6m49s: approved ML-KEM/Braid,
+  реальный DID2 и подписанные network/directory/claim, exact restart и все
+  три commit failpoints. Loopback recipient/HTTP fixture — не физический E2E.
+  Первый запуск остановился на
+  неверном SessionInit expiry тестовой fixture, до вызова completion; fixture
+  исправлена без ослабления frozen validation. Финальный Release batch gate
+  выполняется hosted CI на фиксированном candidate SHA; он пока не закрыт.
+  ContactHello V2, shipping composition и physical delivery остаются открытыми.
+
+## 2026-09-30 — protected logical-intent owner candidate (isolated checks)
+
+- Shared сохраняет opaque pre-XPK1 secrets по стабильному logical intent до
+  возврата capability. Protected snapshot создаётся атомарно с SQL instance
+  key до account publication; restart восстанавливает тот же operation и
+  commitment. Нет floor-before-SQL промежутка или repair потерянного журнала.
+  Exact local contract имеет единственного владельца в
+  [DR-0019](survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md).
+- Три structural ciphertext-custody cases прошли за 34 ms. Один адресный
+  integration fixture прошёл за 3m03s: actual authored DID2/signed closure,
+  exact restart, interruption после protected CAS, cancellation после CAS,
+  unavailable proof и отказ при утрате journal без восстановления пустого.
+  Native/HTTP fixture — не physical device evidence. Исправлено точное
+  ожидание domain exception недоступного proof; protection не ослаблена.
+- Полный Shared gate не повторяется в каждой итерации: следующий запуск
+  будет на завершённой coherent vertical batch перед коммитом. Последняя
+  committed matrix fd772be/Protocol1954525 прошла 219/219 за 1h06m; новый
+  candidate этим прогоном не покрыт. Atomic postclaim preparation, ContactHello
+  V2/inbox/ACK, shipping/device контакты/сообщения/медиа/группы ещё открыты.
+
 ## 2026-09-30 — sealed pre-XPK1 secret persistence
 
 - [DR-0019](survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md)

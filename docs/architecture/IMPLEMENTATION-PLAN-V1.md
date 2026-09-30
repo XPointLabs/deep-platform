@@ -540,9 +540,14 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   handoff. Shared now retains the exact successful public claim pair before
   transport return and reverifies it after owner restart without another claim;
   [DR-0019](../survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md)
-  supplies opaque Protocol seal/current restore for pre-XPK1 secrets, not a
-  durable Shared intent owner or the later atomic device-DH burn/preparation
-  commit. Those protected secret custody boundaries, independent replica completion, shipping composition and full
+  supplies opaque Protocol seal/current restore for pre-XPK1 secrets. Shared
+  now has a protected logical-intent owner and a closed atomic initial-session
+  candidate under
+  [DR-0020](../survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md),
+  replacing burn-then-return with protected pending/SQL/stable custody.
+  Its native completion/restart/crash integration gate passes; complete Release
+  batch CI evidence is still pending. No shipping activation is inferred.
+  Independent replica completion, shipping composition and full
   physical initialization remain activation gates.
 - **wire/API:** Deep canonical records only; ordinary messages have no
   transferable long-term signature; no classical/PQ fallback.

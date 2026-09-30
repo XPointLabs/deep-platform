@@ -54,9 +54,38 @@ not a change to the handshake KDF, signature inputs, suite or remote record.
 
 ## Remaining gates
 
-Shared must durably bind the sealed state to its protected account/database
-instance and logical intent before XPK1 dispatch. The public claim pair from
-the preceding increment is insufficient without those secrets. This API does
+### Shared protected intent owner
+
+The local owner must bind sealed state to its protected account/database
+instance and stable logical intent before XPK1 dispatch. Use one authoritative
+protected snapshot, initialized atomically with the SQL instance key before
+account publication, not a SQL hash floor with a floor-before-SQL recovery gap.
+Absence, scope mismatch or unknown generation requires explicit local reset;
+never initialize a replacement journal for an already published account.
+
+The sole snapshot generation is version byte 1, reserved zero byte, u16 count,
+u64 revision, network16, account32 and instance32, all integers big-endian.
+The header is 92 bytes. At most 128 sorted, unique, nonzero intent32 entries
+each contain the exact opaque Protocol blob. Initial revision is 1; the
+add-only revision equals count+1. The complete snapshot remains below the
+protected storage's per-value bound. The existing SQL key is used only inside
+the zeroizing Protocol protector, whose frozen domain/header KDF separates
+the preclaim encryption key from that raw SQL key.
+
+Account lease plus exact protected CAS serializes ownership. No generated
+claim escapes before commit; an interrupted return resumes the same stored
+operation and commitment, without resealing/replacing the winning ciphertext.
+Protocol restore checks current identity/time, followed by the account proof
+client's current-custody check before return. Caller intent must retain the
+same business meaning; the later exact XPK1 journal binds remote selection.
+Intent retirement/capacity reclamation is not authorized by this add-only
+increment and needs the later durable prepared/session boundary.
+
+### Activation
+
+The public claim pair from the preceding increment is insufficient without
+those secrets. The Shared intent-owner implementation is a gated candidate
+until restart/interruption coverage and the shipping sender use it. This API does
 not close the later device-DH burn/prepared-secret commit boundary: completion
 must not replay a spent lease or silently select a different prekey. After
 durable DPH2/TRS1 commit dispatch remains byte-identical. Current-recipient
