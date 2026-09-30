@@ -529,8 +529,10 @@ reject before DCB1 signature verification.
 Registered V1 profiles are `1=OfficialXPoint3`, `2=UserManaged`,
 `3=DirectP2P`, `4=StoreCarryForwardMesh`. Only profile 1 is activated in the
 first release. Its descriptor is exact `XIR1`; current `XRR1` is resolved behind
-that long-lived rendezvous and does not set public Deep ID lifetime. `XUR1` is created only
-after ContactHello/Accept and is never published in a public address bundle.
+that long-lived rendezvous and does not set public Deep ID lifetime. Each
+contact-scoped inbound `XUR1` is prepared before authoring ContactHello/Accept,
+which carry its exact encrypted return descriptor. It is never published in a
+public address bundle and does not itself establish an accepted relationship.
 Future profiles add descriptor types but do not change DCB1 parsing or crypto.
 Every asynchronous descriptor MUST bind a current metadata-sealing X25519
 public key and key ID for the `DAO1` wrapper below. The key is generated

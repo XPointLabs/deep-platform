@@ -55,5 +55,13 @@ is atomic with the device install marker; an absent checkpoint is not repaired.
 This is local custody, not a new wire record, signature suite, public crypto
 provider or authority to ACK. Later messaging-store projection must consume
 only the closed validated store result, never promote arbitrary stored bytes.
+The conversation scope is derived only from the two exact events whose framed
+hash is retained in that result. Recheck their canonical SessionInit, exact
+retained DMD1 and common network/account/device/conversation stream before
+returning that metadata, including exact retry. A caller-provided conversation
+ID cannot substitute for this check: public DPH2/TRS1 headers do not contain
+it. The initial TRS1 local directory head must equal the retained DMD1 hash,
+in addition to the existing local/remote device and session checks. This adds
+no wire field, new local schema or permission to materialize/ACK a contact.
 ContactHello V2, semantic inbox/ACK, two-replica read-back, shipping composition
 and physical Windows/Android delivery remain separate activation gates.

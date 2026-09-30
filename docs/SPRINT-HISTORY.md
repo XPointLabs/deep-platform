@@ -1,5 +1,22 @@
 # История спринтов
 
+## 2026-09-30 — custody-bound initial conversation candidate
+
+- По [DR-0020](survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md)
+  Shared выводит conversation metadata только из exact hash-bound initial
+  events и проверяет exact retained DMD1, направление sender stream и TRS1
+  local directory head. Это prerequisite для projection, не V1 scope adapter
+  и не завершённая messaging-store/ContactHello V2 композиция.
+- Focused Release custody gate **16/16 passed**; production Release build
+  **0 warnings / 0 errors**. Проверены exact replay/reopen и подмена
+  conversation/account/device/logical ID/sequence/time/local directory.
+  Approved-native completion/restart/crash gate **1/1 passed**, 6m42s;
+  loopback/HTTP fixture, не physical device evidence.
+- В contact specification исправлена bootstrap-последовательность: inbound
+  rendezvous готовится до Hello/Accept, которые несут его encrypted descriptor;
+  public address его не раскрывает. Новые protocol bytes не введены.
+- Physical Windows/Android delivery, attachments и groups этим не доказаны.
+
 ## 2026-09-30 — atomic DID2 initial-session custody candidate
 
 - Принят bounded local contract

@@ -1774,6 +1774,11 @@ commit matrix и проверяет композицию; отдельные к�
   Release batch gate на фиксированном SHA ещё не завершён. Schema generation 4 — явный QA reset,
   без старого reader. Не выдавать spent lease и не выбирать другой prekey. После durable
   DPH2/TRS1 фиксации допустим только exact ciphertext retry.
+  Следующая граница projection теперь проверяет conversation по exact
+  hash-bound initial events и связывает локальную TRS1 directory head с
+  сохранённым DMD1 по DR-0020. Это не завершённый messaging-store projection:
+  остаются V2 contact authority и shipping caller; чужой caller scope не
+  заменяет эти проверки.
 
 - DID2 genesis уже авторует `AuthorGenesisDmd1`; Shared account owner теперь
   передаёт заново проверенный genesis DMD1 в durable current-device store
