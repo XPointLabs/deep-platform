@@ -539,7 +539,10 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   with final protected-time checks of both endpoints and neutral two-lane
   handoff. Shared now retains the exact successful public claim pair before
   transport return and reverifies it after owner restart without another claim;
-  protected secret preparation, independent replica completion, shipping composition and full
+  [DR-0019](../survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md)
+  supplies opaque Protocol seal/current restore for pre-XPK1 secrets, not a
+  durable Shared intent owner or the later atomic device-DH burn/preparation
+  commit. Those protected secret custody boundaries, independent replica completion, shipping composition and full
   physical initialization remain activation gates.
 - **wire/API:** Deep canonical records only; ordinary messages have no
   transferable long-term signature; no classical/PQ fallback.

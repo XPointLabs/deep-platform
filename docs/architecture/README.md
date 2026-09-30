@@ -132,6 +132,9 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
 - [`DR-0018`](../survival-program/decisions/DR-0018-did2-initiator-completion.md)
   замораживает V2-only sender completion; protected pending custody и device
   delivery остаются отдельными gates.
+- [`DR-0019`](../survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md)
+  замораживает opaque local seal/restore секретов до XPK1. Durable Shared
+  intent owner и атомарная фиксация подготовки после device-DH burn остаются gates.
 - Первый публичный релиз использует новое поколение account/device/database,
   ratcheted E2EE и новый contact bootstrap.
 - XPoint — первый transport provider, но message identity, E2EE, groups,

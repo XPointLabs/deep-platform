@@ -1,5 +1,25 @@
 # История спринтов
 
+## 2026-09-30 — sealed pre-XPK1 secret persistence
+
+- [DR-0019](survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md)
+  реализован в Protocol: opaque seal/restore сохраняет тот же claim operation
+  и sender commitment, потребляет исходный secret owner и проверяет exact
+  current DID2/device на начальном и финальном protected-clock samples.
+  Raw scalar export, callback provider и replay device-DH lease не добавлены.
+- Проверены independent envelope/KDF interpretation, authenticated plaintext
+  с нулевым/неверным scalar, scope/key/header/cipher substitution, ownership,
+  constructor fault, expiry, boot/backward time, cancellation и concurrent Dispose.
+  Full Protocol Debug — 1853 passed / 11 прежних platform/provider skips;
+  Routes 131/131, Carrier 105/105. Actual API/resource graph Debug/Release pass;
+  evidence ownership mapped219/packageMissing0. Shared production Release
+  project build с новым Protocol — 0 warnings/errors.
+- Это Protocol-only persistence, не durable Shared logical-intent owner.
+  Его подключение до XPK1 dispatch, atomic device-DH burn/prepared-secret
+  commit, ContactHello V2/inbox/ACK и shipping/device цикл остаются blockers.
+  CI Shared fd772be/Protocol1954525 прошёл; он не подтверждает новый Protocol
+  или физическую доставку. Production не изменён; Releases не опубликованы.
+
 ## 2026-09-30 — exact V2 claim result custody
 
 - Shared account journal сохраняет не только точный XPK1, но и успешный

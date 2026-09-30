@@ -1761,6 +1761,12 @@ commit matrix и проверяет композицию; отдельные к�
   не current-recipient receipt, read-back с обеих нод или сохранение секретов
   подготовки. Request-only QA journal generation 2 отвергается; необходим
   изолированный QA reset, не сброс network authority/genesis/node keys.
+  [DR-0019](survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md)
+  добавляет Protocol-only seal/current restore секретного pre-XPK1 состояния.
+  Следом связать его с durable account/database-instance/logical-intent owner
+  до dispatch; закрыть device-DH burn/prepared-secret commit без повторной
+  выдачи spent lease или незаметного выбора другого prekey. После durable
+  DPH2/TRS1 фиксации допустим только exact ciphertext retry.
 
 - DID2 genesis уже авторует `AuthorGenesisDmd1`; Shared account owner теперь
   передаёт заново проверенный genesis DMD1 в durable current-device store
