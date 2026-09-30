@@ -951,6 +951,34 @@ the referenced inventory was independently authorized and durably published,
 that the claim CAS was committed, or that restart replay is correct. Production
 must remain fail-closed until those checks are composed.
 
+The current-recipient verification API is frozen by
+[DR-0016](../survival-program/decisions/DR-0016-did2-prekey-claim-receipt.md).
+It accepts only exact parsed V2 request/result, current PreKeyClaim placement,
+current DID2 contact authorization, exact DCR1 V2 support and the protected
+monotonic clock. It rechecks both the network and recipient time intervals at
+the operation sample; neither interval may be narrowed to hide a validity
+failure. The complete conservative interval must fit the request, placement,
+DCA1, DCB1, XPS1, XPI1 and DPK2 validity. The response server time is only a
+checked projection, never a source of trusted time. The request must bind the
+exact DCB1 hash, XPS1 hash, service capability and responder device. Both
+selected signatures and the inventory proof are mandatory, and the
+last-resort counter must also fit the signed XPS1 limit.
+
+Exact local receipt replay commits all result bytes, including the status,
+server-time projection and canonical padding, not only the signed tuple:
+
+```text
+exactClaimReplayHash32 = SHA256-D(
+  "Deep/ContactResolver/V2/exact-prekey-claim-replay",
+  LP32(exact canonical XPK1 V2) || LP32(exact padded XPC1 V2 wire))
+```
+
+A verified current-recipient receipt is not an ACK/session capability or
+independent evidence of either replica's storage. The authenticated runtime
+response, both durable completion read-backs and local exact request/result
+custody remain mandatory; a parsed success or signature pair cannot bypass
+those gates.
+
 The first quorum-committed result for one `claimOperationId32` wins. The durable
 CAS key is `(serviceCapability32, serviceGeneration, claimOperationId32)` and
 its value is `(requestHash32, selectedPreKeyId32, DPK2Hash32,

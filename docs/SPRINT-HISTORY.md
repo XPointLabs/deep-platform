@@ -1,5 +1,29 @@
 # История спринтов
 
+## 2026-09-30 — current-recipient V2 pre-key claim receipt
+
+- [DR-0016](survival-program/decisions/DR-0016-did2-prekey-claim-receipt.md)
+  замораживает закрытый DID2-only receipt API. В Protocol добавлены exact
+  current-recipient/service binding, обе выбранные подписи, signed inventory
+  membership и last-resort limit. Protected network/recipient intervals
+  консервативно объединяются и проверяются повторно после clock read;
+  unsigned server time не становится trusted clock.
+- Exact replay hash независимо проверен по domain/LP32 framing и включает
+  полный padded result. Подмена DCB1, подписи, unsigned projection/status,
+  превышение XPS1 limit, expiry during verification, wider network bounds,
+  overflow, wrong boot и cancellation отвергаются. Нет публичного receipt
+  constructor, V1 adapter, session/ACK capability или remote storage claim.
+- Focused Debug subset: 15/15. Полный Protocol Debug: 1871 passed / 11 existing
+  platform/provider skips, 1m46s; MembershipRoutes 131/131, ProfileCarrier 105/105.
+  Debug/Release build и Shared production Release rebuild: 0 warnings/errors.
+  Reviewed actual assembly/API/resource graph: pass для обеих configurations;
+  evidence ownership: exact314/package219/final95, mapped219, packageMissing0.
+  Docs gate: 174 checks; source-only scan 10 файлов: 0 findings. Raw artifact
+  scan и native/device evidence этими результатами не закрыты.
+- Это компонентный инкремент, не работающий physical message cycle. Coherent
+  V2 encrypted prefix/sender/responder, authenticated durable replica completion,
+  protected initiator preparation и shipping ContactHello/MSG ещё обязательны.
+
 ## 2026-09-30 — V2 pre-claim operation-time expiry correction
 
 - `DeepIdV2Dpk2PreClaimVerifier` больше не использует исходный trusted-time

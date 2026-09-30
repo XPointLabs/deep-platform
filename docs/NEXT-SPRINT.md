@@ -242,6 +242,13 @@ contact/MSG composition. DID2 outer header и прошедший request journal
 не заменяют эти части. Не подключать V1 receipt adapter или synthetic test
 receipt для обхода этой границы.
 
+Локальный current-recipient verifier по
+[DR-0016](survival-program/decisions/DR-0016-did2-prekey-claim-receipt.md)
+уже создаёт закрытый V2 receipt только после проверки текущей DID2 identity,
+точного service binding, двух выбранных подписей и полного protected-time
+interval. Он не выдаёт session/ACK: следующий шаг — согласованный encrypted
+prefix и sender/responder cutover, затем durable preparation и device delivery.
+
 Результаты прежних loopback/HTTPS/ingress диагностики находятся в
 [`SPRINT-HISTORY.md`](SPRINT-HISTORY.md) и repository evidence notes; они не
 заменяют delivery gate. Registry и seed1–seed3 — production, не удалённый UAT;

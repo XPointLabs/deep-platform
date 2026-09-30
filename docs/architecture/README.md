@@ -121,6 +121,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   должен прекращать recovery worker; NTS lifecycle и live soak этим не закрыты.
 - Текущие Session-derived identity, DPE1/DMC1 и group bytes не являются
   production compatibility surface и не ограничивают новый дизайн.
+- [`DR-0016`](../survival-program/decisions/DR-0016-did2-prekey-claim-receipt.md)
+  замораживает DID2-only current-recipient XPC1 verifier без V1 receipt adapter.
+  Typed receipt не выдаёт session/ACK и не заменяет durable replica read-back;
+  DPH2/MSG composition и физическая доставка остаются отдельными gates.
 - Первый публичный релиз использует новое поколение account/device/database,
   ratcheted E2EE и новый contact bootstrap.
 - XPoint — первый transport provider, но message identity, E2EE, groups,
