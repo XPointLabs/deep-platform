@@ -1,5 +1,32 @@
 # История спринтов
 
+## 2026-09-30 — V2 pre-claim operation-time expiry correction
+
+- `DeepIdV2Dpk2PreClaimVerifier` больше не использует исходный trusted-time
+  interval directory proof как неподвижное время. Обе границы продвигаются
+  checked monotonic delta до текущей операции; overflow fail-closed.
+  Живая directory proof не позволяет использовать уже истёкший DPK2.
+- Локальный focused Debug gate: 14/14 `ApplicationCoreVerificationTests`;
+  positive exact V2 signatures и случаи before expiry / exact expiry / after
+  expiry / proof deadline / wrong boot / backward sample / overflow.
+  Первые два прогона выявили несогласованную chronology тестовой fixture
+  (DMD1 issued 100 при pre-key validity 10–20); исправлена дата подписанного
+  fixture DMD1, production assertions и проверки не ослаблены. Полный Debug
+  build: 0 warnings/errors; actual assembly/public-API/package graph gate pass.
+- Полный Protocol Debug gate: MembershipRoutes 131/131, ProfileCarrier 105/105,
+  Protocol 1870 passed / 11 existing platform/provider skips, 1m56s. Эти skips
+  не выданы за native/device evidence. Docs gate: 174 checks. Source-only scan
+  пяти изменённых файлов: 0 findings. Обычный artifact-inclusive scan всё ещё
+  отвергает два прежних raw Android PNG (4 findings); они не изменены, не удалены
+  и не подготовлены к upload. Release artifact scan этим не закрыт.
+- Документация Protocol больше не называет прежний V1 claim-prefix/receipt
+  путь production DID2 promotion. Полный V2 receipt/prefix/sender/responder
+  cutover, protected initiator preparation и физическая доставка остаются
+  незавершёнными; эта correction не закрывает message E2E.
+- Полный Shared Release gate для committed `7967810` / Protocol `1b5da120`
+  завершился: 216/216, 0 skips, 53m53s. Shared CI `36668595598` — success.
+  Этот результат не выдан за проверку последующего Protocol исправления.
+
 ## 2026-09-30 — account-owned V2 exact claim request reservation
 
 - Внутренний V2 claim transport теперь требует account-owned custody и

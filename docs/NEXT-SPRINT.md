@@ -235,6 +235,13 @@ device observations — в
 целостности и возобновления; затем создание группы, доставка и смена состава.
 Это порядок выполнения, не сокращение release scope.
 
+Первый незакрытый code boundary: заменить V1 XPK1/XPC1 encrypted prefix и
+receipt consumers согласованным V2 receipt → DPH2 sender/responder путём,
+затем добавить Protocol-owned durable initiator preparation и shipping
+contact/MSG composition. DID2 outer header и прошедший request journal gate
+не заменяют эти части. Не подключать V1 receipt adapter или synthetic test
+receipt для обхода этой границы.
+
 Результаты прежних loopback/HTTPS/ingress диагностики находятся в
 [`SPRINT-HISTORY.md`](SPRINT-HISTORY.md) и repository evidence notes; они не
 заменяют delivery gate. Registry и seed1–seed3 — production, не удалённый UAT;
