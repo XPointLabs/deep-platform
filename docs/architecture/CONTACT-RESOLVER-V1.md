@@ -989,6 +989,13 @@ initiator, AEAD or semantic events. The independent current-initiator/device
 and durable session/inbox gates in [DR-0008](../survival-program/decisions/DR-0008-did2-dph2-wire-clean-break.md)
 remain mandatory before promotion or ACK.
 
+The single V2 encrypted-prefix reader and closed current-endpoint promotion
+API are frozen by [DR-0017](../survival-program/decisions/DR-0017-did2-initial-claim-promotion.md).
+The current-recipient receipt itself has no public session-binding method;
+only the fully verified initial claim can transfer the two single-use lanes.
+This remains independent from durable claim completion, protected pending
+preparation and semantic contact/inbox commit.
+
 The first quorum-committed result for one `claimOperationId32` wins. The durable
 CAS key is `(serviceCapability32, serviceGeneration, claimOperationId32)` and
 its value is `(requestHash32, selectedPreKeyId32, DPK2Hash32,

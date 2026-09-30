@@ -125,6 +125,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   замораживает DID2-only current-recipient XPC1 verifier без V1 receipt adapter.
   Typed receipt не выдаёт session/ACK и не заменяет durable replica read-back;
   DPH2/MSG composition и физическая доставка остаются отдельными gates.
+- [`DR-0017`](../survival-program/decisions/DR-0017-did2-initial-claim-promotion.md)
+  замораживает V2-only encrypted-prefix и current initiator/recipient promotion
+  с neutral двухканальным prekey handoff. Полный sender/durable/MSG путь и
+  device E2E этим не активируются; 4-КиБ wire bucket не вмещает V2 claim.
 - Первый публичный релиз использует новое поколение account/device/database,
   ratcheted E2EE и новый contact bootstrap.
 - XPoint — первый transport provider, но message identity, E2EE, groups,

@@ -571,7 +571,8 @@ uploaded. Exhaustion is `PreKeysUnavailable`, never a weaker-suite retry.
 
 ## 8. `DPH2` hybrid initiation
 
-`DPH2`, version 1, suite `0x0201`, is the complete initiator handshake record:
+`DPH2`, version 2, suite `0x0201`, is the DID2-only initiator handshake record
+selected by [DR-0008](../../../decisions/DR-0008-did2-dph2-wire-clean-break.md):
 
 `networkId16` and every other DPH2 identifier are nonzero. A `ZERO16`
 network identifier is a non-canonical clean-break input and MUST be rejected
@@ -598,7 +599,7 @@ before any hash, signature, claim, KEM, DH or storage operation.
 | 17 | actual ML-KEM-768 ciphertext | octets, 1088 |
 | 18 | initiator initial Double-Ratchet X25519 public key | octets, 32 |
 | 19 | initial-payload XChaCha20 nonce | octets, 24 |
-| 20 | exact initiator DID1 | octets, 76 |
+| 20 | exact initiator DID2 | octets, 2052 |
 | 21 | encrypted initial plaintext plus AEAD tag | octets, 4112, 16400 or 32784 |
 
 Tag 16 is exactly `signedX25519Id32 || oneTimeX25519IdOrZero32 ||
@@ -606,7 +607,11 @@ mlKemId32 || mlKemKind:u8`. It must equal the exact DPK2 selection. For a
 one-time DPK2, the second ID equals DPK2 tag 19, kind is 1 and tag 12 is zero.
 For a last-resort DPK2, the second ID is `ZERO32`, kind is 2 and tag 12 is
 `1..DPK2.tag24`; it must equal the counter in the exact XPC1 receipt. DPH2 has
-only three legal total sizes: 6,001, 18,289 and 34,673 bytes.
+only three structural total sizes: 7,977, 20,265 and 36,649 bytes.
+Its canonical tags-1–20 handshake header is 3,857 bytes. DPK2 is independently
+version 2/suite `0x0301`; its exact V2 bytes, never a V1 re-encoding of the
+projected record, enter the following hashes and AEAD transcript. A V1 DPH2,
+DPK2 or recipient contact closure cannot satisfy the DID2 path.
 
 Define these non-circular values:
 
@@ -616,14 +621,14 @@ dpk2Hash32 = SHA256-D("Deep/Messaging/V2/exact-dpk2", exactDPK2)
 senderEphemeralCommitment32 = SHA256-D(
   "Deep/ContactResolver/V1/sender-ephemeral",
   network16 || initiatorAccount32 || initiatorDevice32 ||
-  initiatorDPD1Ref38 || exactInitiatorDID1:76 || initiatorDeviceAgreement32 ||
+  initiatorDPD1Ref38 || exactInitiatorDID2:2052 || initiatorDeviceAgreement32 ||
   initiatorEphemeral32 || initiatorInitialRatchet32)
 
 sessionId32 = SHA256-D(
   "Deep/Messaging/V2/session-id",
   network16 || initiatorAccount32 || initiatorDevice32 ||
   initiatorDeviceGeneration:u64be || initiatorDPD1Ref38 ||
-  exactInitiatorDID1:76 ||
+  exactInitiatorDID2:2052 ||
   responderAccount32 || responderDevice32 ||
   responderDeviceGeneration:u64be || dpk2Hash32 ||
   claimOperationId32 || claimReceiptHash32 ||
@@ -679,7 +684,7 @@ initialAad = CTX("Deep/Messaging/V2/dph2-initial-aead-ad", 0x0201,
 ```
 
 The unpadded initial plaintext is exactly
-`LP32(exact canonical XPK1) || LP32(exact padded XPC1 Claimed/Replay wire) ||
+`LP32(exact canonical XPK1 V2) || LP32(exact padded XPC1 V2 Claimed/Replay wire) ||
 eventCount:u8 || LP32(SessionInitDMC2) || [LP32(firstApplicationDMC2)]`, where
 `eventCount` is 1 or 2. Both records are canonical DMC2. `SessionInit` uses the
 companion codec unchanged: its handshake nonce, exact sender DMD1 and capability
@@ -694,6 +699,13 @@ means this second LP32 DMC2 record; it never means nesting ContactHello bytes
 inside the closed SessionInit tag-12 payload.
 Random padding and a final `u32be` unpadded length fill the smallest allowed
 plaintext bucket 4,096, 16,384 or 32,768 bytes.
+For the DID2 cutover, a successful exact V2 prefix is at least 4,542 bytes
+before events and the length trailer. It cannot fit the 4,096-byte bucket;
+complete positive claim payloads therefore select 16,384 or 32,768 bytes.
+The smaller outer wire bucket remains a structural/negative fixture, not an
+alternate event-only or unpadded-XPC1 format. Closed V2 promotion and the
+current-device/recheck boundary are frozen by
+[DR-0017](../../../decisions/DR-0017-did2-initial-claim-promotion.md).
 
 After tag 21 exists, define the distinct replay value:
 
@@ -1233,7 +1245,8 @@ unfrozen. Every production marker MUST remain `NOT_ACTIVE`.
 The required vector skeleton has these positive families:
 
 - one-time and last-resort DPK2 with all three signatures and exact sizes;
-- all three DPH2 padding buckets, both prekey kinds, independent transcript and
+- all three structural DPH2 padding buckets and complete V2 claim payloads in
+  the fitting 16/32-KiB buckets, both prekey kinds, independent transcript and
   full-replay hashes and exact XPC1 claim binding;
 - all five exact DTR2 payload-size forms covering every closed Braid kind;
 - all twenty DPE2 header/bucket size combinations, exact nonce/AAD/message-key

@@ -1,5 +1,37 @@
 # История спринтов
 
+## 2026-09-30 — V2 encrypted claim prefix and current responder promotion
+
+- DR-0017 замораживает один V2-only encrypted-prefix reader и закрытый
+  current initiator/recipient promotion. Полный protected-time recheck обоих
+  endpoints выполняется на финальном sample; проверка старого интервала
+  адресата не переживает задержку проверки инициатора. Cancellation, boot,
+  current-device и точные bytes остаются независимыми fail-closed gates.
+- Promotion сохраняет non-null V2 checkpoint/DCR1 и только затем выдаёт
+  одноразовый двухканальный handoff. Identity-neutral lane types перенесены
+  из ContactV1 в MessagingCrypto без alias/type forward. Shared consumer
+  использует полный verified initial claim; V1 placement не принимает V2
+  request. Старый test-only promotion без initiator proof удалён.
+- Пять старых preview/prefix/promotion positive tests заменены V2 coverage:
+  реальные signed recipient/replica records и XChaCha20 AEAD, оба prekey kind,
+  16/32-КиБ payload, malformed/V1/truncation/padding/status/header/tamper,
+  single-use lanes и финальная expiry/cancellation. Directory/network/PQ
+  fixture outputs — bounded seams, не real hybrid/device evidence.
+- Уточнены crypto §8 и DR-0008: DPH2 V2/DID2 размеры и exact V2 DPK2 hash;
+  минимум prefix — 4542 байта без events/trailer. Неизменённый 4-КиБ outer
+  bucket имеет structural/negative coverage, не успешный V2 claim payload.
+- Focused gate 6/6; полный Protocol Debug 1867 passed / 11 прежних provider
+  skips, Routes 131/131, Carrier 105/105. Debug/Release builds и Shared
+  production Release rebuild: 0 warnings/errors. Actual API/resource graph
+  Debug/Release pass с новым reviewed snapshot; ownership mapped219,
+  packageMissing0. Docs 174 checks, crypto/contact consistency pass;
+  source-only scan 12 файлов, 0 findings. Полный новый Shared run ещё идёт
+  и не заявлен прошедшим.
+- Sender Complete и его recovery fixtures пока требуют V2 cutover; старый
+  event-only recovery test seam не является release evidence. Pending secret
+  custody, ContactHello V2/inbox/ACK, shipping caller и полный physical цикл
+  остаются незавершёнными. Production не изменён; Releases не опубликованы.
+
 ## 2026-09-30 — exact V2 claim/header and current initiator device binding
 
 - Protocol `f91cab8` связывает retained V2 claim pair с точным предложенным

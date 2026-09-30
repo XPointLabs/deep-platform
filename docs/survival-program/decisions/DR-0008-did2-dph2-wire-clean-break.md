@@ -75,11 +75,14 @@ the old path for a DID2 account is not a release option.
   old registry generation is historical evidence until the replacement is
   internally consistent; changing this decision alone does **not** activate
   DPH2 V2.
-- Positive vectors cover all three buckets and both prekey kinds on Android
+- Structural vectors cover all three wire buckets; complete positive claim
+  payloads cover the fitting 16/32-KiB buckets and both prekey kinds on Android
   arm64 and Windows x64/arm64. Negative vectors cover V1 version, DID1 in tag
   20, malformed/cross-network DID2, session/commitment mismatch, stale or
   forked V2 proof, V1 checkpoint, changed exact XPC1, duplicate/forked DPH2,
   old DAO1 size and wrong protected-device operation.
+  [DR-0017](DR-0017-did2-initial-claim-promotion.md) records why a successful
+  V2 exact claim prefix cannot fit the unchanged 4-KiB wire bucket.
 - Compile and test the complete production graph after removal of the old
   caller API and SQL size checks. A green old-path test is not V2 evidence;
   compilation alone is not enough while old V1 contact/session tests fail.
