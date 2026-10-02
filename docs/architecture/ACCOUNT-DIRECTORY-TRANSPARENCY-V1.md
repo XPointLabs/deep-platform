@@ -823,6 +823,12 @@ client secure-time merge input or permission to ignore signed uncertainty/expiry
 Disjoint observations fail closed without mutation. Normal non-refinement rotation
 retains its existing monotonic-center guard.
 
+The explicit first automatic-time floor transition of an initialized Registry
+is owned by [DR-0068](../survival-program/decisions/DR-0068-manual-to-nts-protected-floor-upgrade.md).
+It retains authenticated historical lower custody without importing an old
+upper interval or reprovisioning the directory. Fresh NTS acquisition remains
+mandatory; the transition is not lost-floor recovery or authority renewal.
+
 An OS clock outside the merged authenticated interval is a displayed clock warning,
 not an alternate merge input. If authenticated DTT1/protected inputs cannot establish a
 non-empty interval, the client enters `ClockCorrectionRequired`; it may perform

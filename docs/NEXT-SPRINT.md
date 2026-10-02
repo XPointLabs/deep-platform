@@ -85,6 +85,11 @@ trusted-time anchor. Автоматический NTS не включён в т�
 floor и проверяемое reacquisition, затем актуальные signed operational inputs
 и readiness. Не выдавать исторический восьмицепочный re-export за fresh
 authority и не сбрасывать существующие ADA2/genesis/floors/registered keys.
+Операторский переход [DR-0068](survival-program/decisions/DR-0068-manual-to-nts-protected-floor-upgrade.md)
+реализован и проверен 24 scoped тестами. Exact live manual anchor скопирован
+read-only в private custody и HMAC-проверен независимым retained key; это не
+fresh-time evidence. Выпуск current image, активация отдельного floor/NTS и
+проверка действующих signed inputs в production ещё не выполнены.
 Route/publication slice уже прошёл на реальных локальных PostgreSQL/PQ/
 SQLCipher, но private grant issuer с настоящими external signer sockets и
 последующий Android↔Windows contact/text по-прежнему требуют live evidence.

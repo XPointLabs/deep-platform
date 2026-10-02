@@ -1,5 +1,27 @@
 # История спринтов
 
+## 2026-10-02 — explicit manual-to-NTS protected floor transition
+
+- DR-0068 and the Registry operator candidate add a first automatic-time
+  floor for an already initialized directory without re-provisioning ADA2.
+  Manual-anchor CAS/HMAC and pinned XNA1/DTS1 are mandatory; only retained
+  historical lower constraints are transferred. No uptime, old upper bound,
+  OS/HTTP time or artifact lifetime is promoted to current-time authority.
+- CreateNew staging and an authenticated one-time fence precede activation.
+  Exact interrupted staging can resume; an existing/advanced floor or completed
+  transition with lost floor cannot be reset. The automatic runtime rejects
+  pending activation and still requires fresh authenticated NTS acquisition.
+- Focused transition/time slice: **24/24 passed, 0 skipped**. Includes CLI
+  arity/scope/path/nonce-ledger/key alias negatives, old-state immutability,
+  CAS/HMAC failures, crash recovery, exact pending/fence conflicts, restart,
+  acquisition loss and prohibition of lost-floor reinitialization. Observations
+  are controlled test inputs; this is not real NTS or device delivery evidence.
+- Read-only pinned SSH copied only the live protected manual anchor into
+  private operator custody. Its exact fingerprint and HMAC verified against
+  one independently retained local time-integrity key. No remote key, state,
+  container, floor, staking or certificate configuration was changed. The
+  retained stale anchor is not fresh-time evidence.
+
 ## 2026-10-02 — Registry authority diagnosis and isolated coordination slices
 
 - A pinned-host-key, read-only Registry audit confirmed public DID2 readiness
