@@ -60,22 +60,21 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ## Обязательный порядок исполнения
 
-### P0: retained route issuance после потери ответа (2026-10-02)
+### P0: matched issued-head activation и route renewal (2026-10-03)
 
 [DR-0073](survival-program/decisions/DR-0073-did2-exact-route-request-custody.md)
-закрывает хранение exact threshold request до dispatch (journal version 5 only).
-28 focused Shared tests и real-account Registry/PostgreSQL test проходят;
-это не физическое восстановление retained Windows/Android аккаунта.
-После signed directory-head advance старый exact winner остаётся pending:
+закрывает хранение exact threshold request до dispatch.
 [DR-0074](survival-program/decisions/DR-0074-did2-retained-threshold-issuance-evidence.md)
-даёт закрытый signed-head retained completion/object API, но он ещё не подключён
-к owned coordination: вернуть/защитить actual issuance ADH вместе с exact winner,
-включая неизвестную intermediate head, до adoption. Не remint nonce, не
-подставлять прошлый proof/current time. XPA использует независимо текущий head,
-а publisher request сохраняет подписанный DCB minimum; оба проверяются отдельно.
-Затем подключить DR72 object/publication successors и per-generation issuer,
+даёт закрытый signed-head retained completion/object API.
+[DR-0075](survival-program/decisions/DR-0075-did2-issued-head-response-custody.md)
+подключает actual issuance ADH к server winner и protected owned custody.
+Связанный локальный сценарий head1 proposal/head2 winner/head3 reopen прошёл
+с неизменным request/nonce, последующей публикацией и phase7 reopen без callbacks;
+потеря ответа и сбой после adoption проверены отдельно. Это не physical evidence.
+Следующее: matched Registry provision/XNode/client repin и activation;
+затем подключить DR72 object/publication successors и per-generation issuer,
 проверить expiry/restart на том же новом account instance и device delivery.
-Локальная journal-5 activation требует explicit reset только disposable old QA;
+Текущая journal activation требует explicit reset только incompatible disposable QA;
 network genesis, registered keys и production floors сохраняются.
 
 ### P0: стабилизация и автоматическое восстановление сети (2026-09-29)

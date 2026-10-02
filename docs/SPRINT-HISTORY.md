@@ -1,5 +1,30 @@
 # История спринтов
 
+## 2026-10-03 — connected exact issued-head custody and replay
+
+- [DR-0075](survival-program/decisions/DR-0075-did2-issued-head-response-custody.md)
+  connects DR74 to the complete private response, permanent server winner and
+  protected client journal. Original request/nonce stays exact across directory
+  advancement; current proof/network/time and expiry remain independent gates.
+- New connected Shared scenarios: **4/4 passed**, including head1 proposal,
+  head2 winner, head3 recovery after lost response or adopted-phase crash,
+  publication/phase7 reopen and terminal corruption before callbacks. Actual
+  signatures/SQLCipher are used; replica transport remains an in-process fixture.
+- Registry **22/22**, XNode coordination **17/17**, Protocol **42/42** passed,
+  zero failures/skips. Real PostgreSQL journal tests preserve retired audit bytes,
+  reservations and capacity during explicit operator provisioning; actual DID2
+  HTTP issuance replays without new signer calls after independent peer admission.
+  These checks are focused local evidence, not complete release gates or live TLS.
+- Final focused Shared custody/publication/retained-issuance batch: **32/32 passed**,
+  zero failures/skips. A broader class run was interrupted for fast-mode scope;
+  it is not counted as passing and does not replace the full release gate.
+- Retained Windows QA was observed and its network action repeated through UI,
+  without deleting the account. It reached `XRA1/Expiry` rather than a network
+  timeout. The installed old client does not include this issued-head change.
+  USB Android remains authorized. No physical peer/message/asset/group delivery
+  or production mutation was performed. Route renewal and matched activation
+  remain release blockers. No GitHub push or release publication.
+
 ## 2026-10-03 — closed DID2 retained issuance evidence
 
 - [DR-0074](survival-program/decisions/DR-0074-did2-retained-threshold-issuance-evidence.md)

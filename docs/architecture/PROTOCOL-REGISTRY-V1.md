@@ -351,8 +351,9 @@ follow [DR-0042](../survival-program/decisions/DR-0042-did2-route-directory-issu
 this is a semantic correction without a new wire version or public trust flag.
 [DR-0074](../survival-program/decisions/DR-0074-did2-retained-threshold-issuance-evidence.md)
 adds closed signed-head retained completion and separates the publisher's signed
-minimum from independently current XPA authority. Owned response/custody remains
-an activation gate; no generic historical-currentness switch is exposed.
+minimum from independently current XPA authority. Exact issued-head wire and
+protected custody follow [DR-0075](../survival-program/decisions/DR-0075-did2-issued-head-response-custody.md).
+Matched consumer/provisioning activation remains gated; no generic historical-currentness switch is exposed.
 Claim current-network/clock binding and independent inventory/contact lifetimes
 follow [DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md)
 and [DR-0044](../survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md).
