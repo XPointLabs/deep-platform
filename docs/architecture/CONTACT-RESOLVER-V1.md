@@ -113,8 +113,12 @@ issuer device exactly equal XIR1 tags 1,5,6,7,8,13,14,15; it has only
 (17 fields, 539 bytes), and tag 17 verifies
 `SIGINPUT("Deep/ContactResolver/V1/XIR1", 0x0201, projection)`. Its canonical
 object hash is `SHA256(exactXIR1)`. A successor has the same network/rendezvous
-ID, exact generation plus one, predecessor hash equality and overlapping
-effective validity; same-generation changed bytes or two successors fork-latch.
+ID, exact generation plus one and predecessor hash equality; same-generation
+changed bytes or two successors fork-latch. Reusable permanent-address DID2
+expiry-gap recovery follows
+[DR-0072](../survival-program/decisions/DR-0072-did2-route-renewal-lineage.md):
+new issuance uses actual current time without backdating/claiming overlap. The
+old invite remains expired; a one-time invitation never silently changes target.
 
 ### 2.1.1 DID2 XIR1 candidate (not release-active)
 
@@ -1362,8 +1366,10 @@ ascending node ID bytes, is the sole tie-break order. Tag 7 equals
 `SHA256-D("Deep/XPoint/V1/PMS2/selection", exact tags 1..6)`. Tags 8/9 are
 inside the named PMT2 window and expire no later than its selection epoch.
 Witnesses sign tags 1..9 under `SIGINPUT("Deep/XPoint/V1/PMS2", 0x0201,
-projection)`. The PMS2 exact hash is `SHA256(exactPMS2)`; a changed selection or
-receipt envelope for the same `(PMT2,placementInput,epoch)` is fork evidence.
+projection)`. The PMS2 exact hash is `SHA256(exactPMS2)`. Selection projection
+and timed-envelope renewal/fork rules follow
+[DR-0072](../survival-program/decisions/DR-0072-did2-route-renewal-lineage.md);
+receipt refresh never permits changing `(PMT2,placementInput,epoch)` or ranking.
 
 `XRC1` (directory live route) has 21 fields: `1=networkId16`,
 `2=randomRouteId32`, `3=generation:u64be`, `4=predecessorXRC1CoreHash32`,
@@ -1393,6 +1399,8 @@ route. Witnesses sign tags 1..12 with `SIGINPUT("Deep/XPoint/V1/XSS1", 0x0201,
 projection)`, and `XSS1CoreHash32 = SHA256-D("Deep/XPoint/V1/XSS1/core",
 projection)`. Same `(networkId,routeId,successorGeneration)` changed core or
 inconsistent predecessor/current XRC is permanent fork evidence.
+The exact genesis-checkpoint versus nonzero-generation predecessor binding is
+specified by [DR-0072](../survival-program/decisions/DR-0072-did2-route-renewal-lineage.md).
 
 `XRR1` (recipient-shared reachability) has 20 fields:
 `networkId16 || randomRendezvousId32 || generation:u64be || predecessorXRR1CoreHash32

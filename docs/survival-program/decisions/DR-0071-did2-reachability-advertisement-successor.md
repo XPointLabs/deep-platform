@@ -48,6 +48,9 @@ completion retains exact pending bytes and never remints the same nonce.
 Expiry-gap recovery, PMT/view/key rollover, capacity/retention and abandoned
 uncommitted intents require their own bounded accepted contracts. This narrow
 API does not waive those gates or prove Android renewal/message delivery.
+[DR-0072](DR-0072-did2-route-renewal-lineage.md) now specifies the subsequent
+route-artifact phases and reusable-invite expiry-gap semantics; it still does
+not activate protected/live publication or device renewal.
 
 Consumers must rebuild/repin for the API increment. No account schema/reset,
 node-key replacement, network rollout or wire downgrade is required here.

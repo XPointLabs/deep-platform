@@ -788,6 +788,10 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   predecessor/pending custody and exact restart, private successor coordination,
   route/object/publication lineage and two-replica adoption before claiming
   retained-account renewal; do not reissue genesis or reuse an expired nonce.
+  [DR-0072](../survival-program/decisions/DR-0072-did2-route-renewal-lineage.md)
+  supplies closed historical-input verification and current route-artifact
+  completion. Connect permanent per-generation private issuance and protected
+  object/publication successors; local signed candidates are not device recovery.
   Current claim recipient/network pairing and protected clock use follow
   [DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md).
   Independent full inventory/service and current contact operation lifetimes

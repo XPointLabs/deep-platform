@@ -262,6 +262,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   authorizes only the owned-device XRA1 successor candidate with exact predecessor
   lineage. Complete protected renewal/coordination/publication and retained-account
   device recovery remain gates; expired routes are not made current.
+- [`DR-0072`](../survival-program/decisions/DR-0072-did2-route-renewal-lineage.md)
+  closes the route-artifact successor phases and historical-input boundary,
+  including timed selection refresh and reusable-invite expiry-gap semantics.
+  Durable private lineage issuance, owned publication and devices remain gated.
 - [`DR-0052`](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
   requires public PMA2 in the complete network bundle and a direct DID2 grant
   verifier under root-authorized role issuers and the exact current PMT2.

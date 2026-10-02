@@ -31,6 +31,9 @@ route/inventory successors and expired-intent renewal remain explicit work.
 first artifact-specific XRA1 successor candidate only; it does not allow this
 operation to replace the protected genesis intent or claim current publication
 before complete successor custody/threshold/two-store adoption exists.
+[DR-0072](DR-0072-did2-route-renewal-lineage.md) supplies the subsequent
+route-artifact successor phases. The owned operation must still adopt exact
+pending/committed publication lineage before claiming renewed reachability.
 
 The public operation derives its plan from protected state, constructs the
 DR49 coordination and replica carriers internally, and invokes the existing
