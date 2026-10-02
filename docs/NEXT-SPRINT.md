@@ -62,6 +62,18 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ### P0: matched issued-head activation и route renewal (2026-10-03)
 
+[DR-0077](survival-program/decisions/DR-0077-did2-route-successor-coordination.md)
+подключает predecessor-aware private request и независимую проверку successor
+до server reservation. Локальные проверки: Registry 28/28, Shared 38/38
+(затем 7/7 retained/wire с дополнительными hostile cases), XNode 32/32,
+Protocol closed API 5/5; повторные cases не являются новыми unique tests.
+protected current/pending adoption, publication fencing, matched provisioning/
+repin и физическое восстановление всё ещё обязательны. Новый Windows retry
+на прежнем аккаунте дошёл до PreKeyPublication/SecureConnectionError, не success.
+Серверный сценарий использует настоящий PQ-аккаунт, device/witness подписи,
+SQLCipher/PG и TestServer: expiry → exact successor → lost-response replay →
+completion; это не физическое принятие нового поколения клиентом.
+
 [DR-0073](survival-program/decisions/DR-0073-did2-exact-route-request-custody.md)
 закрывает хранение exact threshold request до dispatch.
 [DR-0074](survival-program/decisions/DR-0074-did2-retained-threshold-issuance-evidence.md)

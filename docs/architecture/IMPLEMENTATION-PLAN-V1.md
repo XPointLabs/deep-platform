@@ -762,7 +762,7 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   with an internal account-owned orchestration and a mandatory protected root.
   Registry DID2 threshold coordination follows
   [DR-0036](../survival-program/decisions/DR-0036-did2-route-threshold-coordination.md):
-  actual ADA2/external-floor proof, V2-only envelope, permanent PostgreSQL
+  actual ADA2/external-floor proof, current-only envelope, permanent PostgreSQL
   reservation/winner and current-context replay checks. Its account-to-server
   TestServer lane is not shipping XPoint/OHTTP coordination or publication;
   those consumers, successor/renewal and deployment remain required.
@@ -781,6 +781,10 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   connects exact issuance-head response/custody and replay. Complete matched
   provisioning/consumer activation and physical gates; never infer an unknown
   intermediate head from a saved hash or proposal head.
+  [DR-0077](../survival-program/decisions/DR-0077-did2-route-successor-coordination.md)
+  connects the bounded predecessor request to independent server successor
+  verification. Preserve exact history through explicit request provisioning;
+  connect protected current/pending adoption before matched device activation.
   owned publication commit verifies both receipts and CAS/readbacks exact XPO
   in phase 7. Historical commit is not stale dispatch permission. Old QA instances require
   explicit reset. Shipping private coordination, two-replica publication,

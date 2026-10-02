@@ -14,6 +14,11 @@ This directory contains frozen protocol/governance inputs, not the active sprint
 
 Machine registry widths, domains, field order, versions, ownership and activation order are normative. Missing authority/origin semantics must not be invented in runtime code.
 
+The connected route-coordination increment is owned by
+[DR-0077](decisions/DR-0077-did2-route-successor-coordination.md), with machine
+bounds in [CONTACT-COORDINATION-02](releases/v3.0.0/specs/contact-coordination-v2.registry.json).
+Accepted source changes are not production/device activation evidence.
+
 ## Execution policy
 
 - Local edits, tests, Docker/UAT runs, UAT state reset and local commits are allowed.

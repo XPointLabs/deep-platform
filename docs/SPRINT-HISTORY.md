@@ -1,5 +1,32 @@
 # История спринтов
 
+## 2026-10-03 — connected predecessor-aware route coordination
+
+- [DR-0077](survival-program/decisions/DR-0077-did2-route-successor-coordination.md)
+  связывает exact предыдущий XIR/route с current-only private request. Registry
+  независимо проверяет closed history и current successor до durable reservation,
+  использует successor author, retained completion требует ту же exact историю.
+  Общий ONION wrapper и существующие node keys/signature transcript не меняются.
+- Operator-only request provision сохраняет audit bytes, reservations/counts/floors;
+  отсутствие mandatory marker останавливает callbacks. Runtime не выполняет DDL,
+  не читает старый request и не освобождает failed generation reservation.
+- Protected route journal current-only с обновлённым bounded request slot;
+  это ещё не current/pending successor CAS и не automatic recovery после expiry.
+- Registry **28/28**: реальный PQ/device/native/SQLCipher/PG сценарий signed short
+  route expiry → fresh authority → exact successor request → lost HTTP response
+  → unchanged winner/replay → retained completion, без новой genesis identity.
+  Forged predecessor не резервирует capacity; другой nonce не подписывает то же
+  поколение. Explicit operator upgrade сохраняет старые opaque audit bytes.
+- Shared **38/38**, затем **7/7** retained/wire с дополнительными hostile cases;
+  XNode **32/32** с exact signed predecessor request через current wrapper;
+  Protocol API surface **5/5**. Повторные cases не считаются новыми unique tests.
+  Только focused gates; полные package/API/evidence/DevOps/release gates отложены
+  до integration boundary. Это не socket TLS/real replicas или physical E2E.
+- Последний Windows UI retry на том же аккаунте дошёл до
+  PreKeyPublication/SecureConnectionError (IOException, Chain PlatformChainAccepted).
+  Аккаунт/recovery сохранены; APK/Windows source остаётся прежним. Production,
+  GitHub Releases и main merges не менялись; push не выполнен. Release не готов.
+
 ## 2026-10-03 — permanent route-generation fencing и retained-device retry
 
 - Registry реализует per-generation reservation из

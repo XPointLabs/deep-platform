@@ -358,6 +358,11 @@ Matched consumer/provisioning activation remains gated; no generic historical-cu
 adds closed object/publication predecessors and successor-specific APIs without
 new wire allocation. Protected CAS, permanent per-generation issuance and
 matched device activation remain gated; genesis authors stay strict.
+[DR-0077](../survival-program/decisions/DR-0077-did2-route-successor-coordination.md)
+freezes predecessor-aware route coordination and current-only protected request
+custody. The independently authenticated prior graph is checked before server
+reservation; retained completion binds the same exact history. Matched provisioning,
+consumer repin, protected successor adoption and physical activation remain gated.
 Claim current-network/clock binding and independent inventory/contact lifetimes
 follow [DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md)
 and [DR-0044](../survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md).

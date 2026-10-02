@@ -1,6 +1,6 @@
 {
   "package": "CONTACT-COORDINATION-02",
-  "decision": "DR-0075",
+  "decision": "DR-0077",
   "status": "FROZEN_TARGET_NOT_ACTIVE",
   "runtimeActivation": false,
   "outerOnionOperation": 4,
@@ -12,9 +12,9 @@
   "contactMaximumRequestBytes": 155222,
   "contactMaximumSuccessBytes": 131072,
   "targets": [
-    { "id": 1, "name": "Route", "requestBodyVersion": 2, "responseBodyVersion": 3, "requestBodyBytes": 1151, "minimumResponseBodyBytes": 2584, "maximumResponseBodyBytes": 15179, "issuedHeadRecordMaximumBytes": 4096 },
+    { "id": 1, "name": "Route", "requestBodyVersion": 3, "responseBodyVersion": 3, "minimumRequestBodyBytes": 1159, "maximumRequestBodyBytes": 25065, "priorInviteBytes": 611, "minimumPriorRouteBytes": 4143, "maximumPriorRouteBytes": 23295, "minimumResponseBodyBytes": 2584, "maximumResponseBodyBytes": 15179, "issuedHeadRecordMaximumBytes": 4096 },
     { "id": 2, "name": "Publication", "minimumRequestBodyBytes": 23302, "maximumRequestBodyBytes": 155210, "minimumResponseBodyBytes": 14682, "maximumResponseBodyBytes": 93092 }
   ],
-  "binding": ["exact enclosed route request-V2/response-V3 or publication-V2 canonical envelope", "target", "network16", "coordination nonce32", "current NETCODEC PMT2", "XRA1 tag6 random gateway shard"],
+  "binding": ["exact enclosed route request-V3/response-V3 or publication-V2 canonical envelope", "target", "network16", "coordination nonce32", "current NETCODEC PMT2", "XRA1 tag6 random gateway shard", "nonzero route generation binds exact independently authenticated predecessor invite and six-record closure"],
   "notAuthority": ["parsed wrapper", "gateway placement is not mailbox placement", "node access is not DID2 or witness authority"]
 }
