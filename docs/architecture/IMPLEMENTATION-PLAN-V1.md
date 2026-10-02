@@ -771,8 +771,10 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   exact retry. [DR-0038](../survival-program/decisions/DR-0038-did2-publication-coordination.md)
   adds whole-envelope publisher binding, actual DID2 server XPA1 issuance,
   permanent PostgreSQL exact winners and protected request/response phases 5/6.
-  The route journal is version 4 only under
-  [DR-0040](../survival-program/decisions/DR-0040-did2-owned-publication-commit.md);
+  The route journal is version 5 only under
+  [DR-0073](../survival-program/decisions/DR-0073-did2-exact-route-request-custody.md);
+  persist the complete threshold request before dispatch and keep its original
+  nonce-bound floor on retry while independently checking fresh authority.
   owned publication commit verifies both receipts and CAS/readbacks exact XPO
   in phase 7. Historical commit is not stale dispatch permission. Old QA instances require
   explicit reset. Shipping private coordination, two-replica publication,

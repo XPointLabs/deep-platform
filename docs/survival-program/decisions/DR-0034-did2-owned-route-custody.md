@@ -10,6 +10,10 @@ configuration, DCA1 V2, independent metadata scalar/key ID and threshold request
 nonce. Do not wrap DID2 in a DID1 route/proof capability. No network publication,
 retrieval capability, holder key, grant, contact consent or ACK is minted here.
 
+Complete pending threshold-request custody and the current local journal version
+are superseded by [DR-0073](DR-0073-did2-exact-route-request-custody.md).
+The retained minimum never substitutes current directory authority.
+
 Freeze the internal account-owned `EnsureOwnContactRouteAsync(intent32,
 DeepIdV2ContactPathAuthoritySource, Did2ContactRouteConfiguration,
 IDid2ContactRouteThresholdSource, cancellationToken)` orchestration. Configuration

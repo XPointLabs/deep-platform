@@ -212,8 +212,8 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   Local two-replica evidence does not close private transport or device gates.
 - [`DR-0040`](../survival-program/decisions/DR-0040-did2-owned-publication-commit.md)
   adds closed two-replica commit verification and owned exact phase-7 custody;
-  route journal version 4 only requires explicit reset of disposable older
-  QA instances. Historical evidence does not renew dispatch authority.
+  route journal follows the current-only generation in DR-0073; disposable older
+  QA instances require explicit reset. Historical evidence does not renew dispatch authority.
 - [`DR-0041`](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md)
   closes descriptor-bound candidate decryption and independent current DID2
   permanent-read verification. Parsed candidates are not identity authority;
@@ -266,6 +266,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   closes the route-artifact successor phases and historical-input boundary,
   including timed selection refresh and reusable-invite expiry-gap semantics.
   Durable private lineage issuance, owned publication and devices remain gated.
+- [`DR-0073`](../survival-program/decisions/DR-0073-did2-exact-route-request-custody.md)
+  requires the entire original nonce-bound threshold request in protected custody
+  before dispatch. Fresh directory proofs never rewrite a saved replay minimum;
+  the local journal clean break requires explicit isolated old-QA reset.
 - [`DR-0052`](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
   requires public PMA2 in the complete network bundle and a direct DID2 grant
   verifier under root-authorized role issuers and the exact current PMT2.

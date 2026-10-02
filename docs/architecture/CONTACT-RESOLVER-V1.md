@@ -377,6 +377,12 @@ only a witness-coordination implementation behind the XPoint/OHTTP path; its
 HTTP address is not a permitted direct client fallback, contact resolver or
 route-selection oracle.
 
+Client exact pending custody follows
+[DR-0073](../survival-program/decisions/DR-0073-did2-exact-route-request-custody.md).
+The saved request minimum is retained byte-for-byte on unknown completion/reopen;
+independently fresh current proof/protected floors still authorize each retry.
+It is neither a cached current proof nor permission to rewrite a reserved nonce.
+
 Before publication, the client obtains exact `XPA1` from the account-directory
 threshold over the XPoint/OHTTP path. The threshold validates current
 ADC1 V2/ADH1/ADP1 V2 plus exact DID2 commitment, DAB2/DCA1 V2/DCB1 V2/XIR1

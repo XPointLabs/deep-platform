@@ -40,6 +40,10 @@ bytes. Revision remains one plus sum of phases. Old versions require explicit
 isolated QA reset, never migration or silent recreation; SQL2/application6 and
 registered node keys do not change.
 
+[DR-0073](DR-0073-did2-exact-route-request-custody.md) supersedes this local
+journal generation by retaining the complete threshold request. Phase-7 receipt
+verification/adoption and independent currentness requirements stay unchanged.
+
 Internal account-owned orchestration dispatches the exact already retained
 phase-6 XPU through a typed bounded replica transport only after fresh DR38
 authorization verification. Capture/verify the bounded response, recheck the

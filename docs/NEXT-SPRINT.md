@@ -60,6 +60,20 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ## Обязательный порядок исполнения
 
+### P0: retained route issuance после потери ответа (2026-10-02)
+
+[DR-0073](survival-program/decisions/DR-0073-did2-exact-route-request-custody.md)
+закрывает хранение exact threshold request до dispatch (journal version 5 only).
+28 focused Shared tests и real-account Registry/PostgreSQL test проходят;
+это не физическое восстановление retained Windows/Android аккаунта.
+После signed directory-head advance старый exact winner остаётся pending:
+DR42 current-anchor adoption/completion требует отдельного закрытого retained-
+issuance контракта. Не remint nonce, не подставлять прошлый proof/current time.
+Затем подключить DR72 object/publication successors и per-generation issuer,
+проверить expiry/restart на том же новом account instance и device delivery.
+Локальная journal-5 activation требует explicit reset только disposable old QA;
+network genesis, registered keys и production floors сохраняются.
+
 ### P0: стабилизация и автоматическое восстановление сети (2026-09-29)
 
 Решение Mr. X от 2026-09-30 возобновляет **физический Android↔Windows E2E
