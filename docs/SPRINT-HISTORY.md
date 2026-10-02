@@ -1,5 +1,29 @@
 # История спринтов
 
+## 2026-10-02 — protected node predecessor capture and account-command cancellation
+
+- Read-only, pinned-SSH snapshots of all three registered nodes were
+  independently authenticated by XNode's existing offline floor/anchor audit.
+  All retained the same revision-2 network history. A Protocol-internal,
+  explicitly opt-in operator test matched each exact protected predecessor to
+  the installed eight-chain source, without a new shipping API or DNH2 parser.
+  The actual capture recheck passed **1/1, 0 skipped**; the report is historical
+  custody only, never freshness/receive permission.
+- Fresh authenticated NTS observation had a 2-second uncertainty. Existing
+  canonical preparation generated a separate private current/next transport
+  key set, preserving all registered identities. Native authoring accepted the
+  strictly monotonic operational successor, and full eight-chain export passed.
+  No production container/configuration or certbot was switched in this step.
+  The subsequent host-install export was blocked by tool policy; that boundary
+  was not bypassed, and public Registry/device readiness remains unproved.
+- MAUI commands now cancel on account replacement or loss of verification and
+  recheck delayed reads before transport/projection mutation. A delayed platform
+  lookup cannot revive an old contact command after reset or reverification.
+  Focused messaging UI tests passed **10/10, 0 skipped**, including both races;
+  these use a stub runtime and are not physical delivery evidence.
+- Full release gates, matched server/client rollout, contacts/text, encrypted
+  remote files/images and governed groups on real Windows/Android remain open.
+
 ## 2026-10-02 — real production NTS and content-preserving DID2 head renewal
 
 - Registry `8687d5a` removes the operator renewal's accidental manual-time

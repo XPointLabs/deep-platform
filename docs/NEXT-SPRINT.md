@@ -96,6 +96,11 @@ successors и полная восьмицепочная distribution, matched Re
 публичный Registry пока остаётся на старой manual-time composition; его не
 считать исправленным по успеху отдельных операторских команд. Нужны также
 ongoing NTS/head/publisher renewal и restart/recovery без ручных time anchors.
+Read-only protected snapshots всех трёх нод совпали с установленной
+восьмицепочной history; native successor и полный public export подготовлены
+локально. Host-install export остановлен политикой инструментов, без обхода
+или переключения production. Завершить поддержанный export/rollout перед
+device-прогоном; локальная подпись не закрывает live readiness.
 Route/publication slice уже прошёл на реальных локальных PostgreSQL/PQ/
 SQLCipher, но private grant issuer с настоящими external signer sockets и
 последующий Android↔Windows contact/text по-прежнему требуют live evidence.
