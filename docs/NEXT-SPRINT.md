@@ -72,8 +72,13 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 с неизменным request/nonce, последующей публикацией и phase7 reopen без callbacks;
 потеря ответа и сбой после adoption проверены отдельно. Это не physical evidence.
 Следующее: matched Registry provision/XNode/client repin и activation;
-затем подключить DR72 object/publication successors и per-generation issuer,
+затем подключить protected predecessor/pending CAS и per-generation issuer по
+[DR-0076](survival-program/decisions/DR-0076-did2-contact-publication-successors.md),
 проверить expiry/restart на том же новом account instance и device delivery.
+Локальные object/publication successor API уже проверены с настоящими подписями;
+истёкший predecessor не становится current authority. Установленные старые
+Windows/Android QA всё ещё завершают повторный network action на XRA1/Expiry,
+без сброса аккаунтов; это не физическое подтверждение нового recovery.
 Текущая journal activation требует explicit reset только incompatible disposable QA;
 network genesis, registered keys и production floors сохраняются.
 

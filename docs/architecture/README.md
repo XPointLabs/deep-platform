@@ -277,6 +277,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
 - [`DR-0075`](../survival-program/decisions/DR-0075-did2-issued-head-response-custody.md)
   connects the exact issued head to server replay and protected client custody.
   Matched provisioning, consumers and physical activation remain release gates.
+- [`DR-0076`](../survival-program/decisions/DR-0076-did2-contact-publication-successors.md)
+  connects closed historical contact/publication facts to current successors.
+  Protected adoption and permanent per-generation issuance remain required;
+  historical evidence never grants current dispatch or signing permission.
 - [`DR-0052`](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
   requires public PMA2 in the complete network bundle and a direct DID2 grant
   verifier under root-authorized role issuers and the exact current PMT2.

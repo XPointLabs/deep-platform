@@ -791,6 +791,11 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   held-account floor recheck. Retire the old DID1 recipient pipeline, close
   network/expiry route renewal and connect the verified result to claim/handshake
   before activating contact UI; compilation/local stores are not device evidence.
+  [DR-0076](../survival-program/decisions/DR-0076-did2-contact-publication-successors.md)
+  connects closed historical object/publication facts to current successor
+  authoring and normal nonzero-generation commit verification. Connect protected
+  predecessor/pending CAS and per-generation issuance across different nonces;
+  this local API is not retained-device recovery or shipping activation.
   [DR-0071](../survival-program/decisions/DR-0071-did2-reachability-advertisement-successor.md)
   freezes the first owned-device XRA1 successor candidate only. Finish protected
   predecessor/pending custody and exact restart, private successor coordination,

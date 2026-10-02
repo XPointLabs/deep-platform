@@ -1,5 +1,30 @@
 # История спринтов
 
+## 2026-10-03 — DID2 contact-object/publication successor API
+
+- [DR-0076](survival-program/decisions/DR-0076-did2-contact-publication-successors.md)
+  connects expired authenticated route/object/publication predecessors to a
+  current signed/encrypted successor, XPA and two-node signed commit, then the
+  next generation. Bundle ID, locator and owner custody remain stable; signed
+  bundle predecessor and ciphertext predecessor hashes stay distinct.
+- Shared connected renewal/retained-issuance/publication regression **18/18**;
+  final strengthened successor cases **5/5** (subset), Protocol codec/closed-API
+  checks **8/8**, zero failures/skips. Native device/witness/node signatures and
+  SQLCipher account custody are real; replica results are in-process fixtures,
+  not node persistence or physical delivery. Production-source build has 0/0.
+- Default current verification still rejects expired objects; genesis APIs reject
+  successors before witness callbacks. Corrupt cipher/receipt/publisher, changed
+  profile/owner/hash, mutable inputs, genuine signed future issuance, cancellation,
+  clock reversal and expiry during signing reject. Broader release gates and
+  remaining rollover/hostile boundary coverage are not claimed complete.
+- Repeated Windows UI and guarded USB Android network actions in installed
+  `e745b63` retained their accounts/recovery and ended at `XRA1/Expiry`. Android
+  protected-package snapshots matched. No reset, production mutation, peer,
+  text/file/image/group delivery, GitHub push or release publication.
+- Protected committed/pending successor custody, permanent per-generation
+  Registry serialization, matched consumer deployment and same-account physical
+  recovery remain release blockers. This API increment does not activate them.
+
 ## 2026-10-03 — connected exact issued-head custody and replay
 
 - [DR-0075](survival-program/decisions/DR-0075-did2-issued-head-response-custody.md)
