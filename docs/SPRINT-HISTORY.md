@@ -1,5 +1,28 @@
 # История спринтов
 
+## 2026-10-02 — durable opaque XNode BLOB chunk storage
+
+- XNode `5f4946a` adds an internal content-addressed ciphertext storage primitive:
+  bounded chunks/count/bytes, exclusive owner, service-restricted regular files,
+  content/hash verification, flushed staging/atomic promotion, exact retry without
+  rewrite, cold-reopen inventory and fail-closed uncertain durability/corruption.
+  Only closed unpublished staging may be discarded. It introduces no public
+  wire/interface, legacy URL, capability bypass or active server dispatcher.
+- Focused tests passed **17/17, 0 skipped** on Windows and **17/17, 0 skipped**
+  in actual Linux Docker, including a full-size hundred-chunk transfer resumed
+  after 25 percent/cold reopen, byte/count quota, corrupted/hostile files, exact
+  replay, cancellation and injected failures before/after atomic promotion.
+  Linux TRX SHA256: `46AF227E5B8CC8D2EA1B88136C8A02A2D01EDDF70879F8A171FCECE5E947F591`.
+  The optional digest-pinned test Dockerfile changes no default runtime image and
+  mounts no production state or keys; actual file barriers are not power-cut,
+  remote signed receipt, replication or device-delivery evidence.
+- [The XNode component guide](../xnode/docs/BLOB_STORAGE_COMPONENT.md) records
+  the boundary and remaining authenticated object/circuit/lifecycle composition.
+  Production/node identities, Registry/staking/certbot and device accounts were
+  not changed. Existing unrelated XNode/DevOps worktree edits were preserved.
+  Matched installation assets, contacts/text physical E2E, encrypted remote
+  files/images and governed groups remain release blockers.
+
 ## 2026-10-02 — complete local DID2 attachment materialization
 
 - Shared `6c8c866` connects whole-file assembly to the existing internal

@@ -2212,6 +2212,14 @@ commit matrix и проверяет композицию; отдельные к�
   masked padding/upload/download/resume, group fanout и
   native UI остаются открытыми. Schema5/missing journal требуют explicit QA
   reset; migration/repair не добавлены, device данные этим batch не менялись.
+  XNode now has the internal ciphertext-only storage primitive described in
+  [its component guide](../xnode/docs/BLOB_STORAGE_COMPONENT.md), with native
+  Windows/Linux restart and durability evidence in the history. It has no
+  authenticated Blob service/dispatcher or remote receipt producer. Still
+  freeze the exact masked stream/object-capability/receipt contracts, implement
+  immutable object-index/fork and reference-aware lifecycle custody, then join
+  client upload/download/resume and MAUI file/image commands to physical E2E.
+  Do not treat the primitive as Blob role readiness or revive direct `/file`.
 
 - DID2 genesis уже авторует `AuthorGenesisDmd1`; Shared account owner теперь
   передаёт заново проверенный genesis DMD1 в durable current-device store
