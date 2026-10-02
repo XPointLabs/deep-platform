@@ -104,6 +104,12 @@ device-прогоном; локальная подпись не закрывае
 Route/publication slice уже прошёл на реальных локальных PostgreSQL/PQ/
 SQLCipher, но private grant issuer с настоящими external signer sockets и
 последующий Android↔Windows contact/text по-прежнему требуют live evidence.
+Общий адаптер внешнего подписанта теперь проверяет конец ответа под исходным
+deadline; реальный Linux socket regression passed 6/6, без ключей и без
+production issuance. Это не закрывает настройку настоящих role signers,
+доступность private issuer или физическую доставку. Его операторские
+предпосылки находятся в Registry-owned
+[DID2 private mailbox guide](../deep-registry-api/docs/DID2_PRIVATE_MAILBOX_GRANTS.md).
 
 Остановка контейнера — штатная временная недоступность, а не повод сбрасывать
 authority, аккаунты или зарегистрированные ключи. После явного запуска

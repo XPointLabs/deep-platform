@@ -1,5 +1,26 @@
 # История спринтов
 
+## 2026-10-02 — exact external-signer response boundary
+
+- Registry `b2e9dd0` removes an instantaneous socket-buffer check from the
+  external signer used by DID2 private mailbox grant custody. It now requires
+  the exact signature followed by peer end-of-stream under the original
+  deadline, rejecting delayed trailing bytes, truncation, absent completion,
+  timeout and caller cancellation. No signing domain, crypto provider or
+  grant-authority API changed; Protocol still independently verifies signatures.
+- The optional, pinned Docker target `mailbox-signer-tests` compiled the current
+  Registry/Protocol source and passed **6/6, 0 skipped** using actual Linux Unix
+  sockets. It consumes synthetic public frames and no signing key or production
+  state. Its retained TRX is a socket regression artifact, not issuance, live
+  network, Windows/Android or release evidence. The default image/full gate is
+  unchanged. Operator prerequisites are documented in the Registry-owned
+  [private grant guide](../deep-registry-api/docs/DID2_PRIVATE_MAILBOX_GRANTS.md).
+- Fresh public readiness inspection still returned **503**. No production
+  image/configuration was switched by this step. The previous host-assets
+  export policy restriction remains; request existing permitted output rather
+  than retrying a bypass. Complete matched rollout, real role-signer issuance,
+  encrypted remote BLOB transport, governed groups and physical E2E remain open.
+
 ## 2026-10-02 — protected node predecessor capture and account-command cancellation
 
 - Read-only, pinned-SSH snapshots of all three registered nodes were
