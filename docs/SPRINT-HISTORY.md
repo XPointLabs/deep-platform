@@ -1,5 +1,31 @@
 # История спринтов
 
+## 2026-10-03 — permanent route-generation fencing и retained-device retry
+
+- Registry реализует per-generation reservation из
+  [DR-0072](survival-program/decisions/DR-0072-did2-route-renewal-lineage.md)
+  поверх текущего exact request, без нового wire или legacy reader. Другой
+  nonce/request того же account/XRA generation отклоняется до witness callbacks
+  и не расходует дополнительную ёмкость, даже после interrupted signing/restart.
+- Operator-only unique-index transaction сохраняет exact старые audit rows,
+  counters, capacity и floor; наличие конкурирующих reservations прекращает
+  provision без неявного выбора winner. Runtime не выполняет DDL и отклоняет
+  отсутствие mandatory fencing provision до подписания.
+- Connected Registry HTTP/PG/native-account lane **24/24**, zero skips/failures.
+  Реальные PQ/device/witness подписи, SQLCipher и PostgreSQL; TestServer и
+  controlled fixture time — не physical delivery или production activation.
+  Callback expiry/view faults используют genuine отдельную pending lineage;
+  второй nonce уже выданной lineage не является допустимым signing fixture.
+- Android после включения VPN снова завершил guarded retained-account retry
+  на `XRA1/Expiry`; protected package snapshots совпали. Последний Windows
+  proxy-aware retry завершился `NetworkVerification/SecureConnectionError`
+  с `IOException` и `Chain PlatformChainAccepted`, не Expiry. Старый displayed
+  результат отделён от нового terminal outcome. Аккаунты/recovery сохранены.
+- Publication generation fencing, protected current/pending successor adoption,
+  matched provisioning/build/deployment, full batch/recovery gates и physical
+  contacts/text/files/images/groups остаются открытыми. Production не менялся;
+  GitHub push/Releases/main merges не выполнялись.
+
 ## 2026-10-03 — DID2 contact-object/publication successor API
 
 - [DR-0076](survival-program/decisions/DR-0076-did2-contact-publication-successors.md)

@@ -76,9 +76,14 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 [DR-0076](survival-program/decisions/DR-0076-did2-contact-publication-successors.md),
 проверить expiry/restart на том же новом account instance и device delivery.
 Локальные object/publication successor API уже проверены с настоящими подписями;
-истёкший predecessor не становится current authority. Установленные старые
-Windows/Android QA всё ещё завершают повторный network action на XRA1/Expiry,
-без сброса аккаунтов; это не физическое подтверждение нового recovery.
+истёкший predecessor не становится current authority. Установленные QA-клиенты
+предшествуют этим API и не подтверждают физическое восстановление маршрута.
+Registry route journal теперь локально блокирует competing same-generation
+выдачу через другой nonce до callbacks, включая pending/restart; адресный gate
+24/24. Production provision/activation не выполнены, publication journal ещё
+требует аналогичного fencing. Последний Android VPN retry — XRA1/Expiry;
+последний Windows proxy-aware retry — NetworkVerification/SecureConnectionError,
+IOException с PlatformChainAccepted, не повторное доказательство Expiry.
 Текущая journal activation требует explicit reset только incompatible disposable QA;
 network genesis, registered keys и production floors сохраняются.
 
