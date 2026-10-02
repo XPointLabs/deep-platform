@@ -775,6 +775,10 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   [DR-0073](../survival-program/decisions/DR-0073-did2-exact-route-request-custody.md);
   persist the complete threshold request before dispatch and keep its original
   nonce-bound floor on retry while independently checking fresh authority.
+  [DR-0074](../survival-program/decisions/DR-0074-did2-retained-threshold-issuance-evidence.md)
+  supplies closed signed-head retained completion and genesis-object authoring.
+  Connect exact issuance-head response/custody and replay before owner activation;
+  never infer an unknown intermediate head from a saved hash or proposal head.
   owned publication commit verifies both receipts and CAS/readbacks exact XPO
   in phase 7. Historical commit is not stale dispatch permission. Old QA instances require
   explicit reset. Shipping private coordination, two-replica publication,

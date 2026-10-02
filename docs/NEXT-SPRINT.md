@@ -67,8 +67,12 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 28 focused Shared tests и real-account Registry/PostgreSQL test проходят;
 это не физическое восстановление retained Windows/Android аккаунта.
 После signed directory-head advance старый exact winner остаётся pending:
-DR42 current-anchor adoption/completion требует отдельного закрытого retained-
-issuance контракта. Не remint nonce, не подставлять прошлый proof/current time.
+[DR-0074](survival-program/decisions/DR-0074-did2-retained-threshold-issuance-evidence.md)
+даёт закрытый signed-head retained completion/object API, но он ещё не подключён
+к owned coordination: вернуть/защитить actual issuance ADH вместе с exact winner,
+включая неизвестную intermediate head, до adoption. Не remint nonce, не
+подставлять прошлый proof/current time. XPA использует независимо текущий head,
+а publisher request сохраняет подписанный DCB minimum; оба проверяются отдельно.
 Затем подключить DR72 object/publication successors и per-generation issuer,
 проверить expiry/restart на том же новом account instance и device delivery.
 Локальная journal-5 activation требует explicit reset только disposable old QA;

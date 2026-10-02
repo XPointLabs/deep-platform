@@ -1,5 +1,22 @@
 # История спринтов
 
+## 2026-10-03 — closed DID2 retained issuance evidence
+
+- [DR-0074](survival-program/decisions/DR-0074-did2-retained-threshold-issuance-evidence.md)
+  adds authenticated signed-head retained threshold completion and genesis
+  contact-object authoring. Real DID2/native signatures and SQLCipher account
+  fixtures cover non-adjacent issuance heads, successor lineage, encrypted
+  restoration and fresh publication, keeping default current-head APIs strict.
+- Focused integration: **35 Shared + 27 Protocol passed, 0 failed/skipped**.
+  Final strengthened retained-issuance negatives: **7/7 passed**; genuine signed
+  future heads and wrong issuance windows reject, as do corruption, wrong
+  request bindings, expiry, cancellation and clock discontinuity. Builds have
+  zero warnings/errors. No device action, account reset or production mutation.
+- Exact issuance-head wire response, permanent server replay and protected
+  owner adoption remain open; existing journal-5 lost old-head winner still
+  rejects. These tests do not prove physical contacts/messages/assets/groups
+  or publication replica commits. No GitHub push or release publication.
+
 ## 2026-10-02 — durable opaque XNode BLOB chunk storage
 
 - XNode `5f4946a` adds an internal content-addressed ciphertext storage primitive:

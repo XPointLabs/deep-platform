@@ -270,6 +270,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   requires the entire original nonce-bound threshold request in protected custody
   before dispatch. Fresh directory proofs never rewrite a saved replay minimum;
   the local journal clean break requires explicit isolated old-QA reset.
+- [`DR-0074`](../survival-program/decisions/DR-0074-did2-retained-threshold-issuance-evidence.md)
+  authenticates the actual signed issuance head for closed retained completion
+  and contact metadata, independently of fresh identity and XPA authority.
+  Server replay and protected evidence custody remain connected activation gates.
 - [`DR-0052`](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
   requires public PMA2 in the complete network bundle and a direct DID2 grant
   verifier under root-authorized role issuers and the exact current PMT2.
