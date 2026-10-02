@@ -4,6 +4,9 @@ Status: accepted local ownership increment; private issuer/device activation gat
 Date: 2026-10-03
 Decision owner: Mr. X (delegated architecture authority)
 
+Wire/journal bounds are superseded by [DR79](DR-0079-did2-publication-issuer-successor.md).
+This decision still owns client current/pending custody and atomic promotion.
+
 Connect DR72/74/76/77 under the actual protected account lease. No public retry
 ID, currentness flag, new wire, historical dispatch or genesis fallback.
 Only a fully committed phase7 predecessor can start automatic renewal.

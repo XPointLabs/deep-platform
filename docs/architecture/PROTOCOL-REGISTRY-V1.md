@@ -365,8 +365,11 @@ reservation; retained completion binds the same exact history. Matched provision
 consumer repin, protected successor adoption and physical activation remain gated.
 [DR-0078](../survival-program/decisions/DR-0078-did2-owned-publication-renewal.md)
 connects owned current/pending promotion without changing wire or journal version.
-Private publication predecessor verification/generation reservation, matched
-provisioning and physical activation remain gated; incomplete expiry is not reset.
+[DR-0079](../survival-program/decisions/DR-0079-did2-publication-issuer-successor.md)
+connects separate issuer history, publisher-bound predecessor receipts and a
+permanent unsigned-generation fence. Publication envelope/journal generations
+supersede earlier bounds; matched provisioning/repin and physical activation
+remain gated, and incomplete expiry is not silently reset.
 Claim current-network/clock binding and independent inventory/contact lifetimes
 follow [DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md)
 and [DR-0044](../survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md).

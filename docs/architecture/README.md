@@ -285,6 +285,11 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   connects protected committed/pending successor phases and atomic two-replica
   promotion on the same account. Local native custody is not private issuer
   activation, expired incomplete-proposal recovery or physical device delivery.
+- [`DR-0079`](../survival-program/decisions/DR-0079-did2-publication-issuer-successor.md)
+  connects separate closed issuer history, publisher-bound predecessor receipts
+  and a permanent unsigned-generation fence without exporting resolver keys.
+  It supersedes publication envelopes and protected route-journal bounds only;
+  matched provision/repin and physical activation remain required.
 - [`DR-0052`](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
   requires public PMA2 in the complete network bundle and a direct DID2 grant
   verifier under root-authorized role issuers and the exact current PMT2.

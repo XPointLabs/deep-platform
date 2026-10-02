@@ -62,15 +62,24 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ### P0: matched issued-head activation и route renewal (2026-10-03)
 
+[DR-0079](survival-program/decisions/DR-0079-did2-publication-issuer-successor.md)
+подключает issuer-only signed history без resolver capability, publisher-bound
+prior receipts и permanent unsigned-generation fence. Registry focused **29/29**,
+Protocol closed API **6/6**, XNode coordination **32/32**, Shared **39/39**; это локальные проверки,
+не physical delivery. Следующее: закончить bounded recovery истёкшего incomplete
+proposal/winner, выполнить обязательное operator provision и matched package/
+consumer repin, затем проверить реальные контакты/messages/assets/groups на
+Windows/Android. V2 publication envelope и старый protected journal не читаются;
+reset допустим только явно для disposable QA, не для production node keys/floors.
+
 [DR-0078](survival-program/decisions/DR-0078-did2-owned-publication-renewal.md)
 подключает local protected current/pending successor и atomic two-replica promotion.
 Shared focused **39/39**, без ошибок/пропусков; signed in-process replicas не
 подтверждают реальный XNode transport или device recovery.
-Следующее: Registry должен независимо аутентифицировать предыдущую публикацию
-и permanent per-generation reservation. Старый issuer остаётся genesis-only;
-nonce-only journal недостаточен. Не экспортировать resolver-read capability в
-Registry ради historical object verification. Expired incomplete proposal/winner,
-service/PMT rollover, matched provisioning/build/deployment и physical доставка
+Server successor связан DR79, но ещё не активирован в установленных клиентах/
+production. Не экспортировать resolver-read capability в Registry ради historical
+object verification. Expired incomplete proposal/winner, service/PMT rollover,
+matched provisioning/build/deployment и physical доставка
 по-прежнему блокируют релиз. Новый retained Windows retry и повтор Android после
 VPN завершились XRA1/Expiry; аккаунты/recovery сохранены, доставка не подтверждена.
 

@@ -1,5 +1,29 @@
 # История спринтов
 
+## 2026-10-03 — private publication successor и permanent generation fence
+
+- [DR-0079](survival-program/decisions/DR-0079-did2-publication-issuer-successor.md)
+  связывает отдельный закрытый issuer history с подписанными предыдущими XPO,
+  completed journal request/XPU и permanent SQL fence на unsigned generation.
+  Registry не получает resolver capability и не выдаёт факт расшифровки. Клиент
+  отдельно проверяет encrypted object; оба пути используют общие правила lineage.
+- V3-only publisher request/response, новые bounds, protected route journal clean
+  break и совпадающие ONION consumers. Runtime DDL/legacy reader/backfill отсутствуют;
+  operator-only provision сохраняет opaque audit bytes, reservations/counts/floors.
+- Registry focused **29/29**, Protocol closed API **6/6**, XNode coordination
+  **32/32**, Shared owner/history/retry **39/39**, без ошибок/пропусков и build warnings.
+  Первые Shared 8/8, Registry 4/4 и XNode 32/32 — subsets/repeats,
+  не дополнительные unique cases. Actual PQ/native/SQLCipher/ADA2/PostgreSQL/HTTP
+  issuer lane: expiry, signed successor, forged receipt before reservation,
+  interrupted reservation, another valid nonce before custody, lost HTTP response,
+  restarted issuer without resigning, exact winner and corruption of marker/projection.
+  Второй новый PQ-аккаунт действительно догоняет signed directory history через
+  обычный client catchup; fixture переводит authority-unavailable в 503, как endpoint.
+- In-process node signatures здесь НЕ actual replica persistence/socket TLS или
+  physical device E2E. Full package/API/evidence/recovery/release gates, matched
+  provisioning/repin, expired incomplete recovery и реальная доставка остаются P0.
+  Установленные клиенты и prod в этой итерации не изменены; release/main merge не было.
+
 ## 2026-10-03 — owned committed/pending publication renewal
 
 - [DR-0078](survival-program/decisions/DR-0078-did2-owned-publication-renewal.md)
