@@ -800,6 +800,11 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   authoring and normal nonzero-generation commit verification. Connect protected
   predecessor/pending CAS and per-generation issuance across different nonces;
   this local API is not retained-device recovery or shipping activation.
+  [DR-0078](../survival-program/decisions/DR-0078-did2-owned-publication-renewal.md)
+  connects protected current/pending phases and atomic two-replica promotion.
+  Finish independent Registry publication history verification without exporting
+  resolver-read custody, permanent per-generation reservation, bounded incomplete
+  expiry recovery and matched physical activation; native fixtures are not devices.
   [DR-0071](../survival-program/decisions/DR-0071-did2-reachability-advertisement-successor.md)
   freezes the first owned-device XRA1 successor candidate only. Finish protected
   predecessor/pending custody and exact restart, private successor coordination,

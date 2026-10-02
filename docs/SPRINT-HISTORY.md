@@ -1,5 +1,31 @@
 # История спринтов
 
+## 2026-10-03 — owned committed/pending publication renewal
+
+- [DR-0078](survival-program/decisions/DR-0078-did2-owned-publication-renewal.md)
+  подключает permanent-contact client entry к настоящему protected current/pending
+  custody под одним account lease. Предыдущая phase7 запись сохраняется exact до
+  проверки обеих подписанных replica receipts; promotion выполняется одним
+  whole-slot CAS и independent readback. Адрес, account instance, locator и owner
+  capability не меняются. Нового wire, journal version или public retry ID нет.
+- Shared focused **39/39**, zero failures/skips: genuine signed short genesis,
+  expired committed predecessor, fresh DID2 proof, route/object/publication
+  successor, loss/restart каждой adopted phase, hostile saved history до callbacks,
+  поздний proof expiry, bad receipt, unknown replica reply, lost promotion reply
+  и callback-free reopen. Первые 2/2 и 3/3 — subsets, не дополнительные unique cases.
+  Native PQ/device/witness/node crypto и SQLCipher реальны; remote replicas здесь
+  in-process signed fixtures, не actual node persistence/physical delivery.
+- Expired incomplete proposal не удаляется и не remint-ится: exact custody остаётся,
+  callback не вызывается. Для этого отдельного состояния bounded recovery ещё нужна.
+  Полный integration/package/API/evidence/recovery/release gate отложен.
+- Новый разрешённый Windows retry прошёл прежнюю IO-ошибку и завершился XRA1/Expiry.
+  Guarded Android повтор/terminal Inspect также XRA1/Expiry, snapshots совпали.
+  Оба старых installed клиента сохранили аккаунт/recovery; reset/reveal не было.
+- Private Registry publication issuer всё ещё genesis-only, journal nonce-only.
+  Independent historical publisher/replica verification без resolver capability
+  export, generation fence, matched rollout и physical contacts/messages/assets/
+  groups остаются P0. Production/push/GitHub Releases/main merges не менялись.
+
 ## 2026-10-03 — connected predecessor-aware route coordination
 
 - [DR-0077](survival-program/decisions/DR-0077-did2-route-successor-coordination.md)

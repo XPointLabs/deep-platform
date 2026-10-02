@@ -34,6 +34,9 @@ before complete successor custody/threshold/two-store adoption exists.
 [DR-0072](DR-0072-did2-route-renewal-lineage.md) supplies the subsequent
 route-artifact successor phases. The owned operation must still adopt exact
 pending/committed publication lineage before claiming renewed reachability.
+[DR-0078](DR-0078-did2-owned-publication-renewal.md) connects that owned transition
+only for fully committed predecessors. It does not abandon expired incomplete
+proposals or activate the still-gated private publication successor issuer.
 
 The public operation derives its plan from protected state, constructs the
 DR49 coordination and replica carriers internally, and invokes the existing

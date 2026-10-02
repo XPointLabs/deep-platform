@@ -62,12 +62,24 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ### P0: matched issued-head activation и route renewal (2026-10-03)
 
+[DR-0078](survival-program/decisions/DR-0078-did2-owned-publication-renewal.md)
+подключает local protected current/pending successor и atomic two-replica promotion.
+Shared focused **39/39**, без ошибок/пропусков; signed in-process replicas не
+подтверждают реальный XNode transport или device recovery.
+Следующее: Registry должен независимо аутентифицировать предыдущую публикацию
+и permanent per-generation reservation. Старый issuer остаётся genesis-only;
+nonce-only journal недостаточен. Не экспортировать resolver-read capability в
+Registry ради historical object verification. Expired incomplete proposal/winner,
+service/PMT rollover, matched provisioning/build/deployment и physical доставка
+по-прежнему блокируют релиз. Новый retained Windows retry и повтор Android после
+VPN завершились XRA1/Expiry; аккаунты/recovery сохранены, доставка не подтверждена.
+
 [DR-0077](survival-program/decisions/DR-0077-did2-route-successor-coordination.md)
 подключает predecessor-aware private request и независимую проверку successor
 до server reservation. Локальные проверки: Registry 28/28, Shared 38/38
 (затем 7/7 retained/wire с дополнительными hostile cases), XNode 32/32,
 Protocol closed API 5/5; повторные cases не являются новыми unique tests.
-protected current/pending adoption, publication fencing, matched provisioning/
+matched current/pending activation, publication fencing, matched provisioning/
 repin и физическое восстановление всё ещё обязательны. Новый Windows retry
 на прежнем аккаунте дошёл до PreKeyPublication/SecureConnectionError, не success.
 Серверный сценарий использует настоящий PQ-аккаунт, device/witness подписи,

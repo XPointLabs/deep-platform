@@ -281,6 +281,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   connects closed historical contact/publication facts to current successors.
   Protected adoption and permanent per-generation issuance remain required;
   historical evidence never grants current dispatch or signing permission.
+- [`DR-0078`](../survival-program/decisions/DR-0078-did2-owned-publication-renewal.md)
+  connects protected committed/pending successor phases and atomic two-replica
+  promotion on the same account. Local native custody is not private issuer
+  activation, expired incomplete-proposal recovery or physical device delivery.
 - [`DR-0052`](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
   requires public PMA2 in the complete network bundle and a direct DID2 grant
   verifier under root-authorized role issuers and the exact current PMT2.

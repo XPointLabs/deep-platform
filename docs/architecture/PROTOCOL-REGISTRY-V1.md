@@ -363,6 +363,10 @@ freezes predecessor-aware route coordination and current-only protected request
 custody. The independently authenticated prior graph is checked before server
 reservation; retained completion binds the same exact history. Matched provisioning,
 consumer repin, protected successor adoption and physical activation remain gated.
+[DR-0078](../survival-program/decisions/DR-0078-did2-owned-publication-renewal.md)
+connects owned current/pending promotion without changing wire or journal version.
+Private publication predecessor verification/generation reservation, matched
+provisioning and physical activation remain gated; incomplete expiry is not reset.
 Claim current-network/clock binding and independent inventory/contact lifetimes
 follow [DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md)
 and [DR-0044](../survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md).
