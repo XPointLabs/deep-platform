@@ -50,6 +50,15 @@ and grant no transport authority. The same actual owner remains required
 after restart, account reset and scope changes; local capacity exhaustion
 requires a verified lifecycle, not journal pruning or silent reset.
 
+Local whole-file materialization first performs that actual-owner protected/SQL
+readback. Decode the closed manifest and check complete chunk geometry before
+allocating bounded output. Verify every ciphertext commitment and actual AEAD,
+then the complete protected plaintext digest before releasing any content. Failed
+or cancelled assembly releases no prefix; wipe temporary plaintext/chunk copies.
+The resulting content has independent disposable ownership, not a public key or
+transport capability. This does not authorize incoming-offer downloads or change
+the wire, journal, database generation or public blob interface.
+
 This does not activate BLOB-01. Opaque transport padding, masked authenticated
 upload/download/resume, current offer/cancel projection, MAUI picker/images,
 group fanout and physical Windows/Android evidence remain required.

@@ -2192,7 +2192,7 @@ commit matrix и проверяет композицию; отдельные к�
   существующий manifest codec passed 20/20. Shared owned preparation плюс
   structural SQL/in-memory offer/cancel custody passed 6/6.
   Точные component boundaries/evidence — в [истории](SPRINT-HISTORY.md).
-  Это не BLOB activation: account-owned durable object/chunk custody, opaque
+  Это не BLOB activation: opaque
   padding, masked upload/download/resume, authenticated offer/cancel projection,
   UI/images и physical Windows/Android transfer остаются незавершёнными.
   Старые `/file`/DEEPATT2 не подключать к новой вертикали.
@@ -2205,7 +2205,11 @@ commit matrix и проверяет композицию; отдельные к�
   adoption/crash/restart плюс preparation passed5/5 (1m23s); current schema6
   focused asset/text/retired-HTTP batch passed22/22 (1m32s).
   Это закрывает локальный adoption candidate, не BLOB-01/physical transfer.
-  Masked padding/upload/download/resume, typed offer/cancel, group fanout и
+  Local whole-file assembly follows DR31: complete hash/AEAD/plaintext-digest
+  checks before an independently disposable result. Focused evidence is in
+  [the history](SPRINT-HISTORY.md); it is not remote download/device acceptance.
+  Owned typed offers follow DR46; remote download authority/cancel and
+  masked padding/upload/download/resume, group fanout и
   native UI остаются открытыми. Schema5/missing journal требуют explicit QA
   reset; migration/repair не добавлены, device данные этим batch не менялись.
 

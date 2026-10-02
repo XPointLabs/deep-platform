@@ -1,5 +1,25 @@
 # История спринтов
 
+## 2026-10-02 — complete local DID2 attachment materialization
+
+- Shared `6c8c866` connects whole-file assembly to the existing internal
+  account-owned asset readback. Frozen DAM1/chunk geometry, every ciphertext
+  commitment, actual AEAD and the protected plaintext digest must all pass
+  before independently disposable content is returned. Failed/cancelled
+  assembly exposes no prefix and clears temporary content. No public transport
+  API, schema, journal generation, wire or crypto provider changed.
+- The final focused native/SQLCipher/component batch passed **22/22, 0 skipped**
+  in 2 seconds, including 25-MiB exact reconstruction, chunk-boundary cases,
+  missing/extra/reordered/truncated/corrupt-final data, wrong key/digest,
+  cancellation/disposal and actual account-service adoption crash/cold restart.
+  TRX SHA256: `09DDDDC056AA85F698FE7739B924203D61AB0ACD2A73946683B4891C3D1BF885`.
+  This is local custody evidence, not incoming-offer authorization, remote
+  BLOB receipt, a MAUI renderer or physical Windows/Android acceptance.
+- The local boundary is recorded in DR31 and mapped in the Shared-owned
+  architecture document. Matched production installation assets, encrypted
+  masked upload/download/resume, governed groups and full device E2E remain
+  open. Production configuration/state and device accounts were not changed.
+
 ## 2026-10-02 — exact external-signer response boundary
 
 - Registry `b2e9dd0` removes an instantaneous socket-buffer check from the
