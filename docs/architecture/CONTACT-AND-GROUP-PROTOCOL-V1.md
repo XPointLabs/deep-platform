@@ -406,7 +406,13 @@ must then accept only that exact replacement. Freeze the complete field table,
 size bounds, transcript and hostile vectors before any authoring or runtime
 activation. The old version-1 codec is not a compatibility reader.
 
-### 5.0.1 DID2-bound DCB1/DCR1 candidate (not release-active)
+### 5.0.1 DID2-bound DCB1/DCR1 owned genesis (not release-active)
+
+[DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md)
+freezes this V2 grammar and the closed owned genesis author/restore boundary.
+Shared retains the exact signed and encrypted object in the protected route
+journal before release. This is local custody, not XPA1/replica publication;
+successor, machine/vector repin and shipping/device gates remain mandatory.
 
 The replacement keeps magic `DCB1`, the 24 ordered tags and the semantic
 meaning of tags 1..21, but uses record version `2`, suite `0x0301`, and
@@ -420,13 +426,13 @@ tag-19 placeholder). The following fields are exact DID2-only replacements:
 | 14 | one OfficialXPoint3 descriptor containing exact XIR1 V2 | 651 |
 | 20 | complete DID2-derived ADL1 V2 | 228 |
 | 22 | domain-separated DID2 `RecordHash32` | 32 |
-| 23 | complete DID2 credential | 2052 (DR-0007 re-freeze pending) |
+| 23 | complete DID2 credential | 2052 (DR-0007) |
 | 24 | complete, independently verified DAB2 lineage record | 3711 |
 
 Tag 2 remains the account identifier, not a public address or lookup key.
 The canonical size is
-`7652 + exactDPA1Bytes + exactDMD1Bytes + 356*XPS1Count + profileNameBytes`:
-9,078..15,596 bytes under the section-5.1 device/name bounds. DCA1 V2,
+`7668 + exactDPA1Bytes + exactDMD1Bytes + 356*XPS1Count + profileNameBytes`:
+9,094..15,612 bytes under the section-5.1 device/name bounds. DCA1 V2,
 DAB2, DID2, DMD1, DPA1, ADL1 V2 and XIR1 V2 must be byte-identical to their
 independently verified objects, not merely plausible nested records. The
 issuer device must be active in the same exact DMD1 and authorized by DCA1
@@ -968,8 +974,8 @@ widths, unsorted lists and non-canonical embedded records reject.
 | DeviceRevocation | `LP32(exactDRS1) || LP32(exactDMD1)` | exact nested-size formula, maximum 32,768 |
 | AttachmentOffer | `LP32(exactDAM1)` | `4 + exactDAM1Size` |
 | AttachmentCancel | `objectId32 || reason:u16be` | 34 |
-| ContactHello | `relationshipId32 || initiatorDAB1Ref38 || initiatorDMD1Hash32 || safetyNumberHash32 || contactPolicy:u16be || LP32(exactInitiatorInboundXUR1)` | 678 exactly |
-| ContactAccept | `relationshipId32 || contactHelloHash32 || responderDAB1Ref38 || responderDMD1Hash32 || contactPolicy:u16be || LP32(exactResponderInboundXUR1)` | 678 exactly |
+| ContactHello | `relationshipId32 || initiatorDAB2Ref38 || initiatorDMD1Hash32 || safetyNumberHash32 || contactPolicy:u16be || LP32(exactInitiatorInboundXUR1) || LP32(exactPrivateMailboxPackage)` | `5,917..25,069` |
+| ContactAccept | `relationshipId32 || contactHelloHash32 || responderDAB2Ref38 || responderDMD1Hash32 || contactPolicy:u16be || LP32(exactResponderInboundXUR1) || LP32(exactPrivateMailboxPackage)` | `5,917..25,069` |
 | ContactReject | `relationshipId32 || contactHelloHash32 || reason:u16be` | 66 exactly |
 | ContactRouteUpdate | `relationshipId32 || routeGeneration:u64be || predecessorRouteUpdateHash32 || closureCount:u8(6) || LP32(XRR1[643]) || LP32(XRA1[550]) || LP32(XRC1[940..4012]) || LP32(XSS1[643..3523]) || LP32(PMT2[842..11066]) || LP32(PMS2[500..3476])` | `4,215..23,367` |
 
@@ -1015,7 +1021,16 @@ XSS1/PMT2 and PMS2 hash; XRC1 and XSS1 must bind the same XRA1/PMT2/PMS2
 components, and PMS2 must bind the embedded PMT2. Every closure record's network
 ID must equal DMC2 tag 1.
 
-ContactHello's `initiatorDAB1Ref`, `initiatorDMD1Hash` and safety number must
+Under [DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md),
+the Hello/Accept contact reference is exactly `ASCII(DAB2) || u16be(2) ||
+exactDab2RecordHash32`, not an application type/length/hash ArtifactRef.
+DAB1 and wrong-version DAB2 reject.
+[DR-0063](../survival-program/decisions/DR-0063-did2-contact-reply-route-embedding.md)
+requires one private reply package; old route-less payload/record has no reader.
+Package metadata matches the authenticated current sender; full independent
+route verification precedes semantic handoff or transport use.
+
+ContactHello's `initiatorDAB2Ref`, `initiatorDMD1Hash` and safety number must
 match the authenticated initiator endpoint and its verified directory closure.
 ContactAccept's corresponding values must match the authenticated responder;
 its `contactHelloHash32` is `SHA256(exact canonical DMC2 ContactHello)`. The
@@ -1041,10 +1056,11 @@ conversation, target kind, policy and ordering are valid.
 
 ### 9.1 Sender algorithm
 
-1. Decode DID1 or one-time DIA1 and validate all bounds before network access;
+1. Decode the DID2 permanent address or the separately enabled one-time invite
+   and validate all bounds before network access;
    a user-imported/embedded DCR1 is never accepted as a freshness shortcut.
 2. Resolve and decrypt DCB1 if required.
-3. Verify DID1/DAB1/DPA1/DRS1/DMD1 lineage, issuer, time, bundle predecessor and all
+3. Verify DID2/DAB2/DPA1/DRS1/DMD1 lineage, issuer, time, bundle predecessor and all
    reachability descriptors.
 4. Display the account fingerprint and permanent/one-time metadata.
 5. Create one durable relationship and ContactHello logical event.
@@ -1071,6 +1087,20 @@ server-provided unsigned device list is ignored.
    every active initiator device and own other devices.
 6. Exchange fresh contact-scoped XUR1 update rendezvous descriptors.
 
+Reverse delivery requires an authenticated private mailbox route from the
+initiator, not just its public DID2 or inbound XUR1. The bounded package and
+current-peer verification boundary are defined by
+[DR-0062](../survival-program/decisions/DR-0062-did2-private-contact-mailbox-route.md).
+It contains the existing DCA1 V2, XIR1 V2 and six-record route closure, never
+the permanent resolver-read secret or owner-retrieve capability. XUR1 remains
+update-only. After bootstrap, ordinary sends use retained private reachability
+with independently current identity/network/grant verification; they do not
+re-resolve the permanent public address on each send. Exact embedding and the
+protected acceptance cutover are frozen by
+[DR-0063](../survival-program/decisions/DR-0063-did2-contact-reply-route-embedding.md).
+They must join actual authenticated route custody and transport before
+activation; the package alone is not reverse-delivery evidence.
+
 An unsolicited first request has no pre-existing verified relationship at the
 recipient. Its relationship ID is inside authenticated DPH2, not in a public
 header. The recipient MUST authenticate and decrypt SessionInit plus
@@ -1082,25 +1112,32 @@ contact state need a crash-recoverable exact-replay/fork discipline; no mailbox
 ACK may precede their durable materialization. A sender-side verified DCB1
 relationship cannot be required as input to this recipient bootstrap.
 
+The bounded account-owned initial receiver custody and prekey-consumption
+continuation is defined in
+[DR-0026](../survival-program/decisions/DR-0026-did2-atomic-responder-custody.md).
+Its stable result retains authenticated initial events for the separate
+pending-contact/MSG projection; it is not an accepted contact or mailbox ACK.
+
 Accept and reject are explicit. Merely fetching a request does not disclose
 online status. Rejection uses a coarse response and does not expose device or
 route detail.
 
 ### 9.3 Safety number
 
-The displayed safety fingerprint is derived from network ID, sorted exact DPA1
-hashes and both account generations. Device additions or a same-root
-device/control-head replacement do not change it; a destructive new-phrase
-account replacement does. Device details have a separate per-device
-verification view.
+The displayed safety fingerprint commits to both current account roots and
+both genesis-committed PQ DID2 roots under DR-0022. Device additions or a
+same-root device/control-head replacement do not change it; an account-generation
+or permanent-credential replacement does. Device details have a separate
+per-device verification view.
 The exact 32-byte value carried by ContactHello is:
 
 ```text
 safetyNumberHash32 = SHA256-D(
-  "Deep/Application/V1/contact-safety-number",
+  "Deep/Application/V2/contact-safety-number",
   networkId16 || min(dpa1HashA32, dpa1HashB32) ||
-  accountGenerationOfMinDpa1:u64be || max(dpa1HashA32, dpa1HashB32) ||
-  accountGenerationOfMaxDpa1:u64be)
+  accountGenerationOfMinDpa1:u64be || did2RecordHashOfMinDpa1:32 ||
+  max(dpa1HashA32, dpa1HashB32) || accountGenerationOfMaxDpa1:u64be ||
+  did2RecordHashOfMaxDpa1:32)
 ```
 
 The DPA1 hashes are the exact verified canonical artifact hashes; compare them
@@ -1854,6 +1891,18 @@ Blob transports receive
 only opaque capabilities, ciphertext size classes, chunk hashes and retention.
 P2P/mesh may transfer identical encrypted chunks. A transport change never
 decrypts or reencrypts content.
+
+The isolated Protocol `AttachmentChunkCipher` implements only the above frozen
+transcript and commitment/AEAD validation. It does not activate BLOB-01 or
+authorize dispatch. A sender must durably adopt exact ciphertext before upload;
+the same object-ID/key/index must never encrypt changed plaintext. Shared's
+owned stream preparation always allocates a fresh random object scope; resume
+must use retained exact chunks, not call preparation again for the old object.
+Component tests are not masked transport, padding, restart or physical evidence.
+The key-bearing `ParsedDam1` owns its canonical/key/capability copies and is
+disposable; consumers must dispose it after scoped use and clear any defensive
+copies they request. Disposal grants no remote deletion or ciphertext expiry
+claim. Scalar non-secret geometry/metadata may remain readable after disposal.
 
 ## 17. Call signaling boundary
 

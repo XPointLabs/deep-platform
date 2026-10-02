@@ -805,7 +805,9 @@ control-plane path is withheld.
 
 ### 8.1 Identity-neutral network closure distribution (NCQ2/NCP2)
 
-This candidate transport envelope is `TARGET_UNFROZEN`; it does not change any
+This candidate transport envelope is frozen by
+[DR-0052](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md);
+it does not change any
 signed NETCODEC record or activate a release claim. Its sole purpose is to carry
 exact public records without the retired account-proof package. Registry/mirrors
 do not select routes or mint publication authority by distributing it.
@@ -813,9 +815,10 @@ do not select routes or mint publication authority by distributing it.
 Both frames use `magicASCII4 || version:u16be=2 || suite:u16be=0x0201 ||
 chainCount:u16be || reserved:u16be=0 || networkId16`. The network ID is nonzero.
 `NCQ2` is exactly 28 bytes with chainCount=0, and contains no account ID,
-locator, read capability, nonce or protected floor. `NCP2` has chainCount=7 and
-appends seven nonempty ordered chains: XNA1, DTS1, XVP1, XNV1, XNH1, active
-XND1 descriptors, PMT2. Each chain is `count:u32be || (length:u32be || exactRecord)*`.
+locator, read capability, nonce or protected floor. `NCP2` has chainCount=8 and
+appends eight nonempty ordered chains: XNA1, DTS1, XVP1, XNV1, XNH1, active
+XND1 descriptors, PMT2, PMA2. The retired seven-chain candidate rejects.
+Each chain is `count:u32be || (length:u32be || exactRecord)*`.
 Counts are 1..4096; each record is 12..65535 bytes with the corresponding magic;
 the total record bytes of each chain are at most 16 MiB and the complete frame
 is at most 68 MiB. XNA1/DTS1 counts and XNV1/XNH1 counts must match. Unknown

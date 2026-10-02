@@ -1,5 +1,1166 @@
 # История спринтов
 
+## 2026-10-02 — committed-source contact device checkpoint (physical run open)
+
+- Local candidate checkpoints, all authored by `zhigubigule` with the configured
+  GitHub no-reply email: Protocol `95578bb`, Shared `5fdbb34`, MAUI `1261920`.
+  These freeze the connected contact/text candidate for reproducible physical
+  packages, not a public Release, shipping activation or completed full gate.
+  Each of these three source trees is clean; other service work is preserved.
+  Generated nested Protocol build artifacts are ignored, not committed/deleted.
+- Focused current reply-route/contact-control/chunk/native-ownership codec
+  checkpoint **24/24 passed**, **0 skipped**, 2s,
+  `did2-native-contact-checkpoint-codecs.trx`. Earlier joined native receipt/
+  restart/ACK and focused UI evidence remains recorded below. Full API/graph,
+  evidence ownership, consumer repins and release gates remain the final batch.
+- Windows automation now returns and captures the actual old QA window. It is
+  rejected at account startup, not a chat/message success. No reset, new account
+  or send action executed. Fresh committed-source Windows/APK and physical
+  contact/text/restart are next; files/images/governed groups remain open.
+
+
+## 2026-10-02 — durable ordinary Store/UI restart candidate (device open)
+
+- [DR-0067](survival-program/decisions/DR-0067-did2-ordinary-store-completion-and-ui-retry.md)
+  was accepted before the ordinary-journal clean break and application-registration
+  advancement. Only the actual owned adapter plus final guards can retain Store
+  completion; it is not recipient delivery. The local original-operation/text
+  projection verifies actual custody/catalog and the SQL mirror in one transaction.
+- MAUI checks retained original text operations before allocation and on selection
+  after restart. Exact retry remains explicit; different text/conversation cannot
+  replace an unresolved operation. Successful Store clears input before history
+  refresh, preventing UI errors from resurrecting a completed send.
+- Initial focused custody checkpoint **19/19 passed**, **0 skipped**, 921ms,
+  `did2-ordinary-completion-custody.trx`; focused UI closure/error tests **3/3
+  passed**, **0 skipped**, 1s, `did2-durable-text-ui.trx`. The UI tests do not
+  construct authenticated conversation handles or claim transport/restart proof.
+  The expanded native unknown-reply/protected-projection/reopen and contact/ACK
+  checkpoint then **passed 21/21**, **0 skipped**, **5m49s**,
+  `did2-durable-ordinary-store-restart.trx`, including the two actual native
+  joined tests plus current focused custody cases. Original operation/text
+  survives repeated pre-dispatch interruption and lost Store reply; verified
+  completion is absent from the pending projection after reopen/cache retry.
+  Additional fault assertions immediately before/after protected completion
+  subsequently **passed 1/1**, **0 skipped**, **2m01s**,
+  `did2-ordinary-completion-crash-boundary.trx`: failure before completion keeps
+  the original operation pending; failure after protected completion leaves no
+  pending text. Exact cached receipt recovery adds no third ingress, and the
+  existing SQL rollback/root-loss refusals remain. No assertion/deadline weakened.
+- UI metadata was isolated into an internal composer state, not a Shared trust
+  handle/authority seam. Restart restores the original operation/text, defensive
+  copies survive caller clearing, another text/conversation cannot replace an
+  unknown send, and malformed retained IDs reject without replacement. Focused
+  UI checkpoint **8/8 passed**, **0 skipped**, 2s,
+  `did2-composer-original-operation-restart.trx`. This is UI-state evidence,
+  not execution of account/network restart or physical delivery.
+- Opt-in HTTPS Windows ARM64 working-tree compilation before the small composer
+  extraction completed **0 warnings / 0 errors**, 27.86s. The extracted Core
+  subsequently compiled in the focused UI test above. Neither output is a
+  committed-source qualified physical build, install or launch.
+- USB Android remains connected. Windows automation's prior request-budget error
+  remains unresolved; no helper reset/budget bypass, device send or reset executed.
+  Qualified committed-source packages, physical contacts/messages/restart,
+  remote BLOB/groups and final API/graph/consumer gates remain open. No deployment,
+  commit, push or Release publication in this checkpoint.
+
+
+## 2026-10-02 — application random-key storage checkpoint (connected/device open)
+
+- Expanded command replay/projection test failed after **5m53s** at the final
+  reverse-Accept ACK semantic fence, with cancellation wrapped as an unknown
+  outcome. The exact page/ACK cycle remained retained. Its preceding cached
+  Accept and protected contact-intent projection assertions passed. No deadline
+  or semantic fence was relaxed; the earlier completed command checkpoint is
+  not relabelled as evidence for these new assertions.
+- [DR-0066](survival-program/decisions/DR-0066-did2-application-sqlcipher-random-key.md)
+  was accepted before changing DMB1 to native random-key encoding, SQL generation7
+  and mandatory application-registration version2. Domain-separated/random
+  binary keys no longer incur password derivation on each reopen. DSV2/DMS2,
+  network/server floors and registered node keys are unchanged; older isolated
+  accounts require explicit reset, not migration or implicit recreation.
+- Focused storage/custody checkpoint: **62/62 passed**, **0 skipped**, 1s,
+  `did2-application-random-key-custody.trx`: correct raw-key/schema7 reopening,
+  encrypted bytes, wrong/zero/short keys, password-mode/schema6/registration1
+  rejection without mutation, FULL/secure-delete/WAL policy, direct semantic
+  materialization and attachment/text custody. The initial test hook had a
+  Task type-inference compile error, corrected. A test incorrectly assumed
+  the account's DELETE policy also applied to DMB1; inspection and real policy
+  sampling confirmed its existing WAL, which is preserved. No product policy
+  or negative integrity assertion was weakened.
+- The unchanged extended native vertical then **passed 1/1**, **0 skipped**,
+  **2m55s**, `did2-application-random-key-vertical.trx`, including protected
+  intent projection, cached original acceptance winner despite a different
+  repeat input ID, local-authored message projection and retained-page/
+  semantic-fault/lost-ACK/exact-replay/next-empty-poll checks. The previous
+  30-second ACK deadline and all semantic fences are unchanged. This is
+  signed native in-process/SQLCipher evidence, not socket or device delivery.
+  Five focused MAUI account/UI checks also passed against generation7, 0 skipped.
+  Full
+  API/graph/consumer repins, qualified physical Windows/USB Android, text-outbox
+  UI restart, real remote BLOB and governed groups remain open. No production
+  deployment, commit, push or release publication in this checkpoint.
+
+
+## 2026-10-02 — application contact/text vertical and UI candidate (device open)
+
+- [DR-0065](survival-program/decisions/DR-0065-did2-contact-application-command-boundary.md)
+  exposes account-owned business commands with key-free internally constructed
+  conversation handles, independently refreshed contact states and authenticated
+  SQL message rows. Text rejects before authoring when acceptance is missing.
+- Connected business-command vertical: **1/1 passed**, **0 skipped**, about
+  **7m56s**, `did2-contact-application-vertical.trx`. Actual Start/Accept/SendText/
+  List consumers join initial Store/Hello/ACK, reverse Accept, text, interrupted
+  semantic materialization, lost ACK, exact retry and empty next poll. Original
+  byte/hash checks remain; dynamic command ciphertext is independently matched
+  to protected custody and real peer decryption. Signed native/SQLCipher fixture,
+  not sockets, UI, remote chunks or physical delivery.
+- MAUI connects these commands to the existing visual language: contact entry,
+  request/accept states, text composer and responsive list/detail. Focused UI
+  checkpoint **5/5 passed**, **0 skipped**, 1s; then current Clean checkpoint
+  **51/51 passed**, **0 skipped**, 4s. These test UI closure, exact in-process
+  retry and error sanitization, not transport authentication or physical delivery.
+- Normal Windows ARM64 compilation and subsequent opt-in HTTPS working-tree
+  compilation both finished **0 warnings / 0 errors**. First UI compile found
+  two wrong Grid.SetRow overload calls; fixed without changing the runtime.
+  Compile-only output is explicitly not device-qualified; strict physical
+  expected-commit/clean-tree checks remain. Follow-up HTTPS QA incompatible
+  startup reset is explicit and isolated, never automatic shipping repair;
+  Follow-up recovery/compile-only boundary: **7/7 passed**, **0 skipped**, 2s;
+  subsequent current Clean checkpoint **53/53 passed**, **0 skipped**, 6s,
+  `did2-contact-text-ui-current.trx`. HTTPS QA recovery compilation also passed
+  **0 warnings / 0 errors**. These are not reset execution or physical evidence.
+- UI now retains an explicit idempotent acceptance-delivery retry after local
+  acceptance, offers refresh inside the narrow conversation view, and resets
+  the visual list selection on returning to it. Extra native projection/replay
+  assertions completed after DR-0066; see the later storage checkpoint above.
+- Read-only Registry readiness returned **HTTP 200**. Windows helper could list
+  current windows, but opening the isolated debug client returned **request
+  budget exhausted**; its process exists, so launch outcome is not treated as
+  a verified UI state. No click/reset/create/send or physical result was claimed.
+  BLOB/groups, outbox UI restart, full API/graph/repins and qualified device
+  activation remain open. No production deployment, push or release publication.
+
+
+## 2026-10-02 — owned initial contact draft before claim (local; shipping/device open)
+
+- [DR-0064](survival-program/decisions/DR-0064-did2-owned-initial-contact-draft.md)
+  froze protected draft custody before implementation. Init/Hello now originate
+  in the account owner from current own DMD1 and actual phase-7 publication;
+  exact size is checked before rendezvous/claim mutation. The mandatory root is
+  initialized atomically with the account instance; missing/foreign/old roots
+  require explicit isolated QA reset. No migration or larger initial bucket.
+- First connected draft checkpoint: **1/1 passed**, **0 skipped**, **7m11s**,
+  `did2-owned-contact-start-vertical.trx`: original Init/Hello survive caller
+  mutation and service reopen, then actual native initial/reverse Accept/text
+  Store/Retrieve/ACK. This is signed in-process authority/SQLCipher evidence,
+  not physical UI, remote sockets or attachment chunk delivery.
+- Expanded draft/claim-custody checkpoint: **13/13 passed**, **0 skipped**,
+  **7m39s**, `did2-owned-contact-start-custody.trx`. Twelve focused structural/
+  preflight cases plus the joined native vertical cover post-CAS interruption,
+  exact draft recovery, no claim preparation before a draft, peer substitution,
+  mandatory-root deletion, hostile sizes/metadata and cancellation. An initial
+  fault-harness mistake attempted add-only overwrite; it was corrected to real
+  compare-exchange, without weakening the storage contract or assertions.
+- Connected internal completion checkpoint: **14/14 passed**, **0 skipped**,
+  **2m32s**, `did2-owned-contact-completion.trx`: twelve structural/preflight
+  cases and two actual native scenarios prove current owner-authored completion,
+  exact account restart and completed-source retry after initial-key retirement.
+  The fixture's completion delegate now calls the owned command, not a raw-event/
+  proof/offering composition. Clock continuity and deadline fences remain enforced.
+  Shipping StartContact/accept/text/list composition, BLOB/groups, matched live
+  authorities, physical Windows/USB Android and final API/graph/consumer repins
+  remain required. No deployment, commit, push or release publication here.
+
+## 2026-10-02 — mandatory private-route control and reverse Accept (local; device open)
+
+- [DR-0063](survival-program/decisions/DR-0063-did2-contact-reply-route-embedding.md)
+  was frozen before the mandatory Hello/Accept package, variable version2-only
+  acceptance journal and actual authenticated-route consumer. No old control
+  reader, migration, resolver fallback or new DPH2 padding bucket was added.
+  Four current vectors, machine bounds/schema and anchor were updated together;
+  the provided generator is repeatable and schema validation passed.
+- Protocol focused gate: **31/31 passed**, **0 skipped**, **365ms**,
+  `did2-private-route-embedded.trx`. This covers exact minimum/maximum payloads
+  and records, defensive private-package framing, retired/hostile bytes, current
+  endpoint substitutions including the wrong sender route, clocks and cancellation.
+- Joined Shared checkpoint: **4/4 passed**, **0 skipped**, **7m38s**,
+  `did2-private-route-reverse-accept.trx`: actual own phase-7 publication on both
+  accounts; initial Store/Retrieve/Hello/ACK; reverse Accept Store/Retrieve/ACK
+  via the authenticated Hello route; peer acceptance from actual receive custody;
+  then ordinary private-route text, retained-page/semantic interruption, lost ACK,
+  exact reopen/retry and an empty next poll. It uses real native accounts,
+  SQLCipher, cryptography and signed in-process issuer/terminal authorities:
+  **not** socket/device evidence or remote ciphertext-chunk transfer.
+- Final variable-journal structural/SQL/in-memory parity gate after additional
+  hostile-length/byte-bound negatives: **3/3 passed**, **0 skipped**, **5s**,
+  `did2-variable-accept-custody.trx`. Initial test compilation errors were corrected
+  before these completed results; no production assertion/deadline was weakened.
+- Android USB device is currently available. MAUI owned business commands,
+  initial-size preflight before claiming, route renewal, live authority closure,
+  physical Windows/Android, masked BLOB transport and groups remain open. Full
+  graph/API review/repins and commits are deferred to the coherent business batch.
+  No deployment, push or release publication in this checkpoint.
+
+## 2026-10-02 — private DID2 reply-route boundary (local; reverse/device open)
+
+- [DR-0062](survival-program/decisions/DR-0062-did2-private-contact-mailbox-route.md)
+  was frozen before the new bounded route package and closed current-peer
+  verifier. Its locator uses the existing public credential derivation;
+  resolver-read/retrieve capabilities and private keys are not transmitted.
+  Hello/Accept bytes remain unchanged until a separately frozen joined
+  event/custody cutover; this package alone does not close reverse delivery.
+- Protocol codec/domain boundary: **19/19 passed**, **0 skipped**, **81ms**,
+  `did2-private-reply-route-codec.trx`, covering both exact bounds, defensive
+  ownership, hostile sizes/header/lengths, retired inner versions, mixed
+  delegation/network/route references and unchanged locator derivation.
+  The first compilation found a missing test namespace alias; corrected
+  before the reported completed checkpoint. Production Protocol build has
+  zero warnings/errors.
+- Actual Shared owner checkpoint: **1/1 passed**, **0 skipped**, **9s**,
+  `did2-private-reply-route-owned.trx`. The internal drafting input requires
+  actual own phase-7 publication; uncommitted route export rejects. Actual
+  current verification derives the same locator as XPU1, exact route metadata
+  survives owner reopen, and other-peer/cancellation/expired-proof cases
+  reject. This uses native accounts, SQLCipher and real signed fixture
+  authorities, not socket or device evidence. The initial test compilation
+  exposed the missing explicit production Compile item and a misnamed reopen
+  helper; both were corrected. Its first native run then found a fixture
+  assumption: advancing 40 seconds did not expire the actual captured proof.
+  The negative now advances to that proof's exact verified deadline; no
+  product expiry check or assertion was weakened.
+- Reverse Accept Store/Retrieve, authenticated retained private route heads,
+  MAUI business commands, attachments/groups and physical Windows/USB Android
+  remain open. No deploy, commit, push or release publication in this increment.
+
+## 2026-10-02 — connected owned recipient checkpoint (local; live/device open)
+
+- [DR-0058](survival-program/decisions/DR-0058-did2-owned-mailbox-retrieve-and-ack.md)
+  was frozen before the protected read journal and recipient implementation.
+  Mandatory account initialization, captured-page-before-SQL custody, actual
+  semantic receive and signed tombstone ACK/recovery are connected internally;
+  MAUI shipping activation is not implied.
+- Closed read-root structural checks **16/16 passed**, **0 skipped**, **42ms**,
+  `did2-mailbox-read-journal.trx`. The first connected native recipient run
+  **failed** after **9m24s**; its 16 structural checks passed, but duplicate
+  SQL directory/network rechecks consumed the bounded dispatch time after
+  page capture and before semantic receive (`did2-owned-mailbox-receive-and-ack.trx`).
+  Outcome remained unknown rather than announcing receipt. The private owner
+  publication recheck now adds exact custody to the context's independent
+  freshness check without reopening those same SQL stores a second time in
+  each fence. The 30-second bound, proofs, signatures and protected checks remain.
+  The next repeat reached the intended SQL page-commit interruption and retained
+  phase-3 page without ACK, then **failed** after **9m55s** on fixture time:
+  dispatch's real elapsed clock advanced creation time, but a newly fetched
+  signed fixture proof reset to its old static sample, making the retained
+  envelope appear future (`did2-owned-mailbox-receive-and-ack-recovery.trx`).
+  Advance both fixture proof time and monotonic sample between those released
+  leases; preserve production envelope validity checks. Connected repeat is
+  pending, including SQL page-commit/outcome interruption,
+  semantic fault, lost ACK response, exact reopen and next empty poll.
+- Owned prepared Retrieve rejects retry exhaustion without advancing traversal.
+  Exact captured-page recovery independently checks actual SQL inbox/traversal
+  and outcome; ACK retains raw verified quorums, not only SQL's digest summary.
+- An initial DPH2 consumer now composes independent initiator proof fetch,
+  actual own published closure, atomic receiver source commit and owned import/
+  initial-event materialization. Initial ACK independently rereads those actual
+  source/catalog/active mutable rows. Source-only build has zero warnings/errors;
+  its new native consumer check and full initial mailbox dispatch/ACK remain
+  pending. The latest repeat includes the actual initial consumer; its mailbox
+  terminal still serves ordinary text, not initial DPH2 ACK evidence.
+- The initial-consumer repeat reached/asserted the actual incoming contact but
+  **failed** after **9m25s** before its first Retrieve callback: the newly sampled
+  dispatch policy's static fixture clock was earlier than the prepared request's
+  `NotBefore` (`did2-owned-mailbox-receive-initial-checkpoint.trx`). No ACK/delivery
+  claim follows from that partial progress. This native mailbox scenario now
+  uses opt-in continuously moving monotonic/signed fixture time from dispatch
+  setup, sampling proof time once per signed response. Other controlled-clock
+  tests retain their deterministic behavior. Production `NotBefore`, expiry and
+  retry-lease checks are unchanged; connected repeat remains pending.
+- The moving-clock repeat **failed** after **13m53s**, with the 16 structural
+  checks passing, because its genuinely signed 500-second XNV/head fixture
+  interval expired while recovering the captured page
+  (`did2-owned-mailbox-receive-moving-clock.trx`). This one long-running fixture
+  now authors longer signed view/head intervals within the unchanged root
+  bounds. Production proof freshness and expiry checks remain unchanged.
+  That repeat **failed** after **15m56s**, with 16 structural checks passing
+  (`did2-owned-mailbox-receive-signed-window.trx`): exact retained-page receive
+  reached ACK recovery, but redundant full SQL/semantic fences exhausted the
+  unchanged 30-second budget after the ACK response. The interceptor now performs
+  one full fence before callback and one after response, with protected capture
+  CAS/read-back and a full final fence after SQL outcome read-back. Redundant
+  adjacent full reconstructions were removed, not authority/expiry checks.
+  Initial import also
+  refreshes the independent peer after releasing the source-commit lease, and
+  the batch acquires its ACK endpoint set after all receive commits; neither
+  stretches earlier proofs. The batch ordering and ACK fence edits postdate that binary.
+- [DR-0059](survival-program/decisions/DR-0059-did2-owned-initial-mailbox-dispatch.md)
+  was accepted before connecting initial Store to the same owned dispatch
+  engine. Its service copies the intent before awaits, derives only the actual
+  initialized sender scope and dispatches only its retained retired-source
+  DPH2; normal sends still require actual direction-1 DPE2 rows. Stable active
+  mutable custody and exact historical-source read-back remain mandatory.
+  Source-only build has **zero warnings/errors**. The connected test now includes
+  rejection before transfer, intent mutation, original DPH2 Store/receipt,
+  cached dispatch, recipient Retrieve/Hello/ACK, exact source replay and the
+  existing text interruption/reopen sequence. Its first connected run reached actual initial Store, then **failed**
+  after **7m32s**, **31 passed / 1 failed / 0 skipped**,
+  `did2-initial-store-hello-ack-text-checkpoint.trx`: an independently refreshed
+  directory proof did not renew the original short-lived contact-read request.
+  Both owned sender entries now perform an actual new non-consuming resolve
+  from the verified address before current own/peer verification; old Store
+  route/grant/MAU2/counter/lifetime still cannot change on retry. Connected repeat
+  includes that correction and generation3 account storage below.
+- No physical/device, production deployment, full gates, commit/push or release
+  evidence in this increment. Remote attachment chunks/groups, initial sender,
+  matching live authority and full Windows/USB Android still block release.
+
+## 2026-10-02 — account SQLCipher random-key performance clean break
+
+- [DR-0060](survival-program/decisions/DR-0060-did2-account-random-sqlcipher-key.md)
+  was frozen before changing the local DSV2 key interpretation. An isolated
+  same-provider measurement found five authenticated password-mode reopens
+  **3429.3ms**, raw-key reopens **12.3ms**; both opposite-mode attempts rejected.
+  This is connection evidence only, not a universal speedup or E2E claim.
+- DSV2 now requires schema/cipher generation3 and protected DSK2 version3;
+  its actual random key uses the same wipeable supported encoding as DMS2.
+  The old account generation is refused, without migration, dual-key attempts
+  or repair. Device/prekey/application key modes and registered node keys are
+  unchanged. Source-only build passed with **zero warnings/errors**.
+- Focused generation/key-mode/custody negatives and the connected initial
+  Store/Retrieve/Hello/ACK/text checkpoint closed **82 passed / 1 failed /
+  0 skipped**, **2m57s**, `did2-initial-mailbox-raw-account-checkpoint.trx`.
+  Actual initial Store, cached dispatch, original-envelope Retrieve, incoming
+  Hello, signed ACK and historical replay passed before Accept failed on the
+  long test's expired short Hello. New Accept rejects expired requests before
+  authoring; the long fixture now authors an appropriate finite Hello interval.
+  The next repeat closed **7 passed / 1 failed / 0 skipped**, **4m50s**,
+  `did2-initial-mailbox-hello-lifetime-checkpoint.trx`, at text ACK recovery:
+  separate fixture terminals reused coordinator sequence1 for distinct signed
+  statements. Shared fixture sequence allocation and exact cached Store/ACK
+  responses replace that incorrect test behavior; product equivocation checks
+  remain unchanged. A subsequent repeat closed **7 passed / 1 failed /
+  0 skipped**, **2m24s**, `did2-initial-mailbox-coordinator-checkpoint.trx`, at
+  first receipt after its 120-second claim request expired. This is the
+  product delayed-receipt issue addressed by DR-0061, not a clock suppression.
+  Older isolated physical QA accounts will require explicit reset before that
+  new binary's device run. No production reset/deployment, complete gate,
+  commit/push, physical E2E or release evidence follows from this local change.
+
+## 2026-10-02 — delayed committed initial claim recipient boundary
+
+- [DR-0061](survival-program/decisions/DR-0061-did2-committed-claim-recipient-verification.md)
+  was frozen before changing recipient promotion. Protocol now separates the
+  already signed allocation from the request's new-mutation expiry, with
+  purpose-bound sealed evidence and unchanged current artifact/endpoint gates.
+  Recipient evidence is refused by initiator consumption; initiator expiry
+  remains enforced. Focused Protocol tests **3/3 passed**, **0 skipped**, **758ms**,
+  `did2-committed-recipient-claim.trx`, including expired-request recipient
+  positive, future interval/current artifact expiry, invalid quorum, clock
+  reversal and cross-purpose negatives in the current signed fixture.
+- Connected initial/text run now delays first receive beyond request expiry and
+  passes text through actual owned Store plus the original MEO into Retrieve,
+  rather than serving a newly constructed text envelope. That connected native
+  fact **passed**, **5m57s**. Combined run closed **8 passed / 1 failed / 0 skipped**,
+  **8m6s**, `did2-delayed-initial-and-text-store-checkpoint.trx`. The separate
+  sender interruption fact failed before its terminal callback because the test
+  immediately retried a still-leased BeforeDispatch operation. The now-fast raw
+  account DB no longer implicitly consumed that lease interval. Advance both
+  signed fixture/monotonic time explicitly after that interruption, with product
+  lease/retry checks unchanged. Its focused repeat **1/1 passed**, **0 skipped**,
+  **2m33s**, `did2-owned-send-explicit-retry-time.trx`, including exact retained
+  signed Store response, protected rollback refusal and missing-root refusal.
+  ContactAccept in this checkpoint still uses direct local authenticated receive,
+  not reverse-direction Store/ONION delivery; issuer/terminal are in-process.
+- The connected owned recipient command is exposed to platform composition
+  without public grant/terminal/ACK injection, using the closed read-only
+  `DeepIdV2MailboxSynchronizationResult`. Counts represent processed envelopes,
+  including replays/contact events, not new-message or physical-delivery claims.
+  Source-only production build **passed**, **zero warnings/errors**; a focused
+  boundary batch **39/39 passed**, **0 skipped**, **1s**,
+  `did2-connected-mailbox-boundary-checkpoint.trx`, including the new public
+  surface, read/send custody, key-mode and expired-Hello checks. Root, Protocol
+  and Shared `git diff --check` are clean. MAUI scheduling/UI remains open.
+  API snapshot/consumer repins, full gate, physical and live activation remain
+  required. USB Android was observed available; no UI/device business claim.
+
+## 2026-10-02 — connected owned DID2 Store candidate
+
+- [DR-0056](survival-program/decisions/DR-0056-did2-owned-mailbox-message-dispatch.md)
+  freezes the connected local sender custody/API. The owner reads a committed
+  DPE2 operation, retains original message/request bounds, read-backs protected
+  pending custody before SQL and prepared MAU hash/counter before callbacks.
+  The internal transport gets no holder, repository or issuer authority; an
+  owner-only wrapper checks exact bytes/route/floors/roots around dispatch.
+- Protected send-journal boundaries **14/14 passed**, **0 skipped**, **34ms**,
+  `did2-mailbox-send-journal.trx`: hostile headers/phases/lifetimes, exact
+  roundtrip, prepared counter floor, duplicate pending/counter rejection.
+  This is local structural evidence, not native send or physical delivery.
+- The first connected native Store run failed after **12m35s**: cold preparation
+  consumed the installation/signing policy's bound before durable receipt
+  journaling. The operation stayed outcome-unknown rather than claiming delivery.
+  The accepted correction uses a separately sampled, independently verified
+  dispatch-only scope after exact protected preparation. No grant/request
+  lifetime or signing loan is renewed. The second run reached exact retry,
+  signed two-replica durability, cached receipt and recipient text history, then
+  failed after **14m10s** on a fixture SQL foreign-key violation while simulating
+  rollback (`did2-owned-mailbox-send-final.trx`; 14 structural checks passed,
+  one native scenario failed). Replace that observer with a byte-exact encrypted
+  snapshot rollback of only its disposable closed SQL, preserving valid schema
+  and protected prepared custody. The connected repeat **16/16 passed**,
+  **0 skipped**, **14m50s**, `did2-owned-mailbox-send-receive-checkpoint.trx`,
+  including native Store/receive and the coherent SQL rollback/missing-root
+  rejection. Transport and signed time are fixture-controlled, not socket/device.
+- [DR-0057](survival-program/decisions/DR-0057-did2-owned-incoming-session-selection.md)
+  connects the ordinary receive entry to initialized protected-catalog session
+  selection and independent endpoint refresh. Remove the unused service overload
+  accepting a caller-selected scope; keep only the owner's private engine.
+  Selection and send-journal boundaries **15/15 passed**, **0 skipped**, **33ms**,
+  `did2-incoming-selection-journal.trx`. The connected native repeat above uses
+  the real new incoming service entry. This is not mailbox polling, semantic ACK
+  or device E2E.
+- Own-publication secret derivation is shared inside one owner-private disposable
+  loan for the recipient continuation. It requires the exact committed phase-7
+  own permanent plan, verified publication and protected read-back; no capability
+  or authority is caller-supplied. Its native grant-custody and incoming/catalog/
+  protected-send regression **40/40 passed**, **0 skipped**, **5m18s**,
+  `did2-own-publication-and-incoming-checkpoint.trx`, including own Retrieve
+  rejection before publication, interrupted acquisition and exact reopen without
+  reissue. Source builds have zero warnings/errors; actual Retrieve dispatch/ACK
+  is not implemented by this private derivation.
+- Copy the sender operation before the service's first network await; otherwise
+  a caller could change that buffer while independent contact proof was fetched.
+  Added deliberate input mutation in the native interrupted-send scenario.
+  The connected boundary repeat **17/17 passed**, **0 skipped**, **14m55s**,
+  `did2-owned-mailbox-service-boundary.trx`, including that mutation before
+  asynchronous proof refresh. This predates the recipient read-root increment.
+- Initial DPH delivery, owned Retrieve/materialization/ACK, remote attachment
+  chunks, groups, matched deployment and physical Windows/USB Android remain
+  release gates. USB Android is available; Windows exposes no open Deep window.
+  No app reset/install, production change, full gates, commit/push or release here.
+
+## 2026-10-01 — owner-held DID2 current mailbox credential installation
+
+- [DR-0055](survival-program/decisions/DR-0055-did2-owned-mailbox-credential-installation.md)
+  was frozen before implementation. The actual account owner installs the exact
+  protected winner into its own SQLCipher application store under the same lease,
+  current root-verified PMA2 and independently derived mailbox replica keys.
+  It revalidates the SQL route and unchanged protected winner before returning.
+  No next grant, caller repository/issuer, signer export or identity adapter.
+- Installation policy is owner-private and bounded; synchronous validation uses
+  authenticated interval upper time plus conservative monotonic elapsed, not OS
+  UTC. Foreign grant queries reject. Current SQL installation revalidates after
+  gate/transaction waits and before commit rather than trusting an earlier clock.
+- Native two-account installation/restart coverage **1/1 passed**, **0 skipped**,
+  **7m43s**, `did2-owned-grant-installation-final.trx`: actual ML-DSA/SQLCipher,
+  Deposit/Retrieve, loss/corruption, interruptions before/after SQL installation,
+  exact retry without reissue, independent SQL read-back, no prepared transport
+  rows. The first diagnostic run failed on the observer's wrong SQL column name;
+  this was corrected without weakening assertions. Private issuer is in-process.
+- A new internal held mailbox path/transport loan checks readonly existing floors
+  without recursively fetching/reacquiring the account lock. Source builds have
+  zero warnings/errors. Its connected owner loan check plus current credential
+  preparation/restart regression **8/8 passed**, **0 skipped**, **7m40s**,
+  `did2-owned-installation-held-path.trx`: actual owner-held path checks, changed
+  placement/disposed-loan rejection without recursive proof queries, six hostile
+  grant headers and current credential exact-MAU preparation/restart. This is
+  local integration, not socket/device evidence. Production preparation/dispatch consumer,
+  semantic receive/ACK and physical Windows/USB Android remain unfinished.
+- USB Android was visible as a ready device; no physical app scenario, device
+  install, production deployment, full gates, commit/push or release occurred.
+
+## 2026-10-01 — connected opaque DID2 mailbox issuance candidate
+
+- [DR-0054](survival-program/decisions/DR-0054-did2-private-mailbox-grant-issuance.md)
+  was frozen before implementation. Protocol verifies the current NET/root/PMA,
+  exact threshold route and both independently selected stores' durable signed
+  role lookup; its closed author captures the role key and checks returned
+  signatures/full authenticated time, and verifies exact journal winners.
+- Registry has a disabled-by-default bounded private JSON endpoint, independent
+  service observer/proof/floor/time/bundle composition, external role signers and
+  a permanently reserved hash-only PostgreSQL grant journal. XNode opt-in now
+  connects acquisition through the ONION terminal and authenticated replica
+  route, with the original XMG deadline across retries. No retired PMA1 authority
+  is used in the new graph. No environment guard was relaxed.
+- Connected native ML-DSA/SQLCipher Deposit/Retrieve restart test **1/1 passed**,
+  **0 skipped**, **6m40s**, `did2-two-store-issuance-owned-restart.trx` with actual
+  selected-store signatures, damaged/duplicate evidence and wrong-role signer
+  rejection. The private hop remains in-process, not TLS.
+- XNode **5/5 passed**, **0 skipped**, **920ms**,
+  `did2-contact-two-store-grants.trx`: actual two on-disk stores and authenticated
+  binary peer HTTP through an in-process handler, public DID2/NET, publication,
+  resolve, Deposit/Retrieve, lost grant response and exact retry without reissue.
+  This caught and fixed a terminal still rejecting acquisition before dispatch.
+  Its private issuer winner cache is a fixture, not the production DB.
+- Registry **10/10 passed**, **0 skipped**, **421ms**,
+  `did2-private-grant-http-journal.trx`: closed JSON/body/replay/config bounds and
+  actual isolated PostgreSQL reservation, interruption, immutable request/scope,
+  competing issuers, restart/read-back, capacity and corruption rejection. Only
+  an exact random test schema was created/dropped in the existing isolated test
+  container; dev/prod databases were not changed. Journal records are structural
+  target fixtures, not issuance-authority evidence. Protocol, Registry and XNode
+  source builds have zero warnings/errors.
+- Latest callback-size hardening also passed the same focused scenarios:
+  XNode **5/5**, **0 skipped**, approximately **1s**,
+  `did2-contact-two-store-grants-final.trx`; Registry **10/10**, **0 skipped**,
+  **451ms**, `did2-private-grant-http-journal-final.trx`. These are not full gates.
+- Composed private HTTP/external signer/observer/floor coverage, provisioned
+  matching bundles, credential installation/use and physical Windows/USB
+  Android messages/files/images/groups remain gates. No deployment, device
+  install, commit/push or GitHub Release occurred in this increment.
+
+## 2026-10-01 — owned DID2 Deposit/Retrieve grant restart custody
+
+- [DR-0053](survival-program/decisions/DR-0053-did2-mailbox-grant-restart-custody.md)
+  was frozen before implementation. Protocol separates still-current exact
+  pending-request restoration from independently current retained-grant
+  verification; an expired acquisition envelope cannot be retried or silently
+  regenerated, and does not by itself expire an otherwise current grant.
+- Shared atomically initializes a mandatory protected grant journal with its
+  actual account/SQL instance. The owned Deposit entry derives scope from a
+  freshly reverified permanent contact, persists/read-backs its independent
+  random holder and exact request before callbacks, and adopts only a verified
+  immutable exact winner. Reopened winners make no issuer callback. Missing
+  or corrupt custody requires explicit disposable-QA reset, never repair.
+- Internal grant carrier uses the existing selected-entry ContactResolve ONION
+  path and actual held-account guards/entropy, without a direct issuer URL,
+  public callback or legacy identity owner. It is not shipping activation.
+- Focused connected native batch **8/8 passed**, **0 skipped**, **6m22s**,
+  `did2-owned-mailbox-grant-restart.trx`. Hardened batch **8/8 passed**,
+  **0 skipped**, **6m32s**, `did2-owned-mailbox-grant-restart-final.trx`:
+  two ML-DSA/SQLCipher accounts, real publication/independent peer proof,
+  pending read-back before callback, damaged issuer result, lost successful
+  response/exact restart, winner restoration without reissue, malformed
+  header/seed/phase/winner rejection, missing root rejection, both request
+  roles, expired pending versus live retained grant, future response rejection,
+  actual three-hop XMG frame and protected entropy duplicate check. Private
+  issuer and resolver transports remain in-process fixture sources, not TLS.
+- Owned Retrieve derives its secret only from the protected, verified phase-7
+  own publication, never public resolve or caller input. Both directions share
+  exact-retry custody but have independent holder keys. Publication custody is
+  reread and compared throughout the held lease.
+- Latest connected native test **1/1 passed**, **0 skipped**, **6m44s**,
+  `did2-owned-deposit-retrieve-grant-restart.trx`: unpublished-owner rejection
+  before transport, lost Retrieve response, exact pending replay after restart,
+  immutable winner without reissue, independent role holders and current-PMA
+  checks before mutation/dispatch. Latest production Shared build has **zero
+  warnings/errors**. This remains in-process evidence, not physical delivery.
+- Private live current-NET issuer/two-store evidence, credential
+  installation/use and complete Windows/USB Android contacts/messages/files/
+  images/groups remain release gates. No install, production rollout,
+  commit/push or GitHub Release occurred in this increment.
+
+## 2026-10-01 — direct DID2 mailbox issuer/result verification
+
+- [DR-0052](survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
+  freezes the missing public issuer input and direct result verification before
+  their implementation. Protocol, Shared raw/HTTP distribution, Registry
+  pipeline fixtures and DevOps genesis/successor/host exporters now use the
+  complete bundle; the incomplete candidate fails closed without a converter.
+- Focused wire **21/21 passed**, **0 skipped**, **34ms**;
+  Shared raw/HTTP source **6/6 passed**, **0 skipped**, **48ms**;
+  Registry pipeline **9/9 passed**, **0 skipped**, **200ms** with the connected
+  source test graph compiled. Artifacts respectively
+  `did2-mailbox-authority-distribution.trx`,
+  `did2-mailbox-authority-distribution-client.trx`,
+  `did2-mailbox-authority-distribution-registry-connected.trx`.
+- Local bootstrap tool **5/5 named checks passed**, including signed ceremony
+  export/successor, byte-exact issuer retention and host public-file export.
+  These use synthetic local custody and HTTP handlers, not production inputs.
+- Native connected account/issuer/result **2/2 passed**, **0 skipped**, **2m6s**,
+  `did2-real-mailbox-grant-connected.trx`: actual ML-DSA/SQLCipher account,
+  threshold route, PMA2 root and separate role issuer signatures, exact PMT2
+  membership, current epoch and whole time interval; issuer/holder/epoch/hash/
+  topology/expiry substitution, late clock, cancellation and mutable caller
+  bytes reject. Missing, invalid and ambiguous current issuer policies do not
+  advance the protected network floor. The earlier result-only run **1/1**,
+  **1m8s** is superseded by this connected source run.
+- Protocol and production Shared builds finish with zero warnings/errors.
+  Registry's obsolete caller-supplied initial-session assertions are removed;
+  current own/peer proof/floor coverage remains, while owned claim/receiver
+  completion belongs to the existing Shared business fixture.
+- This is not protected holder/request/winner custody, live private grant
+  issuance, installed credentials, ONION socket delivery or device E2E. The
+  USB Android device is visible; no client installation/UI/prod rollout,
+  commit/push or GitHub Release is claimed by this increment. Machine/API/
+  vector/package repins and full gates remain at business-batch completion.
+
+## 2026-10-01 — protected permanent-contact client plan and closed public entry
+
+- [DR-0051](survival-program/decisions/DR-0051-owned-permanent-contact-client-entry.md)
+  was frozen before code. Public account publication derives its own stable
+  local retry plan and verified profile, composes DR49 carriers internally and
+  retains the existing exact two-store commit workflow. Each phase checks the
+  actual protected account-instance plan under its existing lease before
+  mutation/dispatch; public callbacks, raw keys, time and retry IDs are absent.
+- Native SQLCipher/ML-DSA plan/surface lane **2/2 passed**, **0 skipped**, **1m15s**,
+  `did2-permanent-contact-owned-client-plan.trx`: reopen equality, defensive
+  copies, reset separation, wrong source owner, cancellation and substituted
+  intent rejection before threshold or route mutation. A valid plan stages the
+  actual XRA proposal and stops before external coordination.
+- Joined native owned publication/reopen lane **1/1 passed**, **0 skipped**,
+  **3m8s**, `did2-permanent-contact-owned-client-publication.trx`: the client entry
+  uses its protected plan/profile and reaches phase 7 through actual Protocol
+  threshold/object/publication/two-receipt verification. Reopened entry returns
+  identical commit bytes without new threshold/publication/replica callbacks.
+  Coordination and replica responses are in-process test sources; no socket,
+  live Registry or device claim is made.
+- Opt-in HTTPS MAUI composition now invokes owned contact publication after
+  prekey commit and resolves peers through the owned resolver. Pasted diagnostic
+  public DID2 must match the independently authenticated result. Focused source
+  composition/error-contract lane **16/16 passed**, **0 skipped**, **176ms**,
+  `did2-owned-contact-client-composition.trx`. This is not a platform build,
+  network request, relationship acceptance, message or physical delivery claim.
+- Final focused composition/error-contract lane **18/18 passed**, **0 skipped**,
+  **329ms**, `did2-owned-contact-client-composition-final.trx`; both new contact
+  stage labels are explicitly allowlisted and private transport details remain
+  only in inner exceptions, never display/evidence text.
+- Shared production source built with zero warnings/errors. Existing physical
+  scripts require clean committed source, so fresh Windows/Android build and
+  live deployment/evidence remain at the connected business-batch checkpoint.
+
+## 2026-10-01 — DID2 contact service, authenticated time and two-store restart
+
+- [DR-0050](survival-program/decisions/DR-0050-did2-contact-service-composition.md)
+  was frozen before implementation. Explicit DID2 contact activation connects
+  opaque publication/resolve and V2 prekeys behind one authenticated replica
+  endpoint, without V1 snapshot/recipient dependencies. Default and existing
+  candidate environment guards remain closed.
+- Service expiry/retention and outbound placement checks no longer use the
+  HTTP admission OS clock. Actual signed DID2 time and boot-scoped monotonic
+  elapsed time are independently checked before/after dispatch. Permanent-contact
+  preflight now binds the correct read receipt; the receiving replica still
+  independently verifies its durable publication and exact tuple.
+- Narrow joined batch **20/20 passed**, **0 skipped**, **687ms**,
+  `did2-active-contact-service-connected.trx`. Actual public DID2/NET signatures,
+  two selected stores, authenticated peer HTTP handlers, lost response after
+  durable execution, restart of both service owners, exact retry, independent
+  publication/resolve verification and closed-operation rejection are covered.
+  Additional clock/restart lane **3/3 passed**, **0 skipped**, **689ms**,
+  `did2-active-contact-service-restart.trx`: missing/expired/foreign-boot proof,
+  time rollback and cancellation fail closed. Proof retrieval/clock are synthetic;
+  no socket TLS, production deployment or physical Windows/Android delivery claim.
+- Latest joined endpoint/replica/carrier lane **22/22 passed**, **0 skipped**,
+  **747ms**, `did2-active-contact-service-connected-final.trx`; enabled mapping
+  contains exactly one actual route, disabled maps none. The mapper uses the
+  closed merged receiver. Existing opaque time/resolve regression **7/7 passed**,
+  **0 skipped**, **1s**, `did2-opaque-contact-time-regression.trx`.
+- Client public composition, source/package closure, grants, BLOB and DID2 groups
+  remain unfinished. Full business gates and commit/push remain batch-end work.
+
+## 2026-10-01 — DID2 three-hop coordination and actual held-account transport custody
+
+- [DR-0049](survival-program/decisions/DR-0049-did2-three-hop-coordination-carrier.md)
+  and machine registry were frozen before implementation. Protocol parses
+  request-paired two-target wrappers without minting witness/publisher authority;
+  gateway placement is derived independently from current NET, not mailbox routing.
+- Shared added owned coordination and exact replica-publication carriers. Real
+  account-held SQLCipher guards/entropy avoid recursive account/proof locking;
+  parent proof/floor/journal checks remain. Narrow **2/2 passed**, **0 skipped**,
+  **56s**, artifact `did2-owned-coordination-held-custody.trx`: actual native account,
+  frame construction/reservation, duplicate rejection, foreign lease and disposed
+  owner rejection. Network/clock/threshold retrieval is synthetic; no socket claim.
+- XNode dispatches verified coordination through independently current gateway
+  placement to the signed fixed-origin DR48 backend. Host composition validates
+  explicit options and defaults disabled. Narrow **17/17 passed**, **0 skipped**,
+  **456ms**, artifact `did2-coordination-onion-dispatch.trx`: both exact targets,
+  malformed/version/target/reserved/length/trailing/network rejection, cross-operation
+  rejection, selected exit/PMT checks, paired-response substitution and post-forward
+  proof failure classified unknown. HTTP handler/observer clock are in-process;
+  not TLS, ONION socket, remote durability or physical delivery evidence.
+- Client and node source-cutover builds completed with zero warnings/errors.
+  Default package/API/vector/full gates and deployment were not run. Active node
+  DID2 contact publication/resolve composition, membership grants, BLOB lifecycle,
+  group cutover and full Windows/USB Android E2E remain unfinished in NEXT-SPRINT.
+
+## 2026-10-01 — private coordination node proof and bounded backend
+
+- [DR-0048](survival-program/decisions/DR-0048-private-contact-coordination-peer-authentication.md)
+  adds calling-node authentication to both private Registry V2 terminals using
+  independent existing Ed25519 node keys, no new shared secret or key conversion.
+  Missing/unknown/noncanonical/duplicate/stale or substituted headers/body
+  reject before issuer invocation. Enabled hosting requires a public-key access list.
+- Registry narrow pipeline/signature/configuration lane **16/16 passed**,
+  **0 skipped**, **966ms**; artifact `did2-coordination-peer-auth-negative-final.trx`.
+  XNode backend lane **15/15 passed**, **0 skipped**, **1s**; artifact
+  `did2-coordination-node-backend.trx`. Independent Rebex/Sodium signature check,
+  immutable request retry/fresh transport nonce, ignored-cancellation/late response
+  disposal, hostile framing and default TLS/no-redirect configuration covered.
+  XNode source-cutover build **0 warnings/errors**, **7.31s** before the final
+  token-capture cleanup; the later targeted test compile also passed.
+  Final node lane after owned request-buffer wiping/format cleanup **15/15 passed**,
+  **0 skipped**, **302ms**; artifact `did2-coordination-node-backend-final.trx`.
+- HTTP pipelines/handlers and structural publisher records are not socket TLS,
+  three-hop transport, live witness deployment or physical Windows/Android E2E.
+  The verified coordination carrier, actual backend provisioning, publication,
+  mailbox grants, BLOB and groups remain unfinished. No full gates/commit/push yet.
+
+## 2026-10-01 — immutable peer bootstrap and independent ordinary refresh
+
+- [DR-0047](survival-program/decisions/DR-0047-did2-owned-peer-refresh.md)
+  closes missing original peer DID2 lookup material: owned seed registration
+  inserts mandatory scope/hash-bound public credential with catalog CAS/floor,
+  without a schema migration or stale-proof fallback. Ordinary service methods
+  acquire both current endpoints independently, then recheck under actual lease.
+- Narrow structural history/bootstrap/cancellation checks **9/9 passed**,
+  **0 skipped**, **34s**; artifact `did2-owned-history-bootstrap-narrow.trx`.
+  Unicode history/reopen, foreign owner/limits, hostile SQL/hash, immutable
+  bootstrap/missing-no-repair and ignored transport cancellation/late wiping.
+  Production build **0 warnings/errors**, **7.08s** before final disposal cleanup;
+  latest targeted test compile also passed. Native owned TTL refresh **1/1 passed**,
+  **0 skipped**, **7m40s**, artifact `did2-owned-peer-ttl-refresh.trx`: same original
+  authenticated peer credential after old proof TTL, unchanged ratchet floor,
+  missing-bootstrap reject before querying without repair. Actual owned
+  account/seed/SQL/native crypto; Registry and monotonic-time samples synthetic.
+  Native binary predates the later DAM disposal cleanup, separately compiled
+  and structurally covered in the 9/9 lane. No remote/device evidence or
+  full-business gate/commit/push yet.
+
+## 2026-10-01 — owned resolved-contact claim and ordinary attachment offers
+
+- [DR-0045](survival-program/decisions/DR-0045-did2-owned-resolved-contact-claim.md)
+  переносит XPK подготовку в account-owned runtime: verified publisher XPS,
+  protected preclaim intent, atomic get-or-reserve под actual account lease,
+  byte-exact timestamps на retry и final held proof/floor/time recheck.
+  Connected real account/native PQ/SQLCipher run **1/1 passed**, **0 skipped**,
+  **17m18s**; custody/Hello/Accept/text/restart/replay проходят. Result artifact:
+  `deep-client-shared/tests/Deep.Client.Shared.Production.Tests/TestResults/did2-owned-resolved-contact-claim-text.trx`.
+  Shell logger-name argument был ошибочно не quoted; пост-test shell error не
+  является failed test. Проверены actual TRX counters 1 passed/0 failed;
+  artifact renamed без изменения XML. Сетевые ответы всё ещё synthetic.
+- [DR-0046](survival-program/decisions/DR-0046-did2-owned-attachment-offer.md)
+  добавляет stable asset → owned AttachmentOffer в общую DR30 очередь без
+  attachment counter. DPE2 send требует независимые stable command/asset
+  custody и current expiry; raw/substituted offers не получают authoring.
+  Structural/SQL regression **17/17 passed**, **0 skipped**, **1m42s**;
+  text→offer→text, exact pending/restart и corruption/counter negative coverage.
+  Artifact `did2-owned-ordinary-offer-sql.trx`; native/remote/device offer delivery
+  этим не доказаны. Расширенный native connected run **1/1 passed**,
+  **0 skipped**, **25m52s**, artifact `did2-owned-contact-claim-attachment-text.trx`:
+  stable actual asset/offer/shared sequence/native DPE2/receiver DAM integrity,
+  exact replay and following text, changed kind and expired asset reject.
+  Chunks copied locally; no authenticated remote BLOB or device evidence.
+  Key-free history/restart projection **2/2**, **0 skipped**, **15s**, artifact
+  `did2-offer-key-free-history.trx`; no key or current download authority.
+  Первый параллельный compile не дошёл до tests из-за Windows
+  locked output; успешный run использует isolated output вне checkout.
+- Latest narrow production/test compile **0 warnings/errors**. Старый native
+  DR45-only run был запущен до DR46/latest DR45 query-union guard; expanded
+  native run включает оба изменения и 30s token-ignoring publication bounds,
+  но был собран до более позднего key-free history reader (structural run выше).
+  Полный business gate/commit/push остаётся на конец
+  пакета контакты/сообщения/вложения/группы. Production, node keys и устройства
+  не менялись; shipping transport/device release readiness не заявляется.
+
+## 2026-10-01 — retained contact routes and connected claim lifetime corrections
+
+- [DR-0042](survival-program/decisions/DR-0042-did2-route-directory-issuance-anchor.md)
+  исправляет воспроизведённую DR41 ошибку: unrelated account admission не
+  требует перепубликации всех контактов. Signed issuance anchor отделён от
+  independently current authority; new issuance по-прежнему требует current head.
+  XNode focused **7/7**, **0 skipped**, около **1s**: настоящие additional DID2
+  admission/signed successor/new proof, неизменные ciphertext/route, два local
+  store restart/read и historical commit; old-proof/new-NET и stale dispatch reject.
+- [DR-0043](survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md)
+  добавляет exact claim recipient/NET pairing и защищённую last-observed
+  monotonic boundary. Unit binding/surface **2/2**, **0 skipped**, **535ms**;
+  internal output seams synthetic и не являются подписанным producer/device gate.
+  Exact claim single dispatch ограничен 30s и реагирует на cancellation даже
+  при token-ignoring response adapter, без нового operation/result.
+- Connected real account/native PQ/SQLCipher publication/read → retained claim
+  → Hello/Accept/text lane сначала **failed 1/1**, **4m36s**: manifest issued
+  before later DCB incorrectly rejected. Исправление
+  [DR-0044](survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md)
+  сохраняет полное containment inventory в XPS и operation-time containment
+  во всех current lifetimes; не пересоздаёт ключи и не backdates DCB.
+  Новый connected run **passed 1/1**, **0 skipped**, **14m09s**:
+  actual owned publisher/phase7 → compact-address read/independent proof →
+  durable exact claim → native DPH Hello/receiver → explicit ContactAccept →
+  text reply/history; crash/response-loss/retry/dedup проверены.
+  Token-ignoring adapter cancellation не сохраняет result; hidden claim-clock
+  reversal отвергается. Accounts/native PQ/SQLCipher реальные, сетевые
+  coordination/replica/ONION response adapters synthetic; physical delivery
+  не заявляется. Latest unit binding/surface **2/2**, **0 skipped**, **523ms**
+  включает inventory outside later DCB positive и expired-contact negative.
+- Shared production Release build после DR43 **0 warnings/errors**. Full
+  business gates/commits и shipping/private transport/Windows↔Android delivery,
+  blob offers/resume/groups остаются открытыми. Production не изменён.
+
+## 2026-10-01 — DID2 compact-address permanent read and account-bound composition
+
+- [DR-0041](survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md)
+  добавляет descriptor-bound parsed bootstrap и независимую current peer
+  verification. Исправлено несовпадение retired DID1 transcript с actual node
+  resolve-read; unsigned serverTime не выдаёт свежесть. Final captured clock
+  проверяется без нового callback; boot/backwards/deadline negatives покрыты.
+- Actual PQ/directory/network/witness plus two local opaque stores: **6/6**,
+  **0 skipped**, около **1s**. Publish/read/restart, exact credential/capability,
+  altered receipt/result/address, cancellation и release-time failures проверены.
+  Public closed API: **3/3**, **0 skipped**, **21ms**.
+- Shared connected two-owned-account publication/read lane: **1/1**,
+  **0 skipped**, **5m27s**. Независимый nonce-bound peer proof, account-bound
+  floors, held-account release; counterfeit signature отвергается; read не
+  создаёт prekeys/session/acceptance или automatic second dispatch.
+  Secure-storage/response adapters synthetic; native PQ/account and SQLCipher
+  реальны. Actual node stores проверены отдельным XNode lane.
+- Дополненный local XNode lane: **7/7**, **0 skipped**, около **1s**.
+  Real additional DID2 admission, threshold-signed successor head, retained
+  predecessor floor и новый nonce-bound proof воспроизводят lifecycle gap:
+  unchanged account identity остаётся current, но old exact-head route reject.
+  Это regression/reproduction evidence; его прежний вывод о необходимости
+  renewal при unrelated admission исправлен DR42 выше, delivery не заявляется.
+  Первоначальный harness прыгал от empty genesis через два heads без forward
+  checkpoint и был отвергнут; исправлен genuine already-verified predecessor
+  floor, security assertion не ослаблена. В release-time route observation
+  добавлены immutable boot/sample; owner сравнивает последнюю observation с
+  последней held-account floor observation, чтобы поздний reversal не скрывался.
+- Shared production Release compile: **0 warnings/errors**. Shipping/private
+  transport, global ADH/network-head publication renewal, old DID1 recipient
+  retirement, claim/handshake/messages/assets/groups, physical Windows/Android,
+  whole-business gates/API/vector/repins/commits остаются незавершёнными.
+  Production, registered keys, genesis и certbot не изменены.
+
+## 2026-10-01 — owned DID2 publication commit and restart custody
+
+- [DR-0040](survival-program/decisions/DR-0040-did2-owned-publication-commit.md)
+  закрывает client verification двух selected-node XPO signatures и protected
+  phase-7 CAS/readback. Journal version 4 only; old isolated QA state требует
+  explicit reset, без migration/node key/genesis reset. Historical commit не
+  продлевает XPA dispatch authority и требует current object/route/proof/placement.
+- Actual PQ/account/directory/network/witness/local opaque-store lane **5/5**,
+  **0 skipped**, ~**1s**: commit/restart/replay, bad/foreign signature/body,
+  failure status, cancellation/oversize; после действительного нового nonce-bound
+  proof historical commit принимается, expired dispatch отвергается.
+  Public closed API **2/2**, **18ms**; protected journal bounds **8/8**, **14ms**.
+- Native account/SQLCipher protected custody lane **1/1**, **0 skipped**,
+  **7m43s**: invalid threshold retains phase5, lost response/bad receipt retain
+  phase6, exact retry adopts7, reopen makes no threshold/replica callback and
+  retains exact bytes. Replica response здесь synthetic с real signatures;
+  actual node stores проверены отдельным XNode lane. Shipping transport отсутствует.
+- Старый combined route/object тест **failed 1/1**, **6m04s**: после расширения
+  framing injection меняла empty LP32, а не ciphertext. Исправлена конкретная
+  точка corruption, strict crypto rejection сохранён; этот старый case после
+  исправления ещё не перепроверен. Новый business lane выделен отдельно.
+- Shared production Release build **0 warnings/errors**; обычный retired
+  diagnostic project пока имеет пять missing-type compile errors и не является
+  production graph pass. Private coordination, DID2 recipient resolve, PMA2
+  membership/grants, shipping messages/assets/groups, physical devices и whole
+  business gates/API/evidence/repins/commits остаются незавершёнными.
+
+## 2026-10-01 — sole DID2 opaque publication consumer and local two-replica slice
+
+- [DR-0039](survival-program/decisions/DR-0039-did2-opaque-publication-consumer.md)
+  заменяет public XPU/XPA reader, node verifier и placement source прямыми
+  DID2 proof/NETCODEC/time inputs. V1 reader/overload отсутствует; bounded input
+  проверяется до копирования, full six-record route/network и Deposit/Retrieve
+  разделены. Genesis XPA lifetime точно совпадает с request и не превышает DR38.
+  Protected saga format/schema несовместимы со старым состоянием; оно reject,
+  не мигрируется. Registered node keys и unrelated stores не изменены.
+- Реальная PQ identity/device/directory/network/witness ceremony и локальные
+  opaque stores: final **5/5 passed**, **0 skipped**, **925ms** test duration.
+  Подтверждены actual commit, exact replay после restart, две selected replica
+  signatures и восстановление потерянного ответа. Negative coverage: header/
+  suite downgrade, body/capability/witness substitution, unavailable proof,
+  cancellation, wrong placement, backwards/changed-boot/expired final clock.
+  Positive V1 threshold fixture удалён; public authority surface требует DID2.
+  Public closed surface focused test **1/1**, **0 skipped**, **11ms**.
+- Воспроизведён defect peer receipt: committed ID/object hash разрешали
+  подпись для changed witness bytes. До исправления exact negative test
+  **failed 1/1** (no exception). Receipt теперь требует свежую авторизацию,
+  exact committed saga digest и release-time recheck до/после подписи.
+  Другой подлинный threshold subset тоже reject, если exact request не был
+  committed. Guard не вызывает дополнительных proof HTTP fetch и не продлевает
+  lifetime; backward sample относительно исходного mint также reject.
+- Default XNode integration test project compile после обновления dependencies:
+  **0 warnings / 0 errors**, final **3.85s**; это compile, не full suite run.
+  Explicit focused lane не меняет default gate. Production не обновлён;
+  socket TLS/remote peers, shipping client, mailbox membership/grants,
+  сообщения/вложения/группы и physical device E2E этим не подтверждены.
+  Android USB доступен; Windows Deep-клиент не запущен при read-only inventory.
+  Full gates, API/vector/evidence/repins и commits отложены до business boundary.
+
+## 2026-10-01 — DID2 publication coordination and protected exact request/response
+
+- [DR-0038](survival-program/decisions/DR-0038-did2-publication-coordination.md)
+  заменяет V1 publication endpoint/issuer/client/author прямым DID2 путём.
+  Подпись владельца покрывает весь exact request, включая nonce, operation,
+  directory minimum, ciphertext, owner Retrieve и времена. Сервер проверяет
+  actual ADA2/external floor, DCR/support/XPS, route/XIR, publisher и NETCODEC
+  placement; XPA witness signatures используют V2 domain. Exact PostgreSQL
+  reservation/winner/readback не допускают реминта после потери ответа/expiry.
+- Account owner сохраняет request до callback и verified response до return
+  в phases 5/6. Journal version 3 only, одиннадцать LP32 records, max entry
+  415,566, прежний slot limit 1 MiB; до callback резервируется complete entry.
+  Старые QA roots требуют explicit reset, SQL2/application6 не менялись.
+  Callback bound 30 seconds. Подмена, изменённый replay и stale state reject.
+- Реальный account/native/SQLCipher/ADA2/PostgreSQL/witness TestServer сценарий
+  прошёл **1/1**, **0 skipped**, **3m39s**; расширенный connected lane с nonce/
+  unsigned-field binding, downgrade/framing, восемью concurrent journal replays,
+  independent journal restart и HTTP/query negatives — **13/13**, **0 skipped**,
+  **3m37s**. Protocol V2 codec **4/4**, **23ms**; protected bounds **7/7**, **17ms**.
+  Shared production Release build **0 warnings / 0 errors**, **9.25s**.
+  Выявлен и исправлен post-DR37 guard: XIR generation — tag 3 (u64), а не
+  четырёхбайтовый redemption limit tag 10. Никакой совместимости не добавлено.
+- Это не physical E2E: TestServer и controlled clock, без platform storage,
+  socket TLS/ONION, dual-replica publication, grants, semantic ACK или devices.
+  Shipping private coordination, DID2 opaque publication consumer и mailbox
+  membership/grants — следующие connected consumers. Production не изменён.
+  Full gates, API/vector/evidence repins и commits остаются в конце business batch.
+
+## 2026-10-01 — account-owned signed/encrypted DID2 contact object
+
+- [DR-0037](survival-program/decisions/DR-0037-did2-owned-contact-object.md)
+  замораживает V2 reusable genesis DCB1/DCR1 author/restore без generic signer,
+  caller clock или DID1 adapter. Exact current route/delegation, active-device
+  XPS1, ADL1 minimum head и verified DRS1/DPD1 support проверяются до выдачи.
+  Resolver capability-bound encryption не отдаёт read key witness/store.
+  Public requests сохраняют manual-approval policy, не automatic acceptance.
+- Shared internal owner сохраняет exact object в phase 4 route journal под
+  account lease/CAS/readback. Bundle ID, подпись, encryption nonce и ciphertext
+  переживают потерю ответа и concurrent independent reopen; changed profile,
+  bad service/key/device/ciphertext, cancellation и stale/reversed time reject.
+  Journal теперь version 2 only; старые QA instances требуют explicit reset.
+  Account SQL2/application6 не изменены. Нельзя считать локальный candidate
+  XPA1, grant, ACK или доказательством network publication/device delivery.
+- Native/SQLCipher focused scenario + hostile headers **7/7 passed**, **0 skipped**,
+  **7m01s**; первоначальный вариант **7/7**, **7m39s**. Это actual account и
+  подписи с локальными storage/HTTP/clock adapters, не физические устройства.
+  Обнаружено несовпадение capacity с production secure-store slot limit:
+  aggregate journal ограничен тем же 1 MiB, pending entries резервируют место
+  для complete object до threshold callback. Финальные byte/header bounds
+  **7/7 passed**, **0 skipped**, **18ms**; current production Release build
+  **0 warnings / 0 errors**, **4.99s**. Whole-business API/
+  evidence/machine repins, full gates и commit ещё не выполнены.
+  XPA1 server issuance/private coordination, replica publication и mailbox
+  grants остаются следующими незамкнутыми участками. Production не изменён.
+
+## 2026-10-01 — DID2 threshold coordination, actual account and durable replay
+
+- [DR-0036](survival-program/decisions/DR-0036-did2-route-threshold-coordination.md)
+  заменяет V1 route-authority envelope/endpoint прямым DID2 V2. Старый
+  DID1 server issuer, Shared HTTP client/options tests и DID1 wire-request helper
+  удалены. Actual self-verified directory freshness теперь доступна как закрытый
+  getter, без public raw-leaf mint или DID1 adapter.
+- Сервер использует настоящие protected ADA2, independent PostgreSQL head floor,
+  signed NCP2 и file-backed witness custody; challenge DTT nonce не совпадает с
+  durable coordination nonce. Reservation фиксируется до route-sign callback,
+  exact response — до release с независимым readback. Concurrency/restart возвращают
+  один winner; missing root/capacity, changed replay, stale/expired proof и
+  повреждённая сеть не создают новый маршрут. Delayed signer leaves a durable
+  pending reservation; retry recovers it without publishing the interrupted candidate.
+- Изолированный HTTP/journal/account batch **13/13 passed**, **0 skipped**;
+  actual PQ-account/SQLCipher/ADA2/PostgreSQL/native server scenario **1m01s**.
+  В найденном отрицательном пути OnionBoundaryException теперь закрыто переводится
+  в отказ, а не необработанный HTTP error. Shared production Release build
+  **0 warnings / 0 errors**, **8.52s** после удаления старого client/helper.
+  Финальный callback fence также проверяет exact current-view file, root/time
+  policy и bundle после подписания: замена view во время callback оставляет
+  только pending reservation, без выдачи candidate. Registry local-cutover
+  tests теперь используют Shared production project, не старый runtime graph.
+- TestServer HTTP и явно управляемое тестовое время, не socket TLS, deployment,
+  XPoint/OHTTP authority coordination, publication, grant installation, semantic
+  ACK, UI или physical Windows/Android delivery. Full gates/API repin/consumer
+  recovery и commit остаются на whole-business batch boundary; public Releases
+  не опубликованы и production не изменён.
+
+## 2026-10-01 — DID2-only mailbox grant request author
+
+- [DR-0035](survival-program/decisions/DR-0035-did2-mailbox-grant-request.md)
+  реализован: DID1 request author и unused caller-owned Shared acquisition
+  client удалены. Новый direct DID2 author сохраняет neutral XMG1 wire/domain,
+  фиксирует input/key до await, проверяет текущий route до/после подписания
+  и вычисляет ограниченный срок по authenticated union time, не wall clock.
+  Старый identity/V1-storage holder owner также удалён; узкий signer имеет
+  только internal DID2 factory и exact role/capability/locator/PMT/PMS scope.
+- Focused actual-account/route/native scenario **1/1 passed**, **1m01s**:
+  actual holder Ed25519 signatures, Deposit/Retrieve, captured input/key across
+  callback mutation, exact route-bound request, role mismatch, zero/oversize,
+  invalid/short signature, cancellation, expiry after signing/before callback.
+  Latest expanded signer scenario **1/1 passed**, **1m01s**, preceded by
+  **1m05s**: narrow XMG role/capability/locator rejection and no public
+  factory/storage/seed API, disposed signer rejection, MCP network/holder/
+  placement/epoch/operation guards. MCP uses explicitly synthetic scope-only
+  MCG2, not issuer or topology evidence. Current production Shared build
+  **0 warnings/errors**, **4.27s**.
+  Это request author boundary, не protected holder, issued MCG2, socket/TLS,
+  durable installation или Windows/Android delivery.
+- Neutral verified grant/replica models сохранены как transport inputs без
+  нового producer. Account-owned grant journal/live coordination, PMA2 plus
+  authenticated topology membership/epoch и exact XMC1 winner ещё обязательны.
+  API snapshot/evidence repins, full gates и coherent commits остаются batch
+  gates; no deployment/public Release/device delivery claim.
+
+## 2026-10-01 — account-owned DID2 route custody
+
+- [DR-0034](survival-program/decisions/DR-0034-did2-owned-route-custody.md)
+  реализован: обязательный protected journal атомарно создаётся с account
+  instance; proposal, threshold и complete сохраняются отдельными CAS с exact
+  readback. Реальные account lease и protected directory/network floors
+  проверяются до callback, adoption и возврата. Неверный threshold не
+  записывается; callback имеет hard 30-second wait budget.
+- Focused actual-account/native/SQLCipher scenario **7/7 passed**, **3m07s**:
+  response loss после всех3 commits, reopen/exact retry без повторного threshold,
+  changed config, invalid witness response/recovery с тем же nonce/proposal,
+  повреждение effective scalar bit, missing journal и hostile header.
+  Первоначальная mutation fixture меняла clamped-away X25519 bit: исправлен
+  только тест, runtime checks не ослаблены. Local protected/clock/HTTP adapters,
+  не live Registry/TLS/platform/device evidence.
+- Current Shared production Release build **0 warnings/errors**, **4.73s**.
+  Account SQL shape2/application shape6 не изменены; новый обязательный root
+  требует explicit reset pre-increment QA accounts. No lazy repair/migration.
+  Live DID2 threshold/publication, mailbox grants/dispatch/semantic ACK, blobs,
+  groups, shipping UI, API/evidence repins и final batch gates/commits остаются.
+
+## 2026-10-01 — прямой DID2 current route: verifier и genesis author
+
+- [DR-0033](survival-program/decisions/DR-0033-did2-current-mailbox-route.md)
+  реализован в Protocol: current DID2 DAB2/DMD1/DCA1 V2 проверяются напрямую,
+  без DID1 wrapper. Три фазы выпускают XRA1, threshold PMS2/XRC1/XSS1 и
+  owned-device XRR1/XIR1 V2. Существующие identity-neutral framing/domains
+  сохранены; current traffic-key epoch берётся из verified nodes, не PMT
+  selection epoch. Нет generic device signer или export private scalar.
+- Production Protocol Release build **0 warnings/errors**, **11.52s**.
+  Final Shared production Release build **0 warnings/errors**, **4.83s**.
+  Latest focused scenario **1/1 passed**, **1m06s**; предшествующие три версии
+  сценария также passed. Actual SQLCipher/DID2/native ML-DSA,
+  protected retained device, independent nonce-bound proofs и настоящие
+  signatures трёх witnesses. Проверены conservative union time ranges,
+  async input ownership, immutable exact return, altered invite/reference/
+  threshold, XRR deposit/policy/quota/issuer/signature, low-order/reused sealing key, foreign device, duplicate/invalid
+  witness, boot change и expiry across signing. Это локальный crypto/account
+  boundary test с in-memory HTTP/clock/storage adapters, не TLS или device E2E.
+- Normative public/private route-coordination ambiguity исправлена у владельца
+  `CONTACT-RESOLVER-V1.md`; downstream docs ссылаются на decision. Публичная
+  storage/routing plane не получает device/delegation evidence.
+- Durable exact route/metadata adoption, retry/successor/publication,
+  DID2 Registry threshold endpoint, protected holder/grant acquisition,
+  actual mailbox/semantic ACK, masked blobs, groups и shipping UI остаются
+  открытыми. Exact API snapshot/evidence gate, consumer repins, full required
+  gates и coherent commits — в конце whole-business batch. Нет deploy,
+  physical delivery, public Release или commit в этом increment.
+
+## 2026-10-01 — DID2 mailbox network and selected-entry candidate
+
+- [DR-0032](survival-program/decisions/DR-0032-did2-mailbox-selected-entry.md)
+  реализован как internal Shared composition: actual DID2-owned fresh network
+  source, scoped MAU2/route equality, account-owned guards/entropy, selected-entry
+  TLS and authenticated/canonical reply boundary. Static URL, DID1 adapter и
+  automatic alternate dispatch не добавлены. Protocol wire/schema не менялись.
+- Focused source/route/actual SQL credential batch **7/7 passed**, **1m16s**.
+  Source получает новый proof на каждый refresh и отвергает повреждённый
+  signed network без rewrite floor. Unscoped/foreign custody отказывает до
+  network/guard activity; Store/Retrieve/ACK связываются с exact route.
+- Latest copy/path/SQL batch **6/6 passed**, **2m11s**: actual DID2 account,
+  signed three-node network, SQLCipher guards/entropy, оба replica exits для
+  всех3 операций; TLS facts из selected path. После async mutation caller
+  request/route buffers attempt сохраняет исходные verified bytes/scope.
+  Path-only MAU2 grants в этом fixture synthetic: это не issued credentials,
+  authenticated mailbox delivery, socket, platform protection или device E2E.
+- Final production Release build **0 warnings/errors**, **4.71s**; root/Shared
+  diff-check clean. Initial SQL regression test вызывал Store validation для
+  собственного Retrieve frame; исправлен только этот harness operation,
+  assertions/runtime binding не ослаблялись. Full gates не запускались.
+- Current DID2 XIR1/XRR1 route publication/verification, protected holder,
+  XMG1/XMC1 acquisition, real adapter receive/semantic ACK, masked blob/group
+  composition и shipping Windows/Android UI остаются release gates. No deploy,
+  physical delivery, public Release или commit в этом increment. Fast-mode
+  whole-business batch продолжается, итоговые checks/commits ещё впереди.
+
+## 2026-10-01 — exact account-owned attachment adoption candidate
+
+- [DR-0031](survival-program/decisions/DR-0031-did2-local-attachment-custody.md)
+  реализован в actual account lease/current-account path: complete candidate
+  SQL transaction -> protected pending -> verified SQL readback -> stable CAS.
+  Unregistered candidates inert; registered loss/substitution rejects. Object
+  scope генерируется заново только до adoption, а resume читает прежние bytes.
+- Actual DID2 account owner local adoption/restart + preparation **5/5 passed**
+  (**1m23s**): все3 failpoints, exact manifests/chunks after owner restart,
+  восстановление без plaintext/picker URI, chunk decrypt to original bytes,
+  changed-input rejection и initialized SQL loss/no recreation. SQLCipher и
+  native account verifier настоящие; protected adapter in-memory. Это не
+  HTTPS/blob transport, Windows/Android platform protection или physical E2E.
+- Current schema6 focused asset/text/removed-HTTP batch **22/22 passed**
+  (**1m32s**): asset foreign/malformed/duplicate/disposed journal, inert orphan
+  cleanup, registered object/chunk loss, changed ciphertext, text counter and
+  corruption/replay guards. New SQL tables не вводят wire bytes или отдельный
+  attachment message counter. Schema5/missing asset journal требуют explicit
+  reset; migrations/legacy fallback отсутствуют. Device/prod data не менялись.
+- Ordinary actual-owner native bidirectional gap/crash/replay/history test
+  **1/1 passed**, **15m26s**. Этот run использовал preceding schema5 candidate,
+  до DR-0031: это evidence messaging mechanism, не latest whole graph gate.
+  Additional uncomposed-kind/removed-HTTP/bounded SQL payload checks **4/4**,
+  **5.83s**, и affected MAUI TLS smoke **1/1**, **0.91s**. Oversized corruption
+  fixture первоначально остановилась на production CHECK; test now explicitly
+  injects hostile bytes only on its mutation connection without weakening DDL.
+- No new physical messaging run, deploy, full gate or commit. BLOB-01 masked
+  padding/upload/download/resume, typed offer/cancel, group ownership/fanout,
+  semantic inbox/ACK and native shipping UI остаются release gates. Public
+  Releases не публиковались; whole fast-mode business batch продолжается.
+
+## 2026-10-01 — owned DID2 text queue and retired file transport removal
+
+- [DR-0030](survival-program/decisions/DR-0030-did2-owned-direct-text-outbox.md)
+  реализует actual account lease/current endpoint/source retirement checks,
+  owner-generated logical ID/sequence, protected pending before SQL, exact SQL
+  mirror/readback and stable CAS. Exact retry не авторует новый payload;
+  raw caller text не допускается к crypto. Другие неподключённые typed events
+  явно отвергаются на account send boundary. Это local queue, не delivery/ACK.
+- Focused codec/SQL/preparation/removed-HTTP-surface batch passed **18/18**
+  (**1m16s**). SQL loss, rollback/advance, changed recipient/operation/hash/time,
+  unprotected rows, exact crash recovery/reopen and disposal checked. Первый
+  старый harness assertion ошибочно считал любой новый operation malformed;
+  исправлен на zero-operation/duplicate проверки без ослабления runtime.
+- При review найден missing responder acceptance counter: text мог принять
+  отсутствие baseline. Теперь responder обязан иметь actual counter4;
+  loss rejects without recreation. Focused regression/recovery **3/3 passed**
+  (**24.49s**); это structural SQL tests, не consent authority.
+- Actual-owner native contact/accept/owned-text/retry/reply **1/1 passed**
+  (**13m31s**), включая lost text preparation response after SQL and exact
+  stable retry. Этот run предшествует дополнительным missing-counter/kind
+  guards; они проверяются отдельно. Protected/HTTP fixture in-memory, actual
+  native crypto/SQLCipher: не physical Windows/Android evidence.
+- Retired `/file`/DEEPATT2 HTTP author/reader/options/factory и его positive
+  test corpus удалены. UI file-I/O interface явно unavailable до DID2 blob
+  composition; excluded Session composition больше не включает old protocol
+  по URL. Удалённое восстановимо из Git, не compatibility fallback.
+- Whole fast-mode business batch не завершён. Ordinary native gap/crash/replay
+  scenario проверяется отдельно. Semantic inbox rollback/ACK, Active transport,
+  durable masked blob/padding/resume, group ownership, MAUI device E2E, full
+  gates и coherent commits остаются открытыми. Public Releases не публиковались.
+
+## 2026-10-01 — explicit DID2 contact acceptance and attachment preparation (isolated candidate)
+
+- [DR-0029](survival-program/decisions/DR-0029-did2-contact-accept-custody.md)
+  реализован как явная account-owner команда, protected exact winner/retry,
+  committed DPE2 handoff и actual-custody local/peer retained views.
+  Hello не означает согласия; Accept не означает Active или ACK.
+- Contact codec/SQL/in-memory/counter/replay/fork batch passed **27/27**.
+  Native actual-owner acceptance/send/receive/reply passed **1/1**, **11m19s**:
+  настоящий DID2, approved crypto и SQLCipher, committed semantic response loss,
+  тот же Accept/operation/ciphertext при retry, receive replay без продвижения
+  floor, retained acceptance с обеих сторон и обычный ответ. Protected adapter
+  и HTTP fixture in-memory: это не platform protection/TLS/physical delivery.
+- Protocol реализует уже frozen attachment §16 transcript без новых wire bytes:
+  XChaCha20-Poly1305, HKDF-SHA-512, domain-separated nonce, exact geometry и
+  commitment before AEAD. Key-bearing DAM1 теперь disposable. Focused cipher
+  плюс существующий manifest codec batch passed **20/20** (**6.25s**), включая
+  независимый transcript comparison, 25 MiB, подмены, границы и стирание owned
+  key/canonical при disposal.
+- Shared owned preparation и structural offer/cancel custody passed **6/6**
+  (**12.83s**): short reads, exact input length, fresh random object scope,
+  defensive ciphertext copies, disposal/cancellation, SQL restart и in-memory
+  parity. Offer передаёт exact DAM1; восстановленные chunks расшифровываются
+  в исходные bytes. Offer/cancel не становятся текстовыми сообщениями.
+- Один parallel Shared build остановился на Windows DLL lock текущего native
+  test; повторная проверка использовала отдельный output, затем canonical
+  output после завершения native test. Это harness/build collision, не product
+  failure и не причина ослаблять проверки. Итоговый production Release build
+  после lifetime refinement: **0 warnings/errors**, **7.23s**.
+- Нет нового deploy, device UI прогона, коммита или full gate. User fast-mode
+  batch ещё не завершён. Protected semantic/outbox floors, Active/reachability,
+  masked blob custody/upload/download/padding/resume, groups и shipping MAUI
+  Windows/Android physical E2E остаются release gates; `/file`/DEEPATT2 не
+  подключаются как fallback. Публичные Releases не опубликованы.
+
 ## 2026-09-30 — custody-bound initial conversation candidate
 
 - По [DR-0020](survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md)

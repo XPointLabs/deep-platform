@@ -138,6 +138,194 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
 - [`DR-0020`](../survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md)
   задаёт закрытую локальную атомарную фиксацию device burn и DPH2/TRS1.
   Focused native/structural gates passed; final batch/device gates ещё открыты.
+- [`DR-0021`](../survival-program/decisions/DR-0021-did2-contact-rendezvous-issuer.md)
+  связывает issuer/time inbound rendezvous с current DID2 checkpoint.
+  Identity-neutral XUR1 wire не меняется; это не route, acceptance или ACK.
+- [`DR-0022`](../survival-program/decisions/DR-0022-did2-contact-control-events.md)
+  переводит Hello/Accept на DAB2 и PQ-root safety number без V1 overload.
+  Current endpoint metadata не заменяет authentication, route, durable inbox или ACK.
+- [`DR-0023`](../survival-program/decisions/DR-0023-did2-owned-rendezvous-author.md)
+  задаёт owned-device XUR1 author и account/instance/intent-bound protected custody.
+  Exact retry сохраняет metadata-ключ и XUR1 после сбоя; старый DAB1 author удалён.
+  Route/publication, MSG projection и физическая доставка остаются gates.
+- [`DR-0024`](../survival-program/decisions/DR-0024-did2-owned-initial-claim-preview.md)
+  задаёт read-only receiver preview из account-owned DID2 prekey custody.
+  Открытый XPK1/XPC1 prefix не является session, inbox, prekey burn или ACK;
+  current V2 promotion и atomic responder completion остаются обязательными.
+- [`DR-0025`](../survival-program/decisions/DR-0025-did2-owned-responder-preparation.md)
+  задаёт owned-device responder preparation и одноразовую передачу matching
+  state/events/reservation атомарному store. Prepared capability не является
+  durable session, применённым contact state или ACK.
+- [`DR-0026`](../survival-program/decisions/DR-0026-did2-atomic-responder-custody.md)
+  задаёт account-owned атомарную фиксацию входящего первого контакта,
+  расход prekey и exact recovery без повторного открытия использованного ключа.
+  Это локальное custody; MSG/contact projection и physical delivery ещё обязательны.
+- [`DR-0027`](../survival-program/decisions/DR-0027-did2-messaging-session-ownership.md)
+  задаёт передачу владения DID2 initial-state рабочему message store и удаление
+  старых секретных копий до обычного send/receive. Внутренний seed не является
+  durable transfer, ACK или transport capability; runtime activation gated.
+- [`DR-0028`](../survival-program/decisions/DR-0028-did2-application-event-handoff.md)
+  задаёт DID2 account-owned application custody и замкнутый handoff retained
+  initial/ordinary events в inbox. Это не contact consent, dispatch, delivery
+  или ACK; semantic rollback/outbox checkpoints остаются обязательными.
+- [`DR-0029`](../survival-program/decisions/DR-0029-did2-contact-accept-custody.md)
+  задаёт явную account-owned acceptance command, protected exact retry и
+  authenticated pending-Hello/Accept handoff. Peer/local acceptance не являются
+  Active/reachability, delivery или ACK.
+- [`DR-0030`](../survival-program/decisions/DR-0030-did2-owned-direct-text-outbox.md)
+  задаёт account-owned ordinary text authoring, protected pending/stable retry,
+  единый authored counter и exact SQL mirror. Raw caller MessageCreate и
+  остальные неподключённые виды событий не дают send authority. Это очередь,
+  не доставка; semantic inbox, transport и physical gates остаются открытыми.
+- [`DR-0031`](../survival-program/decisions/DR-0031-did2-local-attachment-custody.md)
+  задаёт offline account-owned DAM1/ciphertext adoption, exact restart/retry
+  и protected asset journal. Это не AttachmentOffer, masked blob transport
+  или remote receipt; typed events используют общий authored namespace.
+- [`DR-0032`](../survival-program/decisions/DR-0032-did2-mailbox-selected-entry.md)
+  задаёт DID2-owned mailbox network refresh и selected-entry composition.
+  Route/grant, semantic ACK и shipping/device activation остаются gates;
+  identity-neutral MAU2 wire не является сохранением Session identity.
+- [`DR-0033`](../survival-program/decisions/DR-0033-did2-current-mailbox-route.md)
+  задаёт прямую current DID2 route authority и трёхфазный genesis author.
+  Owned-device и threshold подписи не заменяют durable adoption/publication,
+  mailbox grants, semantic ACK или physical delivery.
+- [`DR-0034`](../survival-program/decisions/DR-0034-did2-owned-route-custody.md)
+  задаёт account-owned route journal и exact restart трёх фаз под защищённой
+  блокировкой. Новый обязательный protected root требует явного reset старых
+  QA-аккаунтов; серверный wire и shipping publication этим не активируются.
+- [`DR-0035`](../survival-program/decisions/DR-0035-did2-mailbox-grant-request.md)
+  заменяет DID1 grant-request author прямым DID2 и использует только проверенный
+  route time. Старые Shared acquisition client и V1-storage holder owner удалены;
+  issuance, protected
+  holder/request custody и authenticated topology остаются gates.
+- [`DR-0036`](../survival-program/decisions/DR-0036-did2-route-threshold-coordination.md)
+  заменяет route-coordination envelope на V2, серверную authority на прямой
+  DID2/ADA2/external-floor путь и задаёт permanent PostgreSQL exact replay.
+  Direct Registry fallback в shipping client не разрешён; publication,
+  successor/renewal, API/repin и physical delivery остаются gates.
+- [`DR-0038`](../survival-program/decisions/DR-0038-did2-publication-coordination.md)
+  freezes exact DID2 publication coordination and protected request/response custody;
+  shipping private transport and replica/device delivery remain gates.
+- [`DR-0039`](../survival-program/decisions/DR-0039-did2-opaque-publication-consumer.md)
+  replaces the public XPU/XPA consumer and node authorization/placement with
+  direct DID2 authority; incompatible saga custody rejects without migration.
+  Local two-replica evidence does not close private transport or device gates.
+- [`DR-0040`](../survival-program/decisions/DR-0040-did2-owned-publication-commit.md)
+  adds closed two-replica commit verification and owned exact phase-7 custody;
+  route journal version 4 only requires explicit reset of disposable older
+  QA instances. Historical evidence does not renew dispatch authority.
+- [`DR-0041`](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md)
+  closes descriptor-bound candidate decryption and independent current DID2
+  permanent-read verification. Parsed candidates are not identity authority;
+  local evidence does not activate shipping/contact acceptance/device delivery.
+- [`DR-0042`](../survival-program/decisions/DR-0042-did2-route-directory-issuance-anchor.md)
+  separates signed route issuance anchors from independent current identity;
+  unrelated directory admission does not require contact republishing. New
+  issuance, current proof/floors and network/expiry successor gates remain.
+- [`DR-0043`](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md)
+  binds claim recipient/placement to exact current directory/network authority
+  and retains the last protected verification sample; dispatch is bounded.
+- [`DR-0044`](../survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md)
+  separates full inventory/service validity from later contact publication;
+  all lifetimes must still cover the complete authenticated operation interval.
+- [`DR-0045`](../survival-program/decisions/DR-0045-did2-owned-resolved-contact-claim.md)
+  moves exact claim preparation into the account owner, deriving the publisher
+  service and restoring the protected operation atomically before dispatch.
+  Local custody does not activate shipping/session/device delivery.
+- [`DR-0046`](../survival-program/decisions/DR-0046-did2-owned-attachment-offer.md)
+  connects stable owned assets to AttachmentOffer in the common protected
+  ordinary-event namespace; BLOB/socket/device delivery is still gated.
+- [`DR-0047`](../survival-program/decisions/DR-0047-did2-owned-peer-refresh.md)
+  persists the seed's exact public peer credential atomically with registration;
+  ordinary session operations independently refresh both endpoints, not a stored
+  resolver proof. Missing bootstrap requires explicit reset, never lazy repair.
+- [`DR-0048`](../survival-program/decisions/DR-0048-private-contact-coordination-peer-authentication.md)
+  requires independent existing-node proof at both private coordination terminals.
+  Transport access is not publisher/witness/network authority; the isolated
+  backend client does not activate a direct client fallback or XPoint carrier.
+- [`DR-0049`](../survival-program/decisions/DR-0049-did2-three-hop-coordination-carrier.md)
+  selects the existing exact-three XPoint carrier for DID2 coordination, with
+  request-paired wrappers and independently derived gateway placement. Owned
+  operations loan the actual account lease to guards/entropy; recursive proof
+  acquisition, direct Registry fallback and public lock-bypass flags are forbidden.
+- [`DR-0050`](../survival-program/decisions/DR-0050-did2-contact-service-composition.md)
+  connects DID2-only contact publication/resolve and V2 prekeys behind one
+  authenticated replica endpoint. Service expiry/retention uses fresh signed
+  DID2 time plus actual monotonic elapsed time, never the HTTP admission clock.
+  Candidate activation and physical release evidence remain separate.
+- [`DR-0051`](../survival-program/decisions/DR-0051-owned-permanent-contact-client-entry.md)
+  exposes account-owned permanent publication/resolve without UI-supplied keys,
+  authority callbacks or retry IDs. The protected instance determines the stable
+  plan, checked under each phase lease; HTTPS diagnostic composition is not
+  shipping message/device evidence.
+- [`DR-0052`](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
+  requires public PMA2 in the complete network bundle and a direct DID2 grant
+  verifier under root-authorized role issuers and the exact current PMT2.
+  Retained grant evidence is not protected holder custody or dispatch authority;
+  live issuance, final machine bindings and physical delivery remain gates.
+- [`DR-0053`](../survival-program/decisions/DR-0053-did2-mailbox-grant-restart-custody.md)
+  separates exact current pending-request restoration from retained grant
+  verification and binds holder/request/winner custody to the actual account
+  lease and protected SQL instance. Private live issuance, credential use and
+  physical delivery remain separate gates; no silent nonce/key renewal.
+- [`DR-0054`](../survival-program/decisions/DR-0054-did2-private-mailbox-grant-issuance.md)
+  authorizes opaque grant issuance only from the current root/network and both
+  independently selected durable stores. The private issuer keeps exact winners
+  in the external restore-authority journal; it learns no recipient identity.
+  This is not client credential installation or physical delivery evidence.
+- [`DR-0055`](../survival-program/decisions/DR-0055-did2-owned-mailbox-credential-installation.md)
+  installs the read-back protected winner into the actual owner's application
+  SQL under the same lease and current PMA2 policy. No holder/runtime authority
+  escapes; installation is not dispatch, acknowledgement or device evidence.
+- [`DR-0056`](../survival-program/decisions/DR-0056-did2-owned-mailbox-message-dispatch.md)
+  binds exact committed owned DPE2 to protected pending/prepared request custody,
+  current holder/counter policy and owner-held selected-entry Store. Local
+  preparation/receipt tests do not replace initial delivery, receive/ACK or
+  physical messages/files/images/groups evidence.
+- [`DR-0057`](../survival-program/decisions/DR-0057-did2-owned-incoming-session-selection.md)
+  selects ordinary incoming sessions only from the actual protected account
+  catalog before independent endpoint refresh and owned materialization. The
+  selector is not authentication, initial-contact completion or ACK authority.
+- [`DR-0058`](../survival-program/decisions/DR-0058-did2-owned-mailbox-retrieve-and-ack.md)
+  connects owned Retrieve to protected captured-page custody and actual native
+  receive/materialization before signed tombstone ACK. Missing read custody
+  requires explicit QA reset; local integration is not initial-contact,
+  remote attachment/group or physical delivery evidence.
+- [`DR-0059`](../survival-program/decisions/DR-0059-did2-owned-initial-mailbox-dispatch.md)
+  binds initial contact Store to the actual retired sender source and protected
+  initialized catalog through the same owned mailbox engine; no caller DPH2,
+  separate legacy dispatcher or ordinary-send fallback. Connected initial
+  Store/Hello/ACK and live/device evidence remain required.
+- [`DR-0060`](../survival-program/decisions/DR-0060-did2-account-random-sqlcipher-key.md)
+  selects the supported random-key encoding for local DSV2 generation3; old
+  diagnostic account databases require explicit reset, never a dual-key reader.
+  Durable authentication/protected floors and the network deadlines are unchanged.
+- [`DR-0061`](../survival-program/decisions/DR-0061-did2-committed-claim-recipient-verification.md)
+  separates a completed pre-key allocation from its new-mutation request deadline
+  on delayed initial receipt. Current recipient/initiator, placement, inventory,
+  signatures and atomic consumption remain required; recipient evidence cannot
+  authorize initiator encryption. Connected and device closure remain pending.
+- [`DR-0062`](../survival-program/decisions/DR-0062-did2-private-contact-mailbox-route.md)
+  defines the bounded private reply-route package without resolver/retrieve
+  secrets. Event embedding, durable route heads and actual reverse contact
+  delivery remain gated; current sends must not use permanent public resolution
+  as their steady-state route.
+- [`DR-0063`](../survival-program/decisions/DR-0063-did2-contact-reply-route-embedding.md)
+  requires the private package in every Hello/Accept and a version2-only
+  variable-length acceptance journal. Joined native/transport/device evidence
+  and explicit incompatible isolated-account reset remain activation gates.
+- [`DR-0037`](../survival-program/decisions/DR-0037-did2-owned-contact-object.md)
+  замораживает V2 owned genesis DCB1/DCR1 author, capability-bound encryption
+  и protected exact restart в phase 4 route journal. Старый journal version 1
+  требует explicit QA reset; local candidate не выдаёт XPA1/grant/ACK и не
+  активирует network publication или физическую доставку.
+- Current owned application boundaries are governed by
+  [DR-0064](../survival-program/decisions/DR-0064-did2-owned-initial-contact-draft.md),
+  [DR-0065](../survival-program/decisions/DR-0065-did2-contact-application-command-boundary.md),
+  [DR-0066](../survival-program/decisions/DR-0066-did2-application-sqlcipher-random-key.md)
+  and [DR-0067](../survival-program/decisions/DR-0067-did2-ordinary-store-completion-and-ui-retry.md):
+  owned initial draft, business commands, random-key application SQL and durable
+  original ordinary-command retry. Local completion is not physical activation.
 - Первый публичный релиз использует новое поколение account/device/database,
   ratcheted E2EE и новый contact bootstrap.
 - XPoint — первый transport provider, но message identity, E2EE, groups,

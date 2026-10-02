@@ -10,8 +10,10 @@
     "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
     "canonicalBounds": {
       "type": "object", "additionalProperties": false,
-      "required": ["XRA1", "XMG1", "XMC1", "PMA2", "DCB1", "DMC2/14"],
+      "required": ["XRA1", "XMG1", "XMC1", "PMA2", "DCB1", "DMC2/2", "DMC2/3", "DMC2/14"],
       "properties": {
+        "DMC2/2": { "$ref": "#/$defs/privateContactControlBounds" },
+        "DMC2/3": { "$ref": "#/$defs/privateContactControlBounds" },
         "XRA1": {
           "type": "object", "additionalProperties": false,
           "required": ["recordBytes", "signatureProjectionBytes"],
@@ -85,6 +87,16 @@
     }
   },
   "$defs": {
+    "privateContactControlBounds": {
+      "type": "object", "additionalProperties": false,
+      "required": ["minimumPayloadBytes", "maximumPayloadBytes", "minimumRecordBytes", "maximumRecordBytes"],
+      "properties": {
+        "minimumPayloadBytes": { "const": 5917 },
+        "maximumPayloadBytes": { "const": 25069 },
+        "minimumRecordBytes": { "const": 6199 },
+        "maximumRecordBytes": { "const": 25351 }
+      }
+    },
     "hex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})+$" },
     "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
     "ed25519Fixture": {

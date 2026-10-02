@@ -1,0 +1,20 @@
+{
+  "package": "CONTACT-COORDINATION-02",
+  "decision": "DR-0049",
+  "status": "FROZEN_TARGET_NOT_ACTIVE",
+  "runtimeActivation": false,
+  "outerOnionOperation": 4,
+  "placementRequestKind": 8,
+  "placementServiceClass": 1,
+  "header": { "bytes": 12, "version": 2, "versionOffset": 4, "targetOffset": 6, "reservedOffset": 7, "totalOffset": 8 },
+  "requestMagic": "XCA2",
+  "responseMagic": "XCS2",
+  "contactMaximumRequestBytes": 155222,
+  "contactMaximumSuccessBytes": 131072,
+  "targets": [
+    { "id": 1, "name": "Route", "requestBodyBytes": 1151, "minimumResponseBodyBytes": 2151, "maximumResponseBodyBytes": 11079 },
+    { "id": 2, "name": "Publication", "minimumRequestBodyBytes": 23302, "maximumRequestBodyBytes": 155210, "minimumResponseBodyBytes": 14682, "maximumResponseBodyBytes": 93092 }
+  ],
+  "binding": ["exact enclosed version-2 canonical envelope", "target", "network16", "coordination nonce32", "current NETCODEC PMT2", "XRA1 tag6 random gateway shard"],
+  "notAuthority": ["parsed wrapper", "gateway placement is not mailbox placement", "node access is not DID2 or witness authority"]
+}

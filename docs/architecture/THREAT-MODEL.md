@@ -67,6 +67,14 @@ Contact rendezvous, mailbox placement и transport credentials являются
 IDs, route descriptors, prekey IDs, call SDP/ICE, payload hashes или стабильные
 device fingerprints.
 
+Для private route/publication coordination применяется выбранный в
+[DR-0049](../survival-program/decisions/DR-0049-did2-three-hop-coordination-carrier.md)
+XPoint exact-three profile: ingress видит source IP, но не publisher body;
+exit/coordinator видит enclosed publisher records, но не source IP. Это не
+обещает unlinkability при сговоре ingress/exit/оператора или timing correlation.
+Transport admission узла не заменяет publisher/witness authority. Эти границы
+не подтверждают shipping/device activation сами по себе.
+
 Выбранные PreKeyClaim-реплики при публикации DID2 XPP1 видят публичный exact
 DID2, DCA1, XPS1, XPI1 и DPK2 для собственного nonce-bound directory proof и
 проверки подписей. Это осознанная метаданная поверхность: реплика может связать

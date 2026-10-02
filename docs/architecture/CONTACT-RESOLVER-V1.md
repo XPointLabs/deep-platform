@@ -133,12 +133,13 @@ network, issuer device, permitted invite kind and complete validity interval
 must agree before promotion. The XRA1/PMT2 route closure is independently
 mandatory. The old XIR1 V1 parser is a negative fixture, not a dual reader.
 
-This is an isolated candidate, **not** permission to publish contacts. DCB1
-and DCR1 V2 identity/support codecs plus the DID2 locator/read-key derivation
-and DCR1 object protection exist as isolated candidates; the crypto contract is owned by
+This is **not** permission to publish contacts. DCB1/DCR1 V2 owned genesis
+authoring, encryption and protected exact retry follow
+[DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md);
+the crypto contract is owned by
 [CONTACT-AND-GROUP-PROTOCOL-V1 section 6](CONTACT-AND-GROUP-PROTOCOL-V1.md#6-permanent-deep-id-resolution-and-one-time-invitation).
-XPA1/XPU1 consumers, machine vectors and live publication still require one
-DID2-only re-freeze before runtime activation.
+XPA1/XPU1 consumers, machine vectors and live publication still require
+complete DID2-only closure before runtime activation.
 
 Permanent DID1 has no expiry. Its current first-contact availability ends at the
 minimum of DCB1, DCA1, XIR1, XRA1 and
@@ -343,7 +344,9 @@ the XPoint/OHTTP terminal. First, the current device signs XRA1 from the verifie
 PMT2 context; the threshold returns exact PMS2/XRC1/XSS1 for that proposal. The
 device verifies those records, signs XRR1 and XIR1, and locally authors the exact
 DCB1/DCR1 plus encrypted object. Second, it submits that complete closure and the
-176-byte publisher-tuple signature for XPA1 authorization. The authority
+whole-envelope suite-0x0301 publisher signature for XPA1 authorization under
+[DR-0038](../survival-program/decisions/DR-0038-did2-publication-coordination.md).
+The retired 176-byte publisher tuple is not accepted. The authority
 re-verifies current account, device, directory, route and placement closure before
 signing. Raw caller-selected view hashes, replica lists or unsigned route records
 never cross either authority boundary as trusted values. Both exchanges are
@@ -351,13 +354,15 @@ one-operation, bounded, non-enumerable and durable-exact-replay; a changed repla
 conflicts.
 
 The threshold half uses a single canonical request/response envelope at the
-authority terminal. The request media type is
-`application/vnd.deep.contact-route-authority-request.v1+octet-stream` and is
+authority terminal. [DR-0036](../survival-program/decisions/DR-0036-did2-route-threshold-coordination.md)
+replaces the envelope with version 2 and DCA1 V2 only, with no V1 reader.
+The request media type is
+`application/vnd.deep.contact-route-authority-request.v2+octet-stream` and is
 exactly 1,151 bytes: `version:u16be || flags:u16be(0) || total:u32be ||
 networkId16 || requestNonce32 || directoryLookupKey32 ||
 minimumADH1Generation:u64be || minimumADH1CoreHash32 || exactDCA1[473] ||
 exactXRA1[550]`. The response media type is
-`application/vnd.deep.contact-route-authority-response.v1+octet-stream`, is
+`application/vnd.deep.contact-route-authority-response.v2+octet-stream`, is
 2,151..11,079 bytes, repeats the exact network and nonce, then carries only
 `LP32(exactPMS2) || LP32(exactXRC1) || LP32(exactXSS1)`. The authority obtains
 the current directory/network closure from its protected canonical source,
@@ -370,21 +375,52 @@ route-selection oracle.
 
 Before publication, the client obtains exact `XPA1` from the account-directory
 threshold over the XPoint/OHTTP path. The threshold validates current
-ADC1/ADH1/ADP1 plus exact DID1 hash/address public key, DAB1/DCA1/DCB1/XIR1
+ADC1 V2/ADH1/ADP1 V2 plus exact DID2 commitment, DAB2/DCA1 V2/DCB1 V2/XIR1
 closure, but XPA1 exposes to the invite store only this canonical record:
 
 The bounded authority envelope uses
-`application/vnd.deep.contact-publication-authority-request.v1+octet-stream`
-and `application/vnd.deep.contact-publication-authority-response.v1+octet-stream`.
-The request is `5,000..155,210` bytes and carries one nonce-bound directory
+`application/vnd.deep.contact-publication-authority-request.v2+octet-stream`
+and `application/vnd.deep.contact-publication-authority-response.v2+octet-stream`.
+The request is `23,302..155,210` bytes and carries one nonce-bound directory
 rollback floor, exact DCA1/DCR1/six-record route closure, operation/generation,
 protected DCR1, publication windows, owner Retrieve capability and the active
-publisher-device signature. The response is `72..93,092` bytes and repeats the
+publisher-device signature. The response is `14,682..93,092` bytes and repeats the
 exact network and nonce before `LP32(exactXPU1)`. Both sides reject trailing
 bytes, cross-network records, changed operation IDs and values outside these
 bounds. The client independently verifies the embedded XPA1 threshold, current
 view/placement and every publisher-authored XPU1 body field before it may stage
 the request for publication.
+
+The private backend authenticates its calling node independently under
+[DR-0048](../survival-program/decisions/DR-0048-private-contact-coordination-peer-authentication.md).
+Node transport access does not replace current DID2/NET/witness verification,
+nor authorize a direct shipping-client Registry fallback.
+[DR-0049](../survival-program/decisions/DR-0049-did2-three-hop-coordination-carrier.md)
+and its [frozen registry](../survival-program/releases/v3.0.0/specs/contact-coordination-v2.registry.json)
+own the selected exact-three carrier, closed request/response wrappers and
+gateway-placement binding. Gateway coordination is not mailbox placement or
+an invite-store operation. An owned request uses its actual held-account
+custody loan, not recursive proof acquisition or a caller lock-bypass flag.
+Shipping provisioning and physical evidence remain activation requirements.
+
+[DR-0050](../survival-program/decisions/DR-0050-did2-contact-service-composition.md)
+owns the sole DID2 contact-store composition: explicit activation, independently
+reminted NET placement, one authenticated peer endpoint shared with V2 prekeys,
+and no V1 snapshot/recipient dependency. Opaque store expiry and retention use
+current signed DID2 time advanced by the actual monotonic clock; OS timestamps
+authorize only peer HTTP admission. Permanent-contact claim-preflight is a
+non-consuming read and binds its read receipt to the exact XIQ request and the
+receiver's independently checked durable publication.
+
+[DR-0051](../survival-program/decisions/DR-0051-owned-permanent-contact-client-entry.md)
+defines the closed client entry: the protected account instance/name determine
+a stable local retry plan and fixed genesis policy. Each owned phase rechecks
+that plan under its actual lease before mutation/dispatch; all private scalar,
+nonce and exact-response custody remains in the protected route journal. Public
+callers cannot inject a threshold issuer, transport callback, raw key or trusted
+time. The HTTPS diagnostic invokes this entry after prekey commit and resolves
+peers through the actual independently verified resolver, not pasted DID2 proof
+alone. Contact acceptance, grants, messaging and physical evidence are separate.
 
 | Tag | Value | Size |
 |---:|---|---:|
@@ -518,30 +554,58 @@ The XPU1 authorized-body hash is
 projection of tags 1..6,16..25,27)`. XPA1 tag 19 equals that hash;
 tag 2 is `SHA256-D("Deep/ContactResolver/V2/publication-authorization-id",
 operationId32 || authorizedBodyHash32 || exactCurrentADH1CoreHash32)`.
-The publisher signature uses
-`SIGINPUT("Deep/ContactResolver/V2/publisher-publication", 0x0301,
-exact208ByteTuple)` and the witness signatures use
+DR38 replaces the old candidate publisher tuple: the publisher signature uses
+`SIGINPUT("Deep/ContactResolver/V2/publication-publisher", 0x0301,
+exactUnsignedV2AuthorityEnvelope)`, removing the last 64 signature bytes and
+rewriting the header total length to that unsigned length. It covers all
+request fields, including nonce, operation and times. The witness signatures use
 `SIGINPUT("Deep/ContactResolver/V2/publication-authorization", 0x0301,
 unsignedV2XPA1Tags1..20)`. The policy hash uses
 `SHA256-D("Deep/ContactResolver/V2/publication-policy", exactDCA1V2)`.
-The tuple and all other field mappings remain as in the table above. A
+All other field mappings remain as in the table above. A
 threshold must independently verify current DID2/DAB2/DCA1 V2, exact
 DCB1/DCR1/XIR1, route closure, NETCODEC placement, nonce-bound directory
 freshness and the publisher signature before signing. The invite store must
 verify the resulting threshold and consume the authorization durably before
 commit; a structural parser grants none of those rights.
 
-An internal DID2-only codec currently checks the exact V2 header/tag/size
-grammar, ciphertext and route hashes, XPA1 witness-row shape, authorization ID
-and XPU1/XPA1 body binding. A separate internal verifier checks V2-domain
-witness signatures against the exact verified XNA1 witness set, threshold and
-failure domains. A further internal gate binds that signed V2 XPA1 to one live,
-nonce-bound DID2 ADH1/DTT1 head, XNA1 policy, network view and complete trusted
-time interval. It does **not** prove a current account value, DCA1 delegation,
-the six-record route, placement, publisher signature, DCR1 plaintext or replica
-commit. Machine vectors and those authority consumers remain release
-gates; neither old XPU1 nor these partial candidates may be activated as DID2
-publication.
+The sole public codec and opaque-store verifier follow
+[DR-0039](../survival-program/decisions/DR-0039-did2-opaque-publication-consumer.md).
+They parse only V2 XPU/XPA, bind the exact current DID2 directory/network and
+placement, and independently verify witness signatures and the complete trusted
+time interval. The store receives no publisher credential or plaintext/read key;
+those checks belong to the DR38 witness ceremony. Structural parsing alone is
+not authority. Local opaque commit/restart/two-receipt evidence does not close
+private coordination, authenticated remote replication, client custody or
+physical-device gates. Machine vectors and consumer package/API repins remain
+required before activation.
+
+The owned client commit boundary follows
+[DR-0040](../survival-program/decisions/DR-0040-did2-owned-publication-commit.md):
+only its closed current DID2 object/route verifier may release the exact XPO
+after checking both distinct selected-node receipts and owned publisher/body
+binding. Account-owned orchestration durably CAS/readbacks terminal phase 7
+before return. A retained commit is historical evidence, not renewed XPA
+dispatch authority, consent, mailbox authority or message delivery. Exact
+current object/route/directory/placement remain mandatory; the unsigned XPO
+server clock cannot grant freshness.
+
+The DID2 descriptor bootstrap and current permanent-read boundary follow
+[DR-0041](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md).
+Capability-bound AEAD opening yields only a parsed candidate; promotion requires
+an independently fetched nonce-bound current peer proof and the actual two-node
+neutral resolve-read receipts. No unsigned server clock, structural parse or
+successful HTTP result supplies identity/time authority. This boundary is not
+contact acceptance, a prekey claim, a mailbox grant or message delivery.
+Route issuance-anchor/current-authority separation follows
+[DR-0042](../survival-program/decisions/DR-0042-did2-route-directory-issuance-anchor.md).
+XRC1 tag19 and XSS1 tag12 are the same threshold-signed ADH issuance/audit
+anchor, not a pin to the latest mutable directory head. Retained verification
+requires independent current recipient/network proof; new issuance still
+requires the current anchor. Signed DCB minimum metadata must bind that anchor
+and cannot exceed the verified current floor; it grants no ancestry authority.
+Shipping composition must still close network view/head/key/expiry successor
+renewal. The old DID1 reader/transcript is not a compatibility path.
 
 `XPO1` is the only XPU1 result. Status IDs are `1=Committed`, `2=ExactReplay`,
 `3=Expired`, `4=Unauthorized`, `5=StaleView`, `6=Conflict`,
@@ -964,6 +1028,18 @@ exact DCB1 hash, XPS1 hash, service capability and responder device. Both
 selected signatures and the inventory proof are mandatory, and the
 last-resort counter must also fit the signed XPS1 limit.
 
+Current claim network/clock binding follows
+[DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md):
+recipient and placement must share exact current ADH/XNA/policy/XNV authority,
+and verification/use cannot precede the last protected clock observation.
+Exact dispatch is a single bounded coordinator attempt; cancellation/timeout
+does not replace the durable operation or store an unverified result.
+Independent inventory/contact lifetimes follow
+[DR-0044](../survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md):
+the whole inventory interval is contained by its signed XPS1 service, not by
+the later contact publication. The complete operation-time union must still
+fit BOTH current contact and selected inventory/member/service lifetimes.
+
 Exact local receipt replay commits all result bytes, including the status,
 server-time projection and canonical padding, not only the signed tuple:
 
@@ -1002,6 +1078,14 @@ remain mandatory before promotion or ACK.
 
 The single V2 encrypted-prefix reader and closed current-endpoint promotion
 API are frozen by [DR-0017](../survival-program/decisions/DR-0017-did2-initial-claim-promotion.md).
+Delayed initial recipient promotion follows
+[DR-0061](../survival-program/decisions/DR-0061-did2-committed-claim-recipient-verification.md):
+the closed committed-recipient factory verifies the signed exact allocation
+without treating the mutation request expiry as a delivery deadline. All
+current endpoint/inventory/placement validity and independent initiator,
+AEAD, replay and durable prekey-consumption gates remain. Its evidence cannot
+authorize initiator encryption; the existing current initiator receipt policy
+above is unchanged.
 The current-recipient receipt itself has no public session-binding method;
 only the fully verified initial claim can transfer the two single-use lanes.
 This remains independent from durable claim completion, protected pending
@@ -1195,8 +1279,14 @@ under `SIGINPUT("Deep/XPoint/V1/XRA1", 0x0201, projection)` and its core hash is
 device whose ID/key equal tags 14/16. A successor preserves network,
 authorization ID, PMT2, placement input and recipient device; it may rotate only
 anti-spam and sealing-key material. It must exactly increment generation and name
-the accepted core hash in tag 4. The client sends neither tags 14/15 nor tag 16 to
-the route service. These totals are the complete canonical grammar calculation:
+the accepted core hash in tag 4. Under
+[DR-0033](../survival-program/decisions/DR-0033-did2-current-mailbox-route.md),
+the private directory-witness coordination boundary validates the complete
+authorized device proposal; the public routing/storage plane receives neither
+tags 14/15 nor tag 16. DID2 route authority is checked directly against current
+DAB2/DMD1/DCA1 V2, never by synthesizing a DID1 directory capability. This does
+not activate durable publication or mailbox grant issuance. These totals are
+the complete canonical grammar calculation:
 `12 + 16*8 + 410 = 550`, and omitting only tag 16 gives
 `12 + 15*8 + 358 = 478`; V1 has no reserved extension field or padding.
 
@@ -1323,6 +1413,24 @@ the deposit service receives only tag 10 or a tag-15 replica capability.
 
 ### 3.7 Privacy-routed mailbox grant acquisition: `XMG1` / `XMC1`
 
+The direct DID2 request lifetime policy and closed restoration/result APIs follow
+[DR-0035](../survival-program/decisions/DR-0035-did2-mailbox-grant-request.md),
+[DR-0052](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
+and [DR-0053](../survival-program/decisions/DR-0053-did2-mailbox-grant-restart-custody.md).
+The wire's structural maximum below does not extend a client acquisition window.
+Account-owned pending requests and retained winners are separate states; their
+revalidation is not credential installation, dispatch, delivery or ACK.
+Private current-NET issuance and exact server retry follow
+[DR-0054](../survival-program/decisions/DR-0054-did2-private-mailbox-grant-issuance.md).
+The issuer verifies both selected stores' durable opaque-route evidence; it does
+not receive a recipient DID2 or act as a public resolver. The XMC deadline is
+the original XMG deadline, not a new per-callback window.
+Owner-held current-only SQL credential installation and the readonly held-floor
+mailbox path loan follow
+[DR-0055](../survival-program/decisions/DR-0055-did2-owned-mailbox-credential-installation.md).
+No holder or runtime issuer authority escapes the account operation. Local SQL
+installation is not transactional message preparation, dispatch or ACK evidence.
+
 `MAU2/MCP2/MCG2` remains the single mailbox authorization wire used inside
 ONION-01 Store/Retrieve/Acknowledge. Its holder identity is clean-break state:
 one independently generated random Ed25519 key per reachability direction and
@@ -1368,8 +1476,10 @@ placement equal the verified XRR1/PMT2/PMS2 route closure. XMG1 tag 4 is only a 
 secret and is never interpreted as the placement identifier.
 For the grant, `PlacementCommitment` is exactly
 `MailboxPlacementCommitment.Compute(BlindedPlacementId(XRR1.tag10))`,
-`MembershipCommitment` is exactly the independently authenticated current
-mailbox-topology commitment, and the current epoch must equal both that topology
+`MembershipCommitment` is exactly SHA-256 of the independently authenticated
+current PMT2 canonical bytes (see
+[DR-0052](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)),
+and the current epoch must equal both that topology
 epoch and `PMS2.tag4`. A client refreshes the grant before the current epoch
 expires; the issuer never fabricates a next-epoch membership assertion from a
 current PMS2.

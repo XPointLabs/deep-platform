@@ -639,8 +639,8 @@
         "13": "LP32(exactDRS1)||LP32(exactDMD1)",
         "18": "LP32(exactDAM1)",
       "19": "objectId32||reason:u16be; reason={1,2,3}",
-      "2": "relationshipId32||initiatorDAB1Ref38||initiatorDMD1Hash32||safetyNumberHash32||contactPolicy:u16be||LP32(exactInboundXUR1[538]); exact 678; flags=0,reply=empty,expires=created+1..604800000ms",
-      "3": "relationshipId32||contactHelloHash32||responderDAB1Ref38||responderDMD1Hash32||contactPolicy:u16be||LP32(exactInboundXUR1[538]); exact 678; flags=0,reply=empty,expires=created+1..604800000ms",
+      "2": "relationshipId32||initiatorDAB2Ref38||initiatorDMD1Hash32||safetyNumberHash32||contactPolicy:u16be||LP32(exactInboundXUR1[538])||LP32(exactPrivateMailboxPackage[5235..24387]); payload 5917..25069; empty-reply record 6199..25351; flags=0,reply=empty,expires=created+1..604800000ms; DR-0063 mandatory replacement, old678 rejects",
+      "3": "relationshipId32||contactHelloHash32||responderDAB2Ref38||responderDMD1Hash32||contactPolicy:u16be||LP32(exactInboundXUR1[538])||LP32(exactPrivateMailboxPackage[5235..24387]); payload 5917..25069; empty-reply record 6199..25351; flags=0,reply=empty,expires=created+1..604800000ms; DR-0063 mandatory replacement, old678 rejects",
       "4": "relationshipId32||contactHelloHash32||reason:u16be; reason={1,2,3,4}; exact 66; flags=0,reply=empty,expires=created+1..604800000ms",
       "14": "relationshipId32||routeGeneration:u64be||predecessorRouteUpdateHash32||closureCount:u8(6)||LP32(XRR1)||LP32(XRA1)||LP32(XRC1)||LP32(XSS1)||LP32(PMT2)||LP32(PMS2); flags=0,reply=empty,expires=created+1..604800000ms"
       },

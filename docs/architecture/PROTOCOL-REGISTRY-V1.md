@@ -298,11 +298,11 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | `DID2` | immutable permanent credential with genesis Ed25519 and ML-DSA-65 root keys plus only a hash commitment to the resolver capability; compact text carries the raw capability. | `TARGET_UNFROZEN`; DR-0007 retires the 2036-byte raw-capability candidate; 2052-byte replacement codec/vectors pass local gates, live/device closure pending |
 | `DAB2` | hybrid-AND permanent ID/current-account binding lineage. | `TARGET_UNFROZEN`; exact 3711-byte candidate, ArtifactRef type `0x1002` and transcript vectors exist, dependent closure remains open |
 | `DCA1` | device authorization to publish rotating contact bundles; V2 candidate binds exact DID2/DAB2. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze; V1 version/suite rejects even though V2 also happens to be 473 bytes |
-| `DCB1` | signed contact bundle; V1 bytes bind retired DID1/DAB1. | DID2-bound V2 `TARGET_UNFROZEN`; isolated identity/issuer/XPS1-descriptor verifier only, not publication authority |
-| `DCR1` | exact resolver closure around DCB1/DRS1/DPD1 support objects. | DID2-bound V2 `TARGET_UNFROZEN`; isolated exact-support verifier and internal object-protection candidate only, not publication or freshness authority |
+| `DCB1` | signed contact bundle; V1 bytes bind retired DID1/DAB1. | DID2-bound V2 owned reusable genesis frozen by [DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md); current-device author/verification, not publication authority; final machine/vector and API repin remain gates |
+| `DCR1` | exact resolver closure around DCB1/DRS1/DPD1 support objects. | DID2-bound V2 owned reusable genesis frozen by [DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md); exact verified support and capability-bound encryption/restore, not publication or freshness authority |
 | `DIA1` | expiring one-time invitation locator; never the permanent Deep ID. | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `DAO1` | metadata-sealed asynchronous deposit object containing DPH2 or DPE2. | `TARGET_UNFROZEN` for DPH2-derived sizes pending DR-0006; established DPE2 semantics remain separately frozen |
-| `DMC2` | canonical pairwise application event plaintext. | `FROZEN_TARGET_NOT_ACTIVE` for base kinds 1, 5..13, 18..19 and CONTACT-CODEC-01 kinds 2..4,14; all other allocated kinds `RESERVED_REJECT` until owner package freeze |
+| `DMC2` | canonical pairwise application event plaintext. | `FROZEN_TARGET_NOT_ACTIVE` for base kinds 1, 5..13, 18..19 and CONTACT-CODEC-01 kinds 2..4,14; [DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md) replaces Hello/Accept DAB1 references and V1 endpoint APIs with DAB2/current DID2 proofs; runtime durable/shipping composition remains gated; all other allocated kinds `RESERVED_REJECT` until owner package freeze |
 | `DGP1` | signed group membership proposal. | `FROZEN_TARGET_NOT_ACTIVE`; GROUP-CODEC-01 |
 | `DGC1` | owner-sequenced group commit. | `FROZEN_TARGET_NOT_ACTIVE`; GROUP-CODEC-01 |
 | `DGM1` | group application event nested in DMC2 per-device fanout. | `FROZEN_TARGET_NOT_ACTIVE`; GROUP-CODEC-01 |
@@ -331,9 +331,42 @@ to materialize a commit.
 The existing CONTACT-CODEC-01 DCB1/DCR1 bytes and vectors describe the
 retired DID1/DAB1 closure. They are **not** a frozen DID2 release contract,
 even though the old codec remains available to isolated validation tests.
-Before activation, re-freeze DCB1, DCR1 and their exact XIR1/DCA1/ADL1
-references together under DR-0006, then replace the machine manifest and
-vectors. DIA1 must be audited against the resulting locator/closure. A green
+[DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md)
+freezes owned V2 genesis DCB1/DCR1 with exact XIR1/DCA1/ADL1 references;
+DR38 freezes whole-envelope publisher signing, DID2 XPA1 issuance and exact
+protected request/response custody.
+[DR-0039](../survival-program/decisions/DR-0039-did2-opaque-publication-consumer.md)
+replaces the public store reader/verifier and node placement/authorization.
+Before activation replace machine manifest/vectors and close shipping private
+coordination and authenticated remote replication. Closed owned commit
+verification and exact phase-7 client custody follow
+[DR-0040](../survival-program/decisions/DR-0040-did2-owned-publication-commit.md);
+their local evidence does not activate shipping composition or devices.
+Permanent read/bootstrap uses the closed DID2 APIs frozen in
+[DR-0041](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md).
+The neutral service receipt grammar is unchanged. Parsed descriptor-bound
+decryption is not current peer authority; the old DID1 verifier is not a fallback.
+Retained-route issuance anchors and independent current-directory authority
+follow [DR-0042](../survival-program/decisions/DR-0042-did2-route-directory-issuance-anchor.md);
+this is a semantic correction without a new wire version or public trust flag.
+Claim current-network/clock binding and independent inventory/contact lifetimes
+follow [DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md)
+and [DR-0044](../survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md).
+Account-owned request preparation and exact non-reminting retry follow
+[DR-0045](../survival-program/decisions/DR-0045-did2-owned-resolved-contact-claim.md).
+Owned AttachmentOffer composition and common ordinary-event sequence follow
+[DR-0046](../survival-program/decisions/DR-0046-did2-owned-attachment-offer.md).
+Owned immutable peer bootstrap and independent endpoint refresh follow
+[DR-0047](../survival-program/decisions/DR-0047-did2-owned-peer-refresh.md).
+Private coordination node authentication follows
+[DR-0048](../survival-program/decisions/DR-0048-private-contact-coordination-peer-authentication.md).
+Its headers/transcript are transport admission only. The selected carrier is
+defined by [DR-0049](../survival-program/decisions/DR-0049-did2-three-hop-coordination-carrier.md)
+and [CONTACT-COORDINATION-02](../survival-program/releases/v3.0.0/specs/contact-coordination-v2.registry.json):
+`XCA2`/`XCS2` use existing ContactResolve operation 4; gateway request kind 8
+uses the existing resolver class. These parsed wrappers are not authority.
+Closed vector/API/package repin and shipping composition remain required.
+DIA1 must be audited against the resulting locator/closure. A green
 old CONTACT-CODEC test does not authorize contact publication or device E2E.
 
 ### 6.4 Account-directory transparency records
@@ -382,7 +415,7 @@ Normative source: `XPOINT-NETWORK-V1.md`.
 | `XRR1` | short-lived established-contact/message deposit reachability. It is not a public Deep ID artifact. | contact owner authors; selected mailbox pair hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XMG1` | privacy-routed proof-of-possession request for short-lived mailbox grants bound to exact XRR1 reachability. | contact client authors; ContactResolve authority verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XMC1` | closed mailbox-grant acquisition result carrying exactly one current-epoch MCG2 only on success. | ContactResolve authority authors; contact client verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
-| `XUR1` | established-contact update rendezvous capability/record. | contact owner authors; update-rendezvous service hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
+| `XUR1` | established-contact update rendezvous capability/record. | contact owner authors; update-rendezvous service hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01. [DR-0021](../survival-program/decisions/DR-0021-did2-contact-rendezvous-issuer.md) freezes a DID2-only current issuer/time verifier; identity-neutral wire is unchanged, independent placement/route, contact state and shipping/device closure remain gates |
 | `XCP1` | local protected client path plan. Never uploaded. | `deep-client-shared` | `TARGET_UNFROZEN`; local DB generation only |
 | `NCQ2` | identity-neutral network closure distribution request; no account/locator input. | `deep-client-shared` authors; Registry/mirrors consume | `TARGET_UNFROZEN`; exact envelope owner is XPOINT-NETWORK-V1 section 8.1 |
 | `NCP2` | bounded exact public network closure distribution response; not freshness or route authority. | Registry/mirrors distribute; client verifies records independently | `TARGET_UNFROZEN`; exact envelope owner is XPOINT-NETWORK-V1 section 8.1 |
@@ -420,6 +453,37 @@ from network records and must never be accepted as network authority. Their exac
 local layouts and public API extension belong to that decision; runtime activation
 remains blocked on the live TLS/device closure. The local replay format is
 `XONRPL02`; the retired generation is rejection-only, with no migration.
+
+[DR-0023](../survival-program/decisions/DR-0023-did2-owned-rendezvous-author.md)
+owns the bounded key-free network record-expiry API and local protected
+rendezvous custody. The latter is not a network magic or wire authority;
+XUR1 retains its reviewed identity-neutral grammar/domain. The DID2 author
+replaces the retired DAB1 author without a compatibility overload.
+
+[DR-0024](../survival-program/decisions/DR-0024-did2-owned-initial-claim-preview.md)
+owns the current DID2 device's bounded read-only encrypted initial-claim
+preview API. Only existing unverified XPK1/XPC1 prefix evidence leaves the
+boundary; no new wire, key export, inventory reservation, application
+plaintext, ratchet custody, inbox or ACK authority is introduced.
+
+[DR-0025](../survival-program/decisions/DR-0025-did2-owned-responder-preparation.md)
+owns the key-contained responder preparation API and its closed, single-use
+atomic-store handoff. This couples existing authenticated TRS1/DMC2 material
+to the exact device-prekey reservation facts without introducing a network
+record or claiming that a durable responder transaction has occurred.
+
+[DR-0026](../survival-program/decisions/DR-0026-did2-atomic-responder-custody.md)
+owns the local account-bound atomic receiver checkpoint/session ledger and
+prekey deletion, plus the existing typed unverified DMC2 payload and key-free
+DPK2 selection getters exposed to Shared. Neither a getter nor stable local
+custody grants route publication, contact acceptance, MSG projection or ACK.
+Its local format is not a new network magic; no legacy reader is introduced.
+
+[DR-0027](../survival-program/decisions/DR-0027-did2-messaging-session-ownership.md)
+owns Shared's internal initial-to-mutable seed/lifetime boundary. It reuses
+existing current-proof verification and DPE2 transition producer; no new public
+Protocol API, ratchet provider, wire magic or compatibility reader is added.
+Durable transfer/initial-secret retirement are activation prerequisites.
 
 ### 6.6 Contact resolver and prekey service records
 

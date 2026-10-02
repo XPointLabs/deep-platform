@@ -66,6 +66,12 @@ deployment или обещает network-level `exactly-once`, применяю�
 
 ## 3. Слои и владельцы состояния
 
+The current DID2-owned sender composition is governed by
+[DR-0056](../survival-program/decisions/DR-0056-did2-owned-mailbox-message-dispatch.md).
+Owned committed ciphertext, protected request/counter custody and SQL exact
+preparation precede selected-entry dispatch; retry does not renew lifetime or
+silently reroute. A verified durable Store receipt is not semantic recipient ACK.
+
 ```text
 UI / conversation commands
           |

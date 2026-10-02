@@ -701,14 +701,14 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   and MAUI invokes this after a successful responder saga. ContactHello's
   relationship and peer-directory/XUR1 endpoint fields, and the conversation
   ID derived from relationship ID plus both account IDs, are checked before
-  inbox retention. Protocol now derives the safety number from two verified
-  non-forked DAB1 lineages and separately checks ContactHello's exact
-  DAB1/DMD1 fields and XUR1 author, DPD1 signature and creation-time validity.
+  inbox retention. The old DAB1 ContactHello checker is removed under
+  [DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md).
+  Protocol now checks Hello/Accept against current DID2 proofs, exact DAB2/DMD1,
+  PQ-root safety number and signed XUR1; this is endpoint metadata only.
   DID2 DPH2/XPC1 promotion now retains the current V2 initiator checkpoint
   and recipient DCR1 closure under DR-0017. Shared consumes that closed
-  result, but the old ContactHello/DAB1 endpoint checker cannot satisfy the
-  V2 boundary and rejects before opening a new conversation store. MAUI
-  receive does not invoke a current V2 path yet. ContactHello V2/safety-number,
+  result, but the new DR-0022 consumer is not yet composed into the durable
+  conversation/contact path. MAUI receive does not invoke that V2 path yet.
   XUR1's PMT2 placement reference, durable relationship state and
   ACK authority remain missing. The separate relationship-bound responder
   API requires a pre-existing verified relationship. For a
@@ -754,6 +754,85 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   old-path DPH2 test must not be counted as DID2 device E2E. Keep the probe
   account-only and the production UI fail-closed until this proof and the
   one-use protected DMD1 agreement transaction are composed.
+  Direct DID2 route verification and genesis authoring follow
+  [DR-0033](../survival-program/decisions/DR-0033-did2-current-mailbox-route.md),
+  without a DID1 authority adapter. The accepted API increment must be rebuilt/
+  repinned by consumers. Local protected route adoption/retry is specified by
+  [DR-0034](../survival-program/decisions/DR-0034-did2-owned-route-custody.md),
+  with an internal account-owned orchestration and a mandatory protected root.
+  Registry DID2 threshold coordination follows
+  [DR-0036](../survival-program/decisions/DR-0036-did2-route-threshold-coordination.md):
+  actual ADA2/external-floor proof, V2-only envelope, permanent PostgreSQL
+  reservation/winner and current-context replay checks. Its account-to-server
+  TestServer lane is not shipping XPoint/OHTTP coordination or publication;
+  those consumers, successor/renewal and deployment remain required.
+  [DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md)
+  supplies the closed V2 owned genesis contact object and protected phase-4
+  exact retry. [DR-0038](../survival-program/decisions/DR-0038-did2-publication-coordination.md)
+  adds whole-envelope publisher binding, actual DID2 server XPA1 issuance,
+  permanent PostgreSQL exact winners and protected request/response phases 5/6.
+  The route journal is version 4 only under
+  [DR-0040](../survival-program/decisions/DR-0040-did2-owned-publication-commit.md);
+  owned publication commit verifies both receipts and CAS/readbacks exact XPO
+  in phase 7. Historical commit is not stale dispatch permission. Old QA instances require
+  explicit reset. Shipping private coordination, two-replica publication,
+  holder/grants and device activation remain the next connected consumers.
+  [DR-0041](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md)
+  freezes descriptor bootstrap and independent permanent-read verification.
+  Shared composes a bounded single read, independently fetched peer proof and
+  held-account floor recheck. Retire the old DID1 recipient pipeline, close
+  network/expiry route renewal and connect the verified result to claim/handshake
+  before activating contact UI; compilation/local stores are not device evidence.
+  Current claim recipient/network pairing and protected clock use follow
+  [DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md).
+  Independent full inventory/service and current contact operation lifetimes
+  follow [DR-0044](../survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md).
+  Internal account-owned resolved-contact claim preparation follows
+  [DR-0045](../survival-program/decisions/DR-0045-did2-owned-resolved-contact-claim.md):
+  verified publisher service, protected intent/operation, atomic get-or-reserve,
+  exact timestamps on retry and final held-floor/time recheck. Shipping
+  Hello/session composition and physical delivery remain unfinished.
+  [DR-0046](../survival-program/decisions/DR-0046-did2-owned-attachment-offer.md)
+  composes stable owned DAM1 into AttachmentOffer on the common text/event
+  journal and requires actual stable asset custody/expiry before encryption.
+  Structural/SQL text→offer→text is covered; authenticated blob upload/download,
+  receiver lifecycle and physical integrity evidence remain. Native local
+  ciphertext/manifest integrity passed; copied chunks are not BLOB transport.
+  [DR-0047](../survival-program/decisions/DR-0047-did2-owned-peer-refresh.md)
+  makes the original public DID2 credential mandatory protected session metadata
+  and removes caller-held peer proofs from ordinary account-service entry points.
+  Current proof acquisition and held-operation checks are separate; no expired
+  query fallback or unverified endpoint rollover. Shipping/live-clock evidence
+  remains required.
+  Private route/publication coordination must independently authenticate the
+  existing node key under
+  [DR-0048](../survival-program/decisions/DR-0048-private-contact-coordination-peer-authentication.md).
+  The bounded fixed-origin backend and authenticated Registry terminals exist;
+  connect the carrier frozen by
+  [DR-0049](../survival-program/decisions/DR-0049-did2-three-hop-coordination-carrier.md),
+  with actual held-account guards/entropy and independently selected gateway,
+  without a direct client fallback. The candidate contact-store/replica composition
+  follows [DR-0050](../survival-program/decisions/DR-0050-did2-contact-service-composition.md):
+  one closed DID2 endpoint and authenticated service time, no old snapshot owner.
+  Complete client composition and production root/clock/package activation,
+  including the account-owned entry frozen by
+  [DR-0051](../survival-program/decisions/DR-0051-owned-permanent-contact-client-entry.md)
+  and its protected per-phase plan checks (no UI-selected signing/time callbacks),
+  then exercise actual socket TLS and physical devices. Access-list
+  provisioning is separate from DID2, signed NET and witness authority.
+  [DR-0042](../survival-program/decisions/DR-0042-did2-route-directory-issuance-anchor.md)
+  removes unrelated directory admission as a republishing trigger while retaining
+  independent current proof/floors, signed anchor binding and current issuance.
+  [DR-0039](../survival-program/decisions/DR-0039-did2-opaque-publication-consumer.md)
+  replaces the sole public XPU/XPA reader and node placement/authorization with
+  direct DID2 inputs and closes local opaque replica/restart/receipt evidence.
+  Authenticated remote replication, shipping composition and device evidence
+  are still required; the isolated slice does not activate them.
+  [DR-0035](../survival-program/decisions/DR-0035-did2-mailbox-grant-request.md)
+  replaces the DID1 XMG1 author and retires the old caller-owned acquisition
+  client. Its direct DID2 request is not issued authority. Compose protected
+  holder/request custody, exact retry and independent PMA2/topology verification
+  before adopting XMC1; a nonzero membership hash is not authenticated membership.
   Then create and retain the recipient's protected metadata-sealing X25519 key
   under the verified PMT2 reference
   before device-signing XRA1 (the XRA1 author generates its authorization ID
@@ -761,7 +840,7 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   its key ID/public key through the verified route-closure flow, then reopen
   the same private key only after its ID/public key match that exact current
   XRA1; a newly generated key cannot silently replace an already published
-  key. Independently bind the current ContactV1 peer closure
+  key. Independently bind the current DID2 peer/route closure
   and protected reachability holder to a verified deposit grant; replay the
   durable exact DPH2 through DAO1/MAU2 until authenticated SessionAck or signed
   expiry; bind self-retrieve grant and DAO1 open to the responder prekey/session
@@ -1006,11 +1085,16 @@ No other NETCODEC record inherits frozen status from that slice.
   startup/account creation performs no Registry/bootstrap callback, while
   reset removes both DB families and key slots (`7/7` combined offline gate).
 - **remaining integration output:** extend the path/binding provider to mailbox,
-  blob and control operation classes; add liveness/health input; complete
-  recipient route-closure distribution/verification; durable reply-attempt
-  binding; production composition with Contact and supervisor. The general
-  authority publication/fetch bootstrap and protected XNode/client LKG owners
-  are implemented but remain default-dormant until the complete host graph exists.
+  masked blob and control operation classes. The DID2 mailbox selected-entry
+  increment follows [DR-0032](../survival-program/decisions/DR-0032-did2-mailbox-selected-entry.md);
+  it is an internal network/dispatch candidate, not grant or shipping activation.
+  The separate DID2 current route verifier/genesis author is specified by
+  [DR-0033](../survival-program/decisions/DR-0033-did2-current-mailbox-route.md).
+  Complete liveness/health input, durable recipient route-closure
+  distribution/verification, durable reply-attempt binding and production
+  composition with Contact and supervisor. The general authority
+  publication/fetch bootstrap and protected XNode/client LKG owners are
+  implemented but remain default-dormant until the complete host graph exists.
 - **wire/API:** no publisher-provided route accepted; no direct managed-ingress
   fallback; fewer than three eligible distinct nodes returns unavailable.
 - **DB impact/removals:** network/view/guard/path/placement protected tables.
@@ -1258,6 +1342,59 @@ No other NETCODEC record inherits frozen status from that slice.
   signed bridge catalog, censor-matrix and supply-chain artifacts.
 
 ### CONTACT-CODEC-01 — invite, prekey claim and contact/update protocol closure
+
+Direct DID2 mailbox issuer/topology verification and the mandatory public PMA2
+distribution input belong to
+[DR-0052](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md).
+Keep the neutral mailbox wire; do not reuse the retired identity authority.
+Owned holder/request/winner restart custody follows
+[DR-0053](../survival-program/decisions/DR-0053-did2-mailbox-grant-restart-custody.md).
+The connected client/service slice must still verify private live issuance
+and actual credential use before activation. Owned Retrieve derives only from
+the protected verified own publication, not a caller-supplied secret.
+The private issuer/journal and owner-held current-only credential installation
+follow [DR-0054](../survival-program/decisions/DR-0054-did2-private-mailbox-grant-issuance.md)
+and [DR-0055](../survival-program/decisions/DR-0055-did2-owned-mailbox-credential-installation.md).
+The connected sender consumer follows
+[DR-0056](../survival-program/decisions/DR-0056-did2-owned-mailbox-message-dispatch.md):
+transactional MAU2 preparation/selected-entry dispatch under the actual account
+lease and mandatory protected request/counter custody, followed by authenticated receive
+materialization before ACK. Do not acquire that lease recursively through a
+network-refresh API; use independently verified readonly held-floor checks.
+Local installation does not close the private live/device activation gates.
+
+Incoming ordinary session selection follows
+[DR-0057](../survival-program/decisions/DR-0057-did2-owned-incoming-session-selection.md).
+The client must select from its actual protected catalog, refresh outside the
+lookup lease and materialize through the existing owned receive engine; selector
+metadata alone never grants ACK or initial-contact authority.
+
+Owned mailbox polling and semantic-before-ACK follow
+[DR-0058](../survival-program/decisions/DR-0058-did2-owned-mailbox-retrieve-and-ack.md).
+Initial sender composition follows
+[DR-0059](../survival-program/decisions/DR-0059-did2-owned-initial-mailbox-dispatch.md)
+through the same owned Store engine and actual retired sender source.
+Finish the connected SQLCipher interruption/reopen gate, initial-contact consumer
+and shipping composition before live/device activation. Exact protected page and
+quorum recovery must not become callback-supplied semantic authority.
+
+The bounded DID2 Hello/Accept consumer extension is owned by
+[DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md),
+including normative conversation binding and the single Protocol hash utility.
+Owned XUR1 author plus Shared exact-retry custody are owned by
+[DR-0023](../survival-program/decisions/DR-0023-did2-owned-rendezvous-author.md).
+Owned receiver preview/preparation and the exact atomic-store handoff belong to
+[DR-0024](../survival-program/decisions/DR-0024-did2-owned-initial-claim-preview.md)
+and [DR-0025](../survival-program/decisions/DR-0025-did2-owned-responder-preparation.md).
+The account-owned atomic receiver continuation and protected replay-before-key
+lookup are owned by [DR-0026](../survival-program/decisions/DR-0026-did2-atomic-responder-custody.md).
+These local boundaries do not close route publication, session projection or
+physical delivery; use the unfinished gates in `NEXT-SPRINT.md`.
+
+The initial-to-mutable ownership and old-secret retirement boundary belongs to
+[DR-0027](../survival-program/decisions/DR-0027-did2-messaging-session-ownership.md).
+Shared must finish its durable transfer before ordinary message operation;
+the internal seed alone does not activate MSG-01 or transport dispatch.
 
 - **ownerRepository:** `deep-protocol`.
 - **dependsOn:** APPLICATION-CORE-CODEC-01, E2EE-01, NETCODEC-01, REG-01,
