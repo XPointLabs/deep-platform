@@ -1,5 +1,35 @@
 # История спринтов
 
+## 2026-10-02 — real production NTS and content-preserving DID2 head renewal
+
+- Registry `8687d5a` removes the operator renewal's accidental manual-time
+  dependency after automatic-time cutover. The observer uses the verified
+  signed policy and protected lower floor, reacquires on every invocation,
+  waits at most 30 seconds and never falls back to manual/OS/HTTP time.
+  Its closed observation report is not DTT1 or transferable freshness evidence.
+- Targeted time/operator tests: **32/32 passed, 0 skipped**; scoped DevOps
+  operator contracts: **7/7 passed**. The Linux/amd64 image was rebuilt and
+  transferred using pinned SSH; archive hash and complete Registry revision
+  were checked before use. The operator script accommodates the server's
+  existing Node 12 syntax without upgrading system packages.
+- Under Mr. X's existing deployment authorization, a disposable candidate
+  activated the separate protected NTS floor and retained its transition fence.
+  Real acquisition then returned an authenticated quorum with 3-second
+  uncertainty. This was actual server/network execution, not injected samples.
+  The stale manual anchor and initialized directory were not re-provisioned.
+- Current ADA2, NTS floor and fence were copied into private operator custody
+  before renewal, with stable source/copy fingerprints and HMAC checks against
+  independently retained keys. Registry then verified the complete directory
+  and independent PostgreSQL floor and performed a content-preserving renewal
+  to **ADH1 generation 32/tree size 12**. A second retained backup and native
+  exact-head export verified that head against the newly observed core hash.
+  No account content, genesis or registered node keys were reset.
+- The old public Registry container, ingress, staking, certificate configuration
+  and three XNode deployments were not replaced. Public readiness, complete
+  current operational distribution, ongoing renewal and Android↔Windows
+  contact/text/file/group delivery remain open. Operator success is not a
+  production-release or device-E2E claim; no GitHub Release was published.
+
 ## 2026-10-02 — explicit manual-to-NTS protected floor transition
 
 - DR-0068 and the Registry operator candidate add a first automatic-time

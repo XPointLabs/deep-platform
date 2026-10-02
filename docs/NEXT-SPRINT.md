@@ -86,14 +86,16 @@ floor и проверяемое reacquisition, затем актуальные s
 и readiness. Не выдавать исторический восьмицепочный re-export за fresh
 authority и не сбрасывать существующие ADA2/genesis/floors/registered keys.
 Операторский переход [DR-0068](survival-program/decisions/DR-0068-manual-to-nts-protected-floor-upgrade.md)
-реализован и проверен 24 scoped тестами. Exact live manual anchor скопирован
-read-only в private custody и HMAC-проверен независимым retained key; это не
-fresh-time evidence. Выпуск current image, активация отдельного floor/NTS и
-проверка действующих signed inputs в production ещё не выполнены.
-Current source-bound linux/amd64 image `2def8a2` уже собран локально; packaged
-offline pinned verification прошла в read-only контейнере без сети. Это не
-production activation: свежий NTS, renewal, operational closure и device gate
-по-прежнему остаются следующими live шагами.
+активировал отдельный защищённый floor на production; реальный NTS quorum
+получен в source-bound disposable candidate, content-preserving ADH1 renewal
+успешно продвинул независимый floor и ADA2. Доказательства и границы этого
+инкремента находятся в `SPRINT-HISTORY.md`; operator reports не являются
+переносимой freshness capability. Следующий шаг — текущие signed operational
+successors и полная восьмицепочная distribution, matched Registry/XNode
+композиция, публичная verified readiness и physical contact/text. Активный
+публичный Registry пока остаётся на старой manual-time composition; его не
+считать исправленным по успеху отдельных операторских команд. Нужны также
+ongoing NTS/head/publisher renewal и restart/recovery без ручных time anchors.
 Route/publication slice уже прошёл на реальных локальных PostgreSQL/PQ/
 SQLCipher, но private grant issuer с настоящими external signer sockets и
 последующий Android↔Windows contact/text по-прежнему требуют live evidence.
