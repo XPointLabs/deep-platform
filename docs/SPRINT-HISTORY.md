@@ -21,6 +21,12 @@
   one independently retained local time-integrity key. No remote key, state,
   container, floor, staking or certificate configuration was changed. The
   retained stale anchor is not fresh-time evidence.
+- The extended time/operator slice passed **25/25, 0 skipped**, adding exact
+  signed-window inspection and bad-pin rejection without custody mutation.
+  Current linux/amd64 candidate `2def8a2` was built with complete Registry,
+  Protocol and observer revision labels; a read-only, network-disabled container
+  verified the actual retained pinned XNA1/DTS1. This proves packaged offline
+  verification, not NTS acquisition, server readiness or physical messaging.
 
 ## 2026-10-02 — Registry authority diagnosis and isolated coordination slices
 

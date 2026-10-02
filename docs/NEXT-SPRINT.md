@@ -90,6 +90,10 @@ authority и не сбрасывать существующие ADA2/genesis/flo
 read-only в private custody и HMAC-проверен независимым retained key; это не
 fresh-time evidence. Выпуск current image, активация отдельного floor/NTS и
 проверка действующих signed inputs в production ещё не выполнены.
+Current source-bound linux/amd64 image `2def8a2` уже собран локально; packaged
+offline pinned verification прошла в read-only контейнере без сети. Это не
+production activation: свежий NTS, renewal, operational closure и device gate
+по-прежнему остаются следующими live шагами.
 Route/publication slice уже прошёл на реальных локальных PostgreSQL/PQ/
 SQLCipher, но private grant issuer с настоящими external signer sockets и
 последующий Android↔Windows contact/text по-прежнему требуют live evidence.
