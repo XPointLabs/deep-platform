@@ -418,6 +418,14 @@ focused и полный неизменённый повтор passed, но пр�
    provision matching complete public bundles from retained signed ceremony
    inputs (no old-bundle converter); bind current PMA2/PMT2 and the direct DID2
    result verifier to private issuance and actual credential installation/use.
+   On 2026-10-02 the actual public distributor still returned a seven-chain
+   header, rejected by the current client. The retained signed ceremony prefix
+   has been re-exported as eight chains without changing keys/genesis/floors;
+   it is historical distribution, not live freshness. Activate a matched current
+   Registry distributor, fresh operational history and three-node composition
+   before retrying physical publication. Installer preparation/staging now retain
+   PMA2 byte-identically and reject missing/noncontiguous public roles; their
+   local custody tests do not close this deployment gate.
    [DR-0053](survival-program/decisions/DR-0053-did2-mailbox-grant-restart-custody.md)
    connects owned Deposit/Retrieve holder/request/winner custody and the internal
    selected-entry carrier; Retrieve derives only from the protected verified own

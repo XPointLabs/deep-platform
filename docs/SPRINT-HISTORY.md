@@ -1,5 +1,30 @@
 # История спринтов
 
+## 2026-10-02 — current physical packages and eight-chain deployment boundary
+
+- Strict committed-source Windows and Android candidates were built; the USB
+  APK was installed with all three protected packages unchanged. Physical Android
+  onboarding reached the workspace; Settings retained the new address/encrypted
+  recovery across process restart. The network action still failed at AccountProof
+  with closed `TransportIo`. The Windows isolated reset confirmation remains
+  pending. No physical contact/text/file/image/group success is claimed.
+- MAUI harness `2d5cf17` adds separately owned, explicitly confirmed Android
+  startup reset. Two focused UI/composition tests and four title/UID focus cases
+  passed. A disappearing reset dialog and transient post-Create hierarchy failure
+  were followed by observation, never blind repetition.
+- The actual HTTPS distributor returned NCP2 version2 with **seven** chains;
+  the current production adapter rejected its header. The source-cutover Registry
+  distribution slice passed **9/9**, **0 skipped**, including empty 503 rejection
+  of the retired bundle. No Registry deployment was performed at this checkpoint.
+- DevOps `5a7148c`, exporter `b29be4c` and installer `8e6fadc` retain complete
+  PMA2 public assets without promoting them into placement/freshness authority.
+  Preparation/staging slice **12/12 passed**, **0 skipped**, including absent,
+  duplicate/gapped PMA2 and placement substitution, plus vendored-byte equality.
+  The synthetic operator/export gate passed all five cases. Retained signed
+  genesis plus two successors were re-exported into a new complete eight-chain
+  history without opening signers or changing account/genesis/floors. This is
+  historical raw distribution, not current network or device authority.
+
 ## 2026-10-02 — committed-source contact device checkpoint (physical run open)
 
 - Local candidate checkpoints, all authored by `zhigubigule` with the configured
