@@ -78,6 +78,17 @@ time-floor upgrade существующего manual-anchor deployment, акту
 authority и verified readiness; initialized ADA2/genesis/head floors/nonce
 ledger не перепровижинировать. Component DEV recovery не закрывает этот live gate.
 
+Повторная read-only проверка от 2026-10-02 подтвердила 503; сопоставление
+только фиксированных source literals с логами выявило stale protected
+trusted-time anchor. Автоматический NTS не включён в текущей composition.
+Следующий live инкремент: безопасно обеспечить отдельный сохраняемый time
+floor и проверяемое reacquisition, затем актуальные signed operational inputs
+и readiness. Не выдавать исторический восьмицепочный re-export за fresh
+authority и не сбрасывать существующие ADA2/genesis/floors/registered keys.
+Route/publication slice уже прошёл на реальных локальных PostgreSQL/PQ/
+SQLCipher, но private grant issuer с настоящими external signer sockets и
+последующий Android↔Windows contact/text по-прежнему требуют live evidence.
+
 Остановка контейнера — штатная временная недоступность, а не повод сбрасывать
 authority, аккаунты или зарегистрированные ключи. После явного запуска
 контейнера с сохранёнными volumes, восстановления зависимостей и получения

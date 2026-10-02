@@ -1,5 +1,27 @@
 # История спринтов
 
+## 2026-10-02 — Registry authority diagnosis and isolated coordination slices
+
+- A pinned-host-key, read-only Registry audit confirmed public DID2 readiness
+  503. Only source-whitelisted literals/types were reported; the deployed
+  protected manual-time anchor is stale and automatic NTS is not configured.
+  No remote containers, staking services, custody or floors were changed.
+- Current route/publication business slice: **33/33 passed, 0 skipped** on
+  real isolated PostgreSQL, native PQ verification and SQLCipher. Lost-response
+  publication retains exact durable bytes; immediate retry is correctly empty
+  429, then succeeds after advancing only the test admission scheduling clock.
+  The negative route fixture now corrupts PMT2 explicitly, not the last byte
+  of the added independent PMA2 chain. Production admission is unchanged.
+- Closed diagnostics: **15/15 passed, 0 skipped**; stale manual-anchor and
+  monotonic reset are static Error reason labels, never arbitrary messages.
+  Private grant JSON/admission/journal slice: **10/10 passed, 0 skipped**,
+  including real PostgreSQL concurrent exact winners and restart/corruption.
+  This does not prove the full signer/proof/TLS grant issuance composition.
+- Registry CI definitions now provide disposable PostgreSQL for mandatory
+  DID2 floor/route/grant tests and serialize candidate builds to avoid
+  conflicting Protocol source/test-seam writes. Workflows were not run at
+  this checkpoint. Full gates and physical contact/text/file/group remain open.
+
 ## 2026-10-02 — current physical packages and eight-chain deployment boundary
 
 - Strict committed-source Windows and Android candidates were built; the USB
