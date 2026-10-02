@@ -783,6 +783,11 @@ HISTORY-CODEC packages because their producer closures freeze independently.
   held-account floor recheck. Retire the old DID1 recipient pipeline, close
   network/expiry route renewal and connect the verified result to claim/handshake
   before activating contact UI; compilation/local stores are not device evidence.
+  [DR-0071](../survival-program/decisions/DR-0071-did2-reachability-advertisement-successor.md)
+  freezes the first owned-device XRA1 successor candidate only. Finish protected
+  predecessor/pending custody and exact restart, private successor coordination,
+  route/object/publication lineage and two-replica adoption before claiming
+  retained-account renewal; do not reissue genesis or reuse an expired nonce.
   Current claim recipient/network pairing and protected clock use follow
   [DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md).
   Independent full inventory/service and current contact operation lifetimes

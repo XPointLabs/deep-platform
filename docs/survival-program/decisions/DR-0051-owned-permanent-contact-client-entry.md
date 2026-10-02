@@ -27,6 +27,10 @@ and SHA-256 of `Deep/Client/ContactV2/anti-spam/bounded-unsolicited-v1` as the
 existing bounded-unsolicited policy identifier. This hash is not a new proof,
 anti-spam algorithm or membership grant. Other policies, profile changes,
 route/inventory successors and expired-intent renewal remain explicit work.
+[DR-0071](DR-0071-did2-reachability-advertisement-successor.md) authorizes the
+first artifact-specific XRA1 successor candidate only; it does not allow this
+operation to replace the protected genesis intent or claim current publication
+before complete successor custody/threshold/two-store adoption exists.
 
 The public operation derives its plan from protected state, constructs the
 DR49 coordination and replica carriers internally, and invokes the existing

@@ -258,6 +258,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   authority callbacks or retry IDs. The protected instance determines the stable
   plan, checked under each phase lease; HTTPS diagnostic composition is not
   shipping message/device evidence.
+- [`DR-0071`](../survival-program/decisions/DR-0071-did2-reachability-advertisement-successor.md)
+  authorizes only the owned-device XRA1 successor candidate with exact predecessor
+  lineage. Complete protected renewal/coordination/publication and retained-account
+  device recovery remain gates; expired routes are not made current.
 - [`DR-0052`](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)
   requires public PMA2 in the complete network bundle and a direct DID2 grant
   verifier under root-authorized role issuers and the exact current PMT2.
