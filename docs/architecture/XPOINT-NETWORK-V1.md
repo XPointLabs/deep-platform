@@ -864,6 +864,14 @@ Current selector-bound authorization and the peer proof profile follow
 Historical PMA2 profile1 cannot authorize new mailbox operations.
 No field may be resolved from an unsigned Registry response.
 
+Current peer dispatch uses descriptor-bound transport facts from the same closed
+host and selected replica, as frozen in
+[DR-0085](../survival-program/decisions/DR-0085-current-mailbox-replica-transport-facts.md).
+Copied node/origin/address/port/SPKI facts do not authorize dispatch by themselves:
+the native current operation must recheck grant, both protected role floors and
+full time before and after HTTP/storage callbacks. Neither a configured endpoint
+nor a retired peer proof is an alternative origin authority.
+
 Current per-grant revocation and its protected floor are owned by
 [CONTACT-RESOLVER-V1 §3.8](CONTACT-RESOLVER-V1.md#38-current-mailbox-grant-revocation)
 and [DR-0083](../survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md).
