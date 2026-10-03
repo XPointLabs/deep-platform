@@ -81,6 +81,15 @@ device сценарий и bounded recovery для expired incomplete Android ro
 ноды показывают mailbox authority not ready. File/image и governed-group UI пока
 явно unavailable; физические gates для них обязательны после text slice.
 
+Новый closed host API в
+[DR-0080](survival-program/decisions/DR-0080-did2-current-mailbox-host-authority.md)
+проверяет текущий PMA2/root/full proof interval и выдаёт только PMT2 ranking/node
+facts. Перед mailbox activation закрыть отдельный разрыв: PMS2/XRA1 selector и
+MAU2 blinded placement сейчас независимы; MCG2 не несёт selector. Нельзя получать
+другой набор реплик хэшированием placement commitment или раскрывать deposit
+capability через прежний публичный selector. После выбранного frozen контракта
+подключить holder/revocation/replay, local-exit/peer quorum и проверить физически.
+
 ### P0: matched issued-head activation и route renewal (2026-10-03)
 
 [DR-0079](survival-program/decisions/DR-0079-did2-publication-issuer-successor.md)

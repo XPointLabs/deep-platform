@@ -182,6 +182,34 @@ genesis path or claim a working newly provisioned local environment.
 
 ## Open business/release gates
 
+The next local Protocol increment implements the additive
+[DR-0080](survival-program/decisions/DR-0080-did2-current-mailbox-host-authority.md)
+current host policy. It checks root/current PMT2/full projected proof interval,
+retains monotonic continuity across calls, independently validates active grant
+issuer/generation/lifetime/signature and exposes copied node/ranking facts.
+It has no request replay, holder, revocation, peer quorum or dispatch surface.
+Twenty-five new unit cases passed; the connected authority/network slice passed
+78 tests and the neutral-authenticated-mailbox/private-route slice passed 55,
+with overlapping cases, zero failures/skips. The ordinary Release Protocol
+assembly built with zero warnings/errors. Fixture parameter/identity-label
+mistakes in the initial test attempts were corrected without changing the
+production codec or weakening the negative assertions. This is local code,
+not a deployed image or physical delivery result.
+
+The audit also identified a connected-contract gap: the current XRA1/PMS2
+selector and XRC1/XRR1 blinded deposit placement are independent random values.
+The neutral MAU2/MCG2 carries the latter's placement commitment, not the former.
+Deriving the selected replicas from MAU2 placement would therefore not necessarily
+reproduce PMS2. The node consumer must close authenticated selection/placement
+binding before activation without sending identity-bearing route objects or
+exposing the deposit capability through an earlier public selector.
+
+A fresh read-only Windows UI observation still found the previous isolated
+executable rejecting incompatible old QA state. The user's latest confirmation
+only made the window available; it was not confirmation of account deletion.
+No reset, account creation, phrase reveal, message or production mutation was
+performed in this increment. Windows publication is still unproven.
+
 - Finish Windows publication and both-device peer lookup/consent after the Android
   publication/restart milestone; preserve exact retained request custody on retries.
 - Complete bounded expired-incomplete route recovery and service/PMT rollover.

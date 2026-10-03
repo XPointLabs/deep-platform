@@ -1380,6 +1380,11 @@ Direct DID2 mailbox issuer/topology verification and the mandatory public PMA2
 distribution input belong to
 [DR-0052](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md).
 Keep the neutral mailbox wire; do not reuse the retired identity authority.
+The current node-side mailbox policy API follows
+[DR-0080](../survival-program/decisions/DR-0080-did2-current-mailbox-host-authority.md).
+Close authenticated PMS2 selection-to-MAU2 placement binding before enabling the
+connected replica/holder consumer; do not hash a different request field to rerank.
+
 Owned holder/request/winner restart custody follows
 [DR-0053](../survival-program/decisions/DR-0053-did2-mailbox-grant-restart-custody.md).
 The connected client/service slice must still verify private live issuance

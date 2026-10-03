@@ -12,6 +12,11 @@ decision records take precedence. `DID2`/`DAB2` and root suite `0x0301` are
 allocated as non-active clean-break targets; the dependent closure remains
 unfrozen and the old bytes are not a fallback.
 
+[DR-0080](../survival-program/decisions/DR-0080-did2-current-mailbox-host-authority.md)
+freezes the additive current mailbox host authority API without new wire values.
+PMS2 selection input is not MAU2 blinded placement; their authenticated binding
+and the connected mailbox runtime remain activation gates.
+
 ## 1. Purpose and authority
 
 This document is the single human-readable registry for names that cross a

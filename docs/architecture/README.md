@@ -295,6 +295,10 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   verifier under root-authorized role issuers and the exact current PMT2.
   Retained grant evidence is not protected holder custody or dispatch authority;
   live issuance, final machine bindings and physical delivery remain gates.
+- [`DR-0080`](../survival-program/decisions/DR-0080-did2-current-mailbox-host-authority.md)
+  adds a closed current mailbox host policy with full-interval issuer checks and
+  exact PMT2 node/ranking facts. It does not authorize holder requests, replay or
+  delivery; selection-to-placement binding and runtime activation remain gates.
 - [`DR-0053`](../survival-program/decisions/DR-0053-did2-mailbox-grant-restart-custody.md)
   separates exact current pending-request restoration from retained grant
   verification and binds holder/request/winner custody to the actual account
