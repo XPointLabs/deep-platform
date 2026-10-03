@@ -4,6 +4,30 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: signed inventory lineage и persisted fork
+
+- Fixture создаёт реальные signed DID2 epochs 1–14 и conflict candidates до
+  обнуления owned device key. Final committer повторно проверяет current proof,
+  весь inventory и selected placement на обоих stores; все пары XIC1 проходят
+  Protocol verifier. Перенесены два unsafe V1 Unit scenarios без legacy adapter.
+- Проверены retained exact receipts, неизменность state hashes при bad-lineage
+  отказе, успешный valid successor и persisted authorized fork после reopen.
+  Invalid same-epoch signature не может менять/latch service state. Неверный
+  неподтверждённый predecessor не приравнивается к accepted fork; current
+  normative owner/verifier не изменены. Test-owned journals не доказывают
+  ранний terminal conflict guard, socket/TLS, distinct ID/key или devices.
+- Combined selection 25/25. Full source: ProfileGenerator 107, Unit 275,
+  Integration 475 pass / 1 invite prerequisite fail; 857 pass / 1 fail / 0 skips,
+  warnings 0. Post-full selection 5 pass / 1 Windows `MoveFileEx` access denied
+  при valid successor commit: причина остаётся открытой, green full не её fix.
+- [Checkpoint 4](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-4--signed-inventory-lineage-instead-of-v1-capabilities)
+  содержит exact commands, failure mapping и TRX digests. Runtime/config/wire,
+  production и устройства не изменены; S00/S01/Release остаются открыты.
+- Root machine-set read-only comparison: manifest `92b23996...` расходится с
+  checkout `504d184e...` и Git blobs HEAD `eac72024...`. CRLF — не единственная
+  причина; approved source/producer repin ещё не выполнялся.
+- XNode commit `e076f46`; root фиксирует pointer, результаты и residual items.
+
 ## 2026-10-03 — S00: current prekey exhaustion и exact recovery
 
 - Signed DID2 regression доказал неверный `OutcomeUnknown` после исчерпания

@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: XNode 853 pass / 1 fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); reader/isolated DB закрыты, current invite prerequisite, XPP fixtures и root governance drift открыты |
+| S00 | **В работе: XNode full 857 pass / 1 fail; final lineage selection 5 pass / 1 Windows replace fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); reader/isolated DB закрыты, current invite prerequisite, remaining XPP fixtures, Windows storage и root governance drift открыты |
 | S01 | **Открыт; анализ параллельно S00** | Revocation/admission, grant/send/route settlement и compaction contracts |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -76,16 +76,23 @@ XPP audit подтвердил unsafe construction sealed authority через
 opaque-store/XPC cases нельзя считать current signed prekey evidence.
 Перенесены concurrency/exhaustion/last-resort-restart assertions в signed DID2
 claim runtime; исправлен ошибочный unknown на доказанном pre-reservation отказе.
-Checkpoint 3 сохраняет 853 pass / 1 invite fail / 0 skips на 854 cases.
-Остальные unsafe fixtures ещё открыты. Единичный Windows atomic-replace access
-denied в расширенной выборке до crash-инъекции требует выяснения причины;
-isolated repeat и оба full runs прошли, но это не исправление storage nondeterminism.
+Checkpoint 4 переносит rotation/fork проверки на signed DID2 inventories:
+epochs 1–14, retained exact replay, valid successor после bad-lineage refusal,
+durable authorized fork и invalid-signature no-mutation. Full source:
+857 pass / 1 invite fail / 0 skips на 858 cases. Post-full lineage selection:
+5 pass / 1 Windows native atomic-replace access denied при valid successor
+commit. Такой отказ ранее был и до claim crash-инъекции; причина не выяснена,
+ранние green repeats/full runs не закрывают storage nondeterminism.
+Остальные unsafe fixtures ещё открыты.
 Перенести их scenario semantics на actual DID2 inventory/claim path;
 не удалять rotation/quota/replay/recovery coverage и не ослаблять verifier.
 Synthetic XPA fixture удалён; facade-сценарии перенесены на signed DID2 inputs.
-Свежий XNode checkpoint — 853 pass / 1 fail, без skips; оставшийся positive
+Свежий полный XNode checkpoint — 857 pass / 1 fail, без skips; оставшийся positive
 one-time invite требует current producer/consumer contract (B8), а не обхода
 verifier. Подробная классификация и границы evidence — по ссылке в строке S00.
+Readonly проверка root machine-set: manifest digest не совпадает ни с checkout,
+ни с raw Git blobs HEAD. Есть CRLF differences, но нормализация сама по себе
+не устраняет drift; требуется сверка producer/approved revision, не blind repin.
 Параллельно исследовать **S01**,
 но не писать node admission до закрытого revocation/time contract.
 Подробные owners, gates и шаблон задания находятся только в едином плане.
