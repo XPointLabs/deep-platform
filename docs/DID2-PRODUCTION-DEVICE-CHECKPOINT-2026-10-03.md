@@ -120,8 +120,17 @@ three production nodes with the unchanged diagnostic image. All exits were zero;
 Ed25519/BLS key hashes and named state volumes matched. Independent mounted
 configuration checks observed coordination enabled with its fixed backend;
 readiness remained 200/ONION ready/required terminals ready. Mailbox authority
-remains not ready. A subsequent retained-account Android action is being checked;
-profile restoration itself is not publication or delivery evidence.
+remains not ready. The subsequent retained-account Android action independently
+ended at `XRA1 / Expiry`: its incomplete route expired during the diagnostic
+interval. This does not close publication or retained-account recovery. The
+expired exact request was not silently reminted. A fresh isolated Android QA
+account is the next device probe; the shipping Android package and Windows
+account remain untouched.
+
+XNode `58a4f0e` locally bounds the new warning traffic by closed phase/check
+buckets, with cancellation/repeated-rejection assertions and 32 focused tests
+passed. It has not replaced production `b4c1673`; those test repeats are not
+additional unique scenario/device coverage.
 
 The new Windows executable was launched after closing only the previous QA
 process. Startup rejected incompatible old QA account state as expected. No
