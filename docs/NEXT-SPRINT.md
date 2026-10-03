@@ -87,8 +87,13 @@ device сценарий и bounded recovery для expired incomplete Android ro
 facts. Перед mailbox activation закрыть отдельный разрыв: PMS2/XRA1 selector и
 MAU2 blinded placement сейчас независимы; MCG2 не несёт selector. Нельзя получать
 другой набор реплик хэшированием placement commitment или раскрывать deposit
-capability через прежний публичный selector. После выбранного frozen контракта
-подключить holder/revocation/replay, local-exit/peer quorum и проверить физически.
+capability через прежний публичный selector. Выбран и frozen
+[DR-0081](survival-program/decisions/DR-0081-did2-mailbox-selection-grant-clean-break.md):
+MCG3 подписывает точный PMS2 selector; MCP3/MAU3 и XMC2 заменяют старые bytes.
+Следующий связанный batch: issuer/result/client custody, current node admission,
+holder/revocation/replay, MIP1 proof/peer quorum, PMA2 profile2 и подписанные
+PMA2/PMT2 successors. До matched activation mailbox выключен; затем физический
+Windows/Android contact/text gate, а не compile-only claim.
 
 ### P0: matched issued-head activation и route renewal (2026-10-03)
 

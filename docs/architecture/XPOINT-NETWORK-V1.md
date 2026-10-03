@@ -851,12 +851,15 @@ routine ADH1 renewal advance directory freshness without rotating XVP1/XNV1/XNH1
 or PMT2. Current ADH1/ADP1/DTT1 verification remains mandatory and independent.
 
 `PMA2` authorizes one directory-threshold policy, network ID, role-separated
-Deposit/Retrieve MCG2 issuer keys, minimum grant generation, mailbox algorithm
+Deposit/Retrieve MCG3 issuer keys, minimum grant generation, mailbox algorithm
 and bounded validity interval. It is root-threshold signed; neither a single
 Registry response nor a mailbox node can replace its issuer keys. The exact
 `PMA2`/`PMT2`/`PMS2` binary
 records, selection input, ranking hash and threshold projections are frozen in
 [CONTACT-RESOLVER-V1 §3.6](CONTACT-RESOLVER-V1.md#36-exact-route-and-mailbox-closure).
+Current selector-bound authorization and the peer proof profile follow
+[DR-0081](../survival-program/decisions/DR-0081-did2-mailbox-selection-grant-clean-break.md).
+Historical PMA2 profile1 cannot authorize new mailbox operations.
 No field may be resolved from an unsigned Registry response.
 
 Verification requires all of the following:
@@ -996,7 +999,7 @@ failure emits no opened capability and triggers no forward/dispatch callback.
 
 Exit Open carries a sealed response context containing the exact network,
 operation/attempt, reply public key and monotonic expiry into Seal. The client owns a
-separate single-use reply-private-key context. Store/Retrieve/Acknowledge exact MAU2
+separate single-use reply-private-key context. Store/Retrieve/Acknowledge exact MAU3
 requests and MQR3/MRP1/MAR1 results, ContactResolve exact bounded ContactV1
 request/result pairs, and the separate `GroupControl=5` operation with only
 GSW1/GSQ1 requests and GSS1 results, use the closed Protocol verifier capability

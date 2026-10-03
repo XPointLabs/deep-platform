@@ -17,6 +17,17 @@ freezes the additive current mailbox host authority API without new wire values.
 PMS2 selection input is not MAU2 blinded placement; their authenticated binding
 and the connected mailbox runtime remain activation gates.
 
+[DR-0069](../survival-program/decisions/DR-0069-did2-retired-identity-surface-removal.md)
+closes the old identity source producers and their positive contact vectors.
+The machine registry excludes retired constants; consumer/API/package closure
+and physical delivery remain separate activation gates.
+
+[DR-0070](../survival-program/decisions/DR-0070-did2-operational-genesis-proof-order.md)
+defines the two-stage DID2 operational genesis source/API candidate without a
+wire allocation: signed pending network artifacts are not verified authority;
+completion requires independently verified DID2 evidence and current monotonic
+time. Connected consumer and API/resource gates remain required.
+
 ## 1. Purpose and authority
 
 This document is the single human-readable registry for names that cross a
@@ -296,15 +307,17 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | `MBM1` | local managed ML-KEM-Braid state-machine snapshot. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
 | `TRC1` | local managed Triple-Ratchet component-provider snapshot. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
 | `TRS1` | complete account-scoped durable Triple-Ratchet session state. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network; maximum 2 MiB |
-| `IPK2` | local sealed DID2 pre-XPK1 secret state; never a network record or claim authority. | Bounded local format/API frozen by [DR-0019](../survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md); Protocol seal/current restore and Shared intent owner implemented; atomic post-claim local custody is owned by [DR-0020](../survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md), final batch/shipping/device gates remain open |
+| `IPK2` | local sealed DID2 pre-XPK1 secret state; never a network record or claim authority. | `FROZEN_TARGET_NOT_ACTIVE`; bounded local format/API frozen by [DR-0019](../survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md); Protocol seal/current restore and Shared intent owner implemented; atomic post-claim local custody is owned by [DR-0020](../survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md), final batch/shipping/device gates remain open |
 | `DMD1` | account-authorized messaging device directory. | `FROZEN_TARGET_NOT_ACTIVE`; exact `356+70*N`, `N=1..16` |
 | `DID1` | historical Ed25519-only permanent ID; replaced by DR-0006. | `RETIRED_REJECT`; 76-byte/Bech32m vectors become negative fixtures |
 | `DAB1` | historical Ed25519-only permanent-address/current-account binding. | `RETIRED_REJECT`; 394-byte vectors and ArtifactRef type `0x1001` become negative fixtures |
 | `DID2` | immutable permanent credential with genesis Ed25519 and ML-DSA-65 root keys plus only a hash commitment to the resolver capability; compact text carries the raw capability. | `TARGET_UNFROZEN`; DR-0007 retires the 2036-byte raw-capability candidate; 2052-byte replacement codec/vectors pass local gates, live/device closure pending |
 | `DAB2` | hybrid-AND permanent ID/current-account binding lineage. | `TARGET_UNFROZEN`; exact 3711-byte candidate, ArtifactRef type `0x1002` and transcript vectors exist, dependent closure remains open |
 | `DCA1` | device authorization to publish rotating contact bundles; V2 candidate binds exact DID2/DAB2. | `TARGET_UNFROZEN` pending DR-0006 consumer re-freeze; V1 version/suite rejects even though V2 also happens to be 473 bytes |
-| `DCB1` | signed contact bundle; V1 bytes bind retired DID1/DAB1. | DID2-bound V2 owned reusable genesis frozen by [DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md); current-device author/verification, not publication authority; final machine/vector and API repin remain gates |
-| `DCR1` | exact resolver closure around DCB1/DRS1/DPD1 support objects. | DID2-bound V2 owned reusable genesis frozen by [DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md); exact verified support and capability-bound encryption/restore, not publication or freshness authority |
+| `DCB1` | signed contact bundle; V1 bytes bind retired DID1/DAB1. | `TARGET_UNFROZEN` for complete machine/vector/API closure; DID2-bound V2 owned reusable genesis frozen by [DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md); current-device author/verification, not publication authority; no V1 reader is authorized |
+| `DCR1` | exact resolver closure around DCB1/DRS1/DPD1 support objects. | `TARGET_UNFROZEN` for complete machine/vector/API closure; DID2-bound V2 owned reusable genesis frozen by [DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md); exact verified support and capability-bound encryption/restore, not publication or freshness authority |
+| `XCA2` | exact DID2 route/publication coordination request wrapper within ContactResolve. | `FROZEN_TARGET_NOT_ACTIVE`; DR-0049 and CONTACT-COORDINATION-02; parsed bytes are not placement, witness or dispatch authority |
+| `XCS2` | request-paired DID2 route/publication coordination response wrapper. | `FROZEN_TARGET_NOT_ACTIVE`; DR-0049 and CONTACT-COORDINATION-02; independent enclosed-result verification remains required |
 | `DIA1` | expiring one-time invitation locator; never the permanent Deep ID. | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `DAO1` | metadata-sealed asynchronous deposit object containing DPH2 or DPE2. | `TARGET_UNFROZEN` for DPH2-derived sizes pending DR-0006; established DPE2 semantics remain separately frozen |
 | `DMC2` | canonical pairwise application event plaintext. | `FROZEN_TARGET_NOT_ACTIVE` for base kinds 1, 5..13, 18..19 and CONTACT-CODEC-01 kinds 2..4,14; [DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md) replaces Hello/Accept DAB1 references and V1 endpoint APIs with DAB2/current DID2 proofs; runtime durable/shipping composition remains gated; all other allocated kinds `RESERVED_REJECT` until owner package freeze |
@@ -440,7 +453,8 @@ Normative source: `XPOINT-NETWORK-V1.md`.
 | `XIR1` | long-lived invite rendezvous embedded in DCB1; never a current message deposit route. | contact owner authors; selected invite-store pair hosts | DID2-bound V2 `TARGET_UNFROZEN`; isolated 611-byte candidate verifies DCA1 V2 issuer only, old V1 bytes are not release authority |
 | `XRR1` | short-lived established-contact/message deposit reachability. It is not a public Deep ID artifact. | contact owner authors; selected mailbox pair hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
 | `XMG1` | privacy-routed proof-of-possession request for short-lived mailbox grants bound to exact XRR1 reachability. | contact client authors; ContactResolve authority verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
-| `XMC1` | closed mailbox-grant acquisition result carrying exactly one current-epoch MCG2 only on success. | ContactResolve authority authors; contact client verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
+| `XMC1` | Retired mailbox-grant result without authenticated selection binding. | no current author or reader | `RETIRED_REJECT`; DR-0081 |
+| `XMC2` | closed acquisition result carrying exactly one selector-bound MCG3 only on success. | ContactResolve authority authors; contact client verifies | `FROZEN_TARGET_NOT_ACTIVE`; DR-0081 / CONTACT-CODEC-01 |
 | `XUR1` | established-contact update rendezvous capability/record. | contact owner authors; update-rendezvous service hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01. [DR-0021](../survival-program/decisions/DR-0021-did2-contact-rendezvous-issuer.md) freezes a DID2-only current issuer/time verifier; identity-neutral wire is unchanged, independent placement/route, contact state and shipping/device closure remain gates |
 | `XCP1` | local protected client path plan. Never uploaded. | `deep-client-shared` | `TARGET_UNFROZEN`; local DB generation only |
 | `NCQ2` | identity-neutral network closure distribution request; no account/locator input. | `deep-client-shared` authors; Registry/mirrors consume | `TARGET_UNFROZEN`; exact envelope owner is XPOINT-NETWORK-V1 section 8.1 |
@@ -584,21 +598,27 @@ documents under `../../deep-protocol/docs/`.
 | `PMA1`, `PMT1`, `PMS1` | Existing mailbox authority, topology and deterministic selection. | `CURRENT_PRE_CUTOVER`; not accepted as the target XNV-bound placement generation. |
 | `PRA1`, `PSS1` | Pre-continuity advertisement/successor. | `RETIRED_REJECT` in new contacts/runtime. |
 | `RCD1`, `RDA1`, `RCR1`, `RHC1`, `RTC1`, `RCA1`, `PRA2`, `PSS2` | Existing owner/delegated route-continuity V2 closure. | `CURRENT_PRE_CUTOVER` and `RETIRED_REJECT` after reset; DR-0004 ports semantics to XRA1/XRC1/XSS1. |
-| `PMA2`, `PMT2`, `PMS2` | DR-0004 clean-break root-authorized role-separated MCG2 issuer policy, XNV1-bound projection and deterministic blinded selection. | `FROZEN_TARGET_NOT_ACTIVE`; PMA2 is a NETCODEC authority record encoded with the shared canonical tagged grammar, while PMT2/PMS2 are consumed by CONTACT-CODEC-01. |
+| `PMA2`, `PMT2`, `PMS2` | Root-authorized role-separated issuer policy, XNV1-bound projection and deterministic blinded selection; current algorithm profile follows DR-0081. | `FROZEN_TARGET_NOT_ACTIVE`; PMA2 is a NETCODEC authority record encoded with the shared canonical tagged grammar, while PMT2/PMS2 are consumed by CONTACT-CODEC-01. |
 | `XRA1`, `XRC1`, `XRR1`, `XSS1` | DR-0004 owner authorization, live route, shared reachability and retained successor closure. | `FROZEN_TARGET_NOT_ACTIVE`; pre-cutover continuity records reject. |
-| `XMG1`, `XMC1` | Privacy-routed request/closed result for short-lived holder-specific MCG2 grants bound to an exact XRR1 reachability capability and current PMT2/PMS2. | `FROZEN_TARGET_NOT_ACTIVE` under CONTACT-CODEC-01; no direct Registry or Session-derived issuance path. |
-| `MAU2`, `MCP2`, `MCG2` | Canonical mailbox request, holder presentation and short-lived grant records; they carry no account identity. | `FROZEN_TARGET_NOT_ACTIVE`; retained as target wire records, with grants issued only through XMG1/XMC1. |
+| `XMG1`, `XMC2` | Privacy-routed request/closed result for holder-specific selector-bound grants. | `FROZEN_TARGET_NOT_ACTIVE` under CONTACT-CODEC-01 / DR-0081; no direct Registry or Session-derived issuance path. |
+| `MAU2`, `MCP2`, `MCG2` | Retired authorization without an issuer-authenticated PMS2 selector. | `RETIRED_REJECT`; DR-0081, no reader, conversion or positive corpus. |
+| `MAU3`, `MCP3`, `MCG3` | Identity-neutral request, holder presentation and issuer-signed selection-bound grant. | `FROZEN_TARGET_NOT_ACTIVE`; exact contract is DR-0081 and mailbox-authorization-v3.registry.json. |
 
-DR-0004 is immutable for this generation. `XRR1` alone is not a routable deposit
+DR-0081 supersedes only DR-0004's neutral grant/presentation/envelope/result
+choice; route selection, privacy and ownership remain mandatory. `XRR1` alone is not a routable deposit
 closure; the exact XRA1/XRC1/XRR1/XSS1 plus PMT2/PMS2 closure in the contact/XPoint
 specifications is mandatory. Implementations may not reopen or replace that choice.
 
-`MAU2/MCP2/MCG2` remain the one canonical mailbox authorization envelope; this
-does not retain Session identity. The MCG2 holder is a random, independently
+`MAU3/MCP3/MCG3` is the one canonical mailbox authorization envelope; this
+does not retain Session identity. The MCG3 holder is a random, independently
 generated, reachability-scoped Ed25519 key held in protected client storage.
-`XMG1/XMC1` is the only production acquisition path for its grants. A device,
+`XMG1/XMC2` is the only production acquisition path for its grants. A device,
 account, recovery, DPM1 or synthetic Session key MUST NOT be substituted as the
 holder, and the grant service receives no DeepAccountId or DeepDeviceId.
+Exact framing, PMA2 profile2, signed successor rollout, peer MIP1 proof profile
+and activation gates belong to
+[DR-0081](../survival-program/decisions/DR-0081-did2-mailbox-selection-grant-clean-break.md)
+and its [machine contract](../survival-program/releases/v3.0.0/specs/mailbox-authorization-v3.registry.json).
 
 ## 7. Status and collision manifest required from deep-protocol
 

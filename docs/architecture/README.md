@@ -299,6 +299,11 @@ pre-cutover RC-6 recovery drill и не является шаблоном/defaul
   adds a closed current mailbox host policy with full-interval issuer checks and
   exact PMT2 node/ranking facts. It does not authorize holder requests, replay or
   delivery; selection-to-placement binding and runtime activation remain gates.
+- [`DR-0081`](../survival-program/decisions/DR-0081-did2-mailbox-selection-grant-clean-break.md)
+  replaces the neutral authorization with MCG3/MCP3/MAU3 and XMC2, binding the
+  exact PMS2 selector in the issuer signature without recipient identity.
+  Issuer/client/node/peer changes and signed PMA2/PMT2 successors must activate
+  together; V2 authorization is rejection-only, not a compatibility fallback.
 - [`DR-0053`](../survival-program/decisions/DR-0053-did2-mailbox-grant-restart-custody.md)
   separates exact current pending-request restoration from retained grant
   verification and binds holder/request/winner custody to the actual account

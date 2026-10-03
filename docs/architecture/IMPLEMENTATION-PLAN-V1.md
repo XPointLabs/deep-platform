@@ -362,6 +362,10 @@ the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
   Linux/Windows x64/arm64 and a physical Android arm64 managed probe.
   These are protocol/provider checks, not a releasable identity path.
 - **remaining cutover gate:** ADP1/admission service and directory witnesses, DCB1/DCR1
+  ([DR-0069](../survival-program/decisions/DR-0069-did2-retired-identity-surface-removal.md)
+  removes old source producers and specifies the DID2-only API/consumer repin),
+  two-stage operational author/tooling cutover under
+  [DR-0070](../survival-program/decisions/DR-0070-did2-operational-genesis-proof-order.md),
   and contact-route authority, DPH2/DAO1 and XPK locator, client account
   storage/bootstrap/QR/safety number, xnode readers and the UAT reset must
   consume only exact DID2/DAB2. Then run Windows/Android device E2E for
@@ -1379,10 +1383,15 @@ No other NETCODEC record inherits frozen status from that slice.
 Direct DID2 mailbox issuer/topology verification and the mandatory public PMA2
 distribution input belong to
 [DR-0052](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md).
-Keep the neutral mailbox wire; do not reuse the retired identity authority.
+Keep identity-neutral mailbox authorization; do not reuse retired identity authority.
+The wire clean break is
+[DR-0081](../survival-program/decisions/DR-0081-did2-mailbox-selection-grant-clean-break.md):
+one MCG3/MCP3/MAU3/XMC2 generation with the issuer-bound exact PMS2 selector.
+Replace issuer/client/node/peer consumers together; signed PMA2/PMT2 successors,
+negative/replay coverage and physical delivery remain activation gates.
 The current node-side mailbox policy API follows
 [DR-0080](../survival-program/decisions/DR-0080-did2-current-mailbox-host-authority.md).
-Close authenticated PMS2 selection-to-MAU2 placement binding before enabling the
+Close authenticated PMS2 selection-to-MAU3 placement binding before enabling the
 connected replica/holder consumer; do not hash a different request field to rerank.
 
 Owned holder/request/winner restart custody follows
@@ -1395,7 +1404,7 @@ follow [DR-0054](../survival-program/decisions/DR-0054-did2-private-mailbox-gran
 and [DR-0055](../survival-program/decisions/DR-0055-did2-owned-mailbox-credential-installation.md).
 The connected sender consumer follows
 [DR-0056](../survival-program/decisions/DR-0056-did2-owned-mailbox-message-dispatch.md):
-transactional MAU2 preparation/selected-entry dispatch under the actual account
+transactional MAU3 preparation/selected-entry dispatch under the actual account
 lease and mandatory protected request/counter custody, followed by authenticated receive
 materialization before ACK. Do not acquire that lease recursively through a
 network-refresh API; use independently verified readonly held-floor checks.
@@ -1442,7 +1451,7 @@ the internal seed alone does not activate MSG-01 or transport dispatch.
   matrix.
 - **produces:** exact codecs/vectors for DCB1/DCR1/DIA1, DMC2 kinds 2..4/14,
   XIR1/XPU1/XPO1/XPA1/XIQ1/XIS1/XPS1/XPI1/XPP1/XIC1/XPK1/XPC1/
-  XUR1/XUW1/XUQ1/XUS1/XMG1/XMC1;
+  XUR1/XUW1/XUQ1/XUS1/XMG1/XMC2;
   DID2 cutover replaces the old DCB1/DCR1/XIR1 chain as one closed version-2
   identity-bound publication: exact DID2/DAB2 and DCA1 V2, ADL1 V2,
   XIR1-to-DCA1 artifact version/hash, signature projection/domain and
@@ -1460,8 +1469,8 @@ the internal seed alone does not activate MSG-01 or transport dispatch.
   encoder overloads that accept unrelated raw `viewHash32/placementHash32`;
   production authoring requires the NETCODEC-minted verified placement capability,
   exact request magic and its tag-16 shard key.
-  XMG1/XMC1 retains exact MAU2/MCP2/MCG2 mailbox authorization while replacing
-  Session-derived holder identity: its holder is an independent random
+  XMG1/XMC2 uses DR-0081's exact MAU3/MCP3/MCG3 mailbox authorization, replacing
+  V2 bytes without a reader or adapter: its holder is an independent random
   reachability-scoped Ed25519 key, and acquisition is XRR1-capability keyed over
   the ContactResolve onion operation. No account/device ID or direct Registry
   endpoint enters that flow.

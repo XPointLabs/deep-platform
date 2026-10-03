@@ -1307,10 +1307,10 @@ the complete canonical grammar calculation:
 | 1 | network ID | 16 |
 | 2..3 | authority generation, predecessor PMA2 core hash | `8,32`; predecessor is ZERO32 iff generation is zero |
 | 4 | random mailbox-authority ID | 32 |
-| 5..6 | Deposit and Retrieve MCG2 issuer Ed25519 public keys | `32,32`; nonzero and distinct |
-| 7 | minimum accepted MCG2 generation | u64be, `>=1` |
-| 8 | maximum MCG2 lifetime seconds | u32be, `60..86400` |
-| 9 | mailbox authorization algorithm profile | u16be, exactly `1=MAU2/MCG2-v2` |
+| 5..6 | Deposit and Retrieve MCG3 issuer Ed25519 public keys | `32,32`; nonzero and distinct |
+| 7 | minimum accepted MCG3 generation | u64be, `>=1` |
+| 8 | maximum MCG3 lifetime seconds | u32be, `60..86400` |
+| 9 | mailbox authorization algorithm profile | u16be, current `2=MAU3/MCG3-selection-bound`; profile1 is historical lineage only under DR-0081 |
 | 10..12 | issued-at, not-before, expires-at | u64be; `issuedAt<=notBefore<expiresAt`, lifetime at most 14 days |
 | 13 | authorizing XNA1 CoreRef | 38 |
 | 14 | exact XNA1 directory-witness-policy hash | 32 |
@@ -1322,7 +1322,7 @@ PMA2 is `401 + 96*R` bytes, R=`root threshold..8`. Root receipts sign tags
 core is `SHA256-D("Deep/XPoint/V1/PMA2/core", projection)`. Tags 13/14 must equal
 the current verified XNA1 authority. A successor retains network and authority
 ID, increments generation exactly and names the accepted predecessor core. The
-two issuer keys are role-separated; an MCG2 issued for one domain cannot be
+two issuer keys are role-separated; an MCG3 issued for one domain cannot be
 verified with the other. PMA2 contains no service endpoint, TLS pin, release
 certificate, account/device/holder identifier, route or client entitlement.
 
@@ -1425,7 +1425,13 @@ core is `SHA256-D("Deep/XPoint/V1/XRR1/core", projection)`. The resolver returns
 this complete client closure only inside the read-capability-protected response;
 the deposit service receives only tag 10 or a tag-15 replica capability.
 
-### 3.7 Privacy-routed mailbox grant acquisition: `XMG1` / `XMC1`
+### 3.7 Privacy-routed mailbox grant acquisition: `XMG1` / `XMC2`
+
+The exact authorization wire and signed selector clean break are owned by
+[DR-0081](../survival-program/decisions/DR-0081-did2-mailbox-selection-grant-clean-break.md)
+and its [machine contract](../survival-program/releases/v3.0.0/specs/mailbox-authorization-v3.registry.json).
+Old authorization/results have no current reader; signed PMA2/PMT2 successors
+must precede coordinated runtime activation.
 
 The direct DID2 request lifetime policy and closed restoration/result APIs follow
 [DR-0035](../survival-program/decisions/DR-0035-did2-mailbox-grant-request.md),
@@ -1445,14 +1451,14 @@ mailbox path loan follow
 No holder or runtime issuer authority escapes the account operation. Local SQL
 installation is not transactional message preparation, dispatch or ACK evidence.
 
-`MAU2/MCP2/MCG2` remains the single mailbox authorization wire used inside
+`MAU3/MCP3/MCG3` is the single mailbox authorization wire used inside
 ONION-01 Store/Retrieve/Acknowledge. Its holder identity is clean-break state:
 one independently generated random Ed25519 key per reachability direction and
 local account generation. It is stored only in account-owned protected storage,
 is never derived from or converted to a `SessionId`, and is distinct from
 account, device, recovery, DPM1 mailbox-role, route-owner and sealing keys.
 
-A client holding a verified current XRR1 route closure obtains short-lived MCG2
+A client holding a verified current XRR1 route closure obtains short-lived MCG3
 grants through the existing `ContactResolve=4` onion operation. Direct Registry
 issuance, JSON invitations and public grant endpoints are forbidden. `XMG1`,
 version 1, suite `0x0201`, has exactly 12 fields:
@@ -1464,7 +1470,7 @@ version 1, suite `0x0201`, has exactly 12 fields:
 | 3 | exact resolver locator hash used by XPU1/XIQ1 placement | 32 |
 | 4 | exact role-scoped mailbox grant capability | 32 |
 | 5 | reachability-scoped holder Ed25519 public key | 32 |
-| 6 | requested MCG2 domain | 1; `1=Deposit`, `2=Retrieve` |
+| 6 | requested MCG3 domain | 1; `1=Deposit`, `2=Retrieve` |
 | 7 | exact current PMT2 ArtifactRef | 38 |
 | 8 | exact current PMS2 hash | 32 |
 | 9 | issued-at Unix seconds | 8 |
@@ -1484,7 +1490,7 @@ verifies the full current XRR1/XRA1/XRC1/XSS1/PMT2/PMS2 closure,
 then atomically journals the request. A Deposit request requires exact XRR1 tag
 10. A Retrieve request requires exact owner-only XPU1 tag 27; using either
 capability for the other domain is rejected. The owner capability is never
-returned by a public resolve. The service issues one exact current-epoch MCG2
+returned by a public resolve. The service issues one exact current-epoch MCG3
 grant whose network, domain and holder key equal the request, while epoch and
 placement equal the verified XRR1/PMT2/PMS2 route closure. XMG1 tag 4 is only a role-scoped authorization
 secret and is never interpreted as the placement identifier.
@@ -1493,13 +1499,15 @@ For the grant, `PlacementCommitment` is exactly
 `MembershipCommitment` is exactly SHA-256 of the independently authenticated
 current PMT2 canonical bytes (see
 [DR-0052](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)),
-and the current epoch must equal both that topology
+`SelectionInput` is exactly the verified `PMS2.tag3`, independently random and
+distinct from deposit placement; the issuer signature covers it under DR-0081.
+The current epoch must equal both that topology
 epoch and `PMS2.tag4`. A client refreshes the grant before the current epoch
 expires; the issuer never fabricates a next-epoch membership assertion from a
 current PMS2.
 Grant expiry is the minimum of XRR1, XRC1, PMT2, PMS2 and issuer validity.
 
-`XMC1`, version 1, suite `0x0201`, has exactly 8 fields:
+`XMC2`, version 1, suite `0x0201`, has exactly 8 fields:
 
 | Tag | Value | Size |
 |---:|---|---:|
@@ -1510,16 +1518,16 @@ Grant expiry is the minimum of XRR1, XRC1, PMT2, PMS2 and issuer validity.
 | 5 | SHA-256(exact XMG1) | 32 |
 | 6 | response expires-at Unix seconds | 8 |
 | 7 | SHA-256(exact verified route closure), or ZERO32 on non-success | 32 |
-| 8 | exact current MCG2, or empty on non-success | `0 or 272` |
+| 8 | exact current MCG3, or empty on non-success | `0 or 304` |
 
-XMC1 is 206 bytes on failure and 478 bytes on Success. Success requires one
+XMC2 is 206 bytes on failure and 510 bytes on Success. Success requires one
 canonical current grant; an empty grant is required for every non-success
 result. The client independently verifies its issuer signature, exact
 request/hash, holder/domain/network, current epoch, current mailbox-topology
 membership, PMT2/PMS2 route closure, route-closure hash and effective validity
 before atomically installing the grant. Same operation ID with changed request
 or result is a permanent conflict;
-lost response exact-replays the byte-identical XMC1. The service stores no
+lost response exact-replays the byte-identical XMC2. The service stores no
 account/device identity and logs no reachability capability or holder key.
 
 ## 4. Rotation, quotas and abuse

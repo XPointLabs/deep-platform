@@ -1,0 +1,109 @@
+{
+  "package": "CONTACT-CODEC-01/mailbox-authorization-v3",
+  "decision": "DR-0081",
+  "status": "FROZEN_TARGET_NOT_ACTIVE",
+  "runtimeActivation": false,
+  "owner": "deep-protocol",
+  "newMagic": ["MCG3", "MCP3", "MAU3", "XMC2"],
+  "retiredReject": ["MCG2", "MCP2", "MAU2", "XMC1"],
+  "pma2CurrentAlgorithmProfile": 2,
+  "pma2HistoricalAlgorithmProfile": 1,
+  "grant": {
+    "magic": "MCG3",
+    "version": 3,
+    "bytes": 304,
+    "unsignedBytes": 240,
+    "fields": {
+      "magic": [0, 4],
+      "version": [4, 1],
+      "domain": [5, 1],
+      "lifecycle": [6, 1],
+      "reserved": [7, 1],
+      "networkId": [8, 16],
+      "epoch": [24, 8],
+      "generation": [32, 8],
+      "serial": [40, 16],
+      "notBefore": [56, 8],
+      "expiresAt": [64, 8],
+      "overlapUntil": [72, 8],
+      "placementCommitment": [80, 32],
+      "membershipCommitment": [112, 32],
+      "issuerPublicKey": [144, 32],
+      "holderPublicKey": [176, 32],
+      "selectionInput": [208, 32],
+      "issuerSignature": [240, 64]
+    },
+    "signingTagsHex": {
+      "Deposit": "444545502d4d4347332d444550000000",
+      "Retrieve": "444545502d4d4347332d524554000000"
+    },
+    "selectionSource": "exact independently verified PMS2 tag3",
+    "membershipSource": "SHA256 of exact current canonical PMT2",
+    "placementSource": "existing MailboxPlacementCommitment of XRR1 tag10",
+    "currentLifecycle": "Active"
+  },
+  "presentation": {
+    "magic": "MCP3",
+    "version": 3,
+    "bytes": 440,
+    "unsignedBytes": 376,
+    "grantOffset": 72,
+    "grantLengthOffset": 64,
+    "grantBytes": 304,
+    "holderSignatureOffset": 376,
+    "holderSignatureBytes": 64,
+    "signingTagsHex": {
+      "Store": "444545502d4d4350332d535452000000",
+      "Retrieve": "444545502d4d4350332d474554000000",
+      "Ack": "444545502d4d4350332d41434b000000"
+    }
+  },
+  "request": {
+    "magic": "MAU3",
+    "version": 3,
+    "headerBytes": 16,
+    "presentationLengthOffset": 8,
+    "presentationBytes": 440,
+    "bodyLengthOffset": 10,
+    "bodyLengthBytes": 4,
+    "allowedBodies": ["MEO1", "MBR2", "MBA2"],
+    "bodyTranscriptDomainsChanged": false,
+    "StoreBytes": [640, 82376],
+    "RetrieveBytes": [568, 824],
+    "AckBytes": [608, 4824]
+  },
+  "result": {
+    "magic": "XMC2",
+    "version": 1,
+    "suite": "0x0201",
+    "tags": 8,
+    "nonSuccessBytes": 206,
+    "successBytes": 510,
+    "requestHashTag": 5,
+    "routeClosureHashTag": 7,
+    "grantTag": 8,
+    "grantBytes": 304,
+    "requestMagicUnchanged": "XMG1"
+  },
+  "peerProof": {
+    "container": "MIP1",
+    "fixedHeaderBytes": 120,
+    "opaqueGrammar": ["PMT2 ArtifactRef38", "exactMCG3[304]"],
+    "opaqueBytes": 342,
+    "totalBytes": 462,
+    "bothProofsContainSameGrant": true,
+    "StoreDomain": "Deposit",
+    "TombstoneDomain": "Retrieve",
+    "currentReplicaCount": 2,
+    "StoreMinimumPrq2Bytes": 1468,
+    "TombstoneMinimumPrq2Bytes": 1316,
+    "retiredAuthorityReject": ["PMA1", "P04", "MRL1", "RIP1"]
+  },
+  "activationGates": [
+    "matching generated registry and actual API/package/resource evidence",
+    "signed positive and malformed/replay/cross-feed/clock/crash vectors",
+    "connected current-only issuer/client/node/peer consumers",
+    "properly signed PMA2 and PMT2 successors with retained lineage",
+    "physical Windows and USB Android contacts/messages/files/images/groups/recovery"
+  ]
+}
