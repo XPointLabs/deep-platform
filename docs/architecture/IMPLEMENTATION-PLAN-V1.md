@@ -96,11 +96,14 @@ verification API), deep-client-shared (local-state transitions).
 - application receipt: stored, recipient materialized, delivered, read — разные
   события и durable обязательства.
 
-**Обязательное открытое решение:** какой текущий подписанный источник и какой
-проверенный floor подтверждают revocation в node admission. Не оставить пустой
-revocation source, PMR1 adapter или локально придуманную семантику. Если текущий
-frozen набор не выражает требование, оформить узкий DR/registry change до S02.
-Аналогично не проектировать compaction простым удалением журнала или увеличением
+**Обязательный вход admission:** текущий подписанный источник и восстановленный
+protected floor, без пустого revocation source или PMR1 adapter. Узкий контракт
+принят в
+[DR-0083](../survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md):
+его sole wire owner — CONTACT-RESOLVER §3.8. Signed Protocol producer не заменяет
+native protected floor, node/peer admission или S05 issuer renewal. Статус этого
+slice и остальных S01 переходов находится только в NEXT-SPRINT.
+Compaction нельзя проектировать простым удалением журнала или увеличением
 512/128; сначала доказать отсутствие повторного применения/replay после очистки.
 
 **Выход:** полные state/error tables у владельцев и bounded APIs/fixtures;

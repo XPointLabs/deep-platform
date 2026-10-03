@@ -59,7 +59,7 @@ product scope этим аудитом не упрощаются. Groups, files, 
 | Identity/account | DID2/DAB2 с PQ-root; DR-0006–0008, DR-0069 и текущие Protocol registry/codecs |
 | Directory / network | DID2 freshness, protected history/time и signed NETCODEC; DR-0010–0013, DR-0070 |
 | Contact / route | DID2-only owned contact/session и exact successor custody; DR-0016–0079 по затронутой операции |
-| Mailbox | PMA2 profile 2, PMT2/PMS2, MCG3/MCP3/MAU3 и XMC2; **DR-0080/0081** |
+| Mailbox | PMA2 profile 2, PMT2/PMS2, MCG3/MCP3/MAU3 и XMC2; **DR-0080/0081**. Signed serial revocation/floor: [DR-0083](../survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), без изменения client wire; node activation ещё закрыта |
 | Peer replication | Neutral persistence framing с DID2 grant-bound proof; контракт DR-0081, текущая node composition ещё не готова |
 | Local state | Текущие account/database/journal generations producer; clean break без compatibility reader |
 

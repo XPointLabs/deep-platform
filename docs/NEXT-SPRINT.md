@@ -26,8 +26,8 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Protocol full 2016 pass / 1 fail / 12 skips; XNode full 868 pass / 1 fail, новые prekey negatives 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); ONION metadata и program input drift закрыты; package/current authority, invite/XPP и Windows storage открыты |
-| S01 | **Открыт; анализ параллельно S00** | Revocation/admission, grant/send/route settlement и compaction contracts |
+| S00 | **В работе: Protocol full 2065 pass / 1 fail / 12 skips; XNode full 868 pass / 1 fail, новые prekey negatives 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); ONION metadata и program input drift закрыты; package/current authority, invite/XPP и Windows storage открыты |
+| S01 | **В работе: DR-0083 принят, signed Protocol revocation/floor 49/49; native/node consumers ещё отсутствуют** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [producer evidence/remaining integration](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md); grant/send/route settlement, compaction и application receipt contracts открыты |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
@@ -129,8 +129,11 @@ crypto/wire и accepted evidence blobs не изменены. Twelve program gua
 ProtocolPackageGO по-прежнему fails из-за отсутствующего executable evidence.
 Это input integrity, не package или release qualification. Подробности:
 [governance checkpoint](SPRINT-HISTORY.md#2026-10-03--s00-program-input-integrity).
-Параллельно исследовать **S01**,
-но не писать node admission до закрытого revocation/time contract.
+Продолжить **S01** от [DR-0083](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md):
+Protocol signed source/floor producer и independent vectors проверены; это не
+native protected floor или активированный node consumer. Нельзя включать старую
+PMA1/P04 composition. Закрыть остальные lifecycle/compaction contracts, затем
+подключать current node admission и проверять issuer→node→client одним сценарием.
 Подробные owners, gates и шаблон задания находятся только в едином плане.
 
 Аудит разрешил documentation/architecture consolidation, а не возобновление

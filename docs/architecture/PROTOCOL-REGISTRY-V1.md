@@ -603,6 +603,7 @@ documents under `../../deep-protocol/docs/`.
 | `XMG1`, `XMC2` | Privacy-routed request/closed result for holder-specific selector-bound grants. | `FROZEN_TARGET_NOT_ACTIVE` under CONTACT-CODEC-01 / DR-0081; no direct Registry or Session-derived issuance path. |
 | `MAU2`, `MCP2`, `MCG2` | Retired authorization without an issuer-authenticated PMS2 selector. | `RETIRED_REJECT`; DR-0081, no reader, conversion or positive corpus. |
 | `MAU3`, `MCP3`, `MCG3` | Identity-neutral request, holder presentation and issuer-signed selection-bound grant. | `FROZEN_TARGET_NOT_ACTIVE`; exact contract is DR-0081 and mailbox-authorization-v3.registry.json. |
+| `MGR1` | Current role-issuer-signed cumulative random grant-serial revocations and protected host floor. | `FROZEN_TARGET_NOT_ACTIVE`; exact contract is DR-0083 / CONTACT-RESOLVER-V1 §3.8 and mailbox-grant-revocation-v1.registry.json. |
 
 DR-0081 supersedes only DR-0004's neutral grant/presentation/envelope/result
 choice; route selection, privacy and ownership remain mandatory. `XRR1` alone is not a routable deposit

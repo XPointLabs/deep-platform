@@ -864,6 +864,12 @@ Current selector-bound authorization and the peer proof profile follow
 Historical PMA2 profile1 cannot authorize new mailbox operations.
 No field may be resolved from an unsigned Registry response.
 
+Current per-grant revocation and its protected floor are owned by
+[CONTACT-RESOLVER-V1 §3.8](CONTACT-RESOLVER-V1.md#38-current-mailbox-grant-revocation)
+and [DR-0083](../survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md).
+This is a node-control prerequisite, not a change to client grant bytes or an
+activated node consumer. Missing or stale evidence does not mean "not revoked".
+
 Verification requires all of the following:
 
 1. PMA2 is signed by the exact current XNA1 root threshold, binds that XNA1

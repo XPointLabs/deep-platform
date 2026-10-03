@@ -4,6 +4,31 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S01: current signed grant revocation producer
+
+- Protocol `149d689c86a73c2bbc47f028948c96f553680d32` реализует узкий
+  [DR-0083](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md):
+  actual PMA2 role signatures, cumulative serials, protected-floor plan и closed
+  current revocation capability. MCG3/MCP3/MAU3/XMC2 и NCP2 не меняются; новые
+  ключи, signer role, client journal или legacy adapter не добавлены.
+- Independent fixed-width generator создаёт четыре signed и восемь hostile
+  golden records из публичных test seeds, без вызова product encoder. Два closed
+  schemas и все четыре input hashes закреплены primary registry; approved DNP1
+  blobs не изменены. Exact MGR1 target остаётся FROZEN_TARGET_NOT_ACTIVE.
+- Focused 49/49. Regression сохраняет grant expiry после floor callback, даже
+  когда revocation snapshot ещё свежий. Memory floor/clock явно не являются
+  native durable store, active node или physical evidence.
+- Fresh mandatory Debug restore/build: 0 warnings / 0 errors. Full Protocol
+  solution: 2065 pass / 1 fail / 12 прежних native/operator skips; package fail
+  на retired MCG2 и source graph fail на MAU2 сохранены без ослабления gate.
+  Registry, exact ownership и integrity-only checks проходят; root/public docs
+  174 checks pass. Команды, mapping и sanitized digests:
+  [S01 checkpoint](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md).
+- S01 целиком не закрыт: settlement/compaction/application receipts открыты;
+  S02/S03 требуют actual protected floor и current admission/peer consumers,
+  S05 — cumulative issuer ledger/renewal/catch-up. Production, devices и текущий
+  local dev не изменены; delivery/release qualification не заявлены.
+
 ## 2026-10-03 — S00: current signed prekey negative paths
 
 - XNode `27397999edf0b34bd66cb5a6528ecd48a43d0e70`: все восемь cases

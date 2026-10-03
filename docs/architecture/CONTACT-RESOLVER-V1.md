@@ -1535,6 +1535,54 @@ or result is a permanent conflict;
 lost response exact-replays the byte-identical XMC2. The service stores no
 account/device identity and logs no reachability capability or holder key.
 
+### 3.8 Current mailbox grant revocation
+
+MGR1 is the identity-neutral node-control revocation record allocated by
+[DR-0083](../survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md).
+It is FROZEN_TARGET_NOT_ACTIVE, not a PMR1 reader/adapter and not a new client
+grant or presentation version. The exact machine contract is
+[mailbox-grant-revocation-v1.registry.json](../survival-program/releases/v3.0.0/specs/mailbox-grant-revocation-v1.registry.json).
+Its [closed schema](../survival-program/releases/v3.0.0/specs/mailbox-grant-revocation-v1.registry.schema.json),
+[independent signed vectors](../survival-program/releases/v3.0.0/specs/mailbox-grant-revocation-v1.vectors.json)
+and [vector schema](../survival-program/releases/v3.0.0/specs/mailbox-grant-revocation-v1.vectors.schema.json)
+are hash-bound inputs of the primary Protocol registry, not runtime activation.
+
+Version1/suite0201 has exactly twelve canonical tagged fields:
+
+| Tag | Value | Exact size / bound |
+| ---: | --- | --- |
+| 1 | network ID | 16, nonzero |
+| 2 | exact current PMA2 CoreRef | 38, PMA2/version1/nonzero core |
+| 3 | role | 1; Deposit=1, Retrieve=2 |
+| 4 | exact PMA2 role issuer Ed25519 public key | 32, nonzero |
+| 5 | snapshot generation | u64be, >=1 |
+| 6 | predecessor MGR1 core hash | 32; ZERO32 iff generation1 |
+| 7..9 | issued-at, not-before, expires-at | u64be each; nonzero issuedAt<=notBefore<expiresAt; lifetime <=300 seconds |
+| 10 | revoked-serial count | u32be, 0..4096 |
+| 11 | revoked serials | exactly 16*tag10 bytes; nonzero, distinct, strictly byte-ordered |
+| 12 | role issuer signature | 64, nonzero |
+
+Total is `327+16*N`, N=0..4096 (327..65863): 12-byte record header, twelve
+8-byte field headers and 219 fixed value bytes. The signature signs the canonical
+eleven-tag projection under `SIGINPUT("Deep/XPoint/V1/MGR1/issuer",0x0201,projection)`;
+the core hash is `SHA256-D("Deep/XPoint/V1/MGR1/core",projection)`. Issuance must
+be no earlier than the PMA2 role key's signed valid-from time. The role key
+comes only from the current root-authorized PMA2. The whole snapshot interval
+lies inside that policy, covers the current protected lower/upper interval and
+has issued-at no later than its lower bound. No host UTC authority is accepted.
+
+Snapshot generations exactly increment, name the prior accepted core, retain
+all prior serials and never move issued-at backwards. A byte-identical current
+core is exact replay, not renewal. The host restores the separately protected
+prior floor, plans/verifies the successor, atomically installs and reads back
+exact bytes, then verifies currentness again before use. Scope includes network,
+PMA2 CoreRef, role and issuer key. An expired predecessor can prove that floor,
+but never absence of a current revocation. Missing/stale/gapped/forked state or
+capacity exhaustion makes the role unavailable; it does not manufacture an
+empty set, discard serials or reset genesis. Detailed transitions, callback and
+equivocation rules are owned once by DR-0083. Freshness is bounded eventual
+knowledge, not instant global revocation. Both role sources are required.
+
 ## 4. Rotation, quotas and abuse
 
 Usage and abuse accounting are separate. For `Reusable`, tag 10 and XPU1

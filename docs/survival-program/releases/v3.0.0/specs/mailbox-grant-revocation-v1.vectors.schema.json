@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:xpoint:mailbox-grant-revocation-v1:vectors",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "decision", "status", "runtimeActivation", "reference", "positiveCases", "negativeCases"],
+  "properties": {
+    "schemaVersion": { "const": 1 }, "decision": { "const": "DR-0083" },
+    "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" }, "runtimeActivation": { "const": false },
+    "reference": { "const": "Independent fixed-width writer; public test seeds e1/e2 repeated 32 times; not production authority" },
+    "positiveCases": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/positive" } },
+    "negativeCases": { "type": "array", "minItems": 8, "maxItems": 8, "items": { "$ref": "#/$defs/negative" } }
+  },
+  "$defs": {
+    "recordHex": { "type": "string", "minLength": 652, "maxLength": 131726, "pattern": "^(?:[0-9a-f]{2})+$" },
+    "projectionHex": { "type": "string", "minLength": 510, "maxLength": 131582, "pattern": "^(?:[0-9a-f]{2})+$" },
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "positive": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "domain", "generation", "recordHex", "unsignedHex", "signatureInputHex", "coreHashHex", "recordSha256", "issuerPublicKeyHex"],
+      "properties": {
+        "id": { "enum": ["deposit-empty", "retrieve-empty", "deposit-revoked", "deposit-successor"] },
+        "domain": { "enum": [1, 2] }, "generation": { "enum": [1, 2] },
+        "recordHex": { "$ref": "#/$defs/recordHex" }, "unsignedHex": { "$ref": "#/$defs/projectionHex" },
+        "signatureInputHex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})+$", "minLength": 576, "maxLength": 131648 },
+        "coreHashHex": { "$ref": "#/$defs/hash" }, "recordSha256": { "$ref": "#/$defs/hash" },
+        "issuerPublicKeyHex": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "negative": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "recordHex", "stage", "rejection"],
+      "properties": {
+        "id": { "enum": ["version", "suite", "reserved", "unknown-tag", "field-length", "count-overflow", "zero-serial", "truncated"] },
+        "recordHex": { "$ref": "#/$defs/recordHex" },
+        "stage": { "enum": ["FixedHeader", "FieldHeaders", "FieldLengths", "SemanticFields", "ExactTotalSize"] },
+        "rejection": { "enum": ["WrongVersion", "WrongSuite", "ReservedNotZero", "UnknownTag", "InvalidFieldLength", "CrossFieldMismatch", "InvalidTotalSize"] }
+      }
+    }
+  }
+}
