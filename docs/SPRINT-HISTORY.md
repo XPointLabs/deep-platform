@@ -4,6 +4,24 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: current facade и удаление unsafe XPA fixture
+
+- Все 15 facade cases перенесены в Integration на class-scoped signed DID2
+  authoring, production publication verifier и current placement/receipt keys.
+  Unsafe XPA capability fixture, старый base64 route и manual writer удалены;
+  scenarios/assertions не удалялись и не пропускались.
+- Focused facade: 14 pass / 1 fail. Fresh full XNode source Release:
+  ProfileGenerator 107/107, Unit 280/280, Integration 466 pass / 1 fail;
+  итого 853 pass / 1 fail / 0 skips, прежние 854 cases, exit 1, build warnings 0.
+  Successful/replayed/recovered replies дополнительно проверены current
+  Protocol publication-commit verifier; caller cancel достигает receipt callback.
+- Открытый случай — signed current one-time invite prerequisite: author emits
+  reusable genesis, verifier отвергает kind 2/nonzero usage. Positive claim/
+  replay test сохранён failing, не подменён negative case или V1 authority.
+- [Checkpoint 2](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-2--current-facade-inputs-unsafe-fixture-removed)
+  фиксирует commands/TRX hashes/limits. S00, release и physical E2E открыты;
+  runtime/prod/devices не изменены.
+
 ## 2026-10-03 — S00: свежая node baseline и подписанные fixtures
 
 - Новый полный source-cutover Release прогон воспроизвёл 19 node failures.

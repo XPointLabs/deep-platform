@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: свежий XNode 19 → 13 failures; Integration 452/452** | [Первый checkpoint](../xnode/docs/testing/s00-node-baseline-2026-10-03.md); оставшиеся current fixtures, isolated DB, Registry classification и root governance drift |
+| S00 | **В работе: свежий XNode 19 → 13 → 1 failure; 853 pass / 0 skips** | [Node checkpoints и классификация](../xnode/docs/testing/s00-node-baseline-2026-10-03.md); missing current invite prerequisite, XPP fixtures, isolated DB, Registry classification и root governance drift |
 | S01 | **Открыт; анализ параллельно S00** | Revocation/admission, grant/send/route settlement и compaction contracts |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -57,6 +57,10 @@ Production среда в этом аудите не проверялась и н
   package/API/resource/evidence repin и actual installed matrix требуют проверки.
 - **B7:** files/groups/calls/multi-device/carriers/full release evidence остаются
   обязательными согласно [V1 scope](architecture/V1-RELEASE-SCOPE.md).
+- **B8:** current publication author/verifier поддерживает reusable genesis,
+  но не подписанную DID2 one-time invitation; positive claim/replay сценарий
+  остаётся failing prerequisite. Сверить current contract и закрыть producer/
+  consumer; способность codec разобрать kind 2 не означает runtime support.
 
 `OfficialXPoint3` не передаёт данные при отсутствии одного обязательного узла;
 S09 проверяет сохранность и автоматическое восстановление после возврата.
@@ -64,11 +68,12 @@ S09 проверяет сохранность и автоматическое в
 
 ## Следующий запуск Codex
 
-Продолжить **S00**: заменить synthetic XPA fixture в 13 facade-сценариях,
-отдельно согласовать отсутствующий current invite prerequisite; затем current
-XPP/Registry fixtures → isolated PostgreSQL → полный re-run/classification и
-root governance drift. Первый свежий XNode checkpoint — 841 pass / 13 fail,
-без skips; подробная классификация и границы evidence — по ссылке в строке S00.
+Продолжить **S00**: current XPP/unit-fixture audit и Registry reader/DB fixtures
+→ isolated PostgreSQL → полный re-run/classification и root governance drift.
+Synthetic XPA fixture удалён; facade-сценарии перенесены на signed DID2 inputs.
+Свежий XNode checkpoint — 853 pass / 1 fail, без skips; оставшийся positive
+one-time invite требует current producer/consumer contract (B8), а не обхода
+verifier. Подробная классификация и границы evidence — по ссылке в строке S00.
 Параллельно исследовать **S01**,
 но не писать node admission до закрытого revocation/time contract.
 Подробные owners, gates и шаблон задания находятся только в едином плане.
