@@ -4,6 +4,30 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S01: native revocation custody
+
+- XNode `2843169d80c9f950173f834339b28aba526bcc9c` подключает existing
+  Data Protection/file security/native barriers к exact signed MGR1: явное
+  new-scope enrollment, protected read-back, independent custody root,
+  persistent authenticated-conflict latch и один concurrency owner для floor
+  replacement/operation. Raw Protocol capability не выходит из native lease;
+  проверка, пережившая закрытие lease, отклоняется после await.
+- Current signed fixtures и реальные protected files: focused 29/29; final
+  full source 897 pass / 1 неизменённый B8 fail / 0 skips (898). Release build
+  0 warnings / 0 errors. Missing/corrupt/purpose/key loss, native replacement
+  interruption, restart, expiry, cancel и escaped-work проверены. Полная потеря
+  независимой custody/key ring после restart не объявляется обнаруживаемой.
+- Mandatory isolated external smoke: real Xray, 10 runner/contract tests,
+  runtime hard/soft checks и secret scan проходят. Только временный Docker
+  project/volumes очищен; все шесть существующих deep-dev containers сохранены.
+  Active path/peer/transport не менялись; multi-node повторно не запускался.
+- Program/current node admission ещё не подключены. Это не reservation/peer
+  quorum/receipt, issuer renewal, shipping package или physical delivery.
+  S01 lifecycle/compaction/application receipts, S00 B8/Windows storage и
+  release blockers остаются открытыми. Production, devices, node keys и
+  operator secrets не изменены. Commands/mapping/digests:
+  [native checkpoint](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md).
+
 ## 2026-10-03 — S01: current signed grant revocation producer
 
 - Protocol `149d689c86a73c2bbc47f028948c96f553680d32` реализует узкий
