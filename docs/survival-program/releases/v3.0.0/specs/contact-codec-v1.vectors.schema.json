@@ -10,7 +10,7 @@
     "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
     "canonicalBounds": {
       "type": "object", "additionalProperties": false,
-      "required": ["XRA1", "XMG1", "XMC1", "PMA2", "DCB1", "DMC2/2", "DMC2/3", "DMC2/14"],
+      "required": ["XRA1", "XMG1", "XMC2", "PMA2", "DMC2/2", "DMC2/3", "DMC2/14"],
       "properties": {
         "DMC2/2": { "$ref": "#/$defs/privateContactControlBounds" },
         "DMC2/3": { "$ref": "#/$defs/privateContactControlBounds" },
@@ -27,12 +27,12 @@
           "required": ["recordBytes"],
           "properties": { "recordBytes": { "const": 435 } }
         },
-        "XMC1": {
+        "XMC2": {
           "type": "object", "additionalProperties": false,
           "required": ["failureRecordBytes", "successRecordBytes"],
           "properties": {
             "failureRecordBytes": { "const": 206 },
-            "successRecordBytes": { "const": 478 }
+            "successRecordBytes": { "const": 510 }
           }
         },
         "PMA2": {
@@ -41,15 +41,6 @@
           "properties": {
             "minimumRecordBytes": { "const": 497 },
             "maximumRecordBytes": { "const": 1169 }
-          }
-        },
-        "DCB1": {
-          "type": "object", "additionalProperties": false,
-          "required": ["minimumRecordBytes", "maximumRecordBytes", "exactAdl1Bytes"],
-          "properties": {
-            "minimumRecordBytes": { "const": 3757 },
-            "maximumRecordBytes": { "const": 10275 },
-            "exactAdl1Bytes": { "const": 228 }
           }
         },
         "DMC2/14": {
@@ -66,23 +57,23 @@
       }
     },
     "ed25519Fixtures": {
-      "type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true,
+      "type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true,
       "items": { "$ref": "#/$defs/ed25519Fixture" }
     },
     "primitives": {
-      "type": "array", "minItems": 15, "maxItems": 15, "uniqueItems": true,
+      "type": "array", "minItems": 13, "maxItems": 13, "uniqueItems": true,
       "items": { "$ref": "#/$defs/primitive" }
     },
     "records": {
-      "type": "array", "minItems": 15, "uniqueItems": true,
+      "type": "array", "minItems": 16, "maxItems": 16, "uniqueItems": true,
       "items": { "$ref": "#/$defs/record" }
     },
     "hostileFixtures": {
-      "type": "array", "minItems": 10, "uniqueItems": true,
+      "type": "array", "minItems": 8, "uniqueItems": true,
       "items": { "$ref": "#/$defs/hostile" }
     },
     "negativeCases": {
-      "type": "array", "minItems": 17, "uniqueItems": true,
+      "type": "array", "minItems": 7, "uniqueItems": true,
       "items": { "$ref": "#/$defs/negative" }
     }
   },
@@ -104,9 +95,9 @@
       "required": ["id", "target", "projectionPrimitiveId", "signatureDomain", "signatureInputHex", "seedHex", "publicKeyHex", "signatureHex"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-        "target": { "enum": ["XIR1", "XRA1", "DCB1"] },
-        "projectionPrimitiveId": { "enum": ["xir1-signature-projection", "xra1-core-projection", "dcb1-signature-projection"] },
-        "signatureDomain": { "enum": ["Deep/ContactResolver/V1/XIR1", "Deep/XPoint/V1/XRA1", "Deep/Application/V1/contact-bundle"] },
+        "target": { "enum": ["XIR1", "XRA1"] },
+        "projectionPrimitiveId": { "enum": ["xir1-signature-projection", "xra1-core-projection"] },
+        "signatureDomain": { "enum": ["Deep/ContactResolver/V1/XIR1", "Deep/XPoint/V1/XRA1"] },
         "signatureInputHex": { "$ref": "#/$defs/hex" },
         "seedHex": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
         "publicKeyHex": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
@@ -118,7 +109,7 @@
       "required": ["id", "target", "fixtureBytesHex", "sha256", "purpose"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-        "target": { "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMA2|PMT2|PMS2|XRC1|XSS1|XRR1|XMG1|XMC1|DCB1|DCR1|DIA1|DMC2/[2-4]|DMC2/14)$" },
+        "target": { "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMA2|PMT2|PMS2|XRC1|XSS1|XRR1|XMG1|XMC2|DIA1|DMC2/[2-4]|DMC2/14)$" },
         "fixtureBytesHex": { "$ref": "#/$defs/hex" },
         "sha256": { "$ref": "#/$defs/hash" },
         "purpose": { "enum": ["signature-projection", "hash-projection", "canonical-grammar", "payload-grammar"] }
@@ -154,7 +145,7 @@
       }
     },
     "target": {
-      "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMA2|PMT2|PMS2|XRC1|XSS1|XRR1|XMG1|XMC1|DCB1|DCR1|DIA1|DMC2/[2-4]|DMC2/14)$"
+      "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMA2|PMT2|PMS2|XRC1|XSS1|XRR1|XMG1|XMC2|DIA1|DMC2/[2-4]|DMC2/14)$"
     },
     "negative": {
       "type": "object", "additionalProperties": false,

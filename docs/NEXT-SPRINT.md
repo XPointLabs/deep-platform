@@ -90,6 +90,9 @@ MAU2 blinded placement сейчас независимы; MCG2 не несёт s
 capability через прежний публичный selector. Выбран и frozen
 [DR-0081](survival-program/decisions/DR-0081-did2-mailbox-selection-grant-clean-break.md):
 MCG3 подписывает точный PMS2 selector; MCP3/MAU3 и XMC2 заменяют старые bytes.
+Protocol producer уже реализован и адресно проверен:
+[source checkpoint](DID2-MAILBOX-V3-CHECKPOINT-2026-10-03.md).
+Это не client/node activation или физическая доставка.
 Следующий связанный batch: issuer/result/client custody, current node admission,
 holder/revocation/replay, MIP1 proof/peer quorum, PMA2 profile2 и подписанные
 PMA2/PMT2 successors. До matched activation mailbox выключен; затем физический
