@@ -4,6 +4,28 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: current prekey exhaustion и exact recovery
+
+- Signed DID2 regression доказал неверный `OutcomeUnknown` после исчерпания
+  last-resort лимита без новой записи. Coordinator теперь различает строго
+  pre-reservation `PreKeysUnavailable` / `None`; повторная current-authority
+  проверка остаётся обязательной, неизвестный исход не подменён успехом/отказом.
+- Три legacy Unit duplicates перенесены по бизнес-инвариантам в current
+  concurrency/exhaustion/restart Fact и prepare/complete loss Theory. Проверены
+  32 уникальных one-time ключа, подписанные counters 1/2, sentinel/proof/manifest,
+  exact whole-result replay и неизменность durable hashes при отказе. Pending
+  last-resort блокирует новую операцию до exact reconciliation после reopen.
+- Final full XNode: ProfileGenerator 107, Unit 277, Integration 469 pass /
+  1 fail; итого 853 pass / 1 fail / 0 skips из 854, exit 1, build warnings 0.
+  Единственный final fail — current invite producer prerequisite. В расширенной
+  focused выборке отдельно наблюдался Windows native atomic-replace access
+  denied до crash-инъекции; isolated 2/2 и оба full runs прошли, cause unverified.
+- [Checkpoint 3 и mapping удалённых дублей](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-3--current-signed-prekey-exhaustion-and-recovery).
+  Remaining unsafe XPP fixtures не удалены без переноса. Wire/API/config/state
+  generations не изменены, Release/physical/production не квалифицированы;
+  deployment и device actions не выполнялись. S00/S01 и весь release scope открыты.
+- XNode commit `72fdc05`; root фиксирует его pointer и текущие residual items.
+
 ## 2026-10-03 — S00: Registry reader 2 и disposable provider lane
 
 - Свежий полный Registry с отдельным PostgreSQL: 301 pass / 22 fail / 6 skips.

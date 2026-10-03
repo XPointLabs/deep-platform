@@ -74,6 +74,12 @@ Registry reader/DB закрыты полным source прогоном; 6 Window
 XPP audit подтвердил unsafe construction sealed authority через
 `GetUninitializedObject` в `PreKeyInventoryTestCapability`: положительные
 opaque-store/XPC cases нельзя считать current signed prekey evidence.
+Перенесены concurrency/exhaustion/last-resort-restart assertions в signed DID2
+claim runtime; исправлен ошибочный unknown на доказанном pre-reservation отказе.
+Checkpoint 3 сохраняет 853 pass / 1 invite fail / 0 skips на 854 cases.
+Остальные unsafe fixtures ещё открыты. Единичный Windows atomic-replace access
+denied в расширенной выборке до crash-инъекции требует выяснения причины;
+isolated repeat и оба full runs прошли, но это не исправление storage nondeterminism.
 Перенести их scenario semantics на actual DID2 inventory/claim path;
 не удалять rotation/quota/replay/recovery coverage и не ослаблять verifier.
 Synthetic XPA fixture удалён; facade-сценарии перенесены на signed DID2 inputs.
