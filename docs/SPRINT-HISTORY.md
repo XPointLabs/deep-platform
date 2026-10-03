@@ -4,6 +4,21 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: mailbox ingress operation binding
+
+- XNode `529a10301862a15dbc5d0e1e31e4ede693c1d0fa`: bounded exact request capture,
+  canonical outer/inner operation check before issuer/replay; existing rate budget
+  retained. No new wire/API, retired authority activation or production changes.
+- Before regression 6 pass / 4 fail; final ingress 17/17, connected 39/39.
+  Actual signed controls retain the same counter for the correct operation;
+  fixtures do not qualify current network admission. Release build 0 warnings /
+  0 errors; full 924 pass / 1 unchanged B8 fail / 0 skips.
+- Final external smoke and three-node non-mocked rehearsal pass. One MCR EOF
+  before rehearsal startup is retained; unchanged-script retry passes. Temporary
+  containers/volumes removed, six deep-dev containers preserved. Commands,
+  scope and hashes: [checkpoint](../xnode/docs/testing/s00-mailbox-ingress-binding-2026-10-03.md).
+  Current node/peer admission, physical E2E and release remain unqualified.
+
 ## 2026-10-03 — S00: native Windows replacement budget
 
 - XNode `8db6ddd55dcef55476eca8bcabae35c4512ce638`: bounded retry для той же
