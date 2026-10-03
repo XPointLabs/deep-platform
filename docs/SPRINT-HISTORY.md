@@ -170,6 +170,196 @@
   rejects. These tests do not prove physical contacts/messages/assets/groups
   or publication replica commits. No GitHub push or release publication.
 
+## 2026-10-02 — actual DID2 Registry runtime canary and matched public export
+
+- The current Registry image started in a separately named, no-published-port
+  canary with the existing custody and independent floor. NTS was enabled;
+  automatic head renewal remained explicitly disabled during diagnosis.
+- A fresh protected ADA2/time-floor/fence backup and separate PostgreSQL schema
+  dump were retained and transfer hashes checked before head mutation. Actual
+  NTS-backed content-preserving renewal advanced ADH1 to generation 33/tree 12;
+  independent floor observation and native authenticated export agreed.
+- The retained expired view still yielded DID2 readiness 503. A separate
+  canary with the actual native-exported current signed XNV1 returned both
+  ordinary and DID2 readiness 200. No verifier, lifetime or TLS guard changed.
+  This is proof readiness, not nonce-fresh device proof or message delivery.
+- Explicitly authorized native XNode public export succeeded: 25 records,
+  all eight role chains, independently pinned genesis and public observer.
+  The first export rejected a mistakenly selected current head as genesis;
+  the independently retained genesis was used without repinning or reset.
+  Three node preparation bundles passed structural custody checks locally.
+- Removed disabled retired authority sections from the canonical node compose,
+  installer asset and diagnostic preparer: current DID2-only XNode rejects
+  those sections even when disabled. Node staging/preparation focused tests
+  passed 12/12, ingress contracts 34/34, installer syntax and script suite passed.
+- Scoped canary/operator/preparation/staging checks passed 28/28 before this
+  configuration follow-up. Canary tooling checkpoint: DevOps `c1e19a4`.
+  Actual active Registry ingress, node containers, staking and certbot remained
+  unchanged. Persistent renewal, matched live rollout and Windows/Android
+  contact/text/attachment/group E2E remain open release gates.
+
+## 2026-10-02 — current DID2 Registry image and production NTS preparation
+
+- Pinned read-only SSH observation confirmed the active Registry still uses
+  revision `31d7a14`, without configured automatic NTS or head renewal. The
+  separately provisioned time floor was not an active service cutover.
+- Actual authenticated production observations passed first in the retained
+  operator and then in the newly built DID2-only source image (uncertainty 2s
+  and 3s respectively). Reports explicitly deny reusable freshness authority;
+  neither result establishes live account proof or message delivery.
+- Local source checkpoints: Protocol
+  `d6957bbaf2285fbb21e6bc66d1fd3b32d11b59d1` and Registry
+  `f8215c882fcf9ad5afd93fab646eb9702dcb4979`. Both source trees are clean.
+  The retained Protocol 299-test TRX hash was rechecked; Registry source
+  diagnostics reran **37/37, 0 skipped** before image preparation.
+  Registry TRX SHA256:
+  `340FEFB4A9D6AEE7E5E21431A0BBB405AB71FE941049B6AA23670D71B5B132FE`.
+- The Linux amd64 Registry Docker image was built with current Protocol source
+  and the reviewed NTS observer, transferred with pinned SSH host trust, and
+  its archive hash/source labels verified on production. It has not replaced
+  the active service. No ingress, certbot, staking or node identities changed.
+- DevOps `a864f4ec06eeeb06e098aaadc653f381421525bb` adds explicit disposable
+  `observe-did2`/`renew-did2` operator modes. They remove only explicitly disabled
+  retired configuration sections, preserving current custody/mounts/floors;
+  active or ambiguous retired authority rejects. Focused contracts **9/9**.
+  Existing operator modes are unchanged. This is not a deployment command.
+- Runtime canary, persistent automatic renewal, matched complete node/network
+  history and physical contact/text/file/image/group flows remain open. No
+  GitHub push, CI publication, merge or Release publication in this checkpoint.
+
+## 2026-10-02 — DID2 composer contact-selection isolation
+
+- Fixed a UI recipient-isolation defect: loading a different conversation could
+  retain editable draft text from the previous contact. Selection now preserves
+  text only for the same dialog; closing or changing the dialog clears it.
+  Unknown-send text is restored only for its original conversation, without
+  changing its retained operation or automatically sending.
+- Focused MAUI messaging UI tests: **16/16, 0 skipped** (6s).
+  TRX SHA256: `42172732EFF51C35E4AF10BCBBE9B2581E7DA83E0E1B8F8811DF761E520C33FA`.
+  Windows Debug source compiler check: **0 errors, 0 warnings** (19.24s).
+  These are UI/source checks, not physical delivery evidence.
+- Local MAUI checkpoint: `e1090b523e7f290493031d876b7b6e9575bbdce0`,
+  author zhigubigule/no-reply. Not pushed separately from the pending linked
+  Protocol/host candidates.
+- Fresh strict HTTPS observation: normal Registry health returned 200, but
+  `/health/did2/ready` returned **503 `did2-authority-unavailable`**.
+  Ordinary health does not establish DID2 readiness. No production state changed.
+  Android USB was reconnected and the isolated HTTPS package exists. No new
+  account creation or physical contact/text/file/image/group delivery completed.
+
+## 2026-10-02 — Shared retired-owner source cutover candidate
+
+- Shared production source and the dependent DID2 UI-core build with **0 errors,
+  0 warnings** against the current Protocol candidate. Old account, directory,
+  contact resolver, messaging facade and group runtime sources were physically
+  removed, with current DID2 ownership and neutral contracts retained. No new
+  production compile exclusion, authority shim, wire operation or downgrade.
+- The obsolete initiator outbox/reader/fork table is removed from the retained
+  ratchet store. SQL schema **9** requires explicit reset of generation 8.
+  The new SQLCipher test verifies rejection without changing the database file;
+  it does not migrate or recreate a registered old state.
+- The connected fixture now completes operational genesis only after actual
+  native DID2 proof verification. The isolated network-history failure found an
+  old fixture distribution bug: after advancing topology it distributed the
+  previous PMA2, not the signed successor PMA2. The verifier correctly rejected
+  it; only the fixture's current policy selection changed.
+- Focused current-source gate: **48/48, 0 skipped**. Coverage includes local
+  text/file/image offers, protected SQL custody and materialization, hostile
+  mutations, removed owners, schema cutover and both network-history regressions.
+  TRX SHA256: `66DD12AA44ABB4DA62E0773012158F6F2D8918B4C7530DC8464F0CCCFAAF71E6`.
+- The actual Windows application Debug source build also completed with
+  **0 errors, 0 warnings** (38.46s), without publishing, installing or launching.
+  It is a compiler check, not a qualified physical/release build.
+- A broader diagnostic run was interrupted after failures rather than treated
+  as acceptance. Receiver retry diagnostics found a fixture that discarded its
+  replica's previously observed publication while the owner correctly avoided
+  redispatch after commit; the durable replica observer is corrected and checks
+  exact request hashes plus no redispatch after commit.
+- The two connected native tests passed individually in the rebuilt diagnostic
+  batch: receiver one-time consumption/recovery at all three commit boundaries
+  (1m41s), and owned publication/reverse Accept/text/semantic interruption/lost ACK/
+  next empty poll (4m43s). That batch was **not green overall**: 48 passed and
+  11 obsolete-test failures. The raw-scope initial-batch path and its retired
+  tests are removed; neutral exact-DPE2 fixture now starts ordinary sequence at3.
+  Their relevant business behavior is exercised through current owned native
+  custody, not a restored V1 adapter. Diagnostic TRX SHA256:
+  `86657E1FDA8C4C36AE57B0AE6E8CBF7C22E003B66BCCE46CC61F2BE37C8D1985`.
+  The final focused current-source rerun passed **53/53, 0 skipped** (2m1s):
+  retained ratchet atomicity/CAS/crash/restart, exact-DPE2 durable transactions,
+  removed surface/schema checks and native receiver one-time recovery across
+  every commit boundary. All current production test sources compiled.
+  Final TRX SHA256: `9870B652AD84A0FD55ED2380CB7B8B70F84AEE3A4AB81329E555F9D4659D9BE8`.
+  Local Shared checkpoint: `9bac6e70d151185943f187b8a88577fb04d0943e`
+  (zhigubigule, GitHub no-reply); Shared tree clean. Not pushed independently of
+  the still-pending linked Protocol/host/tool candidates. Removed source remains
+  recoverable from Git history and private local snapshots.
+  Final connected acceptance, MAUI package checks, obsolete test retirement,
+  commits and physical contacts/text/files/images/groups remain separate gates.
+  No production or device state changed in this source slice.
+
+## 2026-10-02 — Registry source consumer cutover (not device evidence)
+
+- Registry production source now builds against the same retired-surface
+  Protocol candidate with **0 errors, 0 warnings**. ADA1 admission, V1 directory
+  proof/current-value endpoints, artifact source and the old package-authoring
+  operator action are removed. No live deployment, protected state, registered
+  node identity or custody changed; exact deleted source snapshots were retained
+  locally. Removed configuration must be absent, even when disabled.
+- Neutral time/witness custody and the durable nonce ledger were extracted
+  unchanged: five declarations were AST-compared against their saved originals;
+  only the neutral replay DTO type name differs. Its bounded four-field input
+  carries no query, freshness or network capability.
+- The catalog freshness consumer uses the actual DID2 verifier, an independent
+  configured public credential and ADA2 head under the external floor, with
+  pre-release head/clock checks and elapsed retention projection. The existing
+  neutral framing is unchanged; reader version two is mandatory.
+- The existing focused diagnostics lane passed **37/37, 0 skipped** against
+  actual Registry and XNode source. New coverage includes strict configuration,
+  defensive request buffers, durable nonce replay after restart/boot changes,
+  cancellation/wrong-network before filesystem mutation, missing DID2 context
+  before challenge consumption and reader rejection before closure copying.
+  The ledger tests derive an actual epoch from signed neutral XNA1/DTS1; they
+  do not issue a native account proof or test a positive catalog/network path.
+  TRX SHA256: `EBF56992F7D64E344036FD37FB802A805CCBD86901EA14EDCDF2217F631BB6BB`.
+- The focused lane has no Shared dependency because these tests consume only
+  Registry/Protocol; the default full gate still includes Shared and all test
+  sources. Positive joined/native catalog, mixed V1 test fixture replacement,
+  Shared/MAUI source cutover, final package/API gates and physical contacts/
+  text/files/images/groups remain open. Changes are uncommitted candidates.
+
+## 2026-10-02 — DID2-only XNode source and two-stage operational genesis candidate
+
+- The XNode host production source compiles against the retired-surface Protocol
+  candidate. Eight exclusively V1 authority/evidence providers were removed;
+  mixed runtime members and old authority configuration were cut out without a
+  compatibility reader. The current DID2 contact composition and independently
+  registered proof/clock remain the only opt-in contact authority path. Removed
+  configuration is rejected even when disabled. Existing files were preserved
+  in operator custody before removal; registered identities and remote state
+  were not changed.
+- [DR-0070](survival-program/decisions/DR-0070-did2-operational-genesis-proof-order.md)
+  separates a constructor-closed signed network candidate from completion with
+  real DID2 evidence and current monotonic time. Defensive copies, exact
+  authority/view binding and checks before topology callbacks prevent pending
+  artifacts from becoming a verified capability. The time lease subtracts
+  elapsed time from network hard expiry as well as DTT1 freshness.
+- Focused Protocol tests passed **299/299, 0 skipped**; TRX SHA256
+  `7855155AD905F7F12B9AF96EC7C6A5FD3F11F230861F723F643F04E79A64B461`.
+  The operator bootstrap synthetic-input gate passed all five named scenarios
+  on the new public ceremony, including DID2-only historical verification,
+  wrong requested credential, invalid lengths, retired reader and successor
+  checks. It never opened production custody. A historical signed snapshot is
+  not NTS acquisition or current readiness.
+- The XNode focused lane passed **31/31, 0 skipped** again after the final
+  time-lease correction. It uses actual native
+  DID2 account/device/directory signing and durable stores with an in-process
+  authenticated HTTP handler, not live sockets/TLS or device delivery.
+- These changes are an uncommitted linked source/API candidate. Registry and
+  Shared release-source builds still expose retired consumer dependencies;
+  full gates, approved API/resource/package snapshots and pins, deployment,
+  physical Windows/Android contact/text/file/image/group E2E remain open.
+  No GitHub Release or production update was performed by this increment.
+
 ## 2026-10-02 — durable opaque XNode BLOB chunk storage
 
 - XNode `5f4946a` adds an internal content-addressed ciphertext storage primitive:

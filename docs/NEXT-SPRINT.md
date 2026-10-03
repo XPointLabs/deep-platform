@@ -1,5 +1,15 @@
 # Текущий спринт: Deep clean break и XPoint public v1
 
+## Передача после стабилизации компиляции — 2026-10-03
+
+По команде Mr. X развитие функционала и physical E2E остановлены для независимого
+аудита. Текущие Protocol/Shared/XNode/Registry solutions и Windows/Android
+приложения компилируются без ошибок; полные серверные тесты не зелёные, release
+не квалифицирован. Точные команды, commits, список падений и статус push:
+[stabilization handoff](RELEASE-STABILIZATION-HANDOFF-2026-10-03.md).
+Эта сводка заменяет прежние сообщения об оставшихся ошибках компиляции, но не
+закрывает перечисленные ниже функциональные blockers.
+
 В этом файле находится только незавершённая работа. Принятые архитектурные
 решения находятся в [`architecture/`](architecture/README.md), завершённая
 работа и доказательства — в [`SPRINT-HISTORY.md`](SPRINT-HISTORY.md).
@@ -157,6 +167,191 @@ Registry route journal теперь локально блокирует competin
 IOException с PlatformChainAccepted, не повторное доказательство Expiry.
 Текущая journal activation требует explicit reset только incompatible disposable QA;
 network genesis, registered keys и production floors сохраняются.
+
+### DID2 source cutover перед связанным device-прогоном (2026-10-02)
+
+Текущая физическая диагностика: Android подключён по USB. После текущего
+Registry rollout публичные HTTPS `/health/ready` и `/health/did2/ready`
+возвращают 200; staking-портал также 200. Это не доказывает POST-путь и matched
+node authority; обычный health не закрывает этот blocker. MAUI composer теперь
+изолирует черновик при смене контакта (16/16 адресных UI проверок, Windows source
+build 0/0). Свежие Windows/Android HTTPS QA-сборки установлены/запущены;
+существующие локальные DID2-аккаунты и зашифрованные копии фраз восстановились.
+Android build — 0 warnings/0 errors, подпись проверена; это не message delivery.
+Current DID2-only source image уже собран, передан и проверен на production;
+настоящая NTS acquisition в нём проходит. Readiness-canary без публичных портов
+подтвердил head expiry; content-preserving renewal дал generation 33/tree 12,
+независимый floor подтвердил hash. Со свежим signed XNV1 canary получил DID2
+readiness 200. Native public XNode export выполнен: 25 records, все восемь
+цепочек. В node compose/preparer найдены и убраны disabled retired authority
+sections, которые текущий host отвергает даже с `Enabled=false`.
+NTS/head-renewal worker включён, текущий Registry переключён через прежний
+loopback listener без изменения reverse-proxy/certbot/portal. Полный цикл
+renewal/recovery ещё не подтверждён. Первичная активация XNode image `0eef96a`
+не прошла health gate; installer подготовил matched runtime с сохранением
+Ed25519/BLS ключей. Исправленный rollout `0773a97` описан ниже.
+После отключения Browser Integrity Check владельцем прежний серверный Python
+POST получает полный NCP2 с 200 вместо Cloudflare 403/error 1010. Первые
+повторные Android/Windows проверки ещё не прошли: AccountProof Timeout и
+Windows H2 ConnectionReset после 16 162 из 19 670 байт при TLS policy errors None.
+Последующий Windows strict BCL diagnostic скачал все 19 670 байт по exact H1
+и exact H2, однако отдельный запрос через production raw-distribution adapter
+снова завершился IOException: это не доказательство исправления клиентского
+транспорта. Тот же BCL diagnostic в Linux Docker также получает полный H2 ответ.
+Владелец подтвердил VPN на Windows и включил его на Android. Новый физический
+Android прогон прошёл AccountProof, NetworkVerification и PreKeyStaging, затем
+завершился `PreKeyPublication (TransportIo)`. Причина прежнего Timeout не
+установлена; VPN-зависимость не доказывает конкретную блокировку провайдером.
+Повторный guarded USB прогон подписанного MAUI `aa320f7` с включённым VPN и
+XNode `6dbf0fb` завершился `PreKeyPublication (OnionCompletionUnknown)`.
+До этого прогона closed terminal diagnostics были пусты; в последующем bounded
+окне seed1 зарегистрировал `proof-rate-limit`. Это подтверждает отказ серверной
+выдачи свежего proof в окне публикации, не receipt pair и не message delivery.
+Все три ноды после штатного installer upgrade возвращают 200 / ONION ready,
+зарегистрированные Ed/BLS ключи сохранились; временные health отказы также
+наблюдались. Следующий изолированный business slice — согласовать число fresh
+proof acquisition полного publication со строго bounded Registry admission,
+one-use replay ledger capacity и freshness deadlines; проверить joined сценарий
+с фоновым refresh трёх нод. Registry `1c1a6cb` уже исправляет этот ресурсный
+контракт: bounded burst и меньший sustained refill связаны с действительным
+proof ledger; 34 focused budget/replay теста проходят. Production upgrade
+сохранил env/mount/listener, ключи и 1 785 retained nonce markers, прежний owner
+остановлен. После восстановления readiness защищённый Android retry дошёл до
+`ContactPublication (TransportIo)`: предшествующий pre-key этап вернул проверенный
+двухрепличный XIC1 комплект и protected completion. Это не доказывает first
+dispatch, текущую доступность replicas или message delivery. Следующий blocker —
+согласованная DID2 contact route/publication/coordination composition в Registry
+и XNode, затем contact/claim/DPH2/MSG и физические text/assets/groups.
+Свежий guarded Android retry с VPN снова завершился на ContactPublication;
+recovery и protected packages сохранились. Первичный read-only deployment audit
+выявил отсутствующие contact composition/access/journals; это были отдельные
+deployment blockers, не точная атрибуция каждого IO. Они устранены 2026-10-02:
+независимая floor БД содержит четыре permanent tables и две capacity rows 4096,
+минимальные runtime grants проверены, floor/credentials не менялись; dumps
+сохранены до/после. Registry включает route/publication и DR48 access для прежних
+трёх нод, оба точных proxy endpoint проверены unauthenticated 401.
+DevOps preparer/installer staging теперь поддерживают явный закрытый
+`--contact-runtime` профиль с прежним Registry origin и без legacy/grant
+activation; 18 structural custody/staging tests passed. Штатный installer7d918c6
+уже развернул профиль на всех трёх нодах: coordination/resolver/claim включены,
+retired runtime выключены, readiness200, Ed/BLS и named state volume сохранены.
+Registry сохранил семь custody files и 2987 proof nonce markers. Android retry
+после rollout с VPN отклонён route verifier; новый подписанный Android APK
+`503505f` с Protocol `7c513f1` установил точную причину: `XRA1 / Expiry`.
+Сброс только изолированного Android HTTPS QA через UI и новый one-click аккаунт
+позволили одному физическому VPN-прогону завершить `verified-publication`:
+проверенный двухрепличный prekey completion и owned permanent-contact commit.
+Protected production/E2E/probe packages не изменились. Это не исправление
+expired-intent renewal (DR-0051), не peer consent и не доставка сообщений.
+Windows `f2566c8` и `8560312` сохранили прежний аккаунт, но остались на
+AccountProof/TransportIo. Private QA trace локализовал обрыв в socket/TLS/H2
+чтении current proof, не в локальном хранилище. Shared `b818d61` добавил явный
+opt-in системного прокси для public HTTPS; MAUI `e745b63` применил его только
+к Registry diagnostic composition. Выбранный/pinned ONION connector не изменён.
+На той же Windows identity первый proxy-aware action прошёл AccountProof, но
+остановился на TLS/NetworkVerification; второй завершил `verified-publication`
+без reset, с сохранённой recovery и полным prekey/contact completion. Шесть
+отдельных bounded public NCQ2 requests через тот же proxy-aware factory также
+успешны, но не доказывают freshness, стабильный reconnect или доставку.
+15 transport/proxy и 43 MAUI composition/display tests passed. Final physical
+peer/Hello/Accept/MSG/assets/groups и unready mailbox grant gates остаются открыты.
+Подписанный Android `e745b63` установлен с сохранением прежнего QA аккаунта
+и recovery; protected package snapshots не изменились. Повторный network action
+прошёл сетевые этапы, но завершился `XRA1 / Expiry`. Приоритет следующего product
+инкремента — authenticated route/intent renewal без reset аккаунта и без
+подмены stable intent/nonce. Прежняя fresh-account публикация не закрывает этот gate.
+Первый API-инкремент renewal задан
+[DR-0071](survival-program/decisions/DR-0071-did2-reachability-advertisement-successor.md):
+owned-device XRA1 successor сохраняет scope и exact predecessor core; принятие
+expired predecessor разрешено только как lineage input. Старый live route и
+genesis-only threshold по-прежнему отвергаются. Protected pending/CAS/restart,
+predecessor-bound coordination и полный двухрепличный successor commit ещё нужны.
+Протокольный трёхфазный route successor по
+[DR-0072](survival-program/decisions/DR-0072-did2-route-renewal-lineage.md)
+проходит native real-account expiry→current successor→next generation, включая
+сохранение route/capabilities и проверку обычным verifier. Подписанный history
+остаётся только predecessor fact; old route currentness reject сохранён.
+Это не protected pending adoption и не физическое восстановление Android.
+По [DR-0073](survival-program/decisions/DR-0073-did2-exact-route-request-custody.md)
+клиент сохраняет полный threshold request до callback и повторяет его без
+перезаписи исходного directory minimum; journal теперь version 5 only.
+Signed head-only renewal выявил второй recovery seam: lost-response old-head
+winner пока остаётся phase1, так как DR42 требует current issuance anchor для
+adoption/completion/new object. Нужен отдельный retained-issuance contract;
+не обходить gate, не remint nonce и не считать exact replay восстановлением.
+Старые disposable QA instances потребуют explicit reset при activation этой
+локальной custody версии, без сброса network genesis или ключей нод.
+Private issuer должен сериализовать generation, а не только nonce; затем нужны
+object/XPA/two-replica publication successors и повторный device E2E без reset.
+TLS/подписи/expiry не ослаблять, не объявлять это цензурой.
+Mailbox grants остаются unready. Нужны contact/claim/DPH2/MSG и физические
+text/assets/groups; structural/readiness/401 observations не заменяют delivery.
+Простое повышение quota без ledger accounting,
+expired/stored authority reuse или reset nonce/floor запрещены. Отдельно требуется
+повторная проверка production public adapter; H1 fallback, ослабление TLS,
+подписей или deadlines не добавлены. Protected Android packages не изменились.
+В retained DID2 proxy snippet обнаружен отсутствующий history route; добавлен
+ровно этот endpoint с прежним upstream/security include, nginx config test и
+reload прошли. Registry readiness и staking после изменения остаются 200;
+восстановление protected-head/history ещё нужно проверить на нодах и устройствах.
+Свежие history/proof запросы с production-ноды вернули 200 и полные bounded
+ответы с canonical media, no-store и Content-Length; это raw transport observation,
+не самостоятельно verified directory/device evidence. В XNode исправлен
+выход idle recovery loop после InvalidDataException (он не является IOException),
+а malformed response/frame остаются fail-closed с bounded retry. Адресный
+recovery batch — 31/31 без пропусков; source build без warnings/errors.
+Commit `0773a97` установлен штатным installer на все три production-ноды:
+activation health gates passed, фактическая ONION capability — ready, хэши
+зарегистрированных Ed25519/BLS ключей неизменны. Это не contact/mailbox/group
+activation, не soak и не физическая доставка. Registry worker renewal/recovery
+и client changed-tip/restart проверки остаются открыты.
+Contacts/text/files/images/groups device E2E остаётся открыт.
+
+[DR-0069](survival-program/decisions/DR-0069-did2-retired-identity-surface-removal.md)
+удаляет старые identity/capability producers и положительные contact-векторы.
+XNode production-source уже собирается с новым Protocol; V1 authority runtime,
+recipient cache и group authority provider удалены. Адресный DID2 контактный
+прогон — 31/31, без пропусков: реальная native identity/directory ceremony,
+два selected store, exact retry/restart и in-process authenticated HTTP handler.
+Это не socket/TLS или физическая доставка. Старые конфигурационные секции,
+даже disabled, и удалённые recipient-cache параметры больше не принимаются.
+Registry production-source теперь также собирается с новым Protocol: удалены
+ADA1 и V1 proof-package/current-value hosts, а каталог требует настоящую DID2
+проверку под независимым ADA2 head/floor. Положительный joined/native каталог,
+старые Registry fixtures и итоговый default gate пока не закрыты.
+Shared production-source теперь собирается вместе с текущим Protocol:
+0 errors/0 warnings. Удалены старые account/contact/messaging/group owners,
+а не добавлены V1 adapters или новые compile-exclusions. Neutral transport и
+нынешний DID2 account-owner сохранены. Убраны отдельные retired initiator
+outbox/recovery/fork tables; ratchet SQL schema 9 требует явного сброса старого
+локального состояния, без migration. Узкая Shared проверка — 48/48, 0 skipped:
+current SQL custody текста/attachment offers, materialization, hostile mutations,
+отсутствие retired owners, отказ schema 8 без изменения файла и current-tip
+history. Это локальная проверка, не remote BLOB/group/device evidence.
+Последующий current-source rerun — 53/53, 0 skipped: ratchet/CAS/Exact-DPE2,
+schema/API removal и genuine native receiver recovery на каждой commit boundary.
+Связанный in-process mailbox сценарий также прошёл отдельно; физические устройства
+и общий default release gate этим не закрыты.
+Остаток: завершить test composition в Registry и V1 consumers в MAUI,
+перевести/удалить оставшийся Shared obsolete test corpus,
+удалить/перевести obsolete XNode test fixtures,
+пересобрать операторские инструменты; заморозить фактические Debug/Release
+API/resource snapshots и атомарно обновить package pins.
+[DR-0070](survival-program/decisions/DR-0070-did2-operational-genesis-proof-order.md)
+заменяет старый operational genesis helper на signed pending network candidate
+и завершение только с настоящим DID2 proof и независимыми текущими часами.
+XNode fixture и production-authority bootstrap tool уже используют его;
+операторский synthetic gate проходит, но остальные tooling consumers ещё
+требуется пересобрать. Связанный Shared fixture также использует настоящий
+DID2 proof перед topology completion. DID2 UI-core собирается без ошибок;
+Windows Debug source build также проходит (0/0), но package/API gates и
+device-qualified Android/Windows builds ещё не проверены. Это
+незавершённый linked cutover,
+не подтверждённая работоспособность
+live-ноды. Старые образы production не изменены.
+Не возвращать совместимые типы и не исключать дефекты из итоговых gates.
+После связанной сборки — matched live authority и физический Android↔Windows
+контакт/текст, затем файлы, картинки и группы; полная доставка пока не доказана.
 
 ### P0: стабилизация и автоматическое восстановление сети (2026-09-29)
 
@@ -2380,7 +2575,7 @@ commit matrix и проверяет композицию; отдельные к�
   TestServer/native/SQLCipher/PostgreSQL, не физическая доставка.
   По [DR-0040](survival-program/decisions/DR-0040-did2-owned-publication-commit.md)
   добавлены closed client two-replica commit verifier и protected phase-7 exact
-  XPO custody. Journal теперь version 4 only; старые QA accounts требуют explicit reset.
+  XPO custody. Current journal follows DR-0073 (version 5 only); старые QA accounts требуют explicit reset.
   Historical commit не продлевает XPA dispatch permission. Local opaque-node
   lane **5/5 passed**, API surface **2/2**, journal bounds **8/8**; account
   exact retry/reopen/fault lane **1/1 passed**, **0 skipped**, **7m43s**.
