@@ -68,10 +68,12 @@ Registry и все три XNode уже обновлены; operator provision в
 Предыдущие записи ниже про ещё не выполненный rollout относятся к состоянию до
 этого checkpoint; full package/evidence repin и release qualification не завершены.
 
-Свежий Android создал аккаунт и прошёл prekey publication, но два network actions
-завершились `ContactPublication / TransportIo`. Windows новая сборка отклоняет
-несовместимый QA; без action-time подтверждения UI reset не выполнялся. Следующее:
-локализовать IO, завершить publication и двусторонний contact/text device сценарий.
+Свежий Android физически завершил `verified-publication`, сохранил аккаунт/сид-фразу
+после перезапуска и повторно завершил верификацию на том же аккаунте. Исправлена
+потеря contact profile при image upgrade; все три ноды сохранили ключи/floors.
+Windows running QA отклоняет несовместимый аккаунт; без action-time подтверждения
+UI reset не выполнялся. Следующее: Windows publication, двусторонний contact/text
+device сценарий и bounded recovery для expired incomplete Android route.
 
 Отдельный P0: подключить DR54 protected PMA2 role signers/private grant issuer и
 полный node PMA2/PMT2/PMS2 authority/replica graph. Mailbox activation всё ещё

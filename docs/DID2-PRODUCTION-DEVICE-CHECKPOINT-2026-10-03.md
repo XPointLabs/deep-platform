@@ -132,15 +132,58 @@ buckets, with cancellation/repeated-rejection assertions and 32 focused tests
 passed. It has not replaced production `b4c1673`; those test repeats are not
 additional unique scenario/device coverage.
 
-The new Windows executable was launched after closing only the previous QA
-process. Startup rejected incompatible old QA account state as expected. No
+The previous `c13ea0c` Windows executable remains the observed running QA.
+Startup rejected incompatible old QA account state. The `41bc075` executable
+is built but has not been launched or physically tested. No
 Windows account deletion, phrase reveal or account creation was performed;
 the exact local reset requires a current UI confirmation before continuation.
 
+## Android publication and restart milestone
+
+After restoring the contact profile, the expired incomplete isolated Android
+QA account was reset through the owned confirmation UI. A fresh account was
+created once. The immediate post-create hierarchy capture failed; creation
+was not repeated. Independent inspection confirmed account/recovery custody.
+One guarded network action then independently completed `verified-publication`:
+AccountProof, network verification, prekey staging/publication and contact
+publication no longer ended at the previous typed ingress failure.
+
+The same dedicated Android process was restarted without reset. Independent
+Settings inspection confirmed the saved account and encrypted recovery copy,
+with no incompatible-state error. One subsequent guarded network action again
+ended at `verified-publication`. All three protected Android package snapshots
+matched during these successful phases. Aggregate read-only PostgreSQL probes
+observed three route rows and three publication rows both before and after this
+restart/reverification, compared with two each before fresh publication.
+Counts corroborate issuance activity but do not prove exact bytes or delivery.
+
+This is own-account publication/restart evidence on a physical Android device,
+not Windows publication, peer lookup/consent, two-way text, file/image or group
+delivery. The existing probe's `deviceDeliveryVerified` remains false. Bounded
+expired-incomplete route recovery still needs implementation and coverage.
+
+The next local source increment retains the node's previously discarded PMA2
+chain and requires explicit issuer paths for file-based configuration. It
+independently verifies the current PMT2 reference/root/full proof interval before
+floor advancement and rechecks the exact inputs and time before capability
+release. The exporter/preparer/stager/installer are updated together. This is
+not mailbox activation, a newly deployed image, or completion of release gates.
+The connected local node/coordination slice passed 48 tests, zero failures/skips;
+preparer/stager structural checks passed 19 tests. Actual signed file/atomic
+inputs, invalid issuer signature, duplicate current issuer, changed issuer
+during floor commit and monotonic rollback are covered. Bash syntax and the
+full Bash installer tests passed. These are not additional
+physical scenario passes or full release qualification.
+The local source commits are XNode `1728619`, DevOps `a60b6e0` and Installer
+`3818932`. The public-export tool compiled with zero warnings/errors, but was
+not executed. A separate development-tool build still fails at its existing
+retired `AuthorAsync` call; this increment did not repair that unrelated dev
+genesis path or claim a working newly provisioned local environment.
+
 ## Open business/release gates
 
-- Localize the physical ContactPublication ingress rejection and finish publication on
-  both devices; preserve exact retained request custody across retry/restart.
+- Finish Windows publication and both-device peer lookup/consent after the Android
+  publication/restart milestone; preserve exact retained request custody on retries.
 - Complete bounded expired-incomplete route recovery and service/PMT rollover.
 - Activate the matched DR54 private issuer with the existing separate PMA2 role
   keys and protected external signer sockets. It remains disabled in the current
