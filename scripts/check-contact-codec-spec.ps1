@@ -11,7 +11,7 @@ $resolverPath = Join-Path $repoRoot 'docs\architecture\CONTACT-RESOLVER-V1.md'
 $applicationPath = Join-Path $repoRoot 'docs\architecture\CONTACT-AND-GROUP-PROTOCOL-V1.md'
 $networkPath = Join-Path $repoRoot 'docs\architecture\XPOINT-NETWORK-V1.md'
 $registryPath = Join-Path $specRoot 'deep-crypto-v1.registry.json'
-$executionTestPath = Join-Path $repoRoot 'deep-protocol\tests\Deep.Protocol.Tests\ContactV1\ContactCodecSecurityTests.cs'
+$executionTestPath = Join-Path $repoRoot 'deep-protocol\tests\Deep.Protocol.Tests\ContactV2\CurrentContactSecurityTests.cs'
 
 function Fail([string]$message) { throw "CONTACT-CODEC specification check failed: $message" }
 foreach ($path in @($schemaPath, $vectorsPath, $anchorPath, $resolverPath, $applicationPath, $networkPath, $registryPath, $executionTestPath)) {
@@ -31,19 +31,37 @@ if ($anchor.sha256 -cne $vectorDigest) { Fail 'anchor digest' }
 if ($vectors.status -ne 'FROZEN_TARGET_NOT_ACTIVE') { Fail 'vectors status' }
 $bounds = $vectors.canonicalBounds
 if ($bounds.XRA1.recordBytes -ne 550 -or $bounds.XRA1.signatureProjectionBytes -ne 478) { Fail 'XRA1 canonical bounds' }
-if ($bounds.DCB1.minimumRecordBytes -ne 3757 -or $bounds.DCB1.maximumRecordBytes -ne 10275 -or
-    $bounds.DCB1.exactAdl1Bytes -ne 228) { Fail 'DCB1/ADL1 canonical bounds' }
+foreach ($retired in @('DCB1','DCR1','XMC1')) {
+    if ($bounds.PSObject.Properties.Name -ccontains $retired -or
+        @($vectors.primitives.target) -ccontains $retired -or
+        @($vectors.records.target) -ccontains $retired) {
+        Fail "retired positive contact input $retired"
+    }
+}
+# DR-0063/0081 bounds come from the reviewed current vector producer, not
+# historical DCB1/DCR1 identity grammar or an inferred default payload.
+foreach ($kind in @('DMC2/2','DMC2/3')) {
+    if ($bounds.$kind.minimumPayloadBytes -ne 5917 -or $bounds.$kind.maximumPayloadBytes -ne 25069 -or
+        $bounds.$kind.minimumRecordBytes -ne 6199 -or $bounds.$kind.maximumRecordBytes -ne 25351) {
+        Fail "$kind current private reply-route bounds"
+    }
+}
+if ($bounds.XMC2.failureRecordBytes -ne 206 -or $bounds.XMC2.successRecordBytes -ne 510) {
+    Fail 'XMC2 exact selector-bound grant bounds'
+}
 if ($bounds.'DMC2/14'.minimumPayloadBytes -ne 4215 -or $bounds.'DMC2/14'.maximumPayloadBytes -ne 23367 -or
     $bounds.'DMC2/14'.minimumRecordBytes -ne 4497 -or $bounds.'DMC2/14'.maximumRecordBytes -ne 23649) { Fail 'DMC2/14 canonical bounds' }
 if ((@($bounds.'DMC2/14'.closureOrder) -join '|') -ne 'XRR1|XRA1|XRC1|XSS1|PMT2|PMS2') { Fail 'DMC2/14 closure order' }
-$expected = @('XIR1','XUR1','XRA1','PMT2','PMS2','XRC1','XSS1','XRR1','DCB1','DCR1','DIA1','DMC2/2','DMC2/3','DMC2/4','DMC2/14')
+# DR-0069 retained identity-neutral vectors; this is not DID2 owned DCR evidence.
+$expected = @('XIR1','XUR1','XRA1','PMT2','PMS2','XRC1','XSS1','XRR1','DIA1','DMC2/2','DMC2/3','DMC2/4','DMC2/14')
 if ((@($vectors.primitives.target) -join '|') -ne ($expected -join '|')) { Fail 'primitive targets/order' }
 foreach ($primitive in @($vectors.primitives)) {
     $actual = ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Convert]::FromHexString([string]$primitive.fixtureBytesHex)))).ToLowerInvariant()
     if ($actual -cne [string]$primitive.sha256) { Fail "fixture hash $($primitive.id)" }
 }
 $fixtureIds = @($vectors.ed25519Fixtures | ForEach-Object { [string]$_.id })
-if ($fixtureIds.Count -ne 3 -or $fixtureIds.Count -ne @($fixtureIds | Select-Object -Unique).Count) {
+if (($fixtureIds -join '|') -cne 'xir1-signature-ed25519|xra1-core-ed25519' -or
+    $fixtureIds.Count -ne @($fixtureIds | Select-Object -Unique).Count) {
     Fail 'Ed25519 fixture ids'
 }
 foreach ($fixture in @($vectors.ed25519Fixtures)) {
@@ -68,7 +86,11 @@ foreach ($fixture in @($vectors.ed25519Fixtures)) {
     if ($expectedInputHex -cne [string]$fixture.signatureInputHex) { Fail "Ed25519 signature input $($fixture.id)" }
 }
 $hostileIds = @($vectors.hostileFixtures | ForEach-Object { [string]$_.id })
-if ($hostileIds.Count -lt 10 -or $hostileIds.Count -ne @($hostileIds | Select-Object -Unique).Count) {
+$requiredHostileIds = @('xra1-u32-overflow','dmc2-route-closure-hash-mismatch',
+    'xra1-header-reserved','xra1-noncanonical-tag','xra1-declared-overflow',
+    'xra1-operation-mask-zero','xra1-maximum-hellos-zero','xrr1-minimum-reader-zero')
+if (($hostileIds -join '|') -cne ($requiredHostileIds -join '|') -or
+    $hostileIds.Count -ne @($hostileIds | Select-Object -Unique).Count) {
     Fail 'hostile fixture ids'
 }
 foreach ($fixture in @($vectors.hostileFixtures)) {
@@ -78,12 +100,10 @@ foreach ($fixture in @($vectors.hostileFixtures)) {
 }
 $negativeIds = @($vectors.negativeCases | ForEach-Object { [string]$_.id })
 $requiredNegativeIds = @(
-    'dcr-missing-support','dcr-extra-support','dcr-duplicate-support','dcr-reordered-support',
-    'dcr-unverified-drs','dcr-unverified-dpd','dcb-invalid-signature','xps-invalid-signature',
     'xir-xra-binding','xrc-xra-sealing-binding','xrc-pmt-xnv-binding','xrr-device-binding',
-    'route-validity-intersection','invalid-profile-utf8','xrr-minimum-reader-zero',
-    'dcr-support-overflow','pms-tie-break')
-if ($negativeIds.Count -lt $requiredNegativeIds.Count -or $negativeIds.Count -ne @($negativeIds | Select-Object -Unique).Count) { Fail 'negative coverage ids' }
+    'route-validity-intersection','xrr-minimum-reader-zero','pms-tie-break')
+if (($negativeIds -join '|') -cne ($requiredNegativeIds -join '|') -or
+    $negativeIds.Count -ne @($negativeIds | Select-Object -Unique).Count) { Fail 'negative coverage ids' }
 foreach ($id in $requiredNegativeIds) { if ($negativeIds -notcontains $id) { Fail "missing negative coverage $id" } }
 $executionSource = Get-Content -LiteralPath $executionTestPath -Raw -Encoding UTF8
 foreach ($id in $requiredNegativeIds) {
@@ -103,5 +123,5 @@ if ($registry.contactCodec.status -ne 'FROZEN_TARGET_NOT_ACTIVE' -or $registry.c
 # Machine schema, independent digest, exact bounds and negative mappings above
 # remain mandatory. Architecture prose is not a snapshot; documentation links
 # and rendering are checked by Test-XPointDocumentation.ps1.
-Write-Host 'CONTACT-CODEC specification consistency check passed.'
+Write-Host 'CONTACT-CODEC retained neutral specification consistency check passed (not executable/package/physical evidence).'
 Write-Host "Primitives: $(@($vectors.primitives).Count); hostile fixtures: $(@($vectors.hostileFixtures).Count); policy negatives: $(@($vectors.negativeCases).Count); runtime: inactive"

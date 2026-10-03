@@ -4,6 +4,27 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: current contact execution и package baseline
+
+- Семь retained contact negatives теперь исполняются на current codec/graph;
+  issuer/verifier используют один unchanged internal tie-break comparator.
+  Unknown positive mapping больше не пропускается молча. V1 XPU positive fixture
+  заменён V2 без legacy reader, сохранены binding/matrix/size/padding assertions.
+- Reviewed responder store API snapshot сверён с DR-0025/0026; закрытые
+  constructors, getter-only surface и zero-input transfer проверены reflection.
+  Focused 40/40; full Protocol solutions 2007 pass / 1 fail / 12 skips (2020).
+  Release build 0 warnings / 0 errors. Remaining actual package failure — MCG2;
+  production graph останавливается на retained MAU2 consumer, не только тексте.
+- Exact ownership mapping 219/219 и manifest integrity-only проходят; они
+  не заменяют case discovery/execution. Native/capture skips классифицированы.
+- Два root contact/crypto consistency gate исправлены по уже approved inputs,
+  без изменения frozen vectors/schema/anchor/digest. Guard selftests 10/10;
+  ONION pairing и machine-set digest остаются failing. Production/devices,
+  wire/public APIs/crypto и authority не изменены; S00/S01/Release открыты.
+- [Evidence и failure mapping](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md).
+- Protocol commit `873eb0618620e31047315db70e7ac4163d869000`; root фиксирует
+  submodule pointer, строгие governance checks и результаты этого checkpoint.
+
 ## 2026-10-03 — S00: signed inventory lineage и persisted fork
 
 - Fixture создаёт реальные signed DID2 epochs 1–14 и conflict candidates до

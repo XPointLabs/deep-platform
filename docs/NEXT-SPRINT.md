@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: XNode full 857 pass / 1 fail; final lineage selection 5 pass / 1 Windows replace fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); reader/isolated DB закрыты, current invite prerequisite, remaining XPP fixtures, Windows storage и root governance drift открыты |
+| S00 | **В работе: Protocol full 2007 pass / 1 fail / 12 skips; XNode full 857 pass / 1 fail, final lineage 5 pass / 1 Windows replace fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Protocol checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); package/current authority, invite/XPP, Windows storage, ONION pairing и machine-set drift открыты |
 | S01 | **Открыт; анализ параллельно S00** | Revocation/admission, grant/send/route settlement и compaction contracts |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -69,6 +69,13 @@ S09 проверяет сохранность и автоматическое в
 ## Следующий запуск Codex
 
 Продолжить **S00**: current XPP fixture migration и root governance drift.
+Protocol: пять stale XPU fixtures переведены на V2; reviewed responder API snapshot
+сверен с DR-0025/0026. Focused 40/40; full 2007/1/12, remaining package failure —
+retired MCG2, production graph — retained MAU2 consumer. Семь contact-негативов
+исполняются; два root contact/crypto consistency gate исправлены по approved
+inputs без repin. Ownership mappings и manifest integrity проходят, но не
+доказывают executable/native/physical acceptance. Подробности и skip classification:
+[Protocol checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md).
 Registry reader/DB закрыты полным source прогоном; 6 Windows skips отдельно
 прошли в actual Linux socket lane. Это не package/physical qualification.
 XPP audit подтвердил unsafe construction sealed authority через

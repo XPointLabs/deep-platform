@@ -306,8 +306,16 @@ if (-not ($contactVectorsRaw | Test-Json -SchemaFile $contactVectorSchemaPath)) 
 Assert-Equal $registry.contactCodec.status 'FROZEN_TARGET_NOT_ACTIVE' 'contact codec registry status'
 Assert-Sequence @($registry.contactCodec.records) @('DCB1','DCR1','DIA1','XIR1','XUR1','XRA1','XRC1','XRR1','XSS1','PMA2','PMT2','PMS2','XMG1','XMC1') 'contact codec records'
 Assert-Sequence @($registry.contactCodec.dmc2Kinds) @(2,3,4,14) 'contact codec kinds'
-Assert-Equal @($contactVectors.primitives).Count 15 'contact primitive vector count'
-Assert-Equal @($contactVectors.negativeCases).Count 17 'contact negative vector count'
+# DR-0069 removes identity-bound DCB1/DCR1 positives and policy cases.
+# Retained neutral bytes are still pinned by the contact schema/anchor and
+# executable codec gate; a count-only replacement would hide a missing target.
+Assert-Sequence @($contactVectors.primitives.target) @(
+    'XIR1','XUR1','XRA1','PMT2','PMS2','XRC1','XSS1','XRR1',
+    'DIA1','DMC2/2','DMC2/3','DMC2/4','DMC2/14') 'retained contact primitive targets'
+Assert-Sequence @($contactVectors.negativeCases.id) @(
+    'xir-xra-binding','xrc-xra-sealing-binding','xrc-pmt-xnv-binding',
+    'xrr-device-binding','route-validity-intersection','xrr-minimum-reader-zero',
+    'pms-tie-break') 'retained contact negative IDs'
 
 Write-Host 'Deep crypto specification consistency check passed.'
 Write-Host "Generation: $($registry.registryGeneration); packages: $(@($registry.packages).Count); records: $($records.Count)"
