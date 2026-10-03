@@ -60,6 +60,25 @@ WP0–WP9 ниже задают milestone scope. Конкретная парал
 
 ## Обязательный порядок исполнения
 
+### P0: физический contact → message путь после DR79 rollout (2026-10-03)
+
+Registry и все три XNode уже обновлены; operator provision выполнен с сохранением
+ключей, opaque audit rows, floors, counts и nonce ledger. Фактический checkpoint:
+[`DID2-PRODUCTION-DEVICE-CHECKPOINT`](DID2-PRODUCTION-DEVICE-CHECKPOINT-2026-10-03.md).
+Предыдущие записи ниже про ещё не выполненный rollout относятся к состоянию до
+этого checkpoint; full package/evidence repin и release qualification не завершены.
+
+Свежий Android создал аккаунт и прошёл prekey publication, но два network actions
+завершились `ContactPublication / TransportIo`. Windows новая сборка отклоняет
+несовместимый QA; без action-time подтверждения UI reset не выполнялся. Следующее:
+локализовать IO, завершить publication и двусторонний contact/text device сценарий.
+
+Отдельный P0: подключить DR54 protected PMA2 role signers/private grant issuer и
+полный node PMA2/PMT2/PMS2 authority/replica graph. Mailbox activation всё ещё
+требует retired PMA1 topology; включать/оборачивать её запрещено DR52/54. Все три
+ноды показывают mailbox authority not ready. File/image и governed-group UI пока
+явно unavailable; физические gates для них обязательны после text slice.
+
 ### P0: matched issued-head activation и route renewal (2026-10-03)
 
 [DR-0079](survival-program/decisions/DR-0079-did2-publication-issuer-successor.md)
