@@ -4,6 +4,27 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: signed claim binding и native I/O containment
+
+- Ещё три unsafe V1-capability Unit scenarios перенесены на signed DID2
+  whole-wire replay, changed-request conflict и scope rejection, без ослабления
+  verifier. Остальные fixture/retention/quota сценарии сохраняются открытыми.
+- Восемь regressions сначала воспроизвели Win32Exception escape (0/8), затем
+  прошли 8/8: Unknown без выдачи ключа, peer 503 без body/signature, exact
+  reconciliation после reopen сохраняет исходный key/generation и replay.
+  Не добавлены retries/ACL bypass; root cause Windows nondeterminism не исправлена.
+- Full XNode 870 pass / 1 B8 invite fail / 0 skips; build warnings 0.
+  Combined selection 40 pass / 2 fail: native access denied и rejected
+  non-success result, чья первопричина по TRX не установлена. Green full
+  не закрывает эти отказы. Local external smoke и multi-node exit 0,
+  real Xray/три узла; privacy endpoints без authority возвращают 503.
+- Очищены только временные Docker projects/volumes; `deep-dev`, production,
+  registered keys и устройства сохранены. Shipping/device/Release и S00/S01
+  остаются открыты. [Checkpoint 5](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-5--current-claim-bindings-and-native-io-uncertainty)
+  содержит exact commands, mapping и TRX digests.
+- XNode commit `ace4f95692625e54718bf74939061392374cbe22`; root фиксирует
+  pointer и текущий статус без изменения нормативных wire/authority contracts.
+
 ## 2026-10-03 — S00: ONION terminal metadata parity
 
 - Воспроизведены четыре stale terminal rows; metadata/schema/checker приведены

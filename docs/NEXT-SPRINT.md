@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Protocol full 2016 pass / 1 fail / 12 skips; XNode full 857 pass / 1 fail, final lineage 5 pass / 1 Windows replace fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); ONION metadata drift закрыт, package/current authority, invite/XPP, Windows storage и machine-set открыты |
+| S00 | **В работе: Protocol full 2016 pass / 1 fail / 12 skips; XNode full 870 pass / 1 fail, focused 40 pass / 2 fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); ONION metadata drift закрыт, package/current authority, invite/XPP, Windows storage и machine-set открыты |
 | S01 | **Открыт; анализ параллельно S00** | Revocation/admission, grant/send/route settlement и compaction contracts |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -90,18 +90,24 @@ XPP audit подтвердил unsafe construction sealed authority через
 opaque-store/XPC cases нельзя считать current signed prekey evidence.
 Перенесены concurrency/exhaustion/last-resort-restart assertions в signed DID2
 claim runtime; исправлен ошибочный unknown на доказанном pre-reservation отказе.
-Checkpoint 4 переносит rotation/fork проверки на signed DID2 inventories:
-epochs 1–14, retained exact replay, valid successor после bad-lineage refusal,
-durable authorized fork и invalid-signature no-mutation. Full source:
-857 pass / 1 invite fail / 0 skips на 858 cases. Post-full lineage selection:
-5 pass / 1 Windows native atomic-replace access denied при valid successor
-commit. Такой отказ ранее был и до claim crash-инъекции; причина не выяснена,
-ранние green repeats/full runs не закрывают storage nondeterminism.
+Checkpoint 5 переносит ещё три unsafe V1 claim scenarios на signed DID2 path:
+whole-wire replay, changed-request conflict и scope rejection до mutation.
+Восемь новых регрессий воспроизвели escape native Win32 errors; после исправления
+claim возвращает Unknown, peer — bodyless unsigned 503, exact reconciliation
+сохраняет ключ/generation. Regression 8/8; combined selection 40 pass / 2 fail:
+один native access denied, один rejected non-success result с непроверенной
+первопричиной. Full source 870 pass / 1 invite fail / 0 skips (871) не закрывает
+эти падения. Local external smoke и multi-node проходят с real Xray, но privacy
+без verified authority остаётся 503; это не delivery/device qualification.
+Подробности, mapping и digests —
+[Checkpoint 5](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-5--current-claim-bindings-and-native-io-uncertainty).
+Предыдущие lineage/Windows наблюдения сохранены в checkpoint 4; root cause
+storage nondeterminism не выяснена и не исправлена новым error containment.
 Остальные unsafe fixtures ещё открыты.
 Перенести их scenario semantics на actual DID2 inventory/claim path;
 не удалять rotation/quota/replay/recovery coverage и не ослаблять verifier.
 Synthetic XPA fixture удалён; facade-сценарии перенесены на signed DID2 inputs.
-Свежий полный XNode checkpoint — 857 pass / 1 fail, без skips; оставшийся positive
+Свежий полный XNode checkpoint — 870 pass / 1 fail, без skips; оставшийся positive
 one-time invite требует current producer/consumer contract (B8), а не обхода
 verifier. Подробная классификация и границы evidence — по ссылке в строке S00.
 Readonly проверка root machine-set: manifest digest не совпадает ни с checkout,
