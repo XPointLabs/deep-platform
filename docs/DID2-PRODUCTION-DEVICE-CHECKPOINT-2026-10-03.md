@@ -98,6 +98,31 @@ every node. Independent node probes returned readiness 200, ONION ready and
 required terminals ready. Mailbox authority remains not ready. No Registry,
 proxy, certbot, portal, genesis or floor reset was performed for this increment.
 
+The next retained Android action still ended at `OnionDependencyRejected`.
+Canonical before-forward 503s were observed again, with no coordination-phase
+warning. A read-only mounted-config/environment audit then found the concrete
+deployment regression: every node's active configuration omitted the entire
+contact profile, so the XCA2 terminal was disabled. The image upgrade wrappers
+had selected an older prekey-only prepared bundle, not the previously reviewed
+contact-enabled bundle. Health had not detected this optional-terminal omission.
+
+The canonical DevOps stager (`c8c59e2`) and its byte-identical standalone installer
+copy (`7ade635`) now reject installed contact-to-prekey-only downgrade before
+creating/selecting another bundle. Nineteen focused preparation/staging Node
+tests and the full Bash installer tests passed. Independent read-only checks
+verified the existing contact-enabled bundles against their original archive
+hashes on all three hosts: all 39 input files verified, staged public records
+and transport custody matched the currently active bundles. Re-enabling this
+profile does not require changing signed records, genesis, keys or state volumes.
+
+The supported `7ade635` installer restored the reviewed contact profile on all
+three production nodes with the unchanged diagnostic image. All exits were zero;
+Ed25519/BLS key hashes and named state volumes matched. Independent mounted
+configuration checks observed coordination enabled with its fixed backend;
+readiness remained 200/ONION ready/required terminals ready. Mailbox authority
+remains not ready. A subsequent retained-account Android action is being checked;
+profile restoration itself is not publication or delivery evidence.
+
 The new Windows executable was launched after closing only the previous QA
 process. Startup rejected incompatible old QA account state as expected. No
 Windows account deletion, phrase reveal or account creation was performed;
