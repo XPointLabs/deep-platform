@@ -931,6 +931,38 @@ expiration. Quotas are enforced per blinded mailbox capability before storage, a
 proof-of-work or Privacy Pass-style unlinkable tokens MAY be required for unsolicited
 message requests.
 
+### 9.1 Current two-replica Store ordering
+
+Under [DR-0086](../survival-program/decisions/DR-0086-current-mailbox-store-order.md),
+the first node in the exact authenticated PMS2 ranking is the only Store writer.
+The client selects its path to that node. A non-writer rejects client Store and
+Store peer requests whose sender is not the writer before replay or mutation;
+it still accepts the writer's authenticated replication. Retrieve/ACK may use
+either selected replica. Two actual independent receipts remain mandatory.
+There is no election, unsigned rerank or writer fallback; two-of-two storage
+already requires both selected nodes. XNode never chooses a client's route.
+
+The cursor owner is the writer's existing durable operation ledger. Within the
+exact epoch/mailbox/placement/membership scope, a new cursor cannot be allocated
+past an earlier signed intent without an independently authenticated two-node
+Store commitment. Intent precedes mutation; complete quorum custody precedes
+advancing the prefix. An unsigned state label or a local completed blob is not
+settlement. A lost quorum persistence result retains exact Pending and can be
+reconciled by the original request. Capacity/unavailable proof is backpressure,
+never silent deletion, new nonce or a successful page omitting uncertain work.
+
+Stored signed MQR3 proves a past commit, not current dispatch authority. Its
+exact PRQ2/body/grant/proofs and both distinct descriptor-key receipts must match;
+signed acceptance times must lie within the original grant/object interval.
+Descriptor keys come from independently verified lineage, not IDs or saved raw
+keys. Verification requires current protected host/time, but never promotes a
+receipt timestamp to current time or authorizes an expired grant. The closed
+settlement API and its non-authority result are frozen by DR-0086.
+
+Unsettled expiry/retirement, retained-route/descriptor history, object horizon
+and sustained lifecycle remain activation requirements. A bare timeout or new
+grant cannot discard an intent or prove absence of its remote effects.
+
 ## 10. Route selection
 
 ### 10.1 Entry guards
@@ -955,7 +987,8 @@ bridges can lead to the same guard without changing the onion path.
 
 1. Resolve the operation's required exit role and, for mailbox operations, the
    deterministic recipient replica set.
-2. Select an exit from that set by weighted rendezvous over operation ID, excluding
+2. For Store, select the sole writer from section 9.1 as exit. For other operations,
+   select an exit from that set by weighted rendezvous over operation ID, excluding
    the active guard when possible.
 3. Select the confirmed guard as entry, excluding the exit.
 4. Select a middle from eligible `Relay` nodes distinct from entry and exit.

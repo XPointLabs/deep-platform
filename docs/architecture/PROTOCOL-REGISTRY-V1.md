@@ -605,6 +605,12 @@ documents under `../../deep-protocol/docs/`.
 | `MAU3`, `MCP3`, `MCG3` | Identity-neutral request, holder presentation and issuer-signed selection-bound grant. | `FROZEN_TARGET_NOT_ACTIVE`; exact contract is DR-0081 and mailbox-authorization-v3.registry.json. |
 | `MGR1` | Current role-issuer-signed cumulative random grant-serial revocations and protected host floor. | `FROZEN_TARGET_NOT_ACTIVE`; exact contract is DR-0083 / CONTACT-RESOLVER-V1 §3.8 and mailbox-grant-revocation-v1.registry.json. |
 
+[DR-0086](../survival-program/decisions/DR-0086-current-mailbox-store-order.md)
+freezes the bounded `VerifiedMailboxHostAuthorityV2.VerifyStoreSettlementAsync`
+API for authenticating past exact Store commitments in the current projection.
+It creates no current grant/replay/dispatch authority and allocates no wire ID.
+Writer/path/prefix implementation and package activation remain separately gated.
+
 DR-0081 supersedes only DR-0004's neutral grant/presentation/envelope/result
 choice; route selection, privacy and ownership remain mandatory. `XRR1` alone is not a routable deposit
 closure; the exact XRA1/XRC1/XRR1/XSS1 plus PMT2/PMS2 closure in the contact/XPoint
