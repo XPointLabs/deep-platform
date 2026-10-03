@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: свежий XNode 19 → 13 → 1 failure; 853 pass / 0 skips** | [Node checkpoints и классификация](../xnode/docs/testing/s00-node-baseline-2026-10-03.md); missing current invite prerequisite, XPP fixtures, isolated DB, Registry classification и root governance drift |
+| S00 | **В работе: XNode 853 pass / 1 fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); reader/isolated DB закрыты, current invite prerequisite, XPP fixtures и root governance drift открыты |
 | S01 | **Открыт; анализ параллельно S00** | Revocation/admission, grant/send/route settlement и compaction contracts |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -68,8 +68,14 @@ S09 проверяет сохранность и автоматическое в
 
 ## Следующий запуск Codex
 
-Продолжить **S00**: current XPP/unit-fixture audit и Registry reader/DB fixtures
-→ isolated PostgreSQL → полный re-run/classification и root governance drift.
+Продолжить **S00**: current XPP fixture migration и root governance drift.
+Registry reader/DB закрыты полным source прогоном; 6 Windows skips отдельно
+прошли в actual Linux socket lane. Это не package/physical qualification.
+XPP audit подтвердил unsafe construction sealed authority через
+`GetUninitializedObject` в `PreKeyInventoryTestCapability`: положительные
+opaque-store/XPC cases нельзя считать current signed prekey evidence.
+Перенести их scenario semantics на actual DID2 inventory/claim path;
+не удалять rotation/quota/replay/recovery coverage и не ослаблять verifier.
 Synthetic XPA fixture удалён; facade-сценарии перенесены на signed DID2 inputs.
 Свежий XNode checkpoint — 853 pass / 1 fail, без skips; оставшийся positive
 one-time invite требует current producer/consumer contract (B8), а не обхода

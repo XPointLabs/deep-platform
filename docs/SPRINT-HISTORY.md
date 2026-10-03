@@ -4,6 +4,34 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: Registry reader 2 и disposable provider lane
+
+- Свежий полный Registry с отдельным PostgreSQL: 301 pass / 22 fail / 6 skips.
+  Все 31 historical failures классифицированы: 22 reader-1 fixtures и 9
+  missing isolated DB prerequisites. После test-only reader repair и восьми
+  новых boundary cases: 331 pass / 0 fail / 6 Windows platform skips; повтор
+  с финальными launcher guards дал тот же результат, build warnings 0.
+- Все шесть пропущенных случаев отдельно прошли с actual Linux Unix sockets
+  в существующем Dockerfile signer target. Counts повторов/subsets не суммируются.
+  DPW1 framing version 1 сохранён; только supported reader переведён на 2.
+  Reader 0/1/3/65535 не вызывает verifier/commit и не расходует valid challenge.
+- DevOps launcher создаёт digest-pinned loopback-only tmpfs PostgreSQL, отключает
+  ambient external test/DB inputs и удаляет только свой подтверждённый container.
+  Все три DB invocations и export container удалены; named volumes не созданы.
+  Orchestration guard tests 8/8; release-gate contracts 51 commands passed
+  являются synthetic harness evidence. Actual readiness exit 1: 10 missing
+  release/device/signoff evidence blockers. Smoke topology/device lanes не запускались.
+- [Registry case-by-case evidence](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md),
+  [DB runbook](../deep-devops/docs/S00_REGISTRY_POSTGRES.md). Crypto/runtime/DDL,
+  production и устройства не изменялись. S00 в целом и Release остаются открыты.
+- Child commits: Registry `2a78eb6`, DevOps `77f528d`; root фиксирует pointers.
+  Проверка workflow upload contracts: 10 sealed round-trip uploads passed;
+  новый CI step выполняет только process-local launcher guard tests.
+- XPP source audit подтвердил remaining unsafe sealed-capability construction
+  в Unit fixture и отдельный actual DID2 inventory/claim runtime. Coverage нужно
+  переносить по сценариям, не делать legacy fixture current authority и не
+  удалять положительные rotation/quota/recovery assertions ради зелёного gate.
+
 ## 2026-10-03 — S00: current facade и удаление unsafe XPA fixture
 
 - Все 15 facade cases перенесены в Integration на class-scoped signed DID2
