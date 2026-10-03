@@ -6,7 +6,7 @@
   "required": ["$schema", "schemaVersion", "package", "status", "runtimeActivation", "terminalOperations", "wireContracts", "positiveCases", "negativeCases"],
   "properties": {
     "$schema": { "const": "onion-01.vectors.schema.json" },
-    "schemaVersion": { "const": "1.2.0" },
+    "schemaVersion": { "const": "1.3.0" },
     "package": { "const": "ONION-01" },
     "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
     "runtimeActivation": { "const": false },
@@ -34,22 +34,22 @@
     "storeOperation": {
       "type": "object", "additionalProperties": false,
       "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
-      "properties": { "id": { "const": 1 }, "name": { "const": "Store" }, "requestMagic": { "const": ["MAU2"] }, "successMagic": { "const": ["MQR3"] }, "maxRequestBytes": { "const": 82344 }, "maxSuccessBytes": { "const": 776 } }
+      "properties": { "id": { "const": 1 }, "name": { "const": "Store" }, "requestMagic": { "const": ["MAU3"] }, "successMagic": { "const": ["MQR3"] }, "maxRequestBytes": { "const": 82376 }, "maxSuccessBytes": { "const": 776 } }
     },
     "retrieveOperation": {
       "type": "object", "additionalProperties": false,
       "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
-      "properties": { "id": { "const": 2 }, "name": { "const": "Retrieve" }, "requestMagic": { "const": ["MAU2"] }, "successMagic": { "const": ["MRP1"] }, "maxRequestBytes": { "const": 792 }, "maxSuccessBytes": { "const": 1048556 } }
+      "properties": { "id": { "const": 2 }, "name": { "const": "Retrieve" }, "requestMagic": { "const": ["MAU3"] }, "successMagic": { "const": ["MRP1"] }, "maxRequestBytes": { "const": 824 }, "maxSuccessBytes": { "const": 1048556 } }
     },
     "acknowledgeOperation": {
       "type": "object", "additionalProperties": false,
       "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
-      "properties": { "id": { "const": 3 }, "name": { "const": "Acknowledge" }, "requestMagic": { "const": ["MAU2"] }, "successMagic": { "const": ["MAR1"] }, "maxRequestBytes": { "const": 4792 }, "maxSuccessBytes": { "const": 77840 } }
+      "properties": { "id": { "const": 3 }, "name": { "const": "Acknowledge" }, "requestMagic": { "const": ["MAU3"] }, "successMagic": { "const": ["MAR1"] }, "maxRequestBytes": { "const": 4824 }, "maxSuccessBytes": { "const": 77840 } }
     },
     "contactResolveOperation": {
       "type": "object", "additionalProperties": false,
       "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
-      "properties": { "id": { "const": 4 }, "name": { "const": "ContactResolve" }, "requestMagic": { "const": ["XPU1", "XIQ1", "XPK1", "XUW1", "XUQ1", "XMG1", "XPP1", "XCA2"] }, "successMagic": { "const": ["XPO1", "XIS1", "XPC1", "XUS1", "XMC1", "XIC1", "XCS2"] }, "maxRequestBytes": { "const": 155222 }, "maxSuccessBytes": { "const": 131072 } }
+      "properties": { "id": { "const": 4 }, "name": { "const": "ContactResolve" }, "requestMagic": { "const": ["XPU1", "XIQ1", "XPK1", "XUW1", "XUQ1", "XMG1", "XPP1", "XCA2"] }, "successMagic": { "const": ["XPO1", "XIS1", "XPC1", "XUS1", "XMC2", "XIC1", "XCS2"] }, "maxRequestBytes": { "const": 171610 }, "maxSuccessBytes": { "const": 131072 } }
     },
     "groupControlOperation": {
       "type": "object", "additionalProperties": false,

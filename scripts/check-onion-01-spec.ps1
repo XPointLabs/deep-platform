@@ -34,6 +34,7 @@ try {
 if (-not ($raw | Test-Json -SchemaFile $schemaPath)) { Fail 'vectors do not satisfy schema' }
 Assert-Equal $vectors.status 'FROZEN_TARGET_NOT_ACTIVE' 'vectors status'
 if ($vectors.runtimeActivation) { Fail 'runtime activation must remain false' }
+Assert-Equal $vectors.schemaVersion '1.3.0' 'current terminal metadata schema version'
 $terminalOperations = @($vectors.terminalOperations)
 if (($terminalOperations.Count -ne 5) -or
     ((@($terminalOperations | ForEach-Object { "$($_.id):$($_.name)" }) -join '|') -cne '1:Store|2:Retrieve|3:Acknowledge|4:ContactResolve|5:GroupControl')) {
@@ -47,11 +48,27 @@ if ((@($groupOperation.requestMagic) -join '|') -cne 'GSW1|GSQ1' -or
     Fail 'GroupControl exact pairing or bounds'
 }
 $contactOperation = $terminalOperations[3]
-if ((@($contactOperation.requestMagic) -join '|') -cne 'XPU1|XIQ1|XPK1|XUW1|XUQ1|XMG1' -or
-    (@($contactOperation.successMagic) -join '|') -cne 'XPO1|XIS1|XPC1|XUS1|XMC1' -or
-    [int]$contactOperation.maxRequestBytes -ne 93032 -or
+if ((@($contactOperation.requestMagic) -join '|') -cne 'XPU1|XIQ1|XPK1|XUW1|XUQ1|XMG1|XPP1|XCA2' -or
+    (@($contactOperation.successMagic) -join '|') -cne 'XPO1|XIS1|XPC1|XUS1|XMC2|XIC1|XCS2' -or
+    [int]$contactOperation.maxRequestBytes -ne (12 + 171598) -or
     [int]$contactOperation.maxSuccessBytes -ne 131072) {
     Fail 'ContactResolve exact pairing or bounds'
+}
+# DR-0081 adds the signed selector to MCG3/MCP3; current MAU3 wraps
+# header16 + presentation440 + the unchanged typed body. DR-0079 owns
+# the larger V3 coordination envelope above. Do not infer these from counts.
+foreach ($entry in @(
+    @{ index = 0; request = (16 + 440 + 81920); response = 776; magic = 'MQR3' },
+    @{ index = 1; request = (16 + 440 + 112 + 256); response = (1048576 - 20); magic = 'MRP1' },
+    @{ index = 2; request = (16 + 440 + 112 + 256 + 100 * 40); response = 77840; magic = 'MAR1' }
+)) {
+    $operation = $terminalOperations[$entry.index]
+    if ((@($operation.requestMagic) -join '|') -cne 'MAU3' -or
+        (@($operation.successMagic) -join '|') -cne $entry.magic -or
+        [int]$operation.maxRequestBytes -ne $entry.request -or
+        [int]$operation.maxSuccessBytes -ne $entry.response) {
+        Fail "$($operation.name) current exact pairing or bounds"
+    }
 }
 
 $contracts = @{}

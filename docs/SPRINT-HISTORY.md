@@ -4,6 +4,21 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: ONION terminal metadata parity
+
+- Воспроизведены четыре stale terminal rows; metadata/schema/checker приведены
+  к уже принятым DR-0049/0079/0081 (MAU3/XMC2 и V3 coordination bounds).
+  Пять wire maps, deterministic bytes/hashes и 18 hostile classes не изменены;
+  runtime inactive. Исправлен single ONION owner, reviewed repin одного source
+  digest, 174 anchors без изменений; generated wire identifiers неизменны.
+- Focused privacy 64/64. Fresh full после repin: 2016 pass / 1 fail / 12 skips
+  (2029); Release build 0 warnings / 0 errors. Strict registry/ONION и docs174
+  проходят; static ownership219 и integrity-only не executable qualification.
+- Actual package MCG2, production MAU2 consumer, root machine-set, invite/XPP,
+  Windows storage и физический E2E остаются открыты. Production/devices,
+  public API/wire/crypto не изменены. S00/S01 и релиз не закрыты.
+- [Evidence и exact TRX digests](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md).
+
 ## 2026-10-03 — S00: current contact execution и package baseline
 
 - Семь retained contact negatives теперь исполняются на current codec/graph;
