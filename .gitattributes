@@ -1,3 +1,5 @@
 # Keep the immutable program package byte-stable across Windows and Linux.
 docs/survival-program/** text eol=lf
 artifacts/survival/** text eol=lf
+scripts/check-dnp1-classical-spec.ps1 text eol=lf
+scripts/dnp1-evidence-selftest-runner.ps1 text eol=lf

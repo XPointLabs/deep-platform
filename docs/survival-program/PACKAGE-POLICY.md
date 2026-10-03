@@ -56,3 +56,21 @@ A package is consumable only when:
 6. no secret-bearing file is included.
 
 P00B implements fail-closed schema validation and exact-SHA checkout in `deep-devops`.
+
+## Program input integrity
+
+`check-survival-program.ps1` first validates the program manifest against its
+closed schema and independently checks the exact machine/document path sets.
+Program aggregates hash raw UTF-8 file bytes without a BOM, using LF line
+endings; the entry format and aggregate SHA-256 construction are unchanged.
+Git attributes pin LF for the frozen documents and both listed checker/runner
+scripts. A CRLF checkout is an input error: normalize only the reviewed files
+to their Git blob bytes, never repin a platform-specific digest.
+
+Repinning an aggregate requires review of the changed producer commits and
+their normative decisions, not merely recomputing a hash. It does not revise
+wire, confer current authority, replace package evidence or authorize activation.
+The input-integrity message precedes inventory/provenance and executable gates;
+it is not a program/package/release pass. `ClassificationOnly` verifies mapping
+and guard behavior only; the default package claim still requires executable
+evidence for every applicable owner.

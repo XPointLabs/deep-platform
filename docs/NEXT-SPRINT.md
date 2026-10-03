@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Protocol full 2016 pass / 1 fail / 12 skips; XNode full 870 pass / 1 fail, focused 40 pass / 2 fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); ONION metadata drift закрыт, package/current authority, invite/XPP, Windows storage и machine-set открыты |
+| S00 | **В работе: Protocol full 2016 pass / 1 fail / 12 skips; XNode full 870 pass / 1 fail, focused 40 pass / 2 fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); ONION metadata и program input drift закрыты; package/current authority, invite/XPP и Windows storage открыты |
 | S01 | **Открыт; анализ параллельно S00** | Revocation/admission, grant/send/route settlement и compaction contracts |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -68,7 +68,7 @@ S09 проверяет сохранность и автоматическое в
 
 ## Следующий запуск Codex
 
-Продолжить **S00**: current XPP fixture migration и root governance drift.
+Продолжить **S00**: current XPP fixture migration и Windows storage investigation.
 ONION terminal metadata/schema/checker согласованы с уже принятыми DR-0049/0079/0081.
 Фреймы, positive bytes/hashes и 18 hostile classes не изменены. Новый parity test
 воспроизвёл четыре stale rows; после исправления privacy suite 64/64, final full
@@ -110,9 +110,14 @@ Synthetic XPA fixture удалён; facade-сценарии перенесены
 Свежий полный XNode checkpoint — 870 pass / 1 fail, без skips; оставшийся positive
 one-time invite требует current producer/consumer contract (B8), а не обхода
 verifier. Подробная классификация и границы evidence — по ссылке в строке S00.
-Readonly проверка root machine-set: manifest digest не совпадает ни с checkout,
-ни с raw Git blobs HEAD. Есть CRLF differences, но нормализация сама по себе
-не устраняет drift; требуется сверка producer/approved revision, не blind repin.
+Root program input drift закрыт: schema согласована с уже закреплёнными 12
+machine inputs; raw LF aggregate перепривязан после сверки offline issuance
+producer, шестой DPE2 authorization включён в exact document set. Runtime,
+crypto/wire и accepted evidence blobs не изменены. Twelve program guard tests
+и десять contact guards проходят; ClassificationOnly проходит, default
+ProtocolPackageGO по-прежнему fails из-за отсутствующего executable evidence.
+Это input integrity, не package или release qualification. Подробности:
+[governance checkpoint](SPRINT-HISTORY.md#2026-10-03--s00-program-input-integrity).
 Параллельно исследовать **S01**,
 но не писать node admission до закрытого revocation/time contract.
 Подробные owners, gates и шаблон задания находятся только в едином плане.

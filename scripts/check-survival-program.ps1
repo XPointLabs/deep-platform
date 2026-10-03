@@ -16,6 +16,16 @@ function Fail([string]$Message) {
     throw "Deep Survival governance check failed: $Message"
 }
 
+function Get-ByteStableTextHash([string]$Path) {
+    $bytes = [IO.File]::ReadAllBytes($Path)
+    if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xef -and $bytes[1] -eq 0xbb -and $bytes[2] -eq 0xbf) {
+        Fail 'hashed inputs must be UTF-8 without BOM'
+    }
+    $text = [Text.UTF8Encoding]::new($false, $true).GetString($bytes)
+    if ($text.Contains("`r")) { Fail 'hashed inputs must use LF; normalize checkout bytes, not the manifest digest' }
+    return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
+}
+
 foreach ($required in @(
     $manifestPath,
     (Join-Path $releaseRoot 'DEEP-NATIVE-CLEAN-BREAK-RU.md'),
@@ -30,7 +40,12 @@ foreach ($required in @(
     }
 }
 
-$manifest = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$manifestJson = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8
+$manifestSchemaPath = Join-Path $governanceRoot 'schemas\program-manifest.schema.json'
+if (-not (Test-Json -Json $manifestJson -SchemaFile $manifestSchemaPath -ErrorAction Stop)) {
+    Fail 'program manifest schema validation failed'
+}
+$manifest = $manifestJson | ConvertFrom-Json
 if ($manifest.schemaVersion -ne '1.0.0') { Fail 'unexpected manifest schemaVersion' }
 if ($manifest.programId -ne 'deep-survival') { Fail 'unexpected programId' }
 if ($manifest.release -ne $activeRelease) { Fail 'unexpected active release' }
@@ -64,13 +79,13 @@ $expectedMachinePaths = @(
 if ($manifest.machineSpecificationSet.algorithm -ne 'SHA-256' -or
     $manifest.machineSpecificationSet.entryFormat -ne '<lowercase-file-sha256><two-spaces><forward-slash-repo-relative-path><LF>' -or
     [int]$manifest.machineSpecificationSet.artifactCount -ne 12 -or
-    (@($manifest.machineSpecificationSet.paths) -join '|') -ne ($expectedMachinePaths -join '|')) {
+    (@($manifest.machineSpecificationSet.paths) -join '|') -cne ($expectedMachinePaths -join '|')) {
     Fail 'machine specification artifact-set policy drifted'
 }
 $machineEntries = foreach ($relativePath in $expectedMachinePaths) {
     $machinePath = Join-Path $repoRoot $relativePath.Replace('/', '\')
     if (-not (Test-Path -LiteralPath $machinePath -PathType Leaf)) { Fail "machine specification artifact is missing: $relativePath" }
-    $fileHash = (Get-FileHash -LiteralPath $machinePath -Algorithm SHA256).Hash.ToLowerInvariant()
+    $fileHash = Get-ByteStableTextHash $machinePath
     "$fileHash  $relativePath"
 }
 $machineDigestInput = ($machineEntries -join "`n") + "`n"
@@ -90,13 +105,25 @@ $documents = @(
         Sort-Object { $_.FullName.Substring($releaseRoot.Length + 1).Replace('\', '/') }
 )
 
+$expectedDocumentPaths = @(
+    'DEEP-NATIVE-CLEAN-BREAK-RU.md',
+    'README.md',
+    'specs/DEEP-CRYPTO-V1-DRAFT.md',
+    'specs/DNP1-CLASSICAL-IDENTITY-RESET-MRL2-V1.md',
+    'specs/DPE2-INBOUND-DURABLE-HANDOFF-AUTHORIZATION.md',
+    'specs/PQ-PROVIDER-FEASIBILITY.md'
+)
+$documentPaths = @($documents | ForEach-Object { $_.FullName.Substring($releaseRoot.Length + 1).Replace('\', '/') })
+if (($documentPaths -join '|') -cne ($expectedDocumentPaths -join '|')) {
+    Fail 'program document-set policy drifted'
+}
 if ($documents.Count -ne [int]$manifest.documentSet.documentCount) {
     Fail "document count $($documents.Count) differs from manifest $($manifest.documentSet.documentCount)"
 }
 
 $entries = foreach ($document in $documents) {
     $relativePath = $document.FullName.Substring($releaseRoot.Length + 1).Replace('\', '/')
-    $fileHash = (Get-FileHash -LiteralPath $document.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+    $fileHash = Get-ByteStableTextHash $document.FullName
     "$fileHash  $relativePath"
 }
 
@@ -150,7 +177,7 @@ foreach ($entryPoint in @(
     }
 }
 
-Write-Host "Deep Survival program check passed."
+Write-Host "Program input integrity verified; executable/release gates still pending."
 Write-Host "Release: $($manifest.release)"
 Write-Host "Documents: $($documents.Count)"
 Write-Host "Revision: sha256:$actualDigest"

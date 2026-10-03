@@ -5,6 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
+    "$schema",
     "schemaVersion",
     "programId",
     "release",
@@ -19,6 +20,7 @@
     "packagePolicy"
   ],
   "properties": {
+    "$schema": { "const": "../../schemas/program-manifest.schema.json" },
     "schemaVersion": { "const": "1.0.0" },
     "programId": { "const": "deep-survival" },
     "release": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
@@ -52,12 +54,12 @@
       "properties": {
         "algorithm": { "const": "SHA-256" },
         "entryFormat": { "const": "<lowercase-file-sha256><two-spaces><forward-slash-repo-relative-path><LF>" },
-        "artifactCount": { "const": 5 },
+        "artifactCount": { "const": 12 },
         "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
         "paths": {
           "type": "array",
-          "minItems": 5,
-          "maxItems": 5,
+          "minItems": 12,
+          "maxItems": 12,
           "uniqueItems": true,
           "items": { "type": "string", "pattern": "^(?:docs|scripts)/[A-Za-z0-9._/-]+$" }
         }

@@ -4,6 +4,49 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: program input integrity
+
+- Baseline root `f155ba27a1e86d89060ca9f0ed7241abe2edb957`. Original governance
+  stopped on machine digest `92b23996...` vs checkout `504d184e...`; Git LF
+  blobs gave `eac72024...`, so CRLF was only part of the drift.
+- Reviewed three changed machine inputs since manifest producer `8f3a64b`:
+  DNP1 registry/schema offline issuance domains and closed source-kind scope
+  from producer `2651599`; checker mirrors those exact invariants, canonical
+  ownership/vector hashing and grounded pwsh toolchain selection. Other nine
+  machine members are byte-identical Git blobs. Existing twelve-member set
+  is unchanged; schema erroneously required five and omitted the manifest's
+  `$schema` property. Validation now uses the closed corrected schema.
+- Document set now includes the already authorized sixth DPE2 handoff document
+  (producer `687805c`); crypto/PQ documents retain their already committed DID2,
+  provider and activation requirements. No new wire/crypto/authority decision,
+  vector, accepted evidence or executable claim is authored by this repin.
+  Existing crypto/contact checks and DNP1 ClassificationOnly pass.
+- Normalized only CRLF checkout copies of registry, ownership and checker to
+  their exact Git LF blobs. No semantic Git diff for these three files; explicit
+  attributes pin LF for both machine checker/runner scripts. Raw aggregate
+  construction is unchanged; UTF-8-invalid/BOM/CRLF input rejects rather than
+  being silently canonicalized or repinned to platform bytes.
+- Machine aggregate: `eac720244172bde4ae069a9aac34e38ce8b01a07ae4e91f7db86b4621d78086b`.
+  Six-document aggregate: `bf20a19400c01ae98ac69d3e90f811c2a12cc8e25b2b4af7414eb2bfd1a91c70`.
+- Case-only substituted machine path reproduced a real guard gap: the old
+  case-insensitive set comparison passed to later link checks. Exact comparison
+  now rejects it at the path-set boundary. A removed authorized document rejects
+  even when its smaller count and digest are reminted. Early input validation
+  no longer prints a premature whole-program pass.
+- Final commands: `node --test scripts/tests/program-governance-contracts.test.mjs
+  scripts/tests/contact-governance-contracts.test.mjs` **22/22**, no skips;
+  `scripts/check-survival-program.ps1 -RequiredEvidenceClaim ClassificationOnly`
+  exit 0; `scripts/Test-XPointDocumentation.ps1` 174 checks pass. The first guard
+  run exposed the omitted `$schema` schema property; after its correction,
+  pre-repin guards were 6 pass / 3 fail on aggregate drift. No weakened assertions
+  or fake executable runner was added. Fixture baseline deliberately stops on
+  omitted linked/provenance inputs; it cannot qualify any package.
+- Default `scripts/check-survival-program.ps1` exit 1, specifically
+  `evidence manifests do not satisfy claim ProtocolPackageGO`. The real missing
+  package evidence remains blocking; input consistency is not executable/native/
+  device evidence. Production, keys, devices and child code are unchanged.
+  S00/S01/Release remain open.
+
 ## 2026-10-03 — S00: signed claim binding и native I/O containment
 
 - Ещё три unsafe V1-capability Unit scenarios перенесены на signed DID2

@@ -11,14 +11,14 @@
     "documentSet":  {
                         "algorithm":  "SHA-256",
                         "entryFormat":  "\u003clowercase-file-sha256\u003e\u003ctwo-spaces\u003e\u003cforward-slash-relative-path\u003e\u003cLF\u003e",
-                        "documentCount":  5,
-                        "sha256":  "01944138a87b6e073470814d7359e529e8bc3602ee8fc5a48e22d002f6546963"
+                        "documentCount":  6,
+                        "sha256":  "bf20a19400c01ae98ac69d3e90f811c2a12cc8e25b2b4af7414eb2bfd1a91c70"
                     },
     "machineSpecificationSet":  {
                                     "algorithm":  "SHA-256",
                                     "entryFormat":  "\u003clowercase-file-sha256\u003e\u003ctwo-spaces\u003e\u003cforward-slash-repo-relative-path\u003e\u003cLF\u003e",
                                     "artifactCount":  12,
-                                     "sha256":  "92b23996dacb2ac5e515a86f67863ffc2ea3f58b1fe76a614fa567c829ca5138",
+                                    "sha256":  "eac720244172bde4ae069a9aac34e38ce8b01a07ae4e91f7db86b4621d78086b",
                                     "paths":  [
                                                   "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-attestation.schema.json",
                                                   "docs/survival-program/releases/v3.0.0/specs/dnp1-classical-v1.evidence-manifest.schema.json",
