@@ -1,6 +1,6 @@
 # DID2 mailbox authorization — Protocol source checkpoint
 
-Date: 2026-10-03. Status: local source/test milestone, not runtime activation.
+Date: 2026-10-03. Status: Protocol and owned-client source/test milestone, not runtime activation.
 Owner: Mr. X. `deviceDeliveryVerified=false`; no release qualification claimed.
 
 ## Exact producer and normative inputs
@@ -44,8 +44,8 @@ this result.
 
 ## Connected work still required
 
-1. Replace protected client acquisition/winner/request consumers and repin the
-   exact producer; discard incompatible custody explicitly, never convert it.
+1. Rebuild/repin MAUI against the committed owned-client consumer described below;
+   discard incompatible custody explicitly, never convert it.
 2. Connect current node holder/revocation/replay/local-exit admission and exact
    MIP1 grant-bound peer proof/quorum; remove the retired PMA1/P04 runtime graph.
 3. Provision signed PMA2 profile2 and matching PMT2 successors through approved
@@ -58,3 +58,40 @@ this result.
 No production deployment, Windows UI mutation, Android reset, push or publication
 was performed for this Protocol increment. The earlier Android own-publication
 and restart/reverification milestone remains distinct from peer delivery.
+
+## Owned-client and policy-producer increment
+
+- Protocol policy producer: `c037aee6af66e1f88a36f91d2fffba041a26b246`.
+- Shared consumer: `9835bd4d36e541ea504c5fd981c80f3bfbc5867d`.
+- New genesis and root-signed successors author PMA2 profile2. An internal
+  predecessor-only verifier checks historical root signatures/intervals without
+  returning current authority; delegated renewal cannot activate profile1.
+- The actual Shared production Compile inventory has no retired grant/result/
+  presentation/envelope names or reader aliases. The current APIs expose
+  `ExactXmc2` and `GetCanonicalMau3Copy`, without old aliases.
+- Owned holder signing verifies the signed PMS2 selector, full exact grant and
+  durable counter. Acquisition bounds, protected winner retention, installation
+  and Store/Retrieve/ACK use the new framing. Installation requires an exact
+  replica pair, not the first two of a larger selection.
+- DMB1 schema8 and protected grant/send journal version2 reject incompatible
+  older state, including empty journals. Grant expiry is exclusive in current
+  SQL installation/resolution/preparation/resume; failed expiry checks retain
+  the original durable request. No migration, nonce/key remint or floor reset.
+
+Final focused Shared run: **65/65**, plus a disjoint signed-successor/reopen
+case **1/1**. Includes real owned accounts, cryptography and SQLCipher grant
+custody, lost-response/exact retry, native send, retained receive, semantic
+handoff, lost ACK and restart checks. Issuer/terminal/time fixtures are
+in-process, not socket/device delivery. An intermediate stale negative-test
+version was corrected; the final run has no skipped or failed cases.
+Protocol policy/host slice: **30/30**. Shared production Release build has zero
+warnings/errors; strict generated Protocol registry and diff checks pass.
+No full package/API/evidence gate or matched production rollout is claimed.
+
+Android USB enumeration reports one authorized device, zero unauthorized/offline
+devices. No application/UI mutation occurred in this increment. The next runtime
+batch must replace XNode's retired policy composition and UTC-based synchronous
+admission with the current protected monotonic grant/holder/replay/local-exit
+boundary and grant-bound peer quorum. XNode was inspected only, not edited or
+deployed. Physical contacts, messages, remote attachments/images and governed
+groups remain unqualified; the release is not ready for publication.
