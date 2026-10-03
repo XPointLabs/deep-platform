@@ -26,10 +26,10 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Shared full 546/546; Protocol full 2067 pass / 1 fail / 12 skips; XNode full 943 pass / 1 B8 fail, ingress 17/17 и connected 39/39; native replacement 6/6, claim connected 49/49 и шесть concurrent repeats проходят; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Shared checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md#s00-fixture-correction), [latest Shared/Protocol gates](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md#commands-and-gates), [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [native replacement](../xnode/docs/testing/s00-native-replacement-2026-10-03.md), [ingress binding](../xnode/docs/testing/s00-mailbox-ingress-binding-2026-10-03.md), [current native admission gates](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); outer operation проверяется до authority/replay без обхода rate budget; actual error 5 связан с concurrent Unknown, bounded same-file retry проверен без ACL/source repair; процесс-источник denial не установлен; package/current authority и invite/XPP открыты |
+| S00 | **В работе: Shared full 546/546; Protocol full 2067 pass / 1 fail / 12 skips; XNode full 953 pass / 1 B8 fail, ingress 17/17; current peer connected 58/58; native replacement 6/6, claim connected 49/49 и шесть concurrent repeats проходят; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Shared checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md#s00-fixture-correction), [latest Shared/Protocol gates](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md#commands-and-gates), [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [native replacement](../xnode/docs/testing/s00-native-replacement-2026-10-03.md), [ingress binding](../xnode/docs/testing/s00-mailbox-ingress-binding-2026-10-03.md), [current peer gates](../xnode/docs/testing/s03-current-peer-native-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); outer operation проверяется до authority/replay без обхода rate budget; actual error 5 связан с concurrent Unknown, bounded same-file retry проверен без ACL/source repair; процесс-источник denial не установлен; package/current authority и invite/XPP открыты |
 | S01 | **В работе: DR-0083/0084; Protocol revocation/floor 49/49, settlement boundary/registry 26/26; native custody 29/29; current native admission candidate 19/19, connected 65/65; Shared exact unknown retry при 512 occupied slots проходит; full 546/546; активные node/peer consumers не подключены** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [native admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); local format/API, runtime compaction/renewal, object-horizon integration и application receipt contracts открыты |
 | S02 | **Native admission candidate проверен; полная активация заблокирована S01** | [Checkpoint](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md): оба protected role floor, current source/time, holder/body и реальный replay/outcome owner; full node 943 pass / 1 B8 fail, build 0 warnings/errors, Docker smoke и 3-node rehearsal pass. Program/DI, mailbox mutation, rotated distinct ID/key и peer quorum не подключены |
-| S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
+| S03 | **Native current peer consumer проверен; HTTP/DI и quorum ещё заблокированы S02** | [Checkpoint](../xnode/docs/testing/s03-current-peer-native-2026-10-03.md): actual grant-bound proof/source signature до native replay; guarded Store/read/tombstone/reopen, callback expiry/pending и revoked completed replay. Connected 58/58, full 953 pass / 1 B8 fail, Release build 0 warnings/errors, Docker smoke/3-node rehearsal pass. Нет actual HTTP/two-store quorum и rotated distinct ID/key evidence |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
 | S05 | Частичные producer/lifecycle компоненты; gate открыт | Current issuer→node и автоматические signed renewal/time/catch-up |
 | S06 | Не пройден | Два настоящих клиента через real selected-entry/replica endpoints |
@@ -44,7 +44,7 @@ Production среда в этом аудите не проверялась и н
 ## Блокеры, которые нельзя потерять
 
 - **B1:** Protocol/Shared перешли к DR-0081, node Program всё ещё подключает
-  retired mailbox authority; current native admission candidate не подключён
+  retired mailbox authority; current native admission/peer consumers не подключены
   к активным Store/Retrieve/ACK и peer endpoints.
 - **B2:** protected-time/revocation/holder/selected-exit admission и peer proof
   mutation/quorum не замкнуты; node ID и receipt key в старом adapter слиты.
@@ -88,9 +88,10 @@ producer/consumer без удаления quota/replay/rotation/recovery asserti
 
 Продолжить **S01** от DR-0083/0084: закрыть necessary local floor/format/API
 с actual consumers, object-horizon/retained-route Retrieve/ACK и оставшиеся
-node/peer/application-receipt contracts. Current native admission candidate уже
-соединяет protected MGR1 с реальным replay/outcome owner; его checkpoint не
-заменяет активацию Program/DI, mailbox mutation и peer quorum. Затем выполнять current admission,
+node/peer/application-receipt contracts. Current native admission и peer consumers
+уже соединяют protected MGR1 с реальными replay/outcome/mutation/blob owners;
+их checkpoints не заменяют активацию Program/DI, client Store/Retrieve/ACK и
+двух независимых stores через actual peer HTTP/quorum. Затем выполнять current admission,
 peer quorum и issuer→node→client gate в порядке единого плана. Не включать
 retired PMA1/P04 composition и не удалять working entries без независимых floors.
 Последние полные результаты и их ограничения находятся в строках S00/S01;
