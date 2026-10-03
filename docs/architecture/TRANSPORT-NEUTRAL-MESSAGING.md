@@ -2,7 +2,7 @@
 
 Статус: **целевая нормативная архитектура для clean-break реализации**
 
-Актуально: 2026-08-30
+Актуально: 2026-10-03
 
 ## 1. Назначение и приоритет
 
@@ -20,7 +20,7 @@
   compatibility fallback в новой реализации запрещены;
 - использует identity и crypto roles, утверждённые `DR-0003`, и только
   canonical crypto registry/vectors текущего clean-break поколения;
-- не переопределяет уже принятые canonical MAU2 и privacy-routing bytes;
+- не переопределяет canonical MAU3 (DR-0081) и privacy-routing bytes;
   transport adapter инкапсулирует их за общей границей;
 - заменяет как целевую архитектуру текущие `ISession*`/`SessionId` contracts.
   Старые имена не переносятся в новый public API;
@@ -90,7 +90,7 @@ Delivery policy + capability negotiation
           +------------+-------------+--------------+
           v            v             v              v
      XPoint adapter  on-prem      direct P2P      mesh adapter
-       MAU2/onion     MAU2       live peer link   store/carry/forward
+       MAU3/onion   future profile  live peer link   store/carry/forward
           |
           v
 Masked carrier / link / radio / local network
@@ -101,6 +101,36 @@ test vectors. `deep-client-shared` владеет portable orchestration и dura
 state. Platform project владеет secure storage, background execution, radios,
 WebRTC и carrier process lifecycle. Adapter repositories не авторят
 application events и не изменяют crypto state напрямую.
+
+### 3.1 Local availability и delivery lifecycle
+
+Аутентифицированная локальная history/projection и сохранение нового logical
+intent MUST работать без fresh network proof. Потеря current network authority
+не очищает локальную историю и не уничтожает очередь. Current proof/consent/
+revocation policy проверяется перед разрешённой сетевой mutation; offline intent
+не является разрешением encrypt/send с устаревшей authority. Повреждённое либо
+неаутентифицированное local state не получает это разрешение автоматически.
+
+Scheduler обслуживает durable due work и bounded inbox pages, возобновляя их
+после restart/lifecycle/connectivity wakeup. Network admission/reconnect лишь
+обновляет readiness; он не заменяет outbox drain, receive или receipt delivery.
+Single-flight, cancellation, bounded concurrency/backoff и backpressure
+обязательны. Push остаётся hint; без push гарантируется catch-up при следующем
+разрешённом выполнении, а не фиксированная задержка во время OS suspension.
+
+Наблюдаемые статусы имеют разные основания: локальный durable intent — queued;
+verified Store receipt — stored; authenticated application receipt после durable
+recipient materialization — delivered; отдельное разрешённое read событие — read.
+Mailbox tombstone ACK разрешает удаление transport copy после durable receive;
+он не является sender-visible application receipt. Receipt work и dedup должны
+переживать crash без потери подтверждения или повторной материализации.
+
+Bounded custody journals требуют завершённого lifecycle: exact pending/unknown
+операции сохраняются для reconciliation; retirement/compaction не удаляет
+необходимую replay protection. Увеличение capacity или grant lifetime не
+заменяет этот контракт. До реализации недостающие expiry/successor/compaction
+переходы замораживаются согласно S01
+[единого плана](IMPLEMENTATION-PLAN-V1.md); этот раздел не вводит новые wire bytes.
 
 ## 4. Canonical application model
 
@@ -160,9 +190,11 @@ recovery и governance records в отдельных domains.
 
 ## 5. Contact bootstrap без циклической зависимости
 
-Постоянный transport-neutral `DID1` содержит recovery-derived public address
-key, не имеет срока действия и не раскрывает постоянный mailbox. Каждый
-transport domain-separated выводит из него свой opaque resolver locator.
+Постоянный transport-neutral `DID2` использует PQ-root identity и адресный
+resolver capability согласно текущему CONTACT/Protocol registry. Он не имеет
+срока действия и не раскрывает постоянный mailbox. Transport-specific locator
+и credential commitment выводятся только по текущему DID2 contract; старый
+DID1 public-key-only рецепт не переносится в новый runtime.
 Resolver возвращает rotating canonical `DCB1`; отдельный `DIA1` используется
 только для истекающих one-time приглашений. Bundle содержит:
 
@@ -187,7 +219,7 @@ descriptors, prekey/device-list updates и revocation hints. Старый deposi
 может истечь, не уничтожая контакт. Получатель хранит bounded precommitted
 successors и долгоживущий update rendezvous на заявленный offline horizon.
 Истечение всех current publication objects даёт `TemporarilyUnavailable`, но
-не меняет и не инвалидирует DID1; после recovery-authorized republication тот
+не меняет и не инвалидирует DID2; после recovery-authorized republication тот
 же ID снова разрешается.
 
 Fresh install, возвращающееся устройство и recovered account — три разные

@@ -1,1856 +1,381 @@
-# Deep/XPoint V1 Implementation Plan
+# Единый план реализации Deep / XPoint для Codex
 
-Status: **normative implementation DAG; no package is complete by specification alone**
-Date: 2026-08-30
-Scope: first public Android/Windows release using `OfficialXPoint3`
+Дата: **2026-10-03**. Основание: [аудит](ARCHITECTURE-AUDIT-2026-10-03.md),
+[DR-0082](../survival-program/decisions/DR-0082-integration-first-delivery-baseline.md),
+[handoff](../RELEASE-STABILIZATION-HANDOFF-2026-10-03.md).
+Статус этапов находится только в [NEXT-SPRINT](../NEXT-SPRINT.md).
 
-## 1. Execution contract
+Этот план заменяет прежние WP0–WP9, NET-STAB overlays и порядок «начать все
+кодеки заново». Он использует существующий код и сохраняет полный
+[V1 scope](V1-RELEASE-SCOPE.md). Старые package IDs в конце — стабильные владельцы
+release evidence, а не ещё одна очередь реализации.
 
-This plan decomposes the clean-break release into bounded packages suitable for
-independent coding agents. It does not reduce the final release scope. It adds
-intermediate compile, vector and integration gates so that agents do not build
-against guessed APIs or temporary production fallbacks.
+## 1. Контракт исполнения
 
-Rules for every package:
+- Работать от фактических HEAD и dirty state, сверяя их с handoff. Сохранить
+  независимые изменения. Не выдавать наличие исходника за включение в build.
+- Один этап может иметь несколько repo-owned подзадач. Каждая меняет свой repo,
+  передаёт точный commit/API/tests; общий integration gate закрывается только
+  на согласованной матрице всех потребителей. Сначала producer, затем consumer.
+- Каждый запуск берёт одну незавершённую подзадачу, читает её normative owner,
+  реальные callers/composition и тесты. Не переизобретать wire по тексту плана.
+- Новая криптография/wire требует отдельного принятого DR, machine schema/vector
+  freeze и проверки всех consumers. DR-0081 — текущий mailbox target.
+- Нельзя ослаблять expiry, replay, quorum, TLS, revocation или protected floors,
+  возвращать PMA1/P04/MAU2 как fallback, подменять signed authority fixture.
+- Тест, остановившийся на неверном fixture до нужной ветки, не проверяет эту
+  ветку. Исправить fixture, сохранив исходный timeout/tamper/crash invariant.
+- Новый или исправленный slice проверять focused tests, затем обязательными
+  gates repo и connected path. Не удалять остальные failures ради green report.
+- Коммиты локальные и раздельные, submodule pointers — после child commits.
+  Production/reset/push/publish не следуют из этого плана автоматически.
 
-1. `ownerRepository` is the only repository in which the package authors
-   production code. A consumer change is a separate package or a separately
-   reviewed follow-up owned by that consumer.
-2. An agent starts only when every `dependsOn` package has a reviewed local
-   commit and its produced artifact/API is available at the exact commit hash.
-3. `consumes` are immutable inputs. If an input is ambiguous or changed, the
-   package stops; it does not create a compatibility adapter.
-4. `produces` are the complete handoff to downstream packages. A prose-only
-   result cannot satisfy a codec, provider, database or runtime dependency.
-5. Wire and public APIs are closed. Unknown values and hostile sizes reject
-   before cryptography, allocation, network callbacks and mutation.
-6. DB changes create one new clean-break generation. There are no migrations,
-   legacy readers, aliases, dual writes or downgrade paths.
-7. Each package updates its own repository `AGENTS.md`, architecture/readme and
-   runbook when ownership or executable behavior changes. Stale instructions
-   cannot remain as the first document a later agent reads.
-8. Each implementation package includes cancellation, bounded resources,
-   restart/crash points, logging redaction and `git diff --check`.
-9. Cross-repository integration evidence names the exact producer and consumer
-   commits. Unreviewed working-tree bytes are not an API contract.
-10. No package pushes, publishes or deploys production without separate user
-    authorization.
-11. `ID-PQ-CB` and then `CB0` from `NEXT-SPRINT.md` are the first
-    production-graph changes. A package
-    may consume immutable Session reference vectors, but may not introduce a
-    compiled `LegacyV1`, migration assembly, compatibility adapter or fallback.
-
-### 1.1 Network stability-first execution override (2026-09-29)
-
-Mr. X changed the immediate execution order: network recovery first, physical
-Android/Windows message E2E second. On 2026-09-30 he explicitly resumed physical
-contact/message/attachment/group E2E following the component recovery work and
-authorized production updates for that testing. Outstanding stability/soak
-evidence remains a final release gate rather than a prohibition on implementing
-and testing the message vertical. This overlay takes precedence over the
-historical shortest-path order in section 2. It does not mark existing packages
-complete, activate new wire formats or reduce the final public-release scope.
-The unfinished milestone status has one owner: [NEXT-SPRINT.md](../NEXT-SPRINT.md).
-
-The immediate milestone is restart-safe recovery with retained volumes, not
-continuous delivery while one of the three required route nodes is absent.
-Transient dependency/authority unavailability must not erase identity or crash
-the rest of the network. Explicit operator stop remains stopped until operator
-start. Deleted volumes, lost protection keys, corrupt state and cryptographic
-forks are different recovery cases, not ordinary automatic reconnect.
-
-Normative inputs are [XPOINT-NETWORK-V1.md](XPOINT-NETWORK-V1.md),
-[ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md](ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md),
-[RETENTION-AND-RECOVERY-V1.md](RETENTION-AND-RECOVERY-V1.md),
-[DEPLOYMENT-PROFILES.md](DEPLOYMENT-PROFILES.md) and
-[DR-0012](../survival-program/decisions/DR-0012-protected-network-history.md).
-These tasks implement their existing semantics; a required security/wire change
-first updates the single normative owner, decision and frozen producer fixtures.
-No task extends validity in a verifier, trusts unsigned latest state, clears a
-rollback/fork floor, creates a replacement genesis, changes registered node
-identity, disables TLS verification or brings an offline root key online.
-
-#### NET-STAB-SPEC — recovery contract and reproducible failure baseline (P0)
-
-- **ownerRepository:** `XPointLabs` (architecture/specification only).
-- **dependsOn:** existing frozen Protocol inputs and committed service evidence;
-  no new runtime dependency is assumed complete.
-- **consumes:** actual Registry/XNode/client startup and refresh call paths,
-  current installer/Compose profiles and retention/time/fork rules above.
-- **produces:** reproducible, sanitized failure baseline and fault matrix;
-  classified retryable-unavailable versus permanent corruption/fork states;
-  reviewed catch-up, trusted-time bootstrap and operational renewal design.
-  Locate the reported stale time anchor, expired DEV authority, proof readiness
-  discrepancy, polling-budget pressure and finite signed-head tail in code/tests.
-- **review gate:** remove circular recovery prerequisites (fresh time needed to
-  obtain fresh time; expired view needed to fetch its successor). Use independent
-  authenticated observations and retained predecessors, never wall-clock trust.
-  Specify restart boot identity, signer availability, expiry margins and measured
-  recovery budgets. Quantitative product SLO changes belong to the existing
-  deployment/release owners, not a duplicated table in this plan.
-- **handoff:** exact APIs/fixtures for the packages below. A protocol change
-  requiring new bytes stops consumers until `NET-STAB-HISTORY` freezes them.
-
-#### NET-STAB-HISTORY — bounded catch-up beyond the current head tail (P0)
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** NET-STAB-SPEC; existing NETCODEC/account-directory codecs.
-- **produces:** verified bounded catch-up contract and fixtures across more than
-  64 head successors, including renewals with an unchanged account tree; retained
-  lineage/source binding, fork/rollback rejection and crash-resumable progress.
-  Reuse existing canonical proofs where sufficient; if insufficient, freeze one
-  reviewed clean-break extension with its normative owner before consumers emit it.
-- **unit gate:** stale/historical source cannot authorize current operations;
-  wrong source/network, missing segment, reordered/duplicate heads, two competing
-  successors and interrupted merge reject or resume without losing protected floors.
-- **handoff:** author/client APIs and vectors consumed by AUTH/NODE/CLIENT.
-  Do not solve a 64-head bound by merely raising a count, deleting history or
-  requiring an offline-root ceremony every few days. Scheduled root-policy
-  renewal stays distinct from routine operational refresh and node restart.
-
-#### NET-STAB-AUTH — restart-safe Registry authoring and proof admission (P0)
-
-- **ownerRepository:** `deep-registry-api`.
-- **dependsOn:** NET-STAB-SPEC, NET-STAB-HISTORY.
-- **produces:** proactive operational-head renewal with durable predecessor/CAS;
-  independent-observation trusted-time recovery after process/host restart;
-  validated authoring configuration and bounded retry after dependency return;
-  proof-aware readiness that consumes no client nonce/one-use issuance entry;
-  catch-up publication using reviewed history APIs.
-- **resource gate:** measure background versus foreground proof demand; separate
-  internal readiness from issuance; bound concurrency, single-flight duplicate
-  refresh and fair admission. Test burst/retry/nonce-ledger exhaustion and capacity
-  recovery without disabling abuse limits. Honor typed throttling/Retry-After.
-- **unit/integration gate:** disabled/misconfigured renewal is visible before
-  expiry; expired anchor/head, signer outage, process restart during CAS, clock
-  rollback and catch-up beyond 64 successors preserve lineage and recover only
-  with verified inputs. Health=200 alone is not proof readiness.
-- **handoff:** executable service tests plus sanitized recovery/budget evidence.
-
-#### NET-STAB-OPS — automated operational authority and key lifecycle (P0)
-
-- **ownerRepository:** `deep-devops`.
-- **dependsOn:** NET-STAB-SPEC, NET-STAB-HISTORY, NET-STAB-AUTH.
-- **produces:** supported reconciliation/orchestration for time observations,
-  current+next traffic keys and signed network views, installed-key/descriptor
-  matching, atomic publication/read-back and bounded overlap; restart-safe
-  schedules and alerts before expiry/history or ledger capacity exhaustion.
-  Wire dev/UAT/prod configurations explicitly; expired DEV artifacts must not
-  require repeated one-off resets after Docker downtime.
-- **integration gate:** restart the authoring host during every install/publish
-  boundary; safely resume or retain the prior verified state. Observe multiple
-  view/head/key rotations with no manual floor edits or silent identity re-key.
-  Separate offline root/policy custody from delegated online operational signers;
-  an expired root-signed policy requires its authorized successor, not auto-sign
-  with copied root secrets. Expose this limit before expiry, not as a surprise.
-- **handoff:** production-like Docker orchestration, monitoring and operator
-  runbook; authority lifecycle must continue during node/client downtime.
-
-#### NET-STAB-NODE — live process and durable restart/catch-up (P0)
-
-- **ownerRepository:** `xnode`.
-- **dependsOn:** NET-STAB-SPEC, NET-STAB-HISTORY, NET-STAB-AUTH.
-- **produces:** retryable unavailable/recovering readiness instead of fatal
-  startup for transient authority/peer unavailability; cancelable jitter/backoff;
-  protected-history/time/key-ring load and verified catch-up before serving;
-  durable operation/replica reconciliation and stale peer/H2 connection recovery.
-- **unit/integration gate:** retain registered Ed25519/BLS identity, protection
-  keys, DNH2 lineage, replay/fork floors and journals across graceful stop and kill;
-  restart on old traffic epochs after dependencies return; rotate without
-  descriptor/key mismatch. Recovery admission must remain possible while business
-  operations are correctly unavailable. A stale/lost key or corrupt/forked state
-  never becomes healthy by retry, deleting a file or falling back to old runtime.
-- **handoff:** typed readiness/failure observations, restart/crash tests and exact
-  service commits for INSTALL/GATE. Storage catch-up is not a duplicate prekey claim.
-
-#### NET-STAB-CLIENT — automatic reconnect without account reset (P0)
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** NET-STAB-SPEC, NET-STAB-HISTORY, NET-STAB-AUTH, NET-STAB-NODE.
-- **produces:** foreground/resume and pre-operation verified refresh; durable
-  DNH2/time floors, bounded single-flight retry with jitter and Retry-After;
-  connection invalidation after server restart; outcome-unknown reconciliation
-  using stable operation IDs. Preserve account/device identity and staged
-  inventory/outbox across network absence and process restart.
-- **unit/integration gate:** node/Registry downtime and more than 64 successors;
-  Android suspend/resume and Windows stale H2 connection reproduction; reject
-  expired proof for mutations while allowing authenticated recovery acquisition.
-  Neither a reconnect event nor transport HTTP success proves publication/delivery.
-- **handoff:** Shared tests/API and diagnostic state for physical gate. Any MAUI
-  adapter/UI change is a separately committed consumer follow-up owned by
-  `deep-client-maui`; do not author platform code in Shared.
-
-#### NET-STAB-INSTALL — supported Docker restart/recreate and upgrade (P0)
-
-- **ownerRepository:** `xpoint-node-installer`.
-- **dependsOn:** NET-STAB-OPS, NET-STAB-NODE.
-- **produces:** idempotent supported install/start/upgrade preserving identity,
-  mounts, protected-state secrets and data volumes; runtime UID/permissions
-  validated before startup; explicit startup ordering/readiness and recovery
-  diagnostics. Inspect engine-restart behavior separately from operator stop.
-- **integration gate:** install/upgrade and recreate on retained volumes;
-  repeated stop/start, daemon restart and interrupted install; no stale authority
-  pins copied over current durable state, no volume deletion and no silent re-key.
-  Rollback rehearsal must honor signed security/anti-rollback floors rather than
-  reinstall an older image and rewind state. Do not alter certbot configuration.
-- **handoff:** supported commands and operator docs; local/UAT Compose consumer
-  edits remain separately owned by `deep-devops` under NET-STAB-OPS.
-
-#### NET-STAB-GATE — Docker fault matrix and permission to resume messaging (P0)
-
-- **ownerRepository:** `deep-tests-e2e`.
-- **dependsOn:** NET-STAB-AUTH, NET-STAB-OPS, NET-STAB-NODE,
-  NET-STAB-CLIENT, NET-STAB-INSTALL and any required MAUI consumer follow-up.
-- **consumes:** exact committed service/client/installer artifacts; real Docker
-  orchestration from `deep-devops`, no TestServer/mock-authority substitute.
-- **produces:** repeatable sanitized commit-bound fault evidence: stop/start each
-  node separately; graceful stop and forced kill; Registry outage/restart; entire
-  Docker stack/engine restart; dependency return in different orders; downtime
-  beyond all short-lived operational TTLs and seven-day virtual-time catch-up;
-  more than 64 signed-head successors; outage during key/view rotation and during
-  durable publication/claim boundaries without enabling unready claim features.
-- **acceptance gate:** at least 20 automated stop/start cycles per node, a real
-  72-hour unattended soak including scheduled renewals, and recovered functional
-  authenticated ONION/publication probes, not just green health endpoints.
-  Record dependency-restored-to-ready and functional recovery latency against
-  budgets from SPEC; bounded retries/resources, no idle admission starvation,
-  cascade crashes, state loss, duplicate one-time consumption or manual reset.
-  Accelerated fixtures do not substitute for the real soak.
-- **physical handoff:** Android/Windows recovery probes run locally on Mr. X's
-  devices/desktop, not CI. Reconnect with the same accounts after node/Registry
-  restart, preserving protected history and verified publication. These probes
-  do not claim message delivery. Under the 2026-09-30 execution authorization,
-  continue the existing atomic claim → DPH2 → bidirectional text →
-  restart/dedup/durable-ACK device E2E while remaining stability evidence is
-  collected independently; neither result substitutes for the other.
-- **deployment boundary:** stage destructive faults in local/UAT retained-volume
-  topology first. Production fault injection/rollout needs explicit authorization
-  for that run; this planning change performs neither.
-
-#### NET-MEMBERSHIP-DESIGN — current-contract decentralization follow-up (P1)
-
-- **ownerRepository:** `XPointLabs` (reviewed architecture only).
-- **dependsOn:** NET-STAB-SPEC; not a prerequisite of NET-STAB-GATE or first text E2E.
-- **produces:** design using the existing staking contract/ABI and registered
-  node keys: verified chain/finality anchor and complete roster; independently
-  signed off-chain descriptors; multiple distribution sources with local
-  verification. Verify deployed contract/source correspondence before relying
-  on its getters. Registry can become an optional network-distribution mirror.
-- **review gate:** distinguish membership proof from account freshness, trusted
-  time and atomic prekey consensus. Define partitions/quorum/fork behavior and
-  RPC failure/reorg handling; BLS aggregation alone is not consensus. Do not
-  introduce on-chain IPs, account records, directory roots or new slashing claims.
-- **handoff:** separate producer/consumer packages for Protocol, staking
-  projection, Registry, XNode and Shared after reviewed design. Do not expand this
-  stability fix into an unbounded simultaneous consensus rewrite.
-
-Execution order: SPEC → HISTORY → AUTH → OPS/NODE → CLIENT/INSTALL → GATE →
-existing physical message E2E. Only independent, reviewed package inputs permit
-overlap; these labels do not authorize spawning agents or production mutations.
-Bridge acquisition, new carriers and censorship experiments are deferred from
-this immediate milestone. Existing final-release security gates and transport
-policy still apply; no new direct/plaintext fallback is authorized.
-
-## 2. Dependency overview
+## 2. Зависимости и критерий первого результата
 
 ```text
-GOV-01 ───────────────┐
-CRYPTO-01 ────────────┼─> REG-01
-ARCH-01 ──────────────┘
-
-ID-PQ-CB -> REG-01 -> ID-01 -> STORE-01
-REG-01 + ID-01 + CRYPTO-01 -> E2EE-01 -> APPLICATION-CORE-CODEC-01
-STORE-01 + E2EE-01 + APPLICATION-CORE-CODEC-01 -> MSG-01 -> DEVICE-01
-APPLICATION-CORE-CODEC-01 -> ATTACHMENT-CODEC-01 -> BLOB-01
-
-REG-01 + ARCH-01 -> NETCODEC-01
-REG-01 + NETCODEC-01 -> CARRIER-CODEC-01 -> CARRIER-CATALOG-01
-GOV-01 + NETCODEC-01 + CARRIER-CATALOG-01 -> ROOT-CHECKPOINT-01 -> DIRECTORY-01
-NETCODEC-01 ───────────────────────────────> DIRECTORY-01
-                              \-> XNODE-01 -> ROUTE-01
-REG-01 + NETCODEC-01 + XNODE-01 -> ONION-01 -> ROUTE-01
-
-CARRIER-CODEC-01 -> SUPERVISOR-01
-CARRIER-CODEC-01 + XNODE-01 -> CARRIER-GATEWAY-01
-CARRIER-CATALOG-01 + CARRIER-CODEC-01 -> BRIDGE-DISTRIBUTOR-01
-SUPERVISOR-01 -> REALITY-01
-SUPERVISOR-01 -> HTTPS-01
-DIRECTORY-01 + CARRIER-CATALOG-01 + CARRIER-GATEWAY-01 + BRIDGE-DISTRIBUTOR-01 + REALITY-01 + HTTPS-01 -> BRIDGE-01
-ROUTE-01 + REALITY-01 + HTTPS-01 + BRIDGE-01 -> official XPoint path
-
-APPLICATION-CORE-CODEC-01 + E2EE-01 + NETCODEC-01 -> CONTACT-CODEC-01
-DIRECTORY-01 + CONTACT-CODEC-01 -> ACCOUNT-DIRECTORY-AUTH-01
-DEVICE-01 + ROUTE-01 + ACCOUNT-DIRECTORY-AUTH-01 -> DIRECTORY-CLIENT-01
-CONTACT-CODEC-01 + XNODE-01 + ACCOUNT-DIRECTORY-AUTH-01 -> CONTACT-SERVICE-01
-MSG-01 + DIRECTORY-CLIENT-01 + ROUTE-01 + CONTACT-SERVICE-01 -> CONTACT-CLIENT-01
-
-CONTACT-CODEC-01 + DEVICE-01 + DIRECTORY-CLIENT-01 -> GROUP-CODEC-01
-GROUP-CODEC-01 + XNODE-01 -> GROUP-CONTROL-SERVICE-01
-GROUP-CODEC-01 + GROUP-CONTROL-SERVICE-01 + CONTACT-CLIENT-01 + MSG-01 -> GROUP-CLIENT-01
-MSG-01 + ROUTE-01 -> BLOB-01
-MSG-01 + ROUTE-01 -> PUSH-01
-APPLICATION-CORE-CODEC-01 + CARRIER-CODEC-01 + NETCODEC-01 -> CALL-CODEC-01
-CONTACT-CLIENT-01 + MSG-01 + CALL-CODEC-01 -> CALL-SIGNAL-01
-CALL-CODEC-01 + XNODE-01 + DIRECTORY-01 -> CALL-RELAY-01
-CALL-SIGNAL-01 + CALL-RELAY-01 + BRIDGE-01 -> CALL-MEDIA-01
-
-all runtime packages -> COMPOSE-01 -> E2E-01
+S00 baseline / trustworthy fixtures
+  -> S01 close admission + lifecycle contracts
+     -> S02 current node admission -> S03 peer quorum
+     -> S04 client durable lifecycle
+     -> S05 Registry + operational renewal
+S02 + S03 + S04 + S05 -> S06 two-client real transport
+S04 + S06 -> S07 delivery scheduler + receipts + offline UI
+S06 + S07 -> S08 shipping composition + physical text
+S05 + S08 -> S09 recovery / sustained delivery
+S09 -> S10 files, S11 devices/groups, S12 carriers/push/calls
+S10 + S11 + S12 -> S13 full release qualification
 ```
 
-The shortest useful vertical milestone is:
-
-```text
-ID-PQ-CB root/provider/wire freeze -> CB0 legacy production-graph removal
--> diagnostic local DEV0 evidence
--> offline account -> loopback ratchet/outbox -> one-carrier three-hop text
--> arbitrary offline contact -> second carrier/rotation -> groups/files/push
--> relay-only calls -> full evidence
-```
-
-DR-0006 supersedes the former "ML-DSA post-V1" assumption for the **permanent
-identity root only**. This does not pull PQ signatures into every message or
-promise a fully PQ network. Old DID1/DAB1, exact DPH2 sizes and account
-fixtures must be re-frozen before a release-compatible vertical run.
-
-DEV0 is allowed to be red only when it names the exact missing Deep-native
-package/service/authority. It is never made green by re-enabling a Session,
-mock, direct or unauthenticated path. Non-clean-break findings from architecture
-reviews enter the dependency order only after this baseline; ML-DSA outside
-the permanent identity root, MLS, mesh and on-prem runtime remain post-V1.
-
-## 3. Package catalogue
-
-### GOV-01 — canonical scope, names and ownership alignment
-
-- **ownerRepository:** `XPointLabs` superproject documentation.
-- **dependsOn:** none.
-- **consumes:** `AGENTS.md`, `docs/architecture/*.md`, `docs/NEXT-SPRINT.md`,
-  accepted DR-0003.
-- **produces:** reviewed canonical-name decisions from
-  `PROTOCOL-REGISTRY-V1.md`; one `release-scope.v1.json` schema/fixture; corrected
-  superproject repository map; explicit target/current status policy.
-- **wire/API:** no runtime wire; freezes public names and package ownership only.
-- **DB impact/removals:** none. Removal list names stale interface, carrier and
-  call aliases plus old iOS/disjoint/exactly-once release claims.
-- **unit gate:** Markdown local-link check, registry duplicate-name check and
-  JSON-schema validation for the release-scope fixture.
-- **integration consumer/evidence:** every package consumes the reviewed GOV-01
-  commit; evidence is a scope manifest listing required platforms, suites,
-  profiles, features, scenarios and evidence schemas.
-
-### ID-PQ-CB — genesis-committed permanent identity clean break
-
-- **ownerRepository:** `deep-protocol`, with separate consumer changes in
-  `deep-client-shared`, `deep-client-maui` and service repositories.
-- **dependsOn:** DR-0006 and reviewed managed ML-DSA provider feasibility.
-- **produces:** new canonical genesis root credential and compact ID, 24-word
-  restore contract, hybrid root-authenticated binding/succession, new magic and
-  suite allocations, machine vectors, hostile parser tests and retired DID1/
-  DAB1 manifest. All DPH2, DAO1, contact, QR, safety-number and storage
-  consumers are re-frozen in their owning packages; no dual reader.
-- **gate:** FIPS 204 KAT/differential/provider review on Android arm64 and
-  Windows x64/arm64; same-root recovery, independent PQ and Ed roles,
-  Ed-only forgery/PQ substitution/fork rejection, physical cross-device
-  verification. The current old-ID green tests are not release evidence.
-- **current candidate evidence (2026-09-23):** exact DID2/DAB2 and DCA1 V2
-  author/verify, genesis issuance plus exact-binding restore, ADC1 V2
-  DID2-derived leaf and device-issuer closure, ADL1 V2 capability author/
-  decode with verified DAB2 lookup binding, candidate transition/map V2
-  primitives and independent hash tests, candidate genesis admission verifier
-  requiring hybrid DAB2 authorization and closed DGA1/DGR1 V2 wire; ML-DSA-65
-  ACVP on hosted
-  Linux/Windows x64/arm64 and a physical Android arm64 managed probe.
-  These are protocol/provider checks, not a releasable identity path.
-- **remaining cutover gate:** ADP1/admission service and directory witnesses, DCB1/DCR1
-  ([DR-0069](../survival-program/decisions/DR-0069-did2-retired-identity-surface-removal.md)
-  removes old source producers and specifies the DID2-only API/consumer repin),
-  two-stage operational author/tooling cutover under
-  [DR-0070](../survival-program/decisions/DR-0070-did2-operational-genesis-proof-order.md),
-  and contact-route authority, DPH2/DAO1 and XPK locator, client account
-  storage/bootstrap/QR/safety number, xnode readers and the UAT reset must
-  consume only exact DID2/DAB2. Then run Windows/Android device E2E for
-  message text, image/file transfer, restart/retry, contact and group flows.
-  Do not classify old DID1 path tests or the candidate native matrix as this
-  release gate.
-- **client cutover order:** replace the local account schema and secure-storage
-  namespace as one incompatible generation, including creation receipts,
-  reset/purge ownership and account-scoped database keys. Derive the exact DID2
-  while the 24-word authority is still present; persist the exact issued DAB2
-  and its verified DID2/DMD1/DCA1 V2/ADC1 V2 closure before permitting phrase
-  deletion. On restart, verify that closure against the reconciled DPA1/DRS1/
-  DPD1 account/device authority; re-issuing hedged DAB2 is not restoration.
-  Only then replace `DeepAccount`, genesis activation, directory admission,
-  Contact/XPK and MAUI composition together. A V1 database or protected slot
-  is a reset input, never a release reader or fallback. The first device gate
-  must create offline, restart, reveal/delete the phrase, restart again and
-  prove the same DID2 and exact DAB2 before contacting Registry.
-  The V2 current-account index must be published only after verified bootstrap
-  and must have a crash-resume state machine for a retained phrase, DXP1 journal
-  and partial V2 slots. A hedged DAB2 may be authored again only if no durable
-  or externally published winner exists; otherwise restore the exact bytes.
-  Partial state grants no account/device/publication authority and cannot be
-  silently treated as a fresh account.
-- **DPH2 device-capability API re-freeze (2026-09-24):** a verified DID2
-  application identity closure may retain and expose only the exact
-  `VerifiedDeviceRelative` values supplied by its DNP1 verifier; the
-  lower-level `VerifiedDevice` overload must never synthesize those values.
-  STORE-V2 uses that narrow fact together with protected matching device
-  secrets to open `LocalDeviceX25519AgreementAuthority` and the closed
-  `Dpk2AuthoringAuthority` after restart,
-  including after user deletion of the retained phrase. This grants no raw
-  key, network freshness, DMD1 currentness or message-delivery authority.
-  Re-freeze both Release and Debug protocol public-API snapshots and verify
-  package graph, malformed input and downstream Shared/MAUI rebuild before
-  calling this production-ready. No STORE-V1 bridge is allowed.
-
-### CRYPTO-01 — production provider and ABI decision
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** none.
-- **consumes:** FIPS 203 KATs/errata, Signal PQXDH and Triple Ratchet/SPQR
-  references, `PQ-PROVIDER-FEASIBILITY.md`, Android arm64 and Windows x64/arm64
-  build environments.
-- **produces:** accepted provider decision; pinned source/package/commit hashes;
-  license/provenance/SBOM; narrow C ABI plus memory-safe managed binding;
-  reproducible native
-  build scripts; two-provider KAT/interoperability and malformed-input results;
-  CPU/memory/package/battery budgets.
-- **implemented evidence:** the pinned incremental `libcrux-ml-kem` Braid ABI
-  passes `7/7` Windows x64 adversarial/interop tests plus its C consumer, and a
-  physical Android arm64 probe passes CSPRNG round-trips, unload/reload and
-  replay/double-dispose rejection with an exact 17-symbol export surface. Its
-  .NET Android wrapper also passes digest/drift, interop, dispose/reload and
-  concurrent single-consumer checks; ten roundtrips took 26.752 ms on API 26.
-  The separate whole-KEM `mlkem-native` wrapper passed the same device class.
-  Windows arm64, SBOM/reproducibility completion and independent binary/
-  provenance/side-channel approval remain open.
-- **wire/API:** provider API accepts/returns Deep-owned key/value types only;
-  upstream serialization never crosses it. Suite `0x0201` is indivisible.
-- **DB impact/removals:** no production private-key persistence in the spike.
-  Remove/reject dark providers and suite `0x0101/0x0102` from production graph.
-- **unit gate:** KAT equality, all-zero/shared-secret and malformed ciphertext
-  negatives, ABI cancellation/fault/zeroization tests, reproducible hash match,
-  physical Android and Windows benchmark app.
-- **integration consumer/evidence:** E2EE-01; signed dependency decision,
-  benchmark JSON, license decision and SBOM fragment.
-
-### ARCH-01 — immutable architecture consistency and feasibility gate
-
-- **ownerRepository:** `XPointLabs` superproject documentation.
-- **dependsOn:** GOV-01.
-- **consumes:** immutable DR-0004 and accepted call/carrier/account-directory
-  contracts from `PROTOCOL-REGISTRY-V1.md`,
-  `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`, `CONTACT-RESOLVER-V1.md`,
-  `RETENTION-AND-RECOVERY-V1.md`, current route-continuity specs and capacity
-  estimates.
-- **produces:** consistency manifest proving one owner/source for D0 inputs,
-  PMT2/PMS2 clean break, XNode services, CallRelay authority and carrier wires;
-  capacity feasibility report for the accepted retention matrix. It cannot
-  select alternate wire/security semantics.
-- **wire/API:** authors no protocol bytes or new architecture choice.
-- **DB impact/removals:** verifies DR-0004 destructive reset/removal list; no
-  migration may be introduced.
-- **unit gate:** cross-reference checker proves every accepted record is closed,
-  owner-resolved, cycle-free and capacity-feasible with no contradictory claim.
-- **integration consumer/evidence:** REG-01, NETCODEC-01, CONTACT-CODEC-01,
-  CARRIER-CODEC-01 and CALL-CODEC-01 consume exact manifest/source hashes.
-
-### REG-01 — machine-readable V1 registry and code generation
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** GOV-01, CRYPTO-01, ARCH-01.
-- **consumes:** `PROTOCOL-REGISTRY-V1.md`, frozen DNP1 registry and every accepted
-  normative source.
-- **produces:** `deep-protocol-v1.registry.json` plus schema; generated magic,
-  suite, carrier, deployment, call-name and interface constants; collision and
-  source-coverage tests; retired-value manifest.
-- **wire/API:** generated values are the sole source constants; no hand-authored
-  duplicate enum or string table.
-- **DB impact/removals:** none. Retired values become negative fixtures.
-- **unit gate:** registry schema, global magic collision, scoped numeric
-  collision, implementation-constant coverage, stale-alias and max+1 tests.
-- **integration consumer/evidence:** all codec/runtime packages; generated
-  registry hash and test report become release evidence.
-
-### ID-01 — promote frozen DNP1 identity/recovery records
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** REG-01, CRYPTO-01.
-- **consumes:** frozen DNP1 registry/vectors and DeepRecoveryV1 requirements.
-- **produces:** release-referenced DPA1/DPD1/DRS1/DRA1 verification and authoring
-  surface; 24-word recovery/KDF vectors; independent device-key generation;
-  sealed recovery/account/device capabilities; optional OS-protected retained
-  phrase slot with explicit reveal and deletion.
-- **wire/API:** exact frozen DNP1 bytes only. Ed25519/X25519 conversion and raw
-  recovery-root accessors are absent.
-- **DB impact/removals:** defines new secure-storage slot identifiers and
-  clean-break key roles; no consumer DB mutation yet. Remove Session/13-word
-  and dark DPAC/DPDC production package edges.
-- **unit gate:** complete DNP1 focused suite, recovery golden/negative vectors,
-  key-role substitution and production package graph scans.
-- **integration consumer/evidence:** STORE-01 and E2EE-01; exact package hashes,
-  public API inventory and vector manifest.
-
-### STORE-01 — offline account/device store and destructive DB generation
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** ID-01.
-- **consumes:** sealed identity/device capabilities, secure-storage abstraction
-  and canonical account/device IDs.
-- **produces:** new SQLCipher schema generation; atomic account/device/local
-  profile transaction; restore-as-new-device pending state; in-memory parity;
-  network-free account service.
-- **wire/API:** portable account APIs perform no DNS, Registry, XPoint,
-  certificate or bootstrap callback before local commit.
-- **DB impact/removals:** destructive new DB magic/version; new identity,
-  device, protected LKG, outbox/inbox and security-event roots. Old schema,
-  Session rows and JSON import readers reject; no migration table exists.
-- **unit gate:** SQLite/in-memory parity, airplane-mode create/restore,
-  crash-before/after transaction, wrong-generation rejection and corruption
-  quarantine.
-- **integration consumer/evidence:** E2EE-01, MSG-01, DEVICE-01 and COMPOSE-01;
-  DB schema fingerprint and airplane-mode test artifact.
-
-### E2EE-01 — hybrid asynchronous AKE and Triple Ratchet engine
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** CRYPTO-01, REG-01, ID-01.
-- **consumes:** suite `0x0201` provider, DPA1/DPD1 verification and messaging
-  crypto specification.
-- **produces:** DPK2/DPH2/DPE2 schemas/codecs/vectors; signed-prekey and
-  one-time-prekey state primitives; hybrid transcript; Triple Ratchet with
-  bounded skipped keys, periodic PQ injection, replay rejection and sealed
-  transactional transition plans.
-- **implemented state:** managed component provider owns X25519, EC/SPQR chains,
-  skipped-key derivation and incremental ML-KEM Braid transitions; TRS1 persists
-  the complete provider state including mid-Encaps1 restart; seed capability is
-  minted only from a verified hybrid handshake. A client SQLCipher v4 authority
-  now commits exact TRS1 plus replay/deletion/PQ evidence and a hash-chained
-  journal in one scope-bound CAS transaction, with restart failpoints and
-  durable fork/rollback latches (`11/11`, Release build `0/0`). Protocol now
-  creates the immutable prior/next TRS1 persistence plan and accepts only an
-  exact attempt-bound durable receipt before exposing a send/receive capability
-  (`124 passed / 11 platform skips`). Production activation remains false until
-  the Shared authority adapter, approved native assets, safe journal rollover
-  and authenticated DPE2 runtime composition are present. The pre-cutover
-  initiator `PrepareClaim → CompleteAsync` mechanics use the exact V2 receipt
-  and mandatory encrypted claim prefix, with preserved DPH2/DMC2/TRS1 recovery
-  and ownership coverage. There is no old receipt overload or event-only
-  recovery format; [DR-0018](../survival-program/decisions/DR-0018-did2-initiator-completion.md)
-  freezes the current initiator/recipient initial and final operation checks.
-  [DR-0017](../survival-program/decisions/DR-0017-did2-initial-claim-promotion.md)
-  supplies the single V2 encrypted-prefix and current responder promotion,
-  with final protected-time checks of both endpoints and neutral two-lane
-  handoff. Shared now retains the exact successful public claim pair before
-  transport return and reverifies it after owner restart without another claim;
-  [DR-0019](../survival-program/decisions/DR-0019-did2-preclaim-secret-persistence.md)
-  supplies opaque Protocol seal/current restore for pre-XPK1 secrets. Shared
-  now has a protected logical-intent owner and a closed atomic initial-session
-  candidate under
-  [DR-0020](../survival-program/decisions/DR-0020-did2-atomic-device-initial-session.md),
-  replacing burn-then-return with protected pending/SQL/stable custody.
-  Its native completion/restart/crash integration gate passes; complete Release
-  batch CI evidence is still pending. No shipping activation is inferred.
-  Independent replica completion, shipping composition and full
-  physical initialization remain activation gates.
-- **wire/API:** Deep canonical records only; ordinary messages have no
-  transferable long-term signature; no classical/PQ fallback.
-- **DB impact/removals:** returns sealed state deltas and deletion obligations,
-  never opens client DB. Remove DPE1 sealed-CEK and Ed25519-to-X25519 paths.
-- **unit gate:** two independent vector implementations, out-of-order/skipped
-  bounds, message-key deletion, simultaneous initiation, tamper/replay,
-  compromise/PCS drill and hostile parser corpus.
-- **integration consumer/evidence:** MSG-01, DEVICE-01 and CONTACT-CODEC-01;
-  vector package and independent crypto review input.
-
-### DEV-E2EE-01 — deferred post-release local authority
-
-**Scheduling:** deferred until an explicit operator decision after the current
-Windows/Android release. This package is not on the production release critical
-path and MUST NOT be used to satisfy any production-readiness gate below.
-
-- **ownerRepositories:** `deep-protocol`, `deep-client-shared`, `deep-devops`
-  and `deep-client-maui`; implemented as bounded repository-specific packages,
-  not one cross-repository change.
-- **dependsOn:** implemented E2EE-01 codecs/transition producers, STORE-01,
-  MSG-01 persistence and the persistent local registry contour.
-- **consumes:** `LOCAL-DEV-E2EE-AUTHORITY.md`, suite `0x0201`, generated local
-  network/profile identity and isolated `network.xpoint.deep.e2e` builds.
-- **produces:** a DEV-LOCAL-ONLY issuer/snapshot/registration API, client
-  device/prekey enrollment, real DPK2/DPH2/DPE2/TRS1 composition and sanitized
-  `dev-functional` Android↔Windows evidence.
-- **wire/API:** reuses the production candidate codecs and transitions exactly;
-  only the trust root, validity and registration policy are development scoped.
-  It defines no second message format or cryptographic suite.
-- **DB impact/removals:** private issuer seed exists only in ignored dev secrets;
-  clients retain their own secrets and exact ratchet state in protected
-  account/SQLCipher stores. No DPE1, Session identity or plaintext relay is
-  introduced.
-- **negative gate:** Release binaries and resources contain no dev factory,
-  symbol, metadata, endpoint or issuer material and reject a dev descriptor.
-- **integration evidence:** physical bidirectional text, attachment and GroupV1
-  scenarios with process death/cold restart. This evidence cannot satisfy the
-  production E2EE-01 activation or release gate.
-
-### APPLICATION-CORE-CODEC-01 — frozen identity/device/text application core
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** REG-01, ID-01, E2EE-01.
-- **consumes:** DID2/DAB2 V2/DMD1/DCA1 V2/DAO1/DMC2 target tables, exact
-  DPK2/DPH2/DPE2 refs and the canonical tagged grammar. It does not consume
-  DCB1/DCR1/DIA1 or future group/call producer bytes.
-- **produces:** exact schemas/codecs/vectors for DID2/DAB2 V2/DMD1/DCA1 V2/DAO1 and
-  DMC2 kinds 1 and 5..13; closed numeric registry whose downstream-dependent
-  kinds are `RESERVED_REJECT`; DAB2 V2/DMD1 lineage and signature projections;
-  retired DID1/DAB1 address/event negative vectors.
-- **wire/API:** no kind exposes an untyped blob to application code. Unknown
-  or reserved kind/field/enum, mismatched authenticated sender/context and
-  max+1 reject before callback or mutation.
-- **DB impact/removals:** pure immutable values/sealed transition inputs. No
-  persistence or network callback.
-- **unit gate:** positive/cross-kind/substitution/hostile-size vectors, exact
-  payload-length arithmetic, DID text round-trip and retired-format rejection.
-- **integration consumer/evidence:** MSG-01, DEVICE-01, ATTACHMENT-CODEC-01,
-  CONTACT-CODEC-01, GROUP-CODEC-01 and CALL-CODEC-01; generated core
-  codec/vector manifest. This package is sufficient to start MSG-01
-  text/session/device work.
-
-The old umbrella name `APPLICATION-CODEC-01` is not a completion claim. It is
-split into this core plus ATTACHMENT-, CONTACT-, GROUP-, CALL- and
-HISTORY-CODEC packages because their producer closures freeze independently.
-
-### ATTACHMENT-CODEC-01 — exact encrypted attachment manifest/events
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** APPLICATION-CORE-CODEC-01, REG-01.
-- **consumes:** frozen DAM1 table, chunk arithmetic, capacity-bucket table and
-  DMC2 allocations 18/19.
-- **produces:** exact DAM1 codec/vectors and typed AttachmentOffer/
-  AttachmentCancel payload codecs; no blob transport.
-- **wire/API:** object key, filename and media type remain inside DMC2 E2EE;
-  unknown/non-minimal bucket and malformed Unicode/media type reject before
-  allocation or callback.
-- **DB impact/removals:** none.
-- **unit gate:** chunk/bucket/formula max/max+1, canonical text/media type,
-  changed chunk hash and DMC2 cross-kind vectors.
-- **integration consumer/evidence:** MSG-01 may store the typed events; BLOB-01
-  activates runtime transfer only after its own transport-padding/resume gates.
-
-### HISTORY-CODEC-01 — explicit encrypted history-transfer payload
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** APPLICATION-CORE-CODEC-01, ATTACHMENT-CODEC-01, DEVICE-01,
-  REG-01.
-- **consumes:** a separately accepted history-transfer/backup policy and its
-  exact producer record; no policy is inferred from DAM1.
-- **produces:** typed DMC2 kind 25 grammar and vectors, or an explicit V1
-  removal of that allocated kind.
-- **wire/API:** kind 25 remains `RESERVED_REJECT` until this package is reviewed;
-  there is no generic encrypted-history blob.
-- **DB impact/removals:** none; history job persistence belongs to its future
-  runtime package.
-- **unit gate:** authorization, range, replay, key/manifest substitution,
-  max/max+1 and no-backup negative vectors.
-- **integration consumer/evidence:** future opt-in history transfer only; it is
-  not a prerequisite for MSG-01, DEVICE-01 or first-release text.
-
-### MSG-01 — canonical events, logical outbox/inbox and dedup
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** STORE-01, E2EE-01, APPLICATION-CORE-CODEC-01, REG-01.
-- **consumes:** DMC2 codec, sealed ratchet transitions, canonical semantic IDs
-  and transport-neutral interface names.
-- **produces:** application-event registry service; durable logical
-  outbox/inbox; per-attempt state; `OutcomeUnknown` reconciliation; semantic
-  dedup/fork latch; receipts and retention/tombstones.
-- **wire/API:** implements `IMessageDeliveryTransport` orchestration without an
-  XPoint type. Stable semantic event ID is distinct from attempt/dedup tokens.
-- **implemented storage/transport slice:** MAUI owns one account-wide SQLCipher
-  DPK2 prekey store, one independently keyed DPE2 store per verified
-  contact/device/DPH2 tuple and a durable generation-bound DSC1 session catalog.
-  Shared has the atomic DPH2/TRS1 adapter, account-owned exact pending-DPH2
-  restart reader, protected XRA1 metadata-sealing key custody and privacy-routed DAO1 transport;
-  clean production-project tests cover exact replay, crash recovery and
-  transport open/ACK boundaries. MAUI now binds the verified XRA1 proposal to
-  this protected key owner and current-device custody signer for local XRA1
-  authoring. The bounded Registry route-authority client derives the request
-  nonce, directory rollback floor, current DCA1 and exact XRA1 from that one
-  verified proposal, verifies the bound PMS2/XRC1/XSS1 response, and the MAUI
-  account owner can finish XRR1/XIR1 with the same current-device signer.
-  This capability has no startup caller and does not yet durably publish
-  DCB1/DCR1. Shared also binds exact retrieved MEO1 wire, cursor and external
-  digest to the current mailbox route, exact canonical DAO1, derived mailbox
-  operation ID and DAO1 hash before opening it through that protected key.
-  It checks the DPH2/DPE2 local recipient before returning bytes; this
-  bridge is exposed through the MAUI account runtime but has no receive-loop
-  caller yet and grants neither E2EE commit nor ACK. Ratchet-only DPH2/DPE2 commits also
-  do not grant ACK: the E2EE→MSG-01 inbox handoff must durably retain the
-  authenticated DMC2 across crash and materialize its semantic event first.
-  The clean SQLCipher session store now stages exact authenticated DMC2 in
-  schema generation 6 atomically with fresh DPE2 ratchet commits and can
-  recover it by exact operation/envelope after restart. A new account-wide
-  clean DMB1 generation-2 store can materialize verified direct DMC2 with
-  semantic dedup/fork and restart-safe readback. The clean MAUI account owner
-  now opens that store with a separate protected key and removes it on local
-  reset. Production mailbox receive
-  composition, protected staging retirement, group event application, and
-  initial-DPH2 ACK handoff remain missing. Protocol now recovers exact
-  authenticated SessionInit and optional first DMC2 from DPH2 alongside
-  responder TRS1, rejects altered ciphertext, and exposes a zeroizable
-  handoff. The clean SQLCipher session store generation 8 stages those
-  exact events atomically with initial TRS1, binds their hashes into the
-  initialization fingerprint, validates/reopens the batch, and retains exact
-  outbound DPE2 ciphertext in the same transaction as a send ratchet commit;
-  the verified account owner now materializes the batch atomically into DMB1,
-  and MAUI invokes this after a successful responder saga. ContactHello's
-  relationship and peer-directory/XUR1 endpoint fields, and the conversation
-  ID derived from relationship ID plus both account IDs, are checked before
-  inbox retention. The old DAB1 ContactHello checker is removed under
-  [DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md).
-  Protocol now checks Hello/Accept against current DID2 proofs, exact DAB2/DMD1,
-  PQ-root safety number and signed XUR1; this is endpoint metadata only.
-  DID2 DPH2/XPC1 promotion now retains the current V2 initiator checkpoint
-  and recipient DCR1 closure under DR-0017. Shared consumes that closed
-  result, but the new DR-0022 consumer is not yet composed into the durable
-  conversation/contact path. MAUI receive does not invoke that V2 path yet.
-  XUR1's PMT2 placement reference, durable relationship state and
-  ACK authority remain missing. The separate relationship-bound responder
-  API requires a pre-existing verified relationship. For a
-  new contact, the relationship ID exists only inside that authenticated
-  DPH2 payload. The prekey/session saga now supports a deferred store resolver:
-  authenticated initial material is available before a store is chosen, and
-  final exact replay can resolve an existing store without reopening prekey
-  secrets. Shared also derives a first-contact store scope from authenticated
-  SessionInit/ContactHello and validates a recovered catalog scope against
-  exact DPH2. The account-owned Shared responder now composes this deferred
-  store selection for unsolicited DPH2 and exposes the staged result through
-  the account-owned MAUI runtime, but applies no contact state or ACK;
-  MAUI mailbox receive still does not invoke it. The separate
-  relationship-bound responder API continues to require a pre-existing contact.
-  Protocol can now mint `VerifiedDph2Initiation` via the account-owned
-  encrypted-claim preview and current DMD1/XPC1 verification, without a
-  separate production `IDph2VerificationCallbacks` implementation. Inbound
-  DAO1 still has no receive composition supplying the verified local offering,
-  initiator freshness and placement to that path.
-  The previous event-only initial payload supplied only the XPC1 hash, not the
-  exact XPK1/XPC1 evidence. [`DR-0005`](../survival-program/decisions/DR-0005-inbound-dph2-claim-evidence.md)
-  is the accepted pre-activation clean break: carry the exact claim transcript
-  inside encrypted DPH2 initial payload and re-freeze vectors before composing
-  the responder verifier. Sender authoring and production structural read now
-  use the claim prefix; the account-owned production API now verifies the
-  encrypted XPK1/XPC1 transcript with current DMD1 freshness before prekey
-  reservation. Mailbox receive-loop authority composition and updated vectors
-  remain absent. No callback may treat the hash as claim proof.
-  Complete that clean-break, preserve one-time prekey replay/fork semantics,
-  and refuse ACK until contact state is durably applied. A
-  direct-DPE2 ACK receipt factory
-  now performs ratchet commit (or exact replay recovery) and account inbox
-  materialization before granting ACK, but is not composed into
-  the production receive loop.
-  Durable DCB1/DCR1 publication and MAUI receive composition are not yet
-  connected. Missing are production authority composition,
-  logical message outbox/inbox, real dispatch/materialization and device E2E.
-- **next vertical integration order:** DID2 clean-break precedes this historical
-  V1 composition sequence: re-freeze
-  DPH2 tag 20 and every transcript/session-ID/DAO1/contact projection that
-  embeds DID1; replace the V1-only inbound `VerifiedAccountDirectoryFreshness`
-  checkpoint with an exact DID2/DAB2/ADC1 V2 current proof. A successful
-  old-path DPH2 test must not be counted as DID2 device E2E. Keep the probe
-  account-only and the production UI fail-closed until this proof and the
-  one-use protected DMD1 agreement transaction are composed.
-  Direct DID2 route verification and genesis authoring follow
-  [DR-0033](../survival-program/decisions/DR-0033-did2-current-mailbox-route.md),
-  without a DID1 authority adapter. The accepted API increment must be rebuilt/
-  repinned by consumers. Local protected route adoption/retry is specified by
-  [DR-0034](../survival-program/decisions/DR-0034-did2-owned-route-custody.md),
-  with an internal account-owned orchestration and a mandatory protected root.
-  Registry DID2 threshold coordination follows
-  [DR-0036](../survival-program/decisions/DR-0036-did2-route-threshold-coordination.md):
-  actual ADA2/external-floor proof, current-only envelope, permanent PostgreSQL
-  reservation/winner and current-context replay checks. Its account-to-server
-  TestServer lane is not shipping XPoint/OHTTP coordination or publication;
-  those consumers, successor/renewal and deployment remain required.
-  [DR-0037](../survival-program/decisions/DR-0037-did2-owned-contact-object.md)
-  supplies the closed V2 owned genesis contact object and protected phase-4
-  exact retry. [DR-0038](../survival-program/decisions/DR-0038-did2-publication-coordination.md)
-  adds whole-envelope publisher binding, actual DID2 server XPA1 issuance,
-  permanent PostgreSQL exact winners and protected request/response phases 5/6.
-  Original exact request custody follows
-  [DR-0073](../survival-program/decisions/DR-0073-did2-exact-route-request-custody.md);
-  persist the complete threshold request before dispatch and keep its original
-  nonce-bound floor on retry while independently checking fresh authority.
-  [DR-0074](../survival-program/decisions/DR-0074-did2-retained-threshold-issuance-evidence.md)
-  supplies closed signed-head retained completion and genesis-object authoring.
-  [DR-0075](../survival-program/decisions/DR-0075-did2-issued-head-response-custody.md)
-  connects exact issuance-head response/custody and replay. Complete matched
-  provisioning/consumer activation and physical gates; never infer an unknown
-  intermediate head from a saved hash or proposal head.
-  [DR-0077](../survival-program/decisions/DR-0077-did2-route-successor-coordination.md)
-  connects the bounded predecessor request to independent server successor
-  verification. Preserve exact history through explicit request provisioning;
-  connect protected current/pending adoption before matched device activation.
-  owned publication commit verifies both receipts and CAS/readbacks exact XPO
-  in phase 7. Historical commit is not stale dispatch permission. Old QA instances require
-  explicit reset. Shipping private coordination, two-replica publication,
-  holder/grants and device activation remain the next connected consumers.
-  [DR-0041](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md)
-  freezes descriptor bootstrap and independent permanent-read verification.
-  Shared composes a bounded single read, independently fetched peer proof and
-  held-account floor recheck. Retire the old DID1 recipient pipeline, close
-  network/expiry route renewal and connect the verified result to claim/handshake
-  before activating contact UI; compilation/local stores are not device evidence.
-  [DR-0076](../survival-program/decisions/DR-0076-did2-contact-publication-successors.md)
-  connects closed historical object/publication facts to current successor
-  authoring and normal nonzero-generation commit verification. Connect protected
-  predecessor/pending CAS and per-generation issuance across different nonces;
-  this local API is not retained-device recovery or shipping activation.
-  [DR-0078](../survival-program/decisions/DR-0078-did2-owned-publication-renewal.md)
-  connects protected current/pending phases and atomic two-replica promotion.
-  [DR-0079](../survival-program/decisions/DR-0079-did2-publication-issuer-successor.md)
-  connects separate closed issuer history without resolver-read export and the
-  permanent unsigned-generation fence. Finish bounded incomplete expiry recovery,
-  mandatory operator provision/repin and matched physical activation; native and
-  TestServer fixtures are not devices.
-  [DR-0071](../survival-program/decisions/DR-0071-did2-reachability-advertisement-successor.md)
-  freezes the first owned-device XRA1 successor candidate only. Finish protected
-  predecessor/pending custody and exact restart, private successor coordination,
-  route/object/publication lineage and two-replica adoption before claiming
-  retained-account renewal; do not reissue genesis or reuse an expired nonce.
-  [DR-0072](../survival-program/decisions/DR-0072-did2-route-renewal-lineage.md)
-  supplies closed historical-input verification and current route-artifact
-  completion. Connect permanent per-generation private issuance and protected
-  object/publication successors; local signed candidates are not device recovery.
-  Current claim recipient/network pairing and protected clock use follow
-  [DR-0043](../survival-program/decisions/DR-0043-did2-claim-current-network-and-clock.md).
-  Independent full inventory/service and current contact operation lifetimes
-  follow [DR-0044](../survival-program/decisions/DR-0044-did2-prekey-service-contact-lifetimes.md).
-  Internal account-owned resolved-contact claim preparation follows
-  [DR-0045](../survival-program/decisions/DR-0045-did2-owned-resolved-contact-claim.md):
-  verified publisher service, protected intent/operation, atomic get-or-reserve,
-  exact timestamps on retry and final held-floor/time recheck. Shipping
-  Hello/session composition and physical delivery remain unfinished.
-  [DR-0046](../survival-program/decisions/DR-0046-did2-owned-attachment-offer.md)
-  composes stable owned DAM1 into AttachmentOffer on the common text/event
-  journal and requires actual stable asset custody/expiry before encryption.
-  Structural/SQL text→offer→text is covered; authenticated blob upload/download,
-  receiver lifecycle and physical integrity evidence remain. Native local
-  ciphertext/manifest integrity passed; copied chunks are not BLOB transport.
-  [DR-0047](../survival-program/decisions/DR-0047-did2-owned-peer-refresh.md)
-  makes the original public DID2 credential mandatory protected session metadata
-  and removes caller-held peer proofs from ordinary account-service entry points.
-  Current proof acquisition and held-operation checks are separate; no expired
-  query fallback or unverified endpoint rollover. Shipping/live-clock evidence
-  remains required.
-  Private route/publication coordination must independently authenticate the
-  existing node key under
-  [DR-0048](../survival-program/decisions/DR-0048-private-contact-coordination-peer-authentication.md).
-  The bounded fixed-origin backend and authenticated Registry terminals exist;
-  connect the carrier frozen by
-  [DR-0049](../survival-program/decisions/DR-0049-did2-three-hop-coordination-carrier.md),
-  with actual held-account guards/entropy and independently selected gateway,
-  without a direct client fallback. The candidate contact-store/replica composition
-  follows [DR-0050](../survival-program/decisions/DR-0050-did2-contact-service-composition.md):
-  one closed DID2 endpoint and authenticated service time, no old snapshot owner.
-  Complete client composition and production root/clock/package activation,
-  including the account-owned entry frozen by
-  [DR-0051](../survival-program/decisions/DR-0051-owned-permanent-contact-client-entry.md)
-  and its protected per-phase plan checks (no UI-selected signing/time callbacks),
-  then exercise actual socket TLS and physical devices. Access-list
-  provisioning is separate from DID2, signed NET and witness authority.
-  [DR-0042](../survival-program/decisions/DR-0042-did2-route-directory-issuance-anchor.md)
-  removes unrelated directory admission as a republishing trigger while retaining
-  independent current proof/floors, signed anchor binding and current issuance.
-  [DR-0039](../survival-program/decisions/DR-0039-did2-opaque-publication-consumer.md)
-  replaces the sole public XPU/XPA reader and node placement/authorization with
-  direct DID2 inputs and closes local opaque replica/restart/receipt evidence.
-  Authenticated remote replication, shipping composition and device evidence
-  are still required; the isolated slice does not activate them.
-  [DR-0035](../survival-program/decisions/DR-0035-did2-mailbox-grant-request.md)
-  replaces the DID1 XMG1 author and retires the old caller-owned acquisition
-  client. Its direct DID2 request is not issued authority. Compose protected
-  holder/request custody, exact retry and independent PMA2/topology verification
-  before adopting XMC1; a nonzero membership hash is not authenticated membership.
-  Then create and retain the recipient's protected metadata-sealing X25519 key
-  under the verified PMT2 reference
-  before device-signing XRA1 (the XRA1 author generates its authorization ID
-  only during authoring), publish
-  its key ID/public key through the verified route-closure flow, then reopen
-  the same private key only after its ID/public key match that exact current
-  XRA1; a newly generated key cannot silently replace an already published
-  key. Independently bind the current DID2 peer/route closure
-  and protected reachability holder to a verified deposit grant; replay the
-  durable exact DPH2 through DAO1/MAU2 until authenticated SessionAck or signed
-  expiry; bind self-retrieve grant and DAO1 open to the responder prekey/session
-  saga; commit the DMC2 event and ratchet/inbox state before minting ACK;
-  then connect one logical 1:1 outbox and a visible receive surface. Every
-  intermediate failure remains pending or fail-closed, never a synthetic
-  delivered/materialized status. Android↔Windows device evidence follows on
-  one clean commit and pinned signed policy.
-- **DB impact/removals:** new event/outbox/attempt/inbox/dedup/tombstone tables
-  with atomic ratchet+materialization commits. Remove current Session-derived
-  message rows and network-level exactly-once assumptions.
-- **unit gate:** 10,000 deterministic crash/fault windows, duplicate/reorder,
-  changed-bytes same-ID fork, expiry/cancellation and SQLite/in-memory parity.
-- **integration consumer/evidence:** CONTACT-CLIENT-01, GROUP-CLIENT-01,
-  BLOB-01, PUSH-01 and CALL-SIGNAL-01; state-machine trace artifact.
-
-### DEVICE-01 — multi-device enrollment, revocation and convergence
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** STORE-01, E2EE-01, APPLICATION-CORE-CODEC-01, MSG-01.
-- **consumes:** DMD1/DPD1/DRS1 codecs, per-device ratchet sessions and accepted
-  retention/recovery decision.
-- **produces:** device directory store; phrase/QR/file enrollment orchestration;
-  self-device fanout; bounded directory repair; eventual revoke/rekey; explicit
-  encrypted history-transfer/backup policy.
-- **wire/API:** recovery creates a new device; it never clones private keys or
-  ratchet DB. Returning-device and phrase-on-new-device outcomes are distinct.
-- **DB impact/removals:** device-directory lineage, session-per-device and
-  security-event tables. Remove shared account-private messaging key and
-  implicit history cloning.
-- **unit gate:** add/revoke while offline and mid-fanout, stale directory,
-  at-most-two repair loops, backup/no-backup recovery and revoked-target tests.
-- **integration consumer/evidence:** CONTACT-CLIENT-01, GROUP-CODEC-01 and
-  CALL-SIGNAL-01; multi-device convergence traces.
-
-### NETCODEC-01 — XPoint authority, node, view, reachability and call codecs
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** REG-01, ARCH-01.
-- **consumes:** accepted membership/call decisions, XPOINT-NETWORK-V1,
-  `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md`, `CONTACT-RESOLVER-V1.md` and DR-0004.
-- **frozen input slice:** exact bytes for
-  `XNA1/XVP1/XND1/XNV1/XNH1/XNP1/XNF1/NFP1/XCD1` are owned by
-  `xpoint-network-v1.registry.json`, its closed Draft 2020-12 schema and adjacent
-  deterministic vector-manifest skeleton. Status is
-  `FROZEN_TARGET_NOT_ACTIVE`: runtime codecs, generated constants, full KATs and
-  two-implementation agreement remain implementation gates. `XNP1/NFP1` are
-  bounded typed-ref manifests; exact referenced records are supplied separately,
-  avoiding nested-record size and hash cycles.
-- **implemented protocol output:** runtime codecs and hostile/vector coverage for
-  the frozen XPoint slice plus ADC1/ADH1/ADP1/ADL1/ADF1/AFP1/DTS1/DTT1,
-  XRA1/XRC1/XRR1/XSS1 and PMA2/PMT2/PMS2; bounded successor verification and
-  XNF1/NFP1 beyond-horizon reset; immutable verified current network and
-  per-request Contact placement capabilities. NETCODEC derives placement from
-  exact PMT2 candidates/epoch and shard key; it does not author server state,
-  fetch records or accept caller-selected view/placement hashes.
-- **remaining integration output:** publish/fetch the exact records and proofs
-  from their owning authority services, integrate persistent guard/path binding
-  into the product runtime and run the second-implementation/cross-platform
-  release matrix. Atomic protected client LKG persistence is implemented in
-  ROUTE-01. Approved API/package snapshots are updated only after the consumer
-  graph is closed.
-- **wire/API:** pure author/verify/selection functions plus an immutable,
-  non-serializable verified current XNV1/PMT2 service-placement capability;
-  constructors are non-public. No fetch, signer key, endpoint connection,
-  database or callback authority.
-- **DB impact/removals:** none. Legacy static bootstrap JSON becomes a negative
-  fixture, not an input.
-- **unit gate:** deterministic agreement in two implementations; wrong-network,
-  rollback/fork, time, failure-domain, selection and hostile-size vectors.
-- **integration consumer/evidence:** ROOT-CHECKPOINT-01, DIRECTORY-01, XNODE-01, ROUTE-01,
-  CONTACT-CODEC-01 and CARRIER-CODEC-01; vector manifest.
-
-No other NETCODEC record inherits frozen status from that slice.
-
-### ROOT-CHECKPOINT-01 — offline root forward-checkpoint authoring
-
-- **ownerRepository:** `deep-devops`.
-- **dependsOn:** GOV-01, NETCODEC-01, CARRIER-CATALOG-01.
-- **consumes:** offline XNA1 root custody policy, exact retained-source sets,
-  accepted closed network-policy input plus exact current XCCCoreRef38 from
-  CARRIER-CATALOG-01, resolved fork evidence and canonical
-  XVP1/XNF1/ADF1 codecs.
-- **produces:** offline threshold-signed XVP1, XNF1 and ADF1 bytes; reproducible NFP1/
-  AFP1 source-membership fixtures; signer ceremony/evidence with no online root key.
-- **wire/API:** tooling signs only complete deterministic covered-head sets and
-  strictly newer targets. It cannot sign messages, routes or account/device state.
-- **DB impact/removals:** offline ceremony manifests and public checkpoint bytes;
-  no client identity/contact/content database.
-- **unit gate:** omitted source, changed ordering, wrong authority lineage,
-  same-generation fork, two successors, threshold partial failure and deterministic
-  re-run equality.
-- **integration consumer/evidence:** DIRECTORY-01 publishes; ROUTE-01 and
-  DIRECTORY-CLIENT-01 verify/merge; root-custody audit artifact.
-
-### DIRECTORY-01 — deterministic view/witness publication
-
-- **ownerRepository:** `deep-registry-api`.
-- **dependsOn:** NETCODEC-01, ROOT-CHECKPOINT-01, CARRIER-CODEC-01.
-- **consumes:** finalized membership/admission input selected by ARCH-01,
-  exact current XVP1, signed XND1/ADC1 objects, previous XNV1/XNH1/ADH1/PMT2 and exact
-  DTS1/witness policies and exact current XCC/XBB catalog from
-  CARRIER-CATALOG-01.
-- **produces:** byte-identical XNV1, XNV-bound PMT2 and account-directory ADH1
-  derivation/publication; atomic append-log/current-value-map transition; ADP1 current
-  value/non-membership plus inclusion/consistency proof service; witness
-  coordination; exact XOQ1/XOR1 AccountDirectory and LiveTimeAttestation target
-  exchanges, including the target-owned atomic operation/request/result ledger;
-  nonce-bound live DTT1 current-head/time attestations; XNF1/ADF1
-  checkpoint and NFP1/AFP1 proof publication; append-only histories; mirror
-  endpoints; fork evidence; health
-  input kept separate from identity facts.
-- **wire/API:** Registry never selects a per-client route and never rewrites a
-  signed node descriptor. It does not host a call signaling inbox.
-- **DB impact/removals:** new network-view, opaque account-directory leaf/head,
-  proof-history, witness and fork-latch tables; remove per-user route assignment
-  and legacy call signal state from the target generation.
-- **unit gate:** deterministic publisher replicas, 2-of-3 witness, withholding,
-  same-generation fork, rollback, restart/corruption and 400-day fixtures;
-  byte-identical current PMT2 on independent mirrors and no locator/capability input
-  to directory publication.
-- **integration consumer/evidence:** ROUTE-01, BRIDGE-DISTRIBUTOR-01 and BRIDGE-01; byte-identical
-  three-mirror artifact and consistency proof.
-
-### ACCOUNT-DIRECTORY-AUTH-01 — account checkpoint and publication authority
-
-- **ownerRepository:** `deep-registry-api`.
-- **dependsOn:** DIRECTORY-01, CONTACT-CODEC-01, NETCODEC-01,
-  CARRIER-CODEC-01.
-- **consumes:** exact identity/device/revocation/address closures, directory
-  map/log head, DID locator rules, XPA1/XPU1 request schemas and exact
-  XOQ1/XOR1 AccountDirectory exchange, plus the independently verified current
-  XNV1/PMT2 context used by CONTACT-RESOLVER-V1 section 3.0.
-- **produces:** validation/admission of account-authored ADC1, atomic directory
-  map/log CAS, threshold XPA1 one-operation issuance/consume/exact-replay,
-  including witness recomputation of XPU1 view/InviteResolver placement;
-  signer custody/process separation, durable authorization/fork state and
-  sanitized proof APIs.
-- **implemented protocol consumer:** `Xpa1PublicationAuthorizationVerifier`
-  уже превращает exact threshold-signed XPA1 в non-forgeable capability только
-  при совпадении XPU1, XNA/ADH/DTT, monotonic time и NETCODEC-minted placement.
-  XNode сохраняет capability-bound durable `Reserved -> Committed` consume saga,
-  permanent conflict latch и выдаёт receipt только после quorum `2/2`.
-  Authenticated two-replica HTTPS/HTTP2 transport и dormant fail-closed host
-  composition уже реализованы. Registry production issuer использует реальный
-  `AccountDirectoryProofAuthor`, durable one-use ledger, строгий file-backed
-  canonical snapshot source и threshold custody Mr. X. Clean-break publication
-  flow больше не имеет locator-indexed Registry route adapter: активное устройство
-  и XPA1 threshold совместно связывают hash exact-six route closure, XPU1 несёт
-  эти bytes, а обе XNode replicas атомарно сохраняют их вместе с encrypted DCR1.
-  Permanent resolve требует два independently verified `resolve-read` receipts;
-  recipient protected cache пополняется только из authenticated XIS1 evidence и
-  никогда не инициирует locator lookup. До runtime activation остаётся bounded
-  bounded nonce-bound XPA1 authoring endpoint, production client transport и
-  independent client-side exact XPA1/XPU1 re-verification уже реализованы;
-  account-owned device-custody caller уже связывает готовые DCR1/route bytes с
-  этим client; остаются full DCB/pre-key orchestration, durable XPU1
-  staging/publication и перевод HTTP-hosted terminal за XPoint/OHTTP ingress.
-  Структурные XPA1,
-  Registry bytes или успешный HTTPS сами по себе права не дают.
-- **wire/API:** the service never authors or substitutes ADC1: it verifies the
-  exact DPA1 device-issuer signature and admits those bytes atomically into the
-  current map plus append log. XPA1 binds one operation ID and exact XPU request
-  hash plus the publication route-closure hash; no threshold member receives
-  resolver read capability. The authoring transport is reachable only through
-  the registered XPoint/OHTTP terminal and exposes no locator enumeration or
-  post-publication route lookup.
-- **DB impact/removals:** checkpoint predecessor/CAS, map-log transaction,
-  authorization issue/consume/replay and fork-latch tables. No invite ciphertext
-  or requester IP is retained.
-- **unit gate:** stale-current inclusion attack, threshold partial failure,
-  same-generation fork, crash at map/log and XPA consume boundaries, wrong
-  account/realm/locator and changed-request replay; stale/static/request-supplied
-  view or placement cannot obtain one threshold XPA1 signature.
-- **integration consumer/evidence:** DIRECTORY-CLIENT-01 and
-  CONTACT-SERVICE-01; byte-identical multi-authority ADC/XPA artifacts.
-
-### DIRECTORY-CLIENT-01 — account freshness and revocation publication client
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** DEVICE-01, ROUTE-01, ACCOUNT-DIRECTORY-AUTH-01,
-  APPLICATION-CORE-CODEC-01, CARRIER-CODEC-01.
-- **consumes:** verified ADH1/ADP1/DTT1/ADF1/AFP1, exact XOQ1/XOR1
-  AccountDirectory/LiveTime exchanges, ADC authoring API, protected
-  secure-time/LKG and the revocation-freshness policy.
-- **produces:** account-authored ADC1 bytes signed by the exact DPA1
-  device-issuer; durable ADC publication/reconcile saga; current-map proof/LKG;
-  fresh/partition-expired/forked account state; beyond-horizon checkpoint flow;
-  mutation fence exposed to contact/group/device orchestration.
-- **wire/API:** stale inclusion is never “current”. After freshness TTL expiry,
-  new device fanout and security-sensitive mutation pause until verified repair.
-- **DB impact/removals:** protected directory floors, publication operations,
-  forward checkpoints and fork evidence.
-- **unit gate:** offline revoke saga, stale map proof, outcome-unknown publish,
-  trusted-time intersection, 30/180/365/>horizon recovery and restart.
-- **integration consumer/evidence:** CONTACT-CLIENT-01, GROUP-CLIENT-01 and
-  COMPOSE-01; cross-device monotonic freshness trace.
-
-### XNODE-01 — XNode roles, traffic-key epochs and durable planes
-
-- **ownerRepository:** `xnode`.
-- **dependsOn:** NETCODEC-01, ARCH-01.
-- **consumes:** XND1 role descriptors, mailbox placement decision, short-lived
-  onion key policy and exact common service-host APIs.
-- **produces:** Entry/Relay/Mailbox/Blob common role host and durable replicated
-  service substrate; epoch-key rotation and secure retirement; two-replica
-  mailbox/blob storage, read repair, join/drain/handover,
-  InviteStore/pre-key-claim/contact-update quorum on every PMT2-admitted Mailbox
-  node and common quota/resource enforcement.
-  Call answer CAS, media allocation, call credentials and call replay semantics
-  are exclusively owned by CALL-RELAY-01, which may run on this substrate.
-- **wire/API:** XNode does not select client paths, open application E2EE or
-  emit carrier policy. Coarse errors preserve outcome-unknown semantics.
-- **DB impact/removals:** new node generation for common role state, epoch keys,
-  immutable objects, ACK/tombstones and repair. Remove node
-  client-path selector and long-lived onion-decryption-key assumptions.
-- **unit gate:** key rollover/erase, restart/disk-full/clock skew, common replay
-  flood, mailbox handover/read repair and role isolation. Call-specific
-  allocation and replay gates belong only to CALL-RELAY-01.
-- **integration consumer/evidence:** ONION-01, ROUTE-01, BLOB-01 and CALL-MEDIA-01;
-  three-host no-mock role/chaos artifacts.
-
-### ROUTE-01 — protected LKG, client selection and XPoint binding provider
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** NETCODEC-01, DIRECTORY-01, XNODE-01, STORE-01.
-- **consumes:** verified XNA/XND/XNV, PMT2/PMS2 mailbox projection,
-  bridge-independent entry candidates and deployment policy.
-- **produces:** protected network LKG; successor/checkpoint/fork state machine;
-  persistent guards; local exact-three-hop/path/placement selection; XCP1 local
-  state; a non-serializable verified current XNV/PMT service-placement context;
-  `ITransportBindingProvider` for `OfficialXPoint3`. A contact-service path ends
-  at one replica derived locally from the exact request class/shard key.
-- **implemented state:** exact 265-byte XLK1 codec; account/device/network-scoped
-  SQLCipher state store with atomic CAS, restart recovery, idempotent replay and
-  persistent fork latch; protocol projection of prior/current protected LKG for
-  normal successor and bounded reset; canonical XGS1 persistent guard store;
-  exact-three ContactResolve path provider with placement-owned exit and
-  node/owner/host/failure-domain/origin/key separation. Raw records,
-  caller-authored LKG/routes and direct fallback are not accepted. MAUI lazily
-  owns the two stores under distinct generation-scoped protected keys; offline
-  startup/account creation performs no Registry/bootstrap callback, while
-  reset removes both DB families and key slots (`7/7` combined offline gate).
-- **remaining integration output:** extend the path/binding provider to mailbox,
-  masked blob and control operation classes. The DID2 mailbox selected-entry
-  increment follows [DR-0032](../survival-program/decisions/DR-0032-did2-mailbox-selected-entry.md);
-  it is an internal network/dispatch candidate, not grant or shipping activation.
-  The separate DID2 current route verifier/genesis author is specified by
-  [DR-0033](../survival-program/decisions/DR-0033-did2-current-mailbox-route.md).
-  Complete liveness/health input, durable recipient route-closure
-  distribution/verification, durable reply-attempt binding and production
-  composition with Contact and supervisor. The general authority
-  publication/fetch bootstrap and protected XNode/client LKG owners are
-  implemented but remain default-dormant until the complete host graph exists.
-- **wire/API:** no publisher-provided route accepted; no direct managed-ingress
-  fallback; fewer than three eligible distinct nodes returns unavailable.
-- **DB impact/removals:** network/view/guard/path/placement protected tables.
-  Remove pinned complete static route list and router-disjoint claim.
-- **unit gate:** 30/180/365-day time travel, malicious view/fork/rollback,
-  failure-domain selection, guard persistence and exactly-three invariant.
-- **integration consumer/evidence:** SUPERVISOR-01, CONTACT-CLIENT-01 and
-  COMPOSE-01; deterministic selector vectors and LKG crash trace.
-
-### ONION-01 — clean-break codec and production capability boundary
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** REG-01, NETCODEC-01, XNODE-01.
-- **consumes:** the frozen privacy-routing source, verified XND1 current/next
-  traffic-key model, exact XNA1/XVP1/XNV1/XND1 verification closure, protected
-  DTT1-backed monotonic time, PMT2/PMS2 placement capabilities and global magic
-  registry.
-- **produces now:** implemented frozen XRF1/XRL1/XRE1/XPR1/XRS1 byte codec and
-  deterministic conformance seam; source-of-truth wire/schema/vector contract;
-  hostile DRF1/DRL1/DRE1/DPR1/DRS1 negatives; and the sealed production
-  capability/API boundary in the privacy-routing specification section 7.
-- **production boundary:** `VerifiedOnionNetworkContext`, non-wire XTT
-  (`OnionTrustedTimeLease`), exact-three `VerifiedOnionPathContext`, position-bound
-  `VerifiedOnionReceiveContext`, mandatory `OnionReplayOpenLease`, separate client
-  and exit reply contexts, closed operation payload verifier capabilities and a
-  durable CSPRNG uniqueness authority. Constructors are non-public; there are no
-  raw-key, caller-time, arbitrary-route, trust callback, entropy injection or
-  replay-optional production overloads.
-- **exact-three proof:** Build accepts only an immutable path capability with ordered
-  Ingress/Core/Exit. Receive position enforces Relay-inside-Relay at Ingress,
-  Exit-inside-Relay at Core and XRE1 at Exit; inner owner/key/epoch and network bind
-  to the same verified view. This rejects short, reordered, cross-network and fourth-
-  hop paths without new wire fields or transport coupling.
-- **durability/order:** a frame-hash/scope/key/XTT-bound replay transaction and key
-  lease exist before Open; all authentication, canonical/path and closed
-  Store/Retrieve/Acknowledge payload verification precedes durable replay commit;
-  commit precedes release of forward/dispatch capability. Process-local replay is a
-  test utility only. Exit Open carries network/operation/attempt/reply/monotonic
-  expiry into Seal; client reply context is separately single-use.
-- **implemented production boundary:** NETCODEC-minted path and local-node-key
-  capabilities, exact-frame receive selection, network-verified next-hop
-  transport capability, boot-bound replay scope/lease, protected secure-time,
-  public key-vault boundary, durable XNode replay/entropy ledgers, encrypted
-  file key vault, closed operation verifier set and asynchronous Build/Open/Seal/
-  OpenResponse methods. Deterministic entropy remains test-only.
-- **implemented host composition:** XNode теперь активирует instance capability
-  только при атомарном наличии current Protocol-minted XNV/XND/network binding,
-  exact local owner/role, durable replay/entropy, opaque X25519 vault и codec;
-  partial/stale/mismatch configuration fail closed (`27/27`, Release clean).
-- **remaining integration output:** XNode принимает verified next-hop
-  capability напрямую, не выполняет manual peer/DNS lookup и включает boot ID
-  в durable replay digest. Остались producer свежей signed network closure,
-  verified peer-ingress admission и DevOps authority/config wiring, а на клиенте —
-  verified path/binding и durable reply-attempt state. После этого capability
-  может пройти three-host no-mock/rotation gate.
-- **wire/API state:** `FROZEN_CODEC_IMPLEMENTED_PUBLIC_API_INACTIVE` and
-  `runtimeActivation=false`. No listener or client consumer is activated until
-  the remaining host/client integration and chaos gates pass; there is no
-  legacy/dual reader or direct route fallback. DNP1 DPR1/DRS1 retain their meanings.
-- **DB impact/removals:** Protocol owns no database. XNode adapters add durable
-  replay/entropy commitments and opaque key handles; client state adds protected
-  reply-context/attempt bindings. First activation resets only disposable
-  pre-production onion/replay state and removes raw-key, optional-replay and direct-
-  routing paths; it does not migrate account identity or mailbox objects.
-- **unit gate:** global collision; exact-three/short/fourth/reordered/cross-network;
-  HKDF/AEAD AD and zero-X25519; DTT1/XTT boot/rollback/expiry and key rollover/
-  retirement; replay fsync/CAS/saturation/crash/restart; nonce/ephemeral/reply-key
-  reuse; operation cross-feed; reply expiry/binding/single-use; captured-frame-after-
-  retire; public API and production-package surface scans.
-- **integration consumer/evidence:** ROUTE-01/XNODE-01 capability adapters and
-  SUPERVISOR-01 adoption only after the unit gate; later three-host chaos evidence.
-  This architecture package and frozen codec contribute no runtime integration or
-  release-readiness claim.
-
-### CARRIER-CODEC-01 — exact carrier and acquisition wire specifications
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** REG-01, NETCODEC-01, ARCH-01.
-- **consumes:** carrier IDs, XCB1/XCC1/XBB1/XBA1/XOD1/XOQ1/XOR1/XHC1/XHA1/
-  MPC1/MPA1 semantics and immutable call/token/acquisition contracts.
-- **produces:** canonical carrier artifact codecs/vectors; exact XHC1/XHA1
-  transcript/KDF/directional AEAD/framing; exact HTTPS-stream
-  upgrade/framing; exact RFC 9298 MASQUE profile and MPC1/MPA1 target-auth;
-  TCP capsule framing and queue bounds; bridge-token issuance/redemption and
-  exact XOQ1/XOR1 OHTTP records.
-- **wire/API:** replaces “where practical”, “WebTunnel-like” and “OHTTP-style”
-  with byte-exact transcripts and failure classes.
-- **DB impact/removals:** none. `webtunnel-h2-v1` and direct-fallback config are
-  negative fixtures.
-- **unit gate:** golden/cross-feed/hostile-size vectors, replay/token clone,
-  half-close/backpressure, stream/datagram bounds, wrong target/purpose and
-  standard interop where an RFC profile is claimed.
-- **integration consumer/evidence:** SUPERVISOR-01, REALITY-01, HTTPS-01,
-  CARRIER-CATALOG-01, CARRIER-GATEWAY-01, BRIDGE-DISTRIBUTOR-01, BRIDGE-01 and CALL-MEDIA-01;
-  machine registry hash and protocol vectors.
-
-### CARRIER-CATALOG-01 — signed carrier policy and finite cohort catalog
-
-- **ownerRepository:** `deep-registry-api`.
-- **dependsOn:** CARRIER-CODEC-01, NETCODEC-01, GOV-01.
-- **consumes:** exact XNA witness policy, signed XCB1/XOD1 cores, accepted finite
-  cohort/binding input and canonical XCC1/XBB1 catalog algorithms.
-- **produces:** deterministic XBB1 catalog cores; acyclic Merkle roots; threshold-
-  witnessed XCC1 core/envelope; distributor-signed XBB1 proof envelopes; protected
-  XCC/XBB generation floors and byte-identical mirror publication. This package is
-  the sole producer of signed distributor/cohort policy consumed by XVP1 and
-  BRIDGE-DISTRIBUTOR-01.
-- **wire/API:** construction order is exactly XOD/XBB cores, XCC root/core/envelope,
-  XBB proof/envelope. It never chooses a per-client cohort, mints XBA1 or receives a
-  requester identity.
-- **DB impact/removals:** carrier-policy/core lineage, immutable cohort cores/proofs,
-  witness receipts and fork evidence; no token, operation, contact or route state.
-- **unit gate:** deterministic rebuild in two implementations, wrong index/count,
-  XCC/XBB/XOD cycle attempt, signature-subset core equality, same-generation fork,
-  omitted binding/descriptor, 128 KiB/max+1 and restart before/after threshold.
-- **integration consumer/evidence:** ROOT-CHECKPOINT-01, DIRECTORY-01,
-  BRIDGE-DISTRIBUTOR-01 and BRIDGE-01; byte-identical catalog/core/root manifest.
-
-### CARRIER-GATEWAY-01 — XPoint carrier gateway and oblivious acquisition runtime
-
-- **ownerRepository:** `xnode`.
-- **dependsOn:** CARRIER-CODEC-01, XNODE-01, NETCODEC-01.
-- **consumes:** exact XCB1/XOD1/XOQ1/XOR1/XHC1/XHA1/MPC1/MPA1 codecs,
-  verified Entry/CallRelay targets, opaque bridge tokens and canonical carrier
-  retention classes.
-- **produces:** bounded HTTPS/WebSocket XHC/XHA gateway; atomic XHC access-token
-  redemption and exact XHC/XHA transport replay; RFC 9458 Relay/Gateway validation
-  and application dispatch; MASQUE and
-  masked TCP capsule target gateway with MPC/MPA relay-key authentication; common
-  resource, rate and sanitized failure enforcement.
-- **wire/API:** accepts only a signed binding's exact purpose/target. XOQ validation
-  and dispatch are transport functions: the gateway never owns or commits an
-  application `(XOD1CoreHash32, operationId, requestHash, exactXOR)` row. It is not a
-  general proxy, does not parse application E2EE and cannot mint policy, targets or
-  credentials outside the admitted descriptor. Cross-purpose bytes reject before
-  application callback.
-- **DB impact/removals:** XHC access-token commitments, exact XHC/XHA transport
-  request/result replay, short-lived handshake secrets and bounded gateway quota state. No account,
-  contact, group, call ID, media plaintext or stable source-target mapping.
-- **unit gate:** exact/lost-response retry, changed-request conflict, token clone,
-  crash at consume/commit, XHC sequence/AEAD/flow-control failures, OHTTP
-  cross-purpose replay, MASQUE DNS rebinding/private-target attempts and
-  relay-key-auth failure.
-- **integration consumer/evidence:** BRIDGE-01 and E2E-01; server/client interop,
-  restart, resource-flood, target-auth and decrypt-negative artifacts.
-
-### BRIDGE-DISTRIBUTOR-01 — oblivious bridge-acquisition application target
-
-- **ownerRepository:** `deep-registry-api`.
-- **dependsOn:** CARRIER-CATALOG-01, CARRIER-CODEC-01.
-- **consumes:** exact XCC1/XBB1/XBA1/XOD1/XOQ1/XOR1 codecs, current signed
-  distributor/cohort policy and `RET-BRIDGE-ACQUISITION-V1`.
-- **produces:** the sole `BridgeAcquisition` XOQ target; deterministic cohort-bound
-  XBA1 token batches; atomic `(XOD1CoreHash32, operationId, exactXOQ1Hash, exactXOR1)`
-  ledger committed with token minting; exact retry/conflict and bounded quota state.
-- **wire/API:** receives only an OHTTP-decapsulated validated XOQ1 and transport
-  metadata stripped of source identity. It never serves AccountDirectory or
-  LiveTimeAttestation, chooses a client route, or returns an unsigned/full bridge
-  pool.
-- **DB impact/removals:** cohort policy reference, token commitments and the exact
-  BridgeAcquisition business/replay transaction through its canonical retention
-  deadline. No IP, account, device, DID, contact or stable client identifier.
-- **unit gate:** exact lost-response replay, changed-request conflict, crash before/
-  after mint commit, duplicate token/nonce, cohort minimum, quota and expiry
-  boundary, plus OHTTP Relay/Gateway source-separation fixture.
-- **integration consumer/evidence:** BRIDGE-01 and E2E-01; independent distributor
-  outage/withholding, no-source-identity and N-1 acquisition artifacts.
-
-### SUPERVISOR-01 — carrier supervisor and official XPoint message adapter
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** CARRIER-CODEC-01, ROUTE-01, ONION-01, MSG-01.
-- **consumes:** verified bindings/policy, canonical `ICircumventionCarrier`,
-  XPoint path plans and logical delivery attempts.
-- **produces:** protected carrier LKG; candidate state/cooldown/racing policy;
-  stable failure classification; sanitized path observer; official XPoint
-  `IMessageDeliveryTransport`, blob and call-media binding orchestration.
-- **wire/API:** supervisor never parses app plaintext and cannot select direct
-  or another deployment profile. Losing raced mutations cannot commit.
-- **DB impact/removals:** carrier policy/bundle/binding/token/health state and
-  attempt evidence. Remove old direct HTTPS adapter from official composition.
-- **unit gate:** offline/captive/blocked distinction, cancellation/network
-  change, race loser, rollback/fork, expiry, backoff and outcome-unknown tests.
-- **integration consumer/evidence:** REALITY-01, HTTPS-01, CONTACT-CLIENT-01,
-  BLOB-01 and CALL-MEDIA-01; supervisor transition trace.
-
-### REALITY-01 — pinned Reality/XHTTP platform adapter
-
-- **ownerRepository:** `deep-client-maui`.
-- **dependsOn:** SUPERVISOR-01, CARRIER-CODEC-01.
-- **consumes:** one verified XCB1 binding at a time and pinned reproducible Xray
-  runtime bundle.
-- **produces:** `ICircumventionCarrier` implementation for carrier `0x0001`;
-  protected process/files/pipes lifecycle; Android/Windows packaging; network
-  change and cancellation integration.
-- **wire/API:** every Xray parameter comes from typed verified binding. Secrets
-  never enter argv, logs or world-readable environment.
-- **DB impact/removals:** platform protected runtime cache only. Remove embedded
-  complete endpoint/VLESS credential pool and guessed defaults.
-- **unit gate:** binary/bundle hash, config rejection, crash/hang/cancel,
-  endpoint/key/short-id/epoch mismatch, APK extraction and no-secret capture.
-- **integration consumer/evidence:** BRIDGE-01 and COMPOSE-01; physical
-  Android/Windows handshake, packet capture and reproducible-bundle manifest.
-
-### HTTPS-01 — independent HTTPS-stream and MASQUE/capsule adapters
-
-- **ownerRepository:** `deep-client-maui`.
-- **dependsOn:** SUPERVISOR-01, CARRIER-CODEC-01.
-- **consumes:** verified carrier bindings, exact stream/datagram transcripts and
-  MPC1/MPA1 target-auth records.
-- **produces:** independent `https-stream-v1`, `masque-h3-v1` and
-  `masked-tcp-capsule-v1` client adapters with bounded flow control,
-  datagram drop policy and platform lifecycle.
-- **wire/API:** no Xray code/dependency for HTTPS-stream; no general VPN/open
-  proxy target; QUIC 0-RTT disabled for mutations/allocation/token redemption.
-- **DB impact/removals:** connection/session cache only; no application state.
-  Remove stale `webtunnel-h2-v1` alias and unmasked TURN client path.
-- **unit gate:** exact server fixture interop, redirects/ALPN/path/auth,
-  backpressure/half-close, UDP block, stale datagram drop and TCP audio priority.
-- **integration consumer/evidence:** BRIDGE-01 and CALL-MEDIA-01; physical packet
-  captures on Android and Windows.
-
-### BRIDGE-01 — independent bridge/distributor/media deployment and release gates
-
-- **ownerRepository:** `deep-devops`.
-- **dependsOn:** DIRECTORY-01, CARRIER-CODEC-01, CARRIER-CATALOG-01, CARRIER-GATEWAY-01,
-  BRIDGE-DISTRIBUTOR-01,
-  REALITY-01, HTTPS-01, XNODE-01.
-- **consumes:** signed policies/bindings/bundles, BRIDGE-DISTRIBUTOR-01 exact XOQ1/XOR1 bridge
-  acquisition wire, MPC1/MPA1 target-auth and XNode Entry/CallRelay targets.
-- **produces:** deployment/configuration of separate Reality and HTTPS-stream
-  hosting families using the CARRIER-GATEWAY-01 runtime; rotating
-  bridge pools; embedded seed generation; multi-origin HTTPS/ECH, OHTTP and
-  user-import channels; MASQUE/TCP gateway rollout; rotation/rollback scripts;
-  censorship and packet-capture harness; release gate integration.
-- **wire/API:** pools do not share all IP/provider/DNS/deployment/distributor
-  failure domains. No distributor learns Deep identity or returns full pool.
-- **DB impact/removals:** external bridge/token/distributor operational state
-  with bounded retention. Remove static three-origin bootstrap and DNS-only TURN
-  as release evidence.
-- **unit gate:** compose/schema tests, rotation, credential clone, active probe,
-  APK extraction, DNS/SNI/IP/UDP blocks, carrier-family failover and no-secret
-  artifact scan.
-- **integration consumer/evidence:** CONTACT-CLIENT-01, CALL-MEDIA-01 and E2E-01;
-  signed bridge catalog, censor-matrix and supply-chain artifacts.
-
-### CONTACT-CODEC-01 — invite, prekey claim and contact/update protocol closure
-
-Direct DID2 mailbox issuer/topology verification and the mandatory public PMA2
-distribution input belong to
-[DR-0052](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md).
-Keep identity-neutral mailbox authorization; do not reuse retired identity authority.
-The wire clean break is
-[DR-0081](../survival-program/decisions/DR-0081-did2-mailbox-selection-grant-clean-break.md):
-one MCG3/MCP3/MAU3/XMC2 generation with the issuer-bound exact PMS2 selector.
-Replace issuer/client/node/peer consumers together; signed PMA2/PMT2 successors,
-negative/replay coverage and physical delivery remain activation gates.
-The current node-side mailbox policy API follows
-[DR-0080](../survival-program/decisions/DR-0080-did2-current-mailbox-host-authority.md).
-Close authenticated PMS2 selection-to-MAU3 placement binding before enabling the
-connected replica/holder consumer; do not hash a different request field to rerank.
-
-Owned holder/request/winner restart custody follows
-[DR-0053](../survival-program/decisions/DR-0053-did2-mailbox-grant-restart-custody.md).
-The connected client/service slice must still verify private live issuance
-and actual credential use before activation. Owned Retrieve derives only from
-the protected verified own publication, not a caller-supplied secret.
-The private issuer/journal and owner-held current-only credential installation
-follow [DR-0054](../survival-program/decisions/DR-0054-did2-private-mailbox-grant-issuance.md)
-and [DR-0055](../survival-program/decisions/DR-0055-did2-owned-mailbox-credential-installation.md).
-The connected sender consumer follows
-[DR-0056](../survival-program/decisions/DR-0056-did2-owned-mailbox-message-dispatch.md):
-transactional MAU3 preparation/selected-entry dispatch under the actual account
-lease and mandatory protected request/counter custody, followed by authenticated receive
-materialization before ACK. Do not acquire that lease recursively through a
-network-refresh API; use independently verified readonly held-floor checks.
-Local installation does not close the private live/device activation gates.
-
-Incoming ordinary session selection follows
-[DR-0057](../survival-program/decisions/DR-0057-did2-owned-incoming-session-selection.md).
-The client must select from its actual protected catalog, refresh outside the
-lookup lease and materialize through the existing owned receive engine; selector
-metadata alone never grants ACK or initial-contact authority.
-
-Owned mailbox polling and semantic-before-ACK follow
-[DR-0058](../survival-program/decisions/DR-0058-did2-owned-mailbox-retrieve-and-ack.md).
-Initial sender composition follows
-[DR-0059](../survival-program/decisions/DR-0059-did2-owned-initial-mailbox-dispatch.md)
-through the same owned Store engine and actual retired sender source.
-Finish the connected SQLCipher interruption/reopen gate, initial-contact consumer
-and shipping composition before live/device activation. Exact protected page and
-quorum recovery must not become callback-supplied semantic authority.
-
-The bounded DID2 Hello/Accept consumer extension is owned by
-[DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md),
-including normative conversation binding and the single Protocol hash utility.
-Owned XUR1 author plus Shared exact-retry custody are owned by
-[DR-0023](../survival-program/decisions/DR-0023-did2-owned-rendezvous-author.md).
-Owned receiver preview/preparation and the exact atomic-store handoff belong to
-[DR-0024](../survival-program/decisions/DR-0024-did2-owned-initial-claim-preview.md)
-and [DR-0025](../survival-program/decisions/DR-0025-did2-owned-responder-preparation.md).
-The account-owned atomic receiver continuation and protected replay-before-key
-lookup are owned by [DR-0026](../survival-program/decisions/DR-0026-did2-atomic-responder-custody.md).
-These local boundaries do not close route publication, session projection or
-physical delivery; use the unfinished gates in `NEXT-SPRINT.md`.
-
-The initial-to-mutable ownership and old-secret retirement boundary belongs to
-[DR-0027](../survival-program/decisions/DR-0027-did2-messaging-session-ownership.md).
-Shared must finish its durable transfer before ordinary message operation;
-the internal seed alone does not activate MSG-01 or transport dispatch.
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** APPLICATION-CORE-CODEC-01, E2EE-01, NETCODEC-01, REG-01,
-  ARCH-01.
-- **consumes:** application identity/event codecs, ADC1/ADH1/ADP1/ADL1,
-  XIR1/XRR1/XUR1 semantics, `CONTACT-RESOLVER-V1.md` and the accepted retention
-  matrix.
-- **produces:** exact codecs/vectors for DCB1/DCR1/DIA1, DMC2 kinds 2..4/14,
-  XIR1/XPU1/XPO1/XPA1/XIQ1/XIS1/XPS1/XPI1/XPP1/XIC1/XPK1/XPC1/
-  XUR1/XUW1/XUQ1/XUS1/XMG1/XMC2;
-  DID2 cutover replaces the old DCB1/DCR1/XIR1 chain as one closed version-2
-  identity-bound publication: exact DID2/DAB2 and DCA1 V2, ADL1 V2,
-  XIR1-to-DCA1 artifact version/hash, signature projection/domain and
-  DCR1 support/freshness verification are re-pinned together. Old DID1/DAB1
-  records become negative fixtures, never dual-read input;
-  exact common-tag derivation from a verified current XNV/PMT capability plus
-  per-magic tag-16 shard key; effective-expiry rule; exact routable XRR closure;
-  signed hash-closed support packages. Public request encoders do not accept raw
-  caller-selected view/placement hashes. Only this reviewed output changes those DMC2 IDs from
-  `RESERVED_REJECT` to accepted.
-- **wire/API:** permanent DID2 resolves rotating DCB/prekeys atomically without
-  expiring or redirecting the ID; one-time redemption
-  exact-replays only for the same operation; DCB cannot outlive mandatory
-  reachability. Missing prekeys have one canonical result. Remove public request
-  encoder overloads that accept unrelated raw `viewHash32/placementHash32`;
-  production authoring requires the NETCODEC-minted verified placement capability,
-  exact request magic and its tag-16 shard key.
-  XMG1/XMC2 uses DR-0081's exact MAU3/MCP3/MCG3 mailbox authorization, replacing
-  V2 bytes without a reader or adapter: its holder is an independent random
-  reachability-scoped Ed25519 key, and acquisition is XRR1-capability keyed over
-  the ContactResolve onion operation. No account/device ID or direct Registry
-  endpoint enters that flow.
-- **DB impact/removals:** pure sealed transition plans only. Remove bare account
-  hash/`05...` address and PRA-as-initial-discovery semantics.
-- **unit gate:** closure completeness, concurrent claim, prekey exhaustion,
-  replay/lost response, expiry boundaries, stale successor, spam bounds and no
-  account-indexed lookup vectors; identical XPU/XIQ shard derivation from only
-  DID2 locator plus current network fixtures; cross-class, wrong-view, wrong-PMT,
-  wrong-placement and receipt-envelope substitution negatives.
-- **integration consumer/evidence:** CONTACT-SERVICE-01 and CONTACT-CLIENT-01;
-  two-implementation vector agreement.
-
-### CONTACT-SERVICE-01 — encrypted invite/prekey/update services
-
-- **ownerRepository:** `xnode`.
-- **dependsOn:** CONTACT-CODEC-01, XNODE-01, ACCOUNT-DIRECTORY-AUTH-01.
-- **consumes:** opaque resolver locator/capability, signed contact packages,
-  independently verified current XNV1/PMT2 service-placement context, returned
-  route-closure PMS2, complete XPI1/XPP1 inventory publication, prekey claim
-  records and XUR retention policy.
-- **produces:** durable encrypted DCR publication/resolution; atomic one-time
-  redemption; two-replica all-or-nothing DPK2 inventory publication and
-  manifest-bound prekey claim/exact replay; unsolicited admission/quota;
-  XRR1-bound short-lived MCG2 grant issuance through XMG1/XMC1; 400-day XUR
-  successor storage; replication/restart/corruption behavior.
-- **wire/API:** service never indexes by DeepAccountId, parses DCR1/DMC2 or
-  learns contact graph. Registry is not the resolver. Error detail is
-  closed/coarse. Production dispatch recomputes request tags 3/4 and verifies the
-  local node is selected; static configured hashes, request-derived authority and
-  server-selected forwarding are forbidden.
-- **implemented runtime boundary:** local and remote replicas communicate only
-  over SPKI-pinned exact HTTP/2 with Ed25519 request/response transcripts bound
-  to route, peers, timestamp, nonce, correlation and body hash. The receiver
-  independently remints and compares the current NETCODEC placement before any
-  mutation; exact durable results are reread before per-replica receipts.
-  Replay admission is strictly capacity-bounded under concurrency. Host/DI and
-  endpoint mapping remain dormant and fail closed while any production
-  placement, route-closure or XPA authority source is absent (`17/17` core,
-  `24/24` integration, `12/12` focused transport after hardening).
-- **DB impact/removals:** new resolver, claim/replay, capability quota and XUR
-  generation stores with authenticated GC. No reuse of Registry call state.
-- **unit gate:** concurrent claim, crash on every CAS, duplicate/fork, retention
-  time travel, quota flood, repair and corrupted-state quarantine; first resolve
-  from locator without XIR1, stale-view refresh hint without LKG advancement,
-  wrong-placement/no-mutation and view-change-before/after-first-fsync cases.
-- **integration consumer/evidence:** CONTACT-CLIENT-01; black-box offline
-  recipient and service-restart fixture.
-
-### CONTACT-CLIENT-01 — arbitrary contact and long-offline contact runtime
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** MSG-01, DEVICE-01, DIRECTORY-CLIENT-01, ROUTE-01,
-  SUPERVISOR-01, CONTACT-CODEC-01, CONTACT-SERVICE-01.
-- **consumes:** canonical Deep address/bundle, ADP1/ADH1 freshness proofs,
-  verified current XNV/PMT service-placement context, prekey claim service,
-  XPoint transport, pairwise sessions and XUR successor records.
-- **produces:** verify/import/request/accept/reject/block state machine; safety
-  fingerprint; per-device first-message fanout; route/update convergence;
-  explicit expired/unavailable/conflict outcomes; returning-device versus
-  phrase-recovery behavior; protected reachability-scoped mailbox holder keys
-  and verified XMG1/XMC1 grant lifecycle.
-- **wire/API:** success requires end-to-end mailbox acceptance by at least one
-  valid recipient device, not local socket write. No live PRA prerequisite.
-- **DB impact/removals:** relationships, verified identity generations,
-  invitation evidence, per-contact XUR/current+next reachability and request
-  state. Remove Session ID contact rows and silent route reset.
-- **unit gate:** Android/Windows fixture, recipient offline, simultaneous hello,
-  stale/rotated route, every machine-contract long-offline/beyond-horizon state,
-  no-backup recovery and block; a fresh client derives the XIQ replica set from
-  only the DID2-bound locator and verified placement, rejects server/static hash
-  authority and retries a verified successor
-  view with the same logical operation.
-- **integration consumer/evidence:** GROUP-CODEC-01, CALL-SIGNAL-01 and E2E-01;
-  arbitrary-contact cold-restart evidence.
-- **request-custody increment (2026-09-30):** internal V2 claim transport now
-  reserves the exact request in account/instance-bound SQLCipher before network
-  dispatch. Two protected floor slots, bounded capacity, exact operation replay
-  and durable substitution latch are implemented without the V1 claim journal.
-  Logical contact-intent binding, initiator-secret/preparation persistence,
-  authenticated completion and physical cold-restart delivery remain open;
-  request reservation alone does not close this package.
-
-### GROUP-CODEC-01 — small-group closure and governance protocol
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** CONTACT-CODEC-01, DEVICE-01, DIRECTORY-CLIENT-01, REG-01.
-- **consumes:** DGP1/DGC1/DGM1 semantics, exact
-  ADC1/ADH1/DMD1/DRS1/DPD1 references and accepted 100-member/500-device limits.
-- **produces:** canonical GIV1/GIA1/DGP1/DGC1/DGM1/DGT1/GCP1/GCF1 and
-  GSR1/GSW1/GSQ1/GSS1 records plus exact group-commit closure
-  containing every referenced proposal/directory/revocation/device/transparency
-  object; ADC1/ADH1 and DMD1 hash/ref in member entries; emergency owner-device
-  transfer record; fork and predecessor verification plans; typed activation
-  of DMC2 kinds 15..17 and 26..29.
-- **wire/API:** one sequencer emits commits; application events have no
-  long-term signature; governance signatures use separate domains. The production
-  transition entry point accepts only the non-forgeable exact freshness capability
-  emitted by DIRECTORY-CLIENT-01 and fails closed while that producer is absent.
-- **DB impact/removals:** pure sealed plans. Remove revision-only state and
-  arrival-order conflict resolution.
-- **unit gate:** pending invite/consent/activation, genesis/successor,
-  missing/extra closure object, two valid successors, role/device substitution,
-  owner transfer, chunk max/max+1 sizes and delayed old-epoch event.
-- **integration consumer/evidence:** GROUP-CLIENT-01; vector package and
-  independent protocol-review input.
-
-### GROUP-CONTROL-SERVICE-01 — per-recipient retained group-control store
-
-- **ownerRepository:** `xnode`.
-- **dependsOn:** GROUP-CODEC-01, XNODE-01, NETCODEC-01.
-- **consumes:** opaque GSR1 capability/placement, GSW1/GSQ1 requests, sealed GCF1
-  chunks and canonical group-control retention policy.
-- **produces:** two-replica sequence/predecessor CAS, exact GSS1 replay/results,
-  bounded catch-up, checkpoint compaction and state-root handover.
-- **wire/API:** no group/member/account/device ID; each recipient uses an
-  independent random capability. The service never decrypts GCF/GCP or infers a
-  member list.
-- **DB impact/removals:** opaque per-capability control sequence, ciphertext,
-  replay receipts, compaction checkpoint and handover root.
-- **unit gate:** missing/duplicate/reordered chunks, changed sequence, replica
-  crash/handover, long-offline boundary, compaction restart and explicit gap.
-- **integration consumer/evidence:** GROUP-CLIENT-01 and E2E-01; server-side
-  retention/deletion plus offline-current-membership recovery artifact.
-
-### GROUP-CLIENT-01 — group state, durable fanout and scale gates
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** GROUP-CODEC-01, GROUP-CONTROL-SERVICE-01, MSG-01, DEVICE-01,
-  CONTACT-CLIENT-01, SUPERVISOR-01.
-- **consumes:** verified group closures, per-device ratchets and logical outbox.
-- **produces:** proposal/commit/invite/accept/leave/remove/role state; fork
-  latch; per-target durable group batch; bounded concurrency/bytes/chunking;
-  partial acceptance/reconcile; optional explicit history transfer.
-- **wire/API:** “logical batch” is local durability, not a member-list disclosure
-  to XNode. Every target receives an independent envelope/attempt.
-- **implemented slice:** one exact canonical DGM1 is staged as one MSG-01
-  logical outbox with an immutable, deterministic fanout over the current
-  verified DGC1 head under a database-wide read lease. The author device is
-  excluded; each target retains its directory head, DPD1 hash binding and
-  stable operation ID. A first-dispatch boundary re-verifies exact DGM1,
-  current DGC1/GCP1, author and target account/device/DPD/directory bindings
-  while holding the database-wide head lease through its callback.
-  Replay/fork/stale/removed-target failures are fail-closed and the
-  `100 members / 500 devices` bound is covered. Focused Release gate: `79/79`.
-- **implemented control transport:** GSW1/GSQ1 selects an exact-three path from
-  protected entry guards and verified GroupControl placement, traverses only
-  managed privacy ingress and verifies exact GSS1 before client-state mutation.
-  Fallback is limited to a proven pre-forward reject; redirect, replay,
-  cross-route/network/operation substitution and hostile bounds fail closed.
-  Shared GroupV1/managed-ingress Release regression: `68/68`.
-- **remaining integration:** compose the boundary with the real per-device
-  DPE2/ratchet dispatcher, atomically mark a removed target `RevokedTarget`,
-  and produce physical scale/battery/traffic evidence.
-- **DB impact/removals:** group heads/proposals/targets/attempts/fork evidence,
-  retained commits and history-transfer manifests. Remove 2048-member and
-  revision-only rows.
-- **unit gate:** correctness at 3 members; intermediate 20-member gate; final
-  100-member/500-device p95 gate; owned non-blocking 200-member future-profile
-  baseline; restart/partial failure, revoke-before-send, battery/data budget and
-  no sequential 500-round-trip behavior.
-- **integration consumer/evidence:** COMPOSE-01 and E2E-01; sanitized fanout
-  latency/bytes/battery artifact.
-
-### BLOB-01 — encrypted attachment plane
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** MSG-01, ATTACHMENT-CODEC-01, SUPERVISOR-01, XNODE-01,
-  ARCH-01.
-- **consumes:** canonical attachment manifest/event, 256 KiB chunk policy,
-  masked blob capability and `IAttachmentBlobTransport`.
-- **produces:** client encryption/manifest, resumable upload/download,
-  per-chunk integrity, concurrency policy and transport-switch-safe progress.
-- **wire/API:** plaintext filename/MIME/preview/key remain inside E2EE; storage
-  receives opaque capability and ciphertext hashes only.
-- **DB impact/removals:** attachment object/chunk/progress/capability/expiry
-  tables. Remove direct `/file` URL and DEEPATT2/legacy locator production path.
-- **unit gate:** 25 MiB, restart at 25%, corrupt/missing/duplicate chunk,
-  retention boundary, blocked blob service and no direct-host fallback.
-- **integration consumer/evidence:** COMPOSE-01 and E2E-01; packet capture and
-  resume/hash evidence.
-
-### PUSH-01 — opaque optional push
-
-- **ownerRepository:** `deep-push-notification-server`.
-- **dependsOn:** MSG-01, SUPERVISOR-01, ARCH-01.
-- **consumes:** random rotating wake handles and encrypted opaque hint contract.
-- **produces:** provider registration/delivery/revoke path, bounded retry and
-  sanitized provider evidence; no-push correctness contract consumed by client.
-- **wire/API:** no Deep ID, sender, conversation, message/call type or preview;
-  push never acknowledges message delivery.
-- **DB impact/removals:** random handle/provider-token ciphertext, expiry and
-  provider-attempt state. Remove Session-style stable subscription mapping.
-- **unit gate:** duplicate/delay/forgery/provider outage, restart, token rotation,
-  no-secret logs and client convergence with push disabled.
-- **integration consumer/evidence:** COMPOSE-01 and E2E-01; provider canary plus
-  no-push polling artifact.
-
-### CALL-CODEC-01 — call signaling, answer-CAS and allocation codecs
-
-- **ownerRepository:** `deep-protocol`.
-- **dependsOn:** APPLICATION-CORE-CODEC-01, CARRIER-CODEC-01, NETCODEC-01,
-  REG-01.
-- **consumes:** closed call payload tables and CMD1/CAC1/CAO1/CAR1/CAA1/CAL1
-  contracts plus XCD1/XCB1 references.
-- **produces:** exact codecs/vectors for all call events and service records;
-  CallMediaSuiteV1 constants; request/result hashes, conditional fields, bounds
-  and hostile SDP/media-suite substitution vectors; typed activation of DMC2
-  kinds 20..24.
-- **wire/API:** pure immutable author/verify functions; no WebRTC, network,
-  signer key, capability store or clock callback.
-- **DB impact/removals:** none.
-- **unit gate:** max/max+1, unknown suite/codec/field, changed request, wrong
-  quorum generation, SDP injection, candidate/fingerprint/credential substitution.
-- **integration consumer/evidence:** CALL-SIGNAL-01, CALL-RELAY-01 and
-  CALL-MEDIA-01; cross-repository byte-identical call vector manifest.
-
-### CALL-SIGNAL-01 — ratcheted one-to-one call signaling
-
-- **ownerRepository:** `deep-client-shared`.
-- **dependsOn:** MSG-01, DEVICE-01, CONTACT-CLIENT-01, CALL-CODEC-01, REG-01.
-- **consumes:** `CALL-SESSION-V1.md`, DMC2 call events, exact CMD1/CAC1/CAO1,
-  authenticated conversation/device heads, protected DTT1-backed time and
-  canonical `RelayOnly` call names.
-- **produces:** offer/answer/candidate/reconnect/end state machine; fresh call
-  binding; DTLS fingerprint/allocation binding; stale/replay suppression;
-  multi-device CAC1 answer-winner CAS, glare, missed/busy/decline and durable outcome semantics.
-- **wire/API:** signaling is ordinary high-priority ratcheted messaging. It does
-  not call a Registry signaling inbox or export ratchet keys to SRTP.
-- **DB impact/removals:** call session/event/replay tombstone state. Remove
-  `HttpCallSignalingTransport`, `/api/calls/signal` and Session-ID call records
-  from the target client generation.
-- **unit gate:** duplicate/reorder/replay, trusted-time/expiry boundaries, no
-  network before callee accept, device revoke, restart, unsigned SDP injection
-  and fingerprint/media-suite substitution.
-- **integration consumer/evidence:** CALL-MEDIA-01 and COMPOSE-01; signaling
-  trace through loopback and official XPoint message transport.
-
-### CALL-RELAY-01 — replicated answer CAS and masked media allocation service
-
-- **ownerRepository:** `xnode`.
-- **dependsOn:** CALL-CODEC-01, XNODE-01, DIRECTORY-01, NETCODEC-01.
-- **consumes:** exact CAC1/CAO1/CAR1/CAA1/CAL1/CMD1 and XCD1 contracts, signed relay
-  catalogs, random bearer capabilities, DTLS fingerprint commitments and
-  canonical media-allocation retention policy.
-- **produces:** two-replica answer-claim CAS; participant-specific allocation,
-  credential, allocation-capability commitment and replay state; exact owner-only CAL1;
-  relay service runtime; durable quorum receipts,
-  handover and sanitized decrypt-negative evidence. BRIDGE-01 owns deployment.
-- **wire/API:** receives no account/device/conversation ID and never receives an
-  endpoint DTLS private key or SRTP secret. Same operation/exact request replays;
-  changed bytes conflict; no single Registry/relay process decides a winner.
-- **DB impact/removals:** capability commitments, claim/allocation operation
-  hashes, bounded replay tombstones and replica handover roots. No signaling
-  inbox, SDP archive, media plaintext or stable participant mapping.
-- **unit gate:** 100-way answer race, replica crash/handover, changed-request
-  replay, allocation expiry/revoke, malicious certificate substitution and
-  relay decrypt-negative corpus.
-- **integration consumer/evidence:** CALL-MEDIA-01 and E2E-01; quorum/expiry,
-  UDP-blocked carrier and no-plaintext artifacts.
-
-### CALL-MEDIA-01 — relay-only WebRTC client adapters
-
-- **ownerRepository:** `deep-client-maui`.
-- **dependsOn:** CALL-SIGNAL-01, CALL-RELAY-01, BRIDGE-01, CARRIER-CODEC-01,
-  SUPERVISOR-01, REALITY-01, HTTPS-01.
-- **consumes:** verified XCD1/XCB1, short-lived allocation API selected by
-  ARCH-01, `ICallMediaPathProvider`, call binding and DTLS fingerprints.
-- **produces:** Android/Windows WebRTC adapter exposing relay-only candidates;
-  `MasqueUdp` and `MaskedTcpCapsule` media carriers; audio-first degradation,
-  reconnect/network handover and privacy/status UI model.
-- **wire/API:** no host/srflx/mDNS/direct candidate, public STUN, direct TURN or
-  silent `DirectPeer` fallback. CallRelay allocation does not prove peer identity.
-- **DB impact/removals:** client-side ephemeral allocation/path state and
-  call-signaling replay state only; server allocation/replay state belongs to
-  CALL-RELAY-01. Remove `DEEP_CALL_SIGNALING_BASE_URL`, direct ICE and
-  static DNS-only TURN release configuration.
-- **unit gate:** Android↔Windows and Android↔Android ring/accept/audio/video,
-  selected pair inspection, UDP block to TCP audio, relay rotation, reconnect,
-  no peer IP and no relay plaintext.
-- **integration consumer/evidence:** COMPOSE-01 and E2E-01; sanitized WebRTC
-  stats, path profile and packet capture.
-
-### COMPOSE-01 — destructive release composition and product UI
-
-- **ownerRepository:** `deep-client-maui`.
-- **dependsOn:** STORE-01, MSG-01, DEVICE-01, ROUTE-01, SUPERVISOR-01,
-  REALITY-01, HTTPS-01, CONTACT-CLIENT-01, GROUP-CLIENT-01, BLOB-01, PUSH-01,
-  CALL-SIGNAL-01, CALL-MEDIA-01.
-- **consumes:** exact reviewed packages and `release-scope.v1.json`.
-- **produces:** one fail-closed Android/Windows composition root; offline
-  one-action name-only onboarding; Settings-owned recovery reveal/copy/delete;
-  actual profile/carrier/privacy/degraded UI; physical automation
-  hooks; reproducible APK and Windows self-contained ZIP inputs.
-- **wire/API:** only target generation is referenced. Unsupported P2P/on-prem/
-  Apple/direct paths are absent or explicitly unavailable.
-- **DB impact/removals:** activates the clean-break DB once after the CB0 scan.
-  Session runtime/resources/IDs, DPE1/DMC1, old parsers/stores/endpoints/feature
-  flags, static bootstrap, Registry calls and legacy direct file/push/call paths
-  cannot re-enter the graph. Release/update composition also consumes one
-  signed monotonic manifest with exact APK/Windows ZIP/node/installer digests and
-  verifies it before execution or installation-state mutation.
-- **unit gate:** production dependency/resource/API scans, MAUI ViewModel/UI/
-  smoke suites, Windows x64/arm64 and Android arm64 builds, airplane-mode account.
-- **integration consumer/evidence:** E2E-01; signed composition manifest and
-  zero-legacy scan.
-
-### E2E-01 — black-box, physical, censorship and release evidence
-
-- **ownerRepository:** `deep-tests-e2e`.
-- **dependsOn:** COMPOSE-01, DIRECTORY-01, XNODE-01, BRIDGE-01.
-- **consumes:** independently built service/client artifacts, release scope and
-  exact evidence schemas; orchestration is supplied by reviewed `deep-devops`
-  lanes from BRIDGE-01.
-- **produces:** black-box functional/fault/time-travel/load suites and bounded
-  machine-readable outputs for Android A↔Android B, Android↔Windows x64/arm64;
-  lead/crypto/privacy/censorship/security review input bundle.
-- **wire/API:** tests public target contracts only and prove the intended real
-  service/runtime was contacted. Fakes cannot satisfy release evidence.
-- **DB impact/removals:** fixture data only; each generation reset is explicit.
-  Remove old iOS-blocking, disjoint-route and Registry-call acceptance fixtures.
-- **unit gate:** fixtures schema/compat/smoke/full/load; full DNS/SNI/path/IP/UDP/
-  active-probe/APK-and-Windows-ZIP-extraction matrix; crash/restart/rotation; performance SLOs;
-  secret scan and local Markdown-link check.
-- **integration consumer/evidence:** `deep-devops` release gate and independent
-  reviewers; one signed commit matrix with P0=0/P1=0 before GA.
-
-## 4. Parallel execution lanes
-
-After GOV-01/CRYPTO-01/ARCH-01/REG-01 are reviewed, agents may work in these
-disjoint lanes:
-
-| Lane | Packages | First integration rendezvous |
+Первый результат — contact/consent и двусторонний text на реальных endpoints
+с durable inbox и без потери при повторе. Это ещё не feature-complete V1.
+Проверенный local text slice должен появиться до расширения files/groups/calls.
+Ни один этап не получает «готово» только по компиляции или health=200.
+
+## 3. Этапы
+
+### S00 — воспроизводимая исходная точка
+
+**Владельцы:** XPointLabs (матрица/governance scripts), xnode, deep-registry-api (свои fixtures),
+deep-devops (изолированный PostgreSQL lane). **Зависимости:** нет.
+
+Сохранить точные исходные commits и реальные project graphs. Полный handoff
+содержит 19 node и 31 Registry failures, а не release qualification. Сначала
+классифицировать каждое падение: продукт, устаревший fixture/contract, среда;
+оставить все непроверенные случаи открытыми. Восстановить signed current XPA/XPP
+fixtures и reader 2 catalog fixture; obsolete reflection/source-string assertions
+заменять проверкой действительного публичного контракта/собранной composition.
+PostgreSQL tests выполняются с отдельной disposable БД, никогда с production.
+
+Также закрыть выявленный drift root documentation/governance gates: raw machine
+set digest, старый contact vector count, удалённый ContactV1 test path и ONION
+ContactResolve pairing. Сверять с текущим producer/approved inputs; нельзя
+просто записать текущий hash/count как новый норматив или ослабить проверку.
+Отличить raw CRLF/LF checkout hashing от semantic specification drift.
+
+**Выход:** таблица каждого failure → причина → исправление → повторный тест;
+воспроизводимые команды и sanitized TRX. **Gate:** полные текущие node/Registry
+suites на исправленных исходниках без unexplained failures/skips; harness error
+не считать product pass. Проверки crypto/time/quorum остаются строгими.
+
+### S01 — закрыть недостающие контракты без нового wire по умолчанию
+
+**Владельцы:** XPointLabs (нормативные изменения), deep-protocol (закрытая
+verification API), deep-client-shared (local-state transitions).
+**Зависимости:** S00; fixtures могут чиниться параллельно с анализом.
+
+Составить и принять в существующих normative owners таблицу переходов:
+
+- node current authority: trusted time, PMA2 profile 2 / PMT2 / signed selector,
+  holder, revocation, replay, selected local exit, separate node ID/receipt key;
+- peer mutation: exact grant/body/role/source/member binding, recheck после
+  внешнего callback и перед mutation/receipt;
+- client grant/send/route: active → expiry/renewal, pending/unknown → exact
+  reconciliation → settled/retired; changed bytes не становятся exact replay;
+- retire/compact: что остаётся для replay protection, когда освобождаются slots,
+  какие tombstones/floors нужны после crash, что происходит при capacity;
+- application receipt: stored, recipient materialized, delivered, read — разные
+  события и durable обязательства.
+
+**Обязательное открытое решение:** какой текущий подписанный источник и какой
+проверенный floor подтверждают revocation в node admission. Не оставить пустой
+revocation source, PMR1 adapter или локально придуманную семантику. Если текущий
+frozen набор не выражает требование, оформить узкий DR/registry change до S02.
+Аналогично не проектировать compaction простым удалением журнала или увеличением
+512/128; сначала доказать отсутствие повторного применения/replay после очистки.
+
+**Выход:** полные state/error tables у владельцев и bounded APIs/fixtures;
+wire change только при доказанной необходимости. **Gate:** каждый переход имеет
+вход, durable effect, retry rule, expiry/cancel outcome и crash test; нет
+циклического bootstrap «свежая authority нужна для получения её successor».
+
+### S02 — current XNode client admission
+
+**Владелец:** xnode; Protocol API producer — отдельная подзадача deep-protocol.
+**Зависимости:** S00, S01.
+
+Подключить current host authority к реальному Program/DI и Store/Retrieve/ACK.
+Провести MCG3 selector, MCP3 holder/request proof, current source, revocation,
+protected monotonic interval и local selected-exit до допуска операции. Удалить
+старую production PMA1/P04 composition, сохранив нейтральные durable primitives.
+Не доверять host UTC, конфигурационному списку реплик или caller time как authority.
+Receipt verification использует ключ XND descriptor, а не байты node ID.
+
+**Выход:** одна current-only node composition. **Gate:** real distinct ID/key
+positive case; profile 1/MAU2, wrong selector/holder/role/body/member, expiry at
+boundary, rollback и revocation отклоняются до replay/mutation; callback crossing
+expiry не выдаёт успешный receipt. Unready честно виден и не разрушает custody.
+
+### S03 — grant-bound peer replication и quorum
+
+**Владелец:** xnode. **Зависимости:** S02 и S01 peer API.
+
+Подключить DR-0081 proof к реальному HTTP peer receiver/coordinator. Два proof
+проверяют один exact grant и current projection; выбранные реплики и descriptor
+keys вычисляются verifier. Проверить операцию, placement и source до reservation;
+снова проверить authority после peer/storage callbacks. Сохранить durable
+pending/unknown и exact replay при частичном commit. Не выпускать quorum receipt
+по единственной реплике и не подменять physical replica логическим дубликатом.
+
+**Выход:** Store/read/ACK через два отдельных durable stores и реальные peer
+HTTP endpoints. **Gate:** lost response, tampered peer signature, wrong grant in
+second proof, partial commit, crash reserve→mutate→receipt, restart/read-back,
+concurrent exact retry, ACK replay и отсутствие resurrection. Проверить distinct
+node IDs и ключи, current authority change во время HTTP callback.
+
+### S04 — завершить client grant/send/route lifecycle
+
+**Владелец:** deep-client-shared; требуемая Protocol API — отдельная подзадача.
+**Зависимости:** S01. Можно параллельно S02/S03.
+
+Использовать существующие protected custody, SQLCipher и exact ciphertext retry.
+Добавить принятые S01 settlement/renewal/retirement/compaction; сохранить original
+request для unknown outcome, не увеличивать ему lifetime и не переименовывать
+его в новый send. Новый разрешённый attempt после смены route/grant относится
+к тому же logical message и допускается только по принятому transition contract.
+Route renewal должен начинаться с нормативным запасом до expiry и отдельно
+обрабатывать incomplete successor и profile/service rollover.
+
+**Выход:** длительно работающие bounded journals без account reset.
+**Gate:** пересечение прежних 512 send entries и 128 grant scopes; исчерпание
+ресурсов с backpressure; successful, pending и rejected операции; expiry в
+unknown outcome; cold reopen и crash на каждом compaction/handover шаге;
+один semantic effect, без потери replay floor или повторного ratchet encryption.
+
+### S05 — current issuer и автоматический lifecycle управляющего контура
+
+**Подзадачи и владельцы:** deep-registry-api — current issuance/readiness/CAS;
+deep-devops — lifecycle и наблюдаемость; xpoint-node-installer — retained-volume
+restart/upgrade; deep-client-shared — bounded verified catch-up.
+**Зависимости:** S01; connected gate требует S02/S03.
+
+Использовать имеющийся private XMC2 issuer и permanent winner journal. Проверить
+role signers, current proof/time и revocation; отдельно выполнить positive
+issuance→client verify→node acceptance. Подготовить поддерживаемое authoring и
+атомарное согласование signed PMA2 profile 2 / PMT2 successors с установленными
+ключами. Без копирования root online, правки signed records, genesis/floor reset.
+
+Развязать health/readiness и nonce-consuming issuance; refresh single-flight,
+с backoff/jitter и ресурсным бюджетом. Автоматизировать operational head/view/key
+rotation и предупредить об expiry policy, требующем offline ceremony. Проверить
+retained predecessors, time recovery и catch-up за пределами обычного head tail.
+Не объявлять Registry «не нужен»: при исчерпании проверенного freshness horizon
+клиент обязан ждать current authority. Оценить и измерить этот budget.
+
+**Выход:** воспроизводимый isolated production-like lifecycle и runbook; для
+production только reviewable provisioning bundle до отдельного разрешения.
+**Gate:** restart каждого автора/узла, signer outage, expired observation/head,
+clock rollback, две конкурирующие генерации, более 64 successors, несколько
+ротаций и retained volumes; восстановление без ручных правок и новых identities.
+
+### S06 — первый connected two-client text slice
+
+**Владельцы:** deep-tests-e2e (black-box), deep-devops (TLS topology),
+deep-client-shared/xnode/Registry (дефекты своей границы).
+**Зависимости:** S02–S05.
+
+Два изолированных настоящих account/database instances и реальные endpoints:
+publication → resolve → claim → Hello → explicit Accept → A↔B text → local
+materialization → mailbox tombstone. Использовать native crypto, signed current
+inputs, реальный masked selected-entry path и две физически отдельные replica
+stores. Ни synthetic transport, ни direct mailbox URL не закрывают этот gate.
+
+**Выход:** повторяемый сценарий без ручной подстановки result/grant и точная
+source/artifact matrix. **Gate:** offline recipient в пределах retention,
+duplicate/reorder, lost Store/ACK responses, restart обоих клиентов и реплик;
+recipient history содержит один эффект и получает тот же plaintext. Store
+receipt в этом этапе ещё не доказывает готовность AppAck/Delivered UI.
+
+### S07 — автоматическая доставка, offline UI и application receipts
+
+**Владельцы:** deep-client-shared (scheduler/event/durable state),
+deep-client-maui (wakeups/UI). **Зависимости:** S04, S06.
+
+Account-scoped scheduler обслуживает due outbox, bounded inbox pages/HasMore и
+ACK work; reconnect/admission лишь будит его. Single-flight по операции,
+cancellation/account change, backoff/jitter, deadline/backpressure и fairness;
+восстановление не требует нажатия Refresh/Retry. Убрать fresh network proof из
+чтения уже аутентифицированной local history. Offline compose сохраняет logical
+intent локально; fresh authority проверяется при сетевой отправке, не выдумывается
+из старого proof. Revoked/suspicious local state сохраняет отдельные ограничения.
+
+Подключить canonical AppAck/read события к текущему DID2 allowlist, durable
+outbox/inbox и UI. Mailbox ACK — удаление серверной записи после local commit;
+AppAck — E2EE свидетельство получателя. UI не показывает Delivered по одному
+Store receipt. Read receipt учитывает настройку пользователя.
+
+После text/receipt подэтапа завершить текущий DID2 путь для обязательных
+reply/reaction/edit/delete-for-everyone/disappearing events и соответствующего
+UI. Проверить authorization, target/predecessor binding, duplicate/reorder,
+restart и application expiry; disappearing не обещает erase у другого участника.
+Это отдельная подзадача MSG-01/COMPOSE-01, которую можно завершать после первого
+S08 text device gate, но обязательно до S13. Первый S08/S09 зависит только от
+scheduler/offline/receipt части S07, чтобы не задерживать раннюю vertical проверку.
+
+**Выход:** автономная доставка и корректные состояния без ручного polling.
+**Gate:** offline history/queue, process kill, lost receipt, duplicate AppAck,
+unknown outcome, cancellation, многопоточность, drain нескольких страниц;
+без push догоняет при следующем разрешённом OS выполнении. Suspended Android
+не получает обещания секундной доставки; Doze/foreground проверяются отдельно.
+
+### S08 — настоящая Release composition и физический text
+
+**Владелец:** deep-client-maui; E2E evidence — deep-tests-e2e.
+**Зависимости:** S06/S07; сборку wiring можно готовить раньше на frozen APIs.
+
+Создать supported composition без `DEEP_DID2_HTTPS_ADMISSION`, запрещённого в
+Release; не разрешать diagnostic flag для обхода этого запрета. Подключить
+current conversation runtime/scheduler/platform secure storage/carrier. Сверить
+actual compiled assemblies, native assets, NuGet/source pins, API/resource scans
+и installed artifact digests; source build не заменяет package graph gate.
+
+**Выход:** пригодные к подписанию Android arm64 и Windows x64/arm64 artifacts.
+**Gate:** release-проекты собираются; на реально установленных Android/Windows
+Hello/Accept, двусторонний text и AppAck, kill/reopen/airplane→online проходят
+на том же account. Не использовать старый несовместимый QA account без отдельного
+явного reset разрешения. Device logs не содержат seed, capabilities или plaintext.
+
+### S09 — sustained messaging и recovery qualification
+
+**Владельцы:** deep-devops + deep-tests-e2e; исправления — профильные repos.
+**Зависимости:** S05, S08.
+
+Перезапустить каждый process/host с сохранёнными volumes; остановить один XNode,
+проверить очередь во время отсутствия и доставку после возврата. Operator stop
+сам не отменяется. Проверить Registry/signer outage, свежий install и long-offline
+return, route/grant/view/key rotation, interrupted renewal/compaction, network
+switch, push-off и Android lifecycle. Коррупция/fork/lost protection key —
+отдельные fail-closed случаи, не повод автоматически сбрасывать account.
+
+**Gate:** repeated sends через старые capacity boundaries и несколько lifecycle
+ротаций, ноль потерянных/повторно материализованных сообщений в допустимом
+retention window, точные конечные статусы, ограниченные CPU/memory/DB/retries.
+SLO/soak/sample predicates брать из release catalog и профильного recovery gate;
+для отсутствующего сценария сначала дополнить каталог, а не придумывать цифры
+в отчёте. Показать фактические outage/recovery intervals.
+
+### S10 — remote files/images
+
+**Владельцы:** BLOB-01 Shared, XNode blob runtime, MAUI picker/UI; codec — Protocol.
+**Зависимости:** S09, frozen attachment contract.
+
+Соединить local manifest/chunks с remote encrypted upload/download и current
+DID2 events. Если blob terminal operation ещё не allocated, сначала закрытый
+Protocol contract и hostile vectors; не использовать прямой file server.
+**Gate:** независимый remote client, cold download и hash полного plaintext;
+resume после kill/offline, corrupt/missing/reordered chunks, expiry/quota;
+integrity до exposure. Local prepare/read и inline manifest не считаются remote.
+
+Media-message completion включает весь §3.4 V1 scope: image, document, short
+video, voice note и encrypted avatar workflows, включая record/pick/preview/
+playback, limits и offline resume на поддерживаемых платформах. Этот подэтап
+не считается выполненным по одной успешной передаче generic file.
+
+### S11 — devices, history и governed groups
+
+**Владельцы:** DEVICE-01/GROUP-CLIENT-01 Shared, GROUP-CONTROL-SERVICE-01 XNode,
+GROUP-CODEC-01/HISTORY-CODEC-01 Protocol, UI MAUI. **Зависимости:** S09;
+attachment group gate также S10.
+
+Связать текущую DID2 identity/revocation с enrollment/history transfer и group
+semantic consumer, control quorum и durable fanout. Удалённый device не входит
+в будущий fanout, fork не решается last-write-wins. Наличие старого GroupV1
+harness не закрывает current path.
+**Gate:** enrollment/revoke/recovery/history policy; create/invite/accept/remove/
+roles/owner conflict; partial fanout/restart/long-offline, limits и physical
+scenario IDs из полного release catalog.
+
+### S12 — carriers, push и calls
+
+**Владельцы:** см. стабильные IDs ниже. **Зависимости:** S09; независимые
+подзадачи параллельны после reviewed contract producer.
+
+Довести второй независимый masked carrier, bridges/bootstrap distribution и
+censorship matrix; push передаёт только hint, доставка проверяется без него.
+Call signaling использует текущие ratcheted events/outbox; answer CAS и
+allocation — XNode; MAUI media relay-only, отдельно от mailbox onion path.
+**Gate:** полный carrier/blocking matrix и extraction review; wake/resume,
+provider outage; реальные Android/Windows audio/video, UDP-blocked path,
+reconnect, no direct ICE/TURN fallback, peer IP/privacy и E2EE media evidence.
+
+### S13 — единый release gate
+
+**Владельцы:** deep-tests-e2e, deep-devops, COMPOSE-01 и независимые reviewers.
+**Зависимости:** S10–S12 и все blocking requirements release catalog.
+
+На одной immutable matrix выполнить full builds/tests, production dependency/
+API/resource/evidence checks, native supply-chain/license/crypto/privacy review,
+physical/security/censorship/load/retention/recovery scenarios. Отдельно проверить
+installer, signed updates, operational runbooks и публичные product claims.
+**Gate:** каждый blocking scenario/evidence ID разрешён, относится к текущим
+artifacts и имеет pass; P0/P1=0. Подготовить reviewable release bundle.
+Публикация/production deployment требуют отдельного разрешения владельца.
+
+## 4. Стабильные package owners для evidence
+
+Следующие IDs сохраняют ownership existing release catalog. Реализация идёт
+по S00–S13; требования codec/security/retention находятся у тематических owners,
+а не в удалённом историческом каталоге задач. Completed-by-name не допускается.
+
+| Package IDs | ownerRepository | Текущая привязка |
 | --- | --- | --- |
-| identity/crypto | ID-01, STORE-01, E2EE-01, APPLICATION-CORE-CODEC-01, MSG-01, DEVICE-01 | loopback two-device ratcheted event with crash recovery |
-| network | NETCODEC-01, ROOT-CHECKPOINT-01, DIRECTORY-01, XNODE-01, ROUTE-01, ONION-01 | exact-three-hop opaque Store/Retrieve with XPR1/XRS1 and forward-checkpoint fixtures |
-| carriers | CARRIER-CODEC-01, CARRIER-CATALOG-01, CARRIER-GATEWAY-01, BRIDGE-DISTRIBUTOR-01, SUPERVISOR-01, REALITY-01, HTTPS-01, BRIDGE-01 | same opaque operation through each independent carrier |
-| contacts/directory | CONTACT-CODEC-01, ACCOUNT-DIRECTORY-AUTH-01, DIRECTORY-CLIENT-01, CONTACT-SERVICE-01, CONTACT-CLIENT-01 | unrelated offline recipient accepts first contact |
-| feature planes | GROUP-CODEC-01/GROUP-CONTROL-SERVICE-01/GROUP-CLIENT-01, BLOB-01, PUSH-01, CALL-CODEC-01/CALL-SIGNAL-01/CALL-RELAY-01/CALL-MEDIA-01 | each feature uses the same identity/outbox/policy seams |
+| GOV-01, ARCH-01 | XPointLabs | S00/S01, нормативная согласованность |
+| ID-PQ-CB, CRYPTO-01, ID-01, REG-01 | deep-protocol | существующая база; S01/S13 проверяют gaps и production closure |
+| E2EE-01, APPLICATION-CORE-CODEC-01 | deep-protocol | S01/S06/S07, current semantics и receipt activation |
+| ATTACHMENT-CODEC-01 | deep-protocol | S10 |
+| HISTORY-CODEC-01, GROUP-CODEC-01 | deep-protocol | S11 |
+| NETCODEC-01, ONION-01, CONTACT-CODEC-01 | deep-protocol | S01–S06, current contracts |
+| CARRIER-CODEC-01, CALL-CODEC-01 | deep-protocol | S12 |
+| STORE-01, MSG-01, CONTACT-CLIENT-01 | deep-client-shared | S04/S06/S07 |
+| DIRECTORY-CLIENT-01, ROUTE-01, SUPERVISOR-01 | deep-client-shared | S04/S05/S07/S09 |
+| DEVICE-01, GROUP-CLIENT-01 | deep-client-shared | S11 |
+| BLOB-01 | deep-client-shared | S10 |
+| CALL-SIGNAL-01 | deep-client-shared | S12 |
+| XNODE-01, CONTACT-SERVICE-01 | xnode | S02/S03/S06/S09 |
+| CARRIER-GATEWAY-01, CALL-RELAY-01 | xnode | S12 |
+| GROUP-CONTROL-SERVICE-01 | xnode | S11 |
+| DIRECTORY-01, ACCOUNT-DIRECTORY-AUTH-01 | deep-registry-api | S05 |
+| CARRIER-CATALOG-01, BRIDGE-DISTRIBUTOR-01 | deep-registry-api | S12 |
+| ROOT-CHECKPOINT-01, BRIDGE-01 | deep-devops | S05/S09/S12/S13 |
+| REALITY-01, HTTPS-01, CALL-MEDIA-01 | deep-client-maui | S08/S12 |
+| COMPOSE-01 | deep-client-maui | S08/S13 |
+| PUSH-01 | deep-push-notification-server | S12 |
+| E2E-01 | deep-tests-e2e | S06/S08–S13 |
+| DEV-E2EE-01 | deep-protocol, deep-client-shared, deep-devops, deep-client-maui (отдельные repo-owned подзадачи) | deferred local-only authority; не release dependency |
 
-An agent may prepare tests against checked-in producer fixtures while a producer
-is running, but cannot merge implementation that invents missing producer bytes.
+Staking repos сейчас не входят в критический путь text. Их economics/admission
+контракты и release integration проверяются там, где их требует текущий signed
+membership/product scope; их рефакторинг не является prerequisite этого аудита.
 
-## 5. Integration milestones and stop conditions
+## 5. Шаблон задания и отчёта Codex
 
-| Milestone | Required packages | Demonstration |
-| --- | --- | --- |
-| `M0 Freeze` | GOV-01, CRYPTO-01, ARCH-01, REG-01 | no open registry/ownership/provider P0; generated collision gate green |
-| `M1 Local secure core` | ID-01 through DEVICE-01, including APPLICATION-CORE-CODEC-01 | offline account, two-device ratchet, durable loopback outbox and revoke |
-| `M2 XPoint text spine` | NETCODEC-01 through ONION-01, CARRIER-CODEC-01 through REALITY-01 | one Reality carrier, exact three hops, opaque 1:1 operation, no direct path |
-| `M3 Arbitrary contacts` | CONTACT-CODEC-01, ACCOUNT-DIRECTORY-AUTH-01, DIRECTORY-CLIENT-01, CONTACT-SERVICE-01, CONTACT-CLIENT-01 | copied Deep address reaches offline unrelated user and survives rotation/restart over the M2 Reality path |
-| `M4 Circumvention` | CARRIER-CATALOG-01, CARRIER-GATEWAY-01, BRIDGE-DISTRIBUTOR-01, HTTPS-01, BRIDGE-01 | Reality and independent HTTPS carrier; APK/IP/DNS/SNI/UDP scenarios |
-| `M5 Product parity` | GROUP packages, BLOB-01, PUSH-01 | 100-member final gate, 25 MiB resume and no-push convergence |
-| `M6 Calls` | CALL-CODEC-01, CALL-SIGNAL-01, CALL-RELAY-01, CALL-MEDIA-01 | relay-only audio/video plus UDP-blocked masked TCP audio |
-| `M7 Release candidate` | COMPOSE-01, E2E-01 | one signed commit matrix, all physical/security/SLO gates, P0/P1=0 |
+Задание: «Выполни Sxx / repo-owned подзадачу из этого плана. Проверь actual
+HEAD/dirty state, inputs/producer commits и AGENTS. Реализуй smallest complete
+slice, сохрани invariants и unrelated changes. Проверь acceptance и mandatory
+repo gates. Обнови normative owner/runbook при изменении контракта. Локально
+закоммить только свою работу. Никаких production/reset/push действий».
 
-Stop the affected lane when any of these occur:
-
-- provider or license decision is unresolved;
-- a package needs an unallocated magic/ID or undocumented transcript;
-- a producer fixture and normative source disagree;
-- an implementation would add a legacy reader, alias or direct fallback;
-- a package needs production secrets or deployment authority not granted;
-- a current runbook instructs behavior forbidden by the target registry;
-- a physical/security claim lacks reproducible evidence.
-
-## 6. Definition of package completion
-
-A package is complete only when:
-
-- its `produces` list is fully present in one focused local repository commit;
-- every declared unit gate passes at that commit;
-- generated files are reproducible and source-owned;
-- exact consumer-facing API/wire fixtures are committed;
-- hostile, max+1, replay, crash and cancellation cases are covered;
-- repository instructions/runbooks describe the new ownership and no stale
-  first-read instruction contradicts it;
-- no unrelated dirty files are included;
-- residual P2/P3 findings are explicit and no P0/P1 is deferred into code;
-- the integration consumer can run without private developer shortcuts.
-
-Completing all packages still does not authorize GitHub push or production
-deployment. Those actions require a separate user decision after final reviews.
+Отчёт: baseline и итоговые commit IDs; changed behavior; точные commands и
+pass/fail/skip; source vs real HTTP vs device evidence; remaining defects;
+следующая разблокированная подзадача. Обновлять строку NEXT-SPRINT, не добавлять
+ещё один общий roadmap/handoff. Готовность этапа — результат gate, не процент
+написанного кода и не количество DR.

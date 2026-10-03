@@ -1,12 +1,12 @@
 # Deep Contact, Multi-Device and Group Protocol V1
 
-> **Release compatibility stop (DR-0006, 2026-09-23):** permanent `DID1`/
+> **Current generation (2026-10-03):** permanent `DID1`/
 > `DAB1` version 1 below is retired from the first public release. Its
 > Ed25519-only root and succession cannot authenticate a later PQ upgrade.
-> The new PQ-committed ID and affected exact contact, directory, DPH2 and
-> safety-number bytes are not frozen yet. Section 4.1.0 records the proposed
-> release shape, not a machine-registry activation. This document's old exact tables
-> remain implementation evidence/negative fixtures, not permission to issue
+> DID2/DAB2 and current dependent codecs now exist in Protocol source and its
+> machine registry. DR-0069 retires the old identity producers; DR-0081 is the
+> current mailbox binding. Source implementation is not runtime activation.
+> This document's old exact tables remain historical explanation, not permission to issue
 > release accounts or to add a dual parser. See
 > [DR-0006](../survival-program/decisions/DR-0006-pq-root-deep-id-clean-break.md).
 
@@ -106,9 +106,9 @@ are never guessed:
 
 | Package | Records / accepted DMC2 kinds | Specification state |
 |---|---|---|
-| `APPLICATION-CORE-CODEC-01` | DID1, DAB1, DMD1, DCA1, DAO1, DMC2; kinds 1 and 5..13 | `FROZEN_CLEAN_BREAK` |
+| `APPLICATION-CORE-CODEC-01` | DID2/DAB2; exact dependent records follow the current machine registry | DR-0069; lifecycle is per record, not a blanket implementation/activation claim |
 | `ATTACHMENT-CODEC-01` | DAM1; DMC2 kinds 18 and 19 | `FROZEN_CLEAN_BREAK`, runtime inactive until BLOB-01 |
-| `CONTACT-CODEC-01` | DID2-bound DCB1/DCR1/XIR1 closure and DIA1; DMC2 kinds 2..4 and 14 | `TARGET_UNFROZEN` for DID2 contact closure; old DID1/DAB1 vectors are negative fixtures |
+| `CONTACT-CODEC-01` | DID2-bound DCB1/DCR1/XIR1 closure, DIA1 and XMC2 | Current machine registry and DR-0081; consumer/physical activation gated |
 | `GROUP-CODEC-01` | DGP1/DGC1/DGM1/DGT1/GIV1/GIA1/GCP1/GCF1/GSR1/GSW1/GSQ1/GSS1 and DMC2 kinds 15..17 and 26..29 | `FROZEN_TARGET_NOT_ACTIVE` |
 | `CALL-CODEC-01` | DMC2 kinds 20..24 and their exact call payload records | `TARGET_UNFROZEN` |
 | `HISTORY-CODEC-01` | DMC2 kind 25 and its backup/history producer closure | `TARGET_UNFROZEN` |

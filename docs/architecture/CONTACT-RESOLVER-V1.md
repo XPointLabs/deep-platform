@@ -1,7 +1,12 @@
 # Contact Resolver and Pre-Key Claim V1
 
-Status: **service-semantics target; DID1-dependent wire is retired pending
-DR-0006 DID2 re-freeze**
+Status: **service-semantics target; current source uses DID2, with connected
+runtime/release activation still gated (2026-10-03)**.
+
+DR-0069 retires DID1-dependent producers. DR-0081 replaces the old mailbox
+result with XMC2 carrying MCG3. Historical exact V1 tables below do not authorize
+old producers/readers; current machine registry and accepted decisions prevail.
+Implementation order is owned only by [the unified plan](IMPLEMENTATION-PLAN-V1.md).
 
 This contract closes the service side of arbitrary-contact bootstrap. It is a
 clean-break protocol: the Registry is not an invite directory, a bare account ID
@@ -13,7 +18,7 @@ Deep ID. All requests travel as opaque operations through the selected transport
 
 | Role | Responsibility | Owner repository |
 |---|---|---|
-| address publisher | creates DID2/DAB2 and, after the exact contact re-freeze, rotating DCB1/XIR1 and encrypted DCR1 | `deep-client-shared` |
+| address publisher | creates current DID2/DAB2-bound rotating DCB1/XIR1 and encrypted DCR1 | `deep-client-shared` |
 | invite store | quorum publication, resolve, one-time claim and replay | `xnode` |
 | pre-key claim store | atomic DPK2 one-time-key claim | `xnode` |
 | path/placement verifier | verifies XNV1/PMT2, derives service shards, and separately verifies returned PMS2 route closures | `deep-client-shared` |
@@ -30,7 +35,7 @@ generation. This is availability quorum, not a disjointness claim.
 ### 2.1 CONTACT-CODEC canonical record rule
 
 `CONTACT-CODEC-01` owns `DCB1`, `DCR1`, `DIA1`, `XIR1`, `XPS1`, `XPI1`,
-`XPP1`, `XIC1`, `XPK1`, `XPC1`, `XUR1`, `XMG1`, `XMC1`, and the
+`XPP1`, `XIC1`, `XPK1`, `XPC1`, `XUR1`, `XMG1`, `XMC2`, and the
 DR-0004 route/placement records `XRA1`, `XRC1`, `XRR1`, `XSS1`, `PMT2`, `PMS2`.
 They use exactly this one binary grammar; this section is the sole grammar source
 for those records:

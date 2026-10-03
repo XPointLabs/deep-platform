@@ -1,21 +1,21 @@
 # Deep/XPoint Protocol Registry V1
 
 Status: **canonical implementation-planning registry for the clean-break V1**
-Date: 2026-08-30
+Date: 2026-10-03
 Owner: `deep-protocol`
 
-DR-0006 retires the current permanent `DID1`/`DAB1` release identity. The
-identity and every exact consumer containing their bytes are pending a new
-machine-registry allocation/re-freeze. The historical sizes in this planning
-registry are negative-fixture evidence, not releasable values; accepted
-decision records take precedence. `DID2`/`DAB2` and root suite `0x0301` are
-allocated as non-active clean-break targets; the dependent closure remains
-unfrozen and the old bytes are not a fallback.
+The current source baseline implements `DID2`/`DAB2` and root suite `0x0301`;
+`DID1`/`DAB1` are retired by DR-0006/0069. Exact lifecycle is recorded per
+allocation below and in the machine registry, not inferred from compilation.
+Historical sizes are not releasable values or permission for a legacy reader.
+The connected consumer/package/physical closure remains unqualified; see the
+[current audit](ARCHITECTURE-AUDIT-2026-10-03.md).
 
 [DR-0080](../survival-program/decisions/DR-0080-did2-current-mailbox-host-authority.md)
 freezes the additive current mailbox host authority API without new wire values.
-PMS2 selection input is not MAU2 blinded placement; their authenticated binding
-and the connected mailbox runtime remain activation gates.
+DR-0081 freezes the missing authenticated binding as MCG3/MCP3/MAU3 and XMC2,
+under PMA2 profile 2. The current node admission/peer runtime remains an
+activation gate; the selector gap is no longer an undecided wire allocation.
 
 [DR-0069](../survival-program/decisions/DR-0069-did2-retired-identity-surface-removal.md)
 closes the old identity source producers and their positive contact vectors.

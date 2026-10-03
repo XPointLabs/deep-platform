@@ -2,7 +2,7 @@
 
 Статус: **нормативная продуктовая матрица**
 
-Актуально: 2026-08-30
+Актуально: 2026-10-03
 
 ## 1. Правило профиля
 
@@ -36,8 +36,8 @@ client -> persistent entry guard -> middle -> mailbox exit
 - MUST сохранять exact-three-hop на любой выбранной attempt;
 - MUST использовать разные attempt/replay/ephemeral keys;
 - SHOULD менять role assignment или route, когда topology это позволяет;
-- MUST NOT заявлять fully disjoint fallback, operator diversity или survival
-  при потере двух из трёх узлов;
+- MUST NOT заявлять fully disjoint fallback, operator diversity или доступность
+  route при потере даже одного из трёх обязательных routing nodes;
 - MAY повторить через другой carrier/entry binding только по правилам
   before-forward/outcome reconciliation;
 - MUST показывать degraded/unavailable, если exact-three route собрать нельзя;

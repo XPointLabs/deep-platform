@@ -2,10 +2,12 @@
 
 Status: normative implementation target for the first public Deep release.
 
-Current ONION-01 state is narrower than this product target: the exact frozen
-XRF1/XRL1/XRE1/XPR1/XRS1 codec and conformance seam are implemented, while the
-production public API and every runtime consumer remain inactive. No three-hop
-runtime or release-readiness claim follows from codec implementation alone.
+Current source state (2026-10-03) includes codecs and DID2 route/host consumers,
+but does not qualify the connected mailbox/message path. XNode still has a
+retired mailbox authority composition; the required current target is DR-0081.
+See the [source audit](ARCHITECTURE-AUDIT-2026-10-03.md) and
+[implementation plan](IMPLEMENTATION-PLAN-V1.md). Neither compilation nor a
+past own-publication proves two-client delivery or release readiness.
 
 This document defines the clean-break XPoint Network architecture. There are no
 production users and no compatibility requirement with Session-derived identities,
@@ -709,11 +711,11 @@ publishes byte-identical checkpoint/proof material, and ROUTE-01 verifies/merges
 
 ### 7.4 `XRR1` — contact-scoped reachability record
 
-Permanent transport-neutral `DID1` and expiring one-time `DIA1`, defined by the
+Permanent transport-neutral `DID2` and expiring one-time `DIA1`, defined by the
 contact/group specification, are the only V1 human-facing bootstrap inputs.
 They resolve canonical DCR1/DCB1 closure carrying account/device certificates,
 prekey-service descriptors and exact XPoint reachability. A stable
-`DeepAccountId` and DID1 bytes are never used directly as an XPoint mailbox key;
+`DeepAccountId` and DID2 bytes are never used directly as an XPoint mailbox key;
 the adapter uses the domain-separated opaque locator.
 
 The exact tagged grammar, field bounds, signature/core projections and binary
@@ -734,7 +736,7 @@ recipient-device closure, operation class, quota, random placement scope or
 the XRA1 core. Resolution returns exactly ordered
 `XRR1,XRA1,XRC1,XSS1,PMT2,PMS2` canonical bytes and rejects every pre-cutover
 PRA/PSS/RCD/RCA record before routing. The deposit service receives only random
-capabilities selected from that closure, never DID1/account/device/DCR plaintext.
+capabilities selected from that closure, never DID2/account/device/DCR plaintext.
 
 After contact acceptance, XPoint hosts the opaque established-contact update
 service defined exclusively in
@@ -880,7 +882,7 @@ Verification requires all of the following:
    never compared with the latest ADH1 CoreRef.
 
 Resolver-service placement is a separate domain-separated rendezvous ranking.
-XPU1/XIQ1 must be locatable by a client that has only DID1, so their
+XPU1/XIQ1 must be locatable by a client that has only the shared DID2 address, so their
 InviteResolver shard is derived from the opaque permanent/one-time locator plus
 the exact current XNV1/PMT2 context; it never uses the XIR1/XRA1 random placement
 input that is learned only after resolution. XPK1 and XUW1/XUQ1 use their random

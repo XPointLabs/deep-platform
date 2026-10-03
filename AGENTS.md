@@ -12,12 +12,17 @@
 1. This file.
 2. The nearest repository `AGENTS.md`.
 3. `docs/architecture/README.md`, `PROTOCOL-REGISTRY-V1.md` and the relevant
-   package in `IMPLEMENTATION-PLAN-V1.md`.
+   S00–S13 stage in `IMPLEMENTATION-PLAN-V1.md`. The 2026-10-03 source audit is
+   baseline evidence; the implementation plan is the only execution sequence.
 4. `docs/NEXT-SPRINT.md` for current unfinished work.
 5. The relevant code, tests, and repo-native architecture/runbook docs.
 6. Frozen protocol inputs under `docs/survival-program/releases/v3.0.0/` only when protocol bytes, crypto, identity, reset, or evidence ownership are in scope.
 
-Do not load historical plans. If code, tests, and docs disagree, stop the affected claim, verify the implementation, and update the stale source in the same change.
+Do not load historical plans. Old WP/CB/NET-STAB ordering is superseded by the
+unified plan; dated checkpoints and SPRINT-HISTORY are evidence, not a second
+backlog or authorization for new production/reset actions. If code, tests, and
+docs disagree, stop the affected claim, verify the implementation, and update
+the stale source in the same change.
 The documentation ownership matrix in `docs/architecture/README.md` is
 mandatory: edit the single normative owner and replace downstream duplicated
 requirements with links plus repository-specific consequences. `xpoint-docs`

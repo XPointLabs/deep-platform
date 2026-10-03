@@ -2,7 +2,12 @@
 
 Active release: [`v3.0.0`](releases/v3.0.0/README.md). Decision owner: Mr. X.
 
-This directory contains frozen protocol/governance inputs, not the active sprint backlog. The only current execution plan is [`docs/NEXT-SPRINT.md`](../NEXT-SPRINT.md). Prior stages remain available in Git history and are intentionally absent from the working tree.
+This directory contains frozen protocol/governance inputs, not the active sprint backlog.
+Current status is owned by [NEXT-SPRINT](../NEXT-SPRINT.md); the only execution
+sequence is [IMPLEMENTATION-PLAN](../architecture/IMPLEMENTATION-PLAN-V1.md).
+[DR-0082](decisions/DR-0082-integration-first-delivery-baseline.md) consolidates
+work from the 2026-10-03 source baseline. Prior execution plans remain in Git
+history; accepted decisions and frozen artifacts retain their normative role.
 
 ## Read order
 

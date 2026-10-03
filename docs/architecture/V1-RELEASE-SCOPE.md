@@ -2,14 +2,15 @@
 
 Статус: **нормативный product/release scope**
 
-Актуально: 2026-08-30
+Актуально: 2026-10-03
 
 ## 1. Release decision
 
 V1 — первый публичный production-релиз нового Deep-native поколения. Так как
 пользователей production ещё нет, выполняется clean break:
 
-- новый network/genesis и protocol generation;
+- текущие clean-break network/genesis и protocol generation; уже созданная
+  signed lineage сохраняется, этот scope не разрешает повторный genesis reset;
 - 24-word Deep Recovery Phrase и новые `DeepAccountId`/`DeepDeviceId`;
 - новый DB schema без migrations/legacy reader;
 - удаление Session wire, `SessionId`, DPE1 static sealed-CEK и compatibility
@@ -81,10 +82,10 @@ compile.
 
 ### 3.2 Contacts and 1:1 messaging
 
-- бессрочный transport-neutral `DID1` (UI: Deep ID), восстанавливаемый из
+- бессрочный transport-neutral `DID2` (UI: Deep ID), восстанавливаемый из
   recovery phrase; его current DCB1 publication может временно быть недоступна,
   но ID не истекает и не меняется при смене transport;
-- добавление произвольного contact через DID1 text/QR или one-time DIA1 QR/file;
+- добавление произвольного contact через DID2 text/QR или one-time DIA1 QR/file;
 - асинхронный первый message при offline recipient в пределах canonical
   prepublished resolver/pre-key horizon из `RETENTION-AND-RECOVERY-V1.md` и
   signed admission/quota; exhaustion или
@@ -360,8 +361,8 @@ Blocking scenario `OFFLINE-RECOVERY-MATRIX-V1`, owner `CONTACT-CLIENT-01`,
   rollback/fork/wrong-network;
 - machine-contract long-offline fixtures сохраняют account, contacts,
   local history и non-expired outbox;
-- phrase-only restore воспроизводит byte-identical DID1 и после новой
-  DAB1/DCB1 publication тот же адрес снова разрешается;
+- phrase-only restore воспроизводит byte-identical DID2 и после новой
+  DAB2/DCB1 publication тот же адрес снова разрешается;
 - predecessor/history запрос криптографически связан с protected LKG;
 - route/carrier/device revocation fail closed;
 - beyond-horizon re-enrollment создаёт новое device и не сбрасывает account;
@@ -433,21 +434,11 @@ Blocking scenario `PRIVACY-OPERATIONS-EVIDENCE-V1`, owner `E2E-01`, объеди
 
 ## 9. Development order
 
-Порядок минимизирует повторную работу и позволяет агентам работать параллельно:
-
-1. freeze canonical DID1/DAB1, IDs/events/contact bundle and hostile vectors;
-2. выбрать/pin 1:1 crypto provider после license/platform spike;
-3. реализовать account/device/prekey/revocation stores;
-4. реализовать ratchet + `DeepSmallGroupV1` и crypto interoperability harness;
-5. заменить текущий outbox на transport-neutral logical state machine;
-6. реализовать XPoint adapter поверх existing MAU2/privacy route;
-7. связать Reality и второй masked carrier, затем bridge distribution;
-8. реализовать contact bootstrap/route-update rendezvous;
-9. перевести attachments и call signaling на общие planes;
-10. добавить media relay catalog и push hints;
-11. выполнить Docker, fault, censorship и physical matrices;
-12. независимые lead/security reviews, fix freeze, final rerun;
-13. после V1 — OpenMLS/native ABI spike и scalable group profile свыше 100 участников.
+Единственный порядок от фактического текущего кода находится в
+[IMPLEMENTATION-PLAN-V1.md](IMPLEMENTATION-PLAN-V1.md), статус — в
+[NEXT-SPRINT.md](../NEXT-SPRINT.md). Сначала current node/client mailbox closure,
+durable lifecycle, real text/recovery и shipping composition; затем остальной
+scope этого документа. Промежуточный text milestone не является публичным V1.
 
 P2P/on-prem adapters начинаются только после V1 production release, но
 compile-time architecture tests из transport-neutral specification входят в V1

@@ -1,5 +1,27 @@
 # История спринтов
 
+Это исторический журнал, не текущий план и не набор действующих разрешений.
+Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
+[единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
+
+## 2026-10-03 — независимый source audit и консолидация документации
+
+- [Аудит](architecture/ARCHITECTURE-AUDIT-2026-10-03.md) отделил viable
+  onion/mailbox design от незавершённой current node/client composition,
+  lifecycle очередей и shipping graph. Сравнение основано на primary sources.
+- [DR-0082](survival-program/decisions/DR-0082-integration-first-delivery-baseline.md)
+  и единый S00–S13 DAG заменили старые WP/CB/NET-STAB очереди. Полный V1 scope
+  сохранён; датированные checkpoints не переобъявлены успешной доставкой.
+- Исправлены устаревшие generation/status/availability claims в тематических
+  owners и active-vs-excluded graph в MAUI/Shared docs. Product code и production
+  state не изменялись. Registry repin затрагивает лишь documentation hashes.
+- Ограниченные server diagnostics на предыдущих binaries и свежий focused
+  registry test описаны в аудите; полного повторного release gate не было.
+- Локальные child commits документации: Protocol `17a7c8be2b222eb0855d381b5040864dc14b4c9e`,
+  Shared `cba9f21fd15e33fb48fb3cdb71927cb7b0615053`,
+  MAUI `11f1c8fb8a0d70178fa62ad78e69e93da1bb400a`.
+  Root commit фиксирует их pointers; push/deployment не выполнялись.
+
 ## 2026-10-03 — private publication successor и permanent generation fence
 
 - [DR-0079](survival-program/decisions/DR-0079-did2-publication-issuer-successor.md)

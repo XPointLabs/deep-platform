@@ -7,6 +7,10 @@ Windows ARM64 superproject for the Deep pre-production release candidate. Child 
 - Agent rules: [`AGENTS.md`](AGENTS.md)
 - Target architecture and normative index:
   [`docs/architecture/README.md`](docs/architecture/README.md)
+- Current source audit and competitor comparison:
+  [`ARCHITECTURE-AUDIT-2026-10-03.md`](docs/architecture/ARCHITECTURE-AUDIT-2026-10-03.md)
+- Unified implementation sequence for Codex:
+  [`IMPLEMENTATION-PLAN-V1.md`](docs/architecture/IMPLEMENTATION-PLAN-V1.md)
 - Only active backlog: [`docs/NEXT-SPRINT.md`](docs/NEXT-SPRINT.md)
 - Frozen protocol/governance inputs: [`docs/survival-program/README.md`](docs/survival-program/README.md)
 - User and administrator documentation: [`xpoint-docs`](xpoint-docs)

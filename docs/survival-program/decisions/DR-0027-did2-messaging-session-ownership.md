@@ -73,7 +73,7 @@ grants none of those claims.
 
 Normative owners: [crypto sections 9–14](../releases/v3.0.0/specs/DEEP-CRYPTO-V1-DRAFT.md#9-mandatory-triple-ratchet),
 [DPE2 inbound handoff](../releases/v3.0.0/specs/DPE2-INBOUND-DURABLE-HANDOFF-AUTHORIZATION.md),
-and [MSG-01 / STORE-01](../../architecture/IMPLEMENTATION-PLAN-V1.md#msg-01--canonical-events-logical-outboxinbox-and-dedup).
+and [MSG-01 / STORE-01 (current S04/S07 mapping)](../../architecture/IMPLEMENTATION-PLAN-V1.md).
 
 ## Native transition correction (existing formats/APIs)
 
