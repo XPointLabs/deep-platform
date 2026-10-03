@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Protocol full 2016 pass / 1 fail / 12 skips; XNode full 870 pass / 1 fail, focused 40 pass / 2 fail; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); ONION metadata и program input drift закрыты; package/current authority, invite/XPP и Windows storage открыты |
+| S00 | **В работе: Protocol full 2016 pass / 1 fail / 12 skips; XNode full 868 pass / 1 fail, новые prekey negatives 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); ONION metadata и program input drift закрыты; package/current authority, invite/XPP и Windows storage открыты |
 | S01 | **Открыт; анализ параллельно S00** | Revocation/admission, grant/send/route settlement и compaction contracts |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -103,11 +103,22 @@ claim возвращает Unknown, peer — bodyless unsigned 503, exact reconc
 [Checkpoint 5](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-5--current-claim-bindings-and-native-io-uncertainty).
 Предыдущие lineage/Windows наблюдения сохранены в checkpoint 4; root cause
 storage nondeterminism не выяснена и не исправлена новым error containment.
-Остальные unsafe fixtures ещё открыты.
+Checkpoint 6 заменил все восемь cases старого `ContactPreKeyXpc1ResponseTests`
+на current signed scenarios и сохранил обе contract boundaries. Удалён его
+514-line fabricated-capability fixture. Два inner-signature attacks проходят
+при доказанно правильной outer HTTP authentication; Unknown/reopen/exact retry
+сохраняют исходный ключ. XIC1 duplicate signer отклоняется до reservation;
+полностью staged signed manifest с неверной DPK2 подписью не активируется.
+Новые negatives 4/4; full 868 pass / 1 B8 fail / 0 skips (869), без удаления
+необъяснённых failures. Local external smoke проходит, не physical delivery.
+Default solution source build обнаружил Debug у out-of-solution Protocol refs;
+проверочный build явно сохраняет Release, package graph этим не закрыт.
+[Checkpoint 6](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-6--current-signed-prekey-negative-paths-no-legacy-response-fixture)
+содержит exact mapping, commands и hashes. Остальные unsafe fixtures ещё открыты.
 Перенести их scenario semantics на actual DID2 inventory/claim path;
 не удалять rotation/quota/replay/recovery coverage и не ослаблять verifier.
 Synthetic XPA fixture удалён; facade-сценарии перенесены на signed DID2 inputs.
-Свежий полный XNode checkpoint — 870 pass / 1 fail, без skips; оставшийся positive
+Свежий полный XNode checkpoint — 868 pass / 1 fail, без skips; оставшийся positive
 one-time invite требует current producer/consumer contract (B8), а не обхода
 verifier. Подробная классификация и границы evidence — по ссылке в строке S00.
 Root program input drift закрыт: schema согласована с уже закреплёнными 12

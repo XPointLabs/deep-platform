@@ -4,6 +4,35 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: current signed prekey negative paths
+
+- XNode `27397999edf0b34bd66cb5a6528ecd48a43d0e70`: все восемь cases
+  старого XPC fixture перенесены на current signed scenarios и две отдельные
+  contract boundaries; 514-line fabricated-capability fixture удалён.
+  Runtime/wire/authority policy не изменены. Остальные unsafe store fixtures
+  сохраняют coverage и остаются открытыми.
+- Четыре новые negatives 4/4: authentic outer RPC / wrong inner signer на
+  prepare и complete; Unknown, блокировка нового claim, reopen/exact retry
+  сохраняют ключ/generation. Validly signed duplicate XIC1 не считается второй
+  репликой и отвергается до reservation. Bad DPK2 signature, чей exact hash
+  закреплён signed manifest, отвергается после полного staging/current proof
+  и после reopen до activation.
+- Full XNode 868 pass / 1 B8 invite fail / 0 skips (869). Уменьшение общего
+  числа на два отражает mapped replacement восьми old cases четырьмя signed
+  integration и двумя boundary cases; unexplained failures не удалены.
+  Прежние Windows storage nondeterminism/selection failures не закрыты.
+- Default solution build использовал Debug для двух out-of-solution Protocol
+  refs. Explicit source build с `ShouldUnsetParentConfigurationAndPlatform=false`
+  собирает их в Release, 0 warnings / 0 errors. Это не package/current-consumer
+  или shipping composition gate.
+- Изолированный managed-external smoke exit 0, real Xray, десять runner/contract
+  tests и secret scan pass; только временный Docker project/volumes очищен,
+  существующие шесть deep-dev containers сохранены. Multi-node не повторялся:
+  production transport/path sources не менялись. Devices/production не затронуты.
+  Root documentation gate 174 checks pass. Exact commands/mapping/digests:
+  [Checkpoint 6](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-6--current-signed-prekey-negative-paths-no-legacy-response-fixture).
+  S00/S01 и физический release gate остаются открытыми.
+
 ## 2026-10-03 — S00: program input integrity
 
 - Baseline root `f155ba27a1e86d89060ca9f0ed7241abe2edb957`. Original governance
