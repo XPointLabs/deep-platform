@@ -105,6 +105,11 @@ native protected floor, node/peer admission или S05 issuer renewal. Стат�
 slice и остальных S01 переходов находится только в NEXT-SPRINT.
 Compaction нельзя проектировать простым удалением журнала или увеличением
 512/128; сначала доказать отсутствие повторного применения/replay после очистки.
+Client semantic transitions приняты в
+[DR-0084](../survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md);
+sole tables — TRANSPORT-NEUTRAL-MESSAGING §8.4. Local format/API freeze и runtime
+ещё открыты. Object retention нельзя привязать к короткому grant: matching
+codec/node retention и retained-route Retrieve/ACK — единый activation fence.
 
 **Выход:** полные state/error tables у владельцев и bounded APIs/fixtures;
 wire change только при доказанной необходимости. **Gate:** каждый переход имеет

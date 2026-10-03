@@ -4,6 +4,31 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S01: settlement semantics and capacity/replay boundaries
+
+- Accepted [DR-0084](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md)
+  links the sole client transition tables: logical event/ciphertext/attempt,
+  exact unknown reconciliation, successor, renewal, independent floors and
+  protected compaction. No new wire/suite/legacy reader or runtime activation.
+- Shared `cdb6101d5783877fd7c527cd2481423bf67a13ed`: actual PQ/SQLCipher
+  send owner reconciles the original unknown MAU at full 512-slot occupancy
+  without another grant callback or protected-root mutation. The other slots
+  are canonical local metadata, not a 512-message remote soak. Focused 1/1;
+  final full 546 pass / 0 fail / 0 skips; Release 0 warnings / 0 errors.
+- Protocol `de1c2205cec0521bc3052c84dbada22d0a0f12e0`: signed request replay
+  regression demonstrates why a live namespace cannot lose its floor; scope
+  derivation is independent of holder/attempt identity. Focused 26/26; full
+  2067 pass / 1 fail / 12 skips. Existing actual-package MCG2 and source MAU2
+  failures remain red; skipped native/operator-input cases are not qualified.
+- Reviewed repin changes one normative document hash and derived digest;
+  175 anchors unchanged, strict registry passes. Documentation gate 174/174;
+  selected source/doc secret scan has no findings. Commands and TRX hashes:
+  [checkpoint](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md).
+- Source object TTL remains seven-day/grant-capped. Matching codec, storage,
+  replay and retained-route Retrieve/ACK still need the coherent implementation.
+  Local floor/API, compaction/renewal, node/peer and application receipts remain
+  open; no production/device/secrets/deployment state or release changed.
+
 ## 2026-10-03 — S01: owned send preflight; S00 raw-key observer
 
 - Shared `a6dd5997fa97500138d1dbea1c4ee815ad4411c1`: обязательный protected

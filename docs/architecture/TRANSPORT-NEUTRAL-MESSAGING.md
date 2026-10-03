@@ -408,6 +408,100 @@ clock-skew margin.
 merge. Пользователь видит один event, но transport-level receipts сохраняются
 для диагностики в sanitized виде.
 
+### 8.4 Owned attempt settlement, renewal and retirement
+
+Принято [DR-0084](../survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md).
+Эти таблицы задают S01 semantic contract, не фактическую runtime activation.
+Account owner выполняет переходы под actual lease; UI/adapter не передают trusted
+outcome, counter, replacement route/grant или deletion permission. Required
+deadlines и shape audit/dedup tombstones берутся только из
+[retention owner](RETENTION-AND-RECOVERY-V1.md), без новых чисел здесь.
+
+**Независимые состояния.** Logical item хранит immutable event identity, target
+device set, authored sequence и effective retry deadline. Per-device encrypted
+item хранит уже committed exact ciphertext и ratchet transition. Attempt хранит
+свой unique ID, exact route/grant/body/MAU/counter, original deadlines и outcome.
+Одно logical item может иметь последовательные attempts; успешная доставка
+одному устройству не утверждает успех остальных. Stored, delivered и read —
+монотонные факты с разными authenticated evidence, не значения одного boolean.
+
+#### 8.4.1 Send/attempt transitions
+
+| Вход → переход | Обязательные evidence и durable effect | Retry / expiry / cancel | Crash/reopen obligation |
+| --- | --- | --- | --- |
+| Local intent → encrypted item | Authenticated local custody; independently current own/peer/consent для encryption; один atomic ratchet/ciphertext commit | Network unavailable сохраняет intent; expired/revoked target не получает encryption | До commit нет transport attempt; после commit exact ciphertext восстанавливается без второго ratchet step |
+| Encrypted item → pending descriptor | Current route/grant и original logical retry deadline; preflight mandatory roots/capacity; bind exact ciphertext/route/grant/body до SQL/signing | Backpressure не удаляет queued item и не приобретает ненужный grant; existing attempt не получает новый lifetime | Pending read-back предшествует SQL; missing/foreign root rejects, не lazy initialize |
+| Pending descriptor → prepared | Atomic SQL exact MAU/counter; independent protected counter floor; exact read-back и protected prepared commitment | Возобновить SQL commit, не подписывать второй запрос; counter нельзя получить из очищенного списка | Fault до/после SQL и protected CAS восстанавливает только один original request |
+| Prepared → dispatch reservation | Current full authority/holder/selected path/revocation; durable bounded retry lease перед callback | Доказанный BeforeForward допускает policy-controlled successor; остальные выходы после possible forwarding — unknown | Сам факт reservation не доказывает forwarding или non-forwarding; после reopen не сбрасывать reservation |
+| Dispatch → unknown | Timeout/cancel/invalid reply после possible forwarding; сохранить original exact attempt и uncertainty | Сначала exact reconciliation, пока independently current admission и original window разрешают его; не remint MAU | Lost response/partial commit/restart не превращаются в successful empty или новый logical send |
+| Attempt → stored | Verified two-replica durable receipt, exact request/member/key binding и final current recheck; protected completion read-back | Cache/replay хранит тот же evidence; это не recipient delivery | Fault receipt→SQL→protected completion повторяет adoption, не remote Store и не ratchet encryption |
+| Recipient materialized → application receipt due | Atomic authenticated semantic dedup + recoverable event + persistent receipt obligation | Transport ACK только после materialization; AppAck идёт отдельным E2EE event | Crash после receive не теряет receipt work и не разрешает повторную материализацию |
+| Authenticated application receipt → delivered/read | Exact logical/conversation/author/target-device binding; read отдельно от delivered; policy и current session authentication | Duplicate idempotent; receipt не создаёт unknown event и не меняет payload/history | Receipt apply/projection и due-work completion атомарны либо защищённо recoverable |
+| Attempt expired → closed outcome | Independent protected time proves original request no longer admissible; retain stored evidence либо explicit unresolved outcome | Expiry не доказывает «не записано»; old exact request больше не dispatches | Reopen сохраняет closed-unknown, не возвращает prepared и не продлевает grant/window |
+| Closed/before-forward attempt → successor attempt | First reconcile as far as the original protocol permits; logical deadline/policy ещё разрешает send; independently verified replacement closure | Новый attempt ID и new grant/request; **тот же committed ciphertext и semantic event**, без encryption/signing старой attempt; bounded attempts/backoff | Durable predecessor/successor link до callback; partial successor adoption не теряет original uncertainty |
+| Logical retry deadline / user cancel → stopped work | Protected terminal metadata; уничтожение outbox-only payload/key по retention owner; не удалять отдельную local history как побочный эффект | Cancel не recall; remote accepted copy может существовать; Store/Delivered facts не регрессируют | Никакой повторный wake/reopen не создаёт новую attempt для stopped work |
+
+Статус cancellation/expired retry относится к работе sender, а не к отмене уже
+аутентифицированного stored/delivered fact. Success terminal condition logical
+outbox MUST явно следовать conversation policy; Store receipt не называется
+Delivered и не очищает outstanding application-receipt obligation.
+
+#### 8.4.2 Grant and route transitions
+
+| Вход → переход | Durable ownership / authority | Retry / expiry / cancel | Crash/reopen obligation |
+| --- | --- | --- | --- |
+| New acquisition → pending XMG | Independent reachability-direction holder, unique exact request; actual route/locator/domain и current PMA2; protected CAS/read-back before issuer callback | Capacity rejects до issuance; никаких account/device/root signing substitutes | Seed/request сохраняются exact; callback/root mutation rejects winner adoption |
+| Pending XMG → winner | Fresh independently verified exact XMC2/MCG3 и complete current interval; one immutable winner per acquisition | Lost reply остаётся pending; original XMG window не renews | Reply receipt→winner CAS interruption возобновляет тот же request/result, не новую выдачу |
+| Acquisition window expired → unresolved acquisition | Retain exact request и known signed upper bound возможного issued grant; original request больше не допускается | XMG expiry **не** доказывает отсутствие более долгого remotely issued grant; renewal — отдельная acquisition | До authenticated settlement/irreversible namespace retirement нельзя освобождать его dependencies как BeforeForward |
+| Winner active → renewed successor | Current issuer/topology/route policy; new acquisition identity и serial; old winner immutable | Same reachability holder допустим; changed reachability получает отдельное owned scope; no synthetic next-epoch grant | Current pointer меняется только после successor read-back; old attempts сохраняют exact old winner |
+| Route current → verified successor | Existing signed predecessor/current continuity, fresh own/peer authority и proactive policy deadline | Incomplete successor не заменяет current; expired current не становится fresh от нового local clock | Stage successor и handover до pointer adoption; нельзя менять unknown attempt bytes |
+| Old route/grant → retained dependencies | Outstanding Store/Retrieve/ACK и accepted-object horizon независимы от grant admission lifetime | Short grant expiry не разрешает удалять remote object, owner capability или единственный retrieval path | Проверить retained-route receive/ACK или authenticated migration до удаления единственного пути |
+| Retained scope → retired | Все зависимости settled/explicitly closed; irreversibly inadmissible old replay namespace proven by current signed policy + protected floors | Neither fresh grant, cache miss, local UTC, revocation hint nor capacity alone authorizes retirement | Fault до/после retirement сохраняет fences; no holder/key/nonce regeneration by reader |
+
+Grant refresh MUST начинаться до expiry по действующей signed policy. Recovery
+current time/network/issuer successors не может требовать предварительного
+успеха expired data-plane attempt. Distribution bytes остаются untrusted до
+independent verification; bootstrap не переносит recipient metadata на Registry.
+
+#### 8.4.3 Compaction and boundedness
+
+Перед освобождением working-set slot owner MUST сохранить отдельные protected
+floors: next authored sequence для `(conversation, author device)` и highest
+reserved counter для каждого live grant/operation replay scope. Actual mailbox
+replay namespace задаётся current verifier (issuer key, serial, epoch,
+generation, operation), не holder key alone. A retained exact pending request
+может повторять свой reserved counter, но новый запрос не получает его вновь.
+Floors, scope enrollment и revisions не выводятся из количества retained rows.
+
+| Шаг | Durable requirement | Fault/reopen rule |
+| --- | --- | --- |
+| Select compaction batch | Only settled or explicitly closed work; authenticated terminal evidence, exact dependencies and time; pending/unknown work не evicts ради slots | Revalidate under held lease; stale selection does not authorize mutation |
+| Protect plan/floors | Bound account/network/instance, exact predecessor root, new floors, disposition и affected working rows; persist/read-back before SQL cleanup | Interrupted plan owns recovery; missing/mismatched plan fails closed, не guess по SQL count |
+| SQL cleanup | One transaction preserves counters/dedup/receipt work/local history while deleting only authorized outbox data; no new signature/encryption | Retry exact plan; deleted SQL cannot be rehydrated from obsolete payload after terminal deletion |
+| Adopt compacted root | Protected CAS/read-back retains independent floors, remaining exact work and required terminal metadata | Before/after CAS interruption either resumes same plan or observes exact adopted root; no empty-journal repair |
+| Retire plan / floors | Exact SQL/root agreement first; floor removal requires proven permanently inadmissible namespace, not just one grant's expiry | Cold replay, SQL rollback, expired authority and issuer rotation cannot resurrect old counters or events |
+| Any capacity exhausted | Bounded backpressure before network acquisition/new encryption; retry existing work and process eligible cleanup | Never raise limits or discard unexpired audit/dedup/unknown work to make a test pass |
+
+Audit tombstones MUST contain no payload/key/plaintext-derived content; exact
+reconciliation material is active custody, not disguised audit data. Authenticated
+semantic dedup follows its own retention. Compaction MUST qualify successful,
+pending, rejected, unknown, expired and cancelled work beyond the existing
+512-send/128-grant boundaries, including distinct scopes, cold restart and each
+handover fault. Those counts are current implementation boundaries, not new
+product limits or permission for an unbounded floor/tombstone collection.
+
+#### 8.4.4 Object lifetime integration fence
+
+Admission, original attempt/request window, logical retry deadline and accepted
+object expiry MUST remain independent. A short grant neither grants a longer
+dispatch window nor shortens an accepted object's signed retention. A refreshed
+grant cannot extend an old exact body's expiry. Codec/producer/node storage,
+replay/tombstone retention and retained-route retrieval/ACK MUST agree before
+activating the retention claim. Current-only epoch credentials are not historic
+read permission; unavailable old ciphertext is surfaced as a retention gap,
+never a successful empty catch-up. No generic trust flag or expired-route bypass
+is introduced by this section.
+
 ## 9. Selection, routing and decentralization
 
 Application layer формирует `RequiredCapabilities`, а policy выбирает profile и

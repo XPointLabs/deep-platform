@@ -26,8 +26,8 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Shared full 545/545; Protocol full 2065 pass / 1 fail / 12 skips; XNode full 901 pass / 1 fail, read uncertainty regressions 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Shared checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md#s00-fixture-correction), [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); stale raw-key observer исправлен без изменения rollback assertions; package/current authority, invite/XPP и intermittent Windows replacement открыты |
-| S01 | **В работе: DR-0083, Protocol revocation/floor 49/49; native custody 29/29; Shared send preflight исправлен, full 545/545; node admission/peer consumers ещё отсутствуют** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [Shared ordering/callback evidence](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md); grant/send/route settlement, compaction и application receipt contracts открыты |
+| S00 | **В работе: Shared full 546/546; Protocol full 2067 pass / 1 fail / 12 skips; XNode full 901 pass / 1 fail, read uncertainty regressions 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Shared checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md#s00-fixture-correction), [latest Shared/Protocol gates](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md#commands-and-gates), [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); stale raw-key observer исправлен без изменения rollback assertions; package/current authority, invite/XPP и intermittent Windows replacement открыты |
+| S01 | **В работе: DR-0083/0084; Protocol revocation/floor 49/49, settlement boundary/registry 26/26; native custody 29/29; Shared exact unknown retry при 512 occupied slots проходит; full 546/546; node admission/peer consumers отсутствуют** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); local format/API, runtime compaction/renewal, object-horizon integration и application receipt contracts открыты |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
@@ -49,6 +49,10 @@ Production среда в этом аудите не проверялась и н
   mutation/quorum не замкнуты; node ID и receipt key в старом adapter слиты.
 - **B3:** send journal 512 и grant journal 128 не имеют завершённого sustained
   lifecycle; exact retry не заменяет renewal/settlement/retirement.
+  [DR-0084](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md)
+  закрепляет client semantic tables, не implementation. Source codec/node default
+  остаются 7-day, sender caps object expiry by grant; matching retention,
+  replay и retained-route Retrieve/ACK ещё не реализуют normative object horizon.
 - **B4:** network reconnect не draining outbox/inbox; fresh proofs блокируют
   local history; AppAck/read события не включены в текущий DID2 consumer.
 - **B5:** messaging DI зависит от diagnostic flag, запрещённого для Release;
@@ -139,8 +143,11 @@ protected custody реализован и проверен 29/29; последн
 901 pass / 1 B8 fail / 0 skips. [Native checkpoint](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md)
 фиксирует границы recovery, concurrency и isolated external smoke. Это ещё не
 активированный node consumer. Нельзя включать старую PMA1/P04 composition.
-Закрыть остальные lifecycle/compaction contracts, затем подключать current node
-admission и проверять issuer→node→client одним сценарием.
+Client semantic settlement/renewal/retirement tables теперь закреплены в
+[DR-0084](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md).
+Следом закрыть necessary local format/API и replay floor compaction producer
+с actual consumers, а также object-horizon/retained-route и оставшиеся node/peer/
+application-receipt contracts; затем current admission и issuer→node→client gate.
 Shared preflight теперь rejects full/new или changed retained route/body до
 grant acquisition и rechecks protected send root через issuer callback. Это
 ordering correction, не renewal/retirement: удалять entries без сохранения
