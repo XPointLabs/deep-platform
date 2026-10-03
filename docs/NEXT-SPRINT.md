@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Protocol full 2065 pass / 1 fail / 12 skips; XNode full 897 pass / 1 fail, новые prekey negatives 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); ONION metadata и program input drift закрыты; package/current authority, invite/XPP и Windows storage открыты |
+| S00 | **В работе: Protocol full 2065 pass / 1 fail / 12 skips; XNode full 901 pass / 1 fail, read uncertainty regressions 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); read I/O больше не создаёт ложный corruption latch; package/current authority, invite/XPP и intermittent Windows replacement открыты |
 | S01 | **В работе: DR-0083, Protocol revocation/floor 49/49; native custody 29/29, node admission/peer consumers ещё отсутствуют** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md); grant/send/route settlement, compaction и application receipt contracts открыты |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -61,6 +61,9 @@ Production среда в этом аудите не проверялась и н
   но не подписанную DID2 one-time invitation; positive claim/replay сценарий
   остаётся failing prerequisite. Сверить current contract и закрыть producer/
   consumer; способность codec разобрать kind 2 не означает runtime support.
+  [B8 investigation](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#b8-investigation-real-missing-one-time-producer-contract)
+  подтверждает отсутствующий signed public locator/object/expiry commitment;
+  usage-limit toggle и передача secret DIA1 threshold не допустимы.
 
 `OfficialXPoint3` не передаёт данные при отсутствии одного обязательного узла;
 S09 проверяет сохранность и автоматическое восстановление после возврата.
@@ -131,8 +134,9 @@ ProtocolPackageGO по-прежнему fails из-за отсутствующе
 [governance checkpoint](SPRINT-HISTORY.md#2026-10-03--s00-program-input-integrity).
 Продолжить **S01** от [DR-0083](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md):
 Protocol signed source/floor producer и independent vectors проверены; native
-protected custody реализован и проверен 29/29, final full XNode 897 pass / 1 B8
-fail / 0 skips. [Native checkpoint](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md)
+protected custody реализован и проверен 29/29; последний full XNode после
+[read-uncertainty fix](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-7--native-read-uncertainty-preserves-signed-custody)
+901 pass / 1 B8 fail / 0 skips. [Native checkpoint](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md)
 фиксирует границы recovery, concurrency и isolated external smoke. Это ещё не
 активированный node consumer. Нельзя включать старую PMA1/P04 composition.
 Закрыть остальные lifecycle/compaction contracts, затем подключать current node

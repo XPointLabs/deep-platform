@@ -4,6 +4,28 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: native read uncertainty, no false corruption latch
+
+- XNode `76dd0dbc50e861d22da7b9f8b3dc060142c012f3`: временный I/O/access
+  failure до capture signed inventory/claims больше не создаёт permanent fault
+  marker и не перемещает valid state в quarantine. Операция всё ещё rejects;
+  после unlock original signatures/reservations/results проверяются заново.
+- Два actual native-lock regressions воспроизвели false quarantine/latch до
+  исправления. Final 4/4: lock/unlock + exact replay/cold restart и реальные
+  corrupted signatures с persistent quarantine/restart rejection. Нет новых
+  keys, wire/API, legacy adapter, trusted-time bypass или assertion weakening.
+- Unmodified claim/journal/lineage selection 45/45 не объявляется исправлением
+  предыдущего intermittent MoveFileEx access-denied/необъяснённого non-success.
+  Final source build 0 warnings / 0 errors; full 901 pass / 1 B8 fail / 0 skips.
+  Isolated real-Xray smoke, 10 runner/contract tests, runtime checks и secret scan
+  проходят. Только временные containers/volumes удалены; deep-dev сохранён.
+- B8 source investigation подтвердил reusable-only DR37/38 authoring и
+  отсутствующий signed public one-time commitment. Kind2 parser не закрывает
+  producer/consumer; fixture и release blocker остаются failing. Новые bytes,
+  версии или crypto решения по этому исследованию не введены. Production,
+  devices, node keys и operator secrets не затронуты. Commands/mapping/digests:
+  [Checkpoint 7](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-7--native-read-uncertainty-preserves-signed-custody).
+
 ## 2026-10-03 — S01: native revocation custody
 
 - XNode `2843169d80c9f950173f834339b28aba526bcc9c` подключает existing
