@@ -1,6 +1,6 @@
-# DID2 mailbox authorization — Protocol source checkpoint
+# DID2 mailbox authorization — connected source checkpoint
 
-Date: 2026-10-03. Status: Protocol and owned-client source/test milestone, not runtime activation.
+Date: 2026-10-03. Status: Protocol/client/issuer-consumer source/test milestones, not runtime activation.
 Owner: Mr. X. `deviceDeliveryVerified=false`; no release qualification claimed.
 
 ## Exact producer and normative inputs
@@ -95,3 +95,55 @@ admission with the current protected monotonic grant/holder/replay/local-exit
 boundary and grant-bound peer quorum. XNode was inspected only, not edited or
 deployed. Physical contacts, messages, remote attachments/images and governed
 groups remain unqualified; the release is not ready for publication.
+
+## Registry retirement and private grant HTTP increment
+
+- XNode consumer: `b2daecc81e4284b81e297f21b6ffc5061c62d394`.
+- Registry issuer/journal composition: `5fe3ae3ef39e28d727ce9685239e6cc12aeb1a37`.
+- The node private grant HTTP client and contact dispatcher decode only XMC2,
+  enforce exact current response bounds and original XMG1 binding, and redact
+  malformed-format failures. Old magic/size, foreign operation, compressed,
+  wrong-type/status, unknown-length, truncated and trailing responses reject.
+- The connected two-store publication/resolve/grant/retry test also runs through
+  the actual HTTP client into the signed in-process issuer. A lost reply remains
+  completion-unknown; exact retry retains one issued winner and signed selector.
+  This is not socket/TLS/device delivery evidence.
+- The Registry PMA1 coordinator/endpoints/owner-control/state/software-signer
+  composition and its positive test corpus were deleted. No current grant was
+  synthesized for the retired producer. The production assembly absence and
+  rejection of disabled/unknown retired configuration are tested. The protected
+  Unix socket signer was moved to the current issuer namespace without an alias
+  or framing change. Source removal does not delete production state.
+- The current permanent PostgreSQL winner journal retains only exact XMC2.
+  Explicit operator constraint cutover preserves current winners, immutable
+  scope/request hashes, reservations and counts; incompatible retained winners
+  stop it before a schema change. No conversion, cleanup or reissuance occurs.
+
+Final focused evidence: XNode **60/60**; Registry **15/15**, including two actual
+isolated PostgreSQL cases; external signer **6/6** against real Linux Unix
+sockets via the existing pinned Docker target. No skips. Registry production
+source Release build has zero warnings/errors; affected node source compiles.
+One added DB test initially used a parameterized multi-command statement not
+accepted by Npgsql; split its setup statements and reran the final 15/15.
+An intermediate HTTP fixture assertion was aligned with the existing outer
+completion-unknown contract while still checking its exact inner cause.
+
+The full Registry test assembly still has **69** compile errors in seven
+directory-era test files referencing removed APIs; none refer to the removed
+mailbox composition or retained signer. It has not passed the final full gate.
+The final package/API/resource/consumer repin remains open. All newly owned
+Registry/node changes are locally committed; no push, deployment, release or
+production DB/keys/floor/config mutation was performed.
+
+Physical observations in this increment: the retained Android diagnostic
+account initially showed verified publication; a fresh UI-triggered network
+retry after VPN ended at `ContactPublication / OnionCompletionUnknown`.
+Recovery remains stored and the protected packages are unchanged. The Windows
+isolated QA window reports an incompatible pre-cutover account; it was read
+only, not reset. Neither observation qualifies physical messages or attachments.
+
+Next connected runtime work is still current protected-time node request
+admission, revocation/replay/local selected exit, grant-bound MIP1 peer mutation
+and quorum. Retired PMA1/P04 **node** composition is not removed by this Registry
+increment. Matched signed successors, current builds and physical contacts,
+two-way text, remote files/images and governed groups remain release blockers.
