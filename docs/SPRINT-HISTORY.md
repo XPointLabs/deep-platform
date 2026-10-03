@@ -4,6 +4,30 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S01: owned send preflight; S00 raw-key observer
+
+- Shared `a6dd5997fa97500138d1dbea1c4ee815ad4411c1`: обязательный protected
+  send root, capacity для нового operation и exact retained route/ciphertext
+  проверяются до holder/grant acquisition. Root recheck через issuer callback
+  не допускает winner adoption/Store при изменении custody; pending XMG остаётся
+  exact retry. Новых wire/schema/API/legacy paths или signing keys нет.
+- Original-source regression доказал лишний grant callback до локального
+  capacity отказа. Три rejection cases проходят; callback/root-change case
+  сохраняет pending-not-winner и не вызывает Store. Это local signed fixture,
+  actual PQ/SQLCipher/owner, не socket/device/remote durability evidence.
+- Full run обнаружил stale directory-floor observer: random raw account key
+  передавался в SQLCipher password mode. Isolated SQLite error 26 воспроизведён;
+  тест открывает actual database существующим current factory. Rollback,
+  corruption, missing-root и recovery assertions сохранены без ослабления.
+- Final focused 6/6; final full Shared source 545 pass / 0 fail / 0 skips;
+  Release build 0 warnings / 0 errors. Documentation gate 174/174, selected
+  source/doc secret scan без findings, UTF-8/local links и diff checks проходят.
+- S01 lifecycle/compaction не закрыт: counter/sequence floors пока зависят от
+  retained entries, capacity всё ещё backpressure. Current node/peer admission,
+  connected two-client/physical и release blockers остаются. Production,
+  devices, operator secrets и deployment не затронуты. Commands/mapping/hashes:
+  [Shared checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md).
+
 ## 2026-10-03 — S00: native read uncertainty, no false corruption latch
 
 - XNode `76dd0dbc50e861d22da7b9f8b3dc060142c012f3`: временный I/O/access

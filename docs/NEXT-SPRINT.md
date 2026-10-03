@@ -26,8 +26,8 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Protocol full 2065 pass / 1 fail / 12 skips; XNode full 901 pass / 1 fail, read uncertainty regressions 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); read I/O больше не создаёт ложный corruption latch; package/current authority, invite/XPP и intermittent Windows replacement открыты |
-| S01 | **В работе: DR-0083, Protocol revocation/floor 49/49; native custody 29/29, node admission/peer consumers ещё отсутствуют** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md); grant/send/route settlement, compaction и application receipt contracts открыты |
+| S00 | **В работе: Shared full 545/545; Protocol full 2065 pass / 1 fail / 12 skips; XNode full 901 pass / 1 fail, read uncertainty regressions 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Shared checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md#s00-fixture-correction), [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); stale raw-key observer исправлен без изменения rollback assertions; package/current authority, invite/XPP и intermittent Windows replacement открыты |
+| S01 | **В работе: DR-0083, Protocol revocation/floor 49/49; native custody 29/29; Shared send preflight исправлен, full 545/545; node admission/peer consumers ещё отсутствуют** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [Shared ordering/callback evidence](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md); grant/send/route settlement, compaction и application receipt contracts открыты |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
@@ -141,6 +141,11 @@ protected custody реализован и проверен 29/29; последн
 активированный node consumer. Нельзя включать старую PMA1/P04 composition.
 Закрыть остальные lifecycle/compaction contracts, затем подключать current node
 admission и проверять issuer→node→client одним сценарием.
+Shared preflight теперь rejects full/new или changed retained route/body до
+grant acquisition и rechecks protected send root через issuer callback. Это
+ordering correction, не renewal/retirement: удалять entries без сохранения
+counter/sequence floors нельзя. Full Shared 545/545; фактические границы и
+остаток — в [checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md).
 Подробные owners, gates и шаблон задания находятся только в едином плане.
 
 Аудит разрешил documentation/architecture consolidation, а не возобновление
