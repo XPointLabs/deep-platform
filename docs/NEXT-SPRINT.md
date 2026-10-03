@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Статус на момент аудита | Что закрывает |
 | --- | --- | --- |
-| S00 | **Следующий запуск** | Current fixtures, isolated DB, классификация node/Registry failures и root governance drift |
+| S00 | **В работе: свежий XNode 19 → 13 failures; Integration 452/452** | [Первый checkpoint](../xnode/docs/testing/s00-node-baseline-2026-10-03.md); оставшиеся current fixtures, isolated DB, Registry classification и root governance drift |
 | S01 | **Открыт; анализ параллельно S00** | Revocation/admission, grant/send/route settlement и compaction contracts |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -64,8 +64,12 @@ S09 проверяет сохранность и автоматическое в
 
 ## Следующий запуск Codex
 
-Начать **S00**: exact heads/graphs → signed current fixtures → isolated
-PostgreSQL → полный re-run/classification. Параллельно исследовать **S01**,
+Продолжить **S00**: заменить synthetic XPA fixture в 13 facade-сценариях,
+отдельно согласовать отсутствующий current invite prerequisite; затем current
+XPP/Registry fixtures → isolated PostgreSQL → полный re-run/classification и
+root governance drift. Первый свежий XNode checkpoint — 841 pass / 13 fail,
+без skips; подробная классификация и границы evidence — по ссылке в строке S00.
+Параллельно исследовать **S01**,
 но не писать node admission до закрытого revocation/time contract.
 Подробные owners, gates и шаблон задания находятся только в едином плане.
 

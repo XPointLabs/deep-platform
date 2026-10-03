@@ -4,6 +4,22 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: свежая node baseline и подписанные fixtures
+
+- Новый полный source-cutover Release прогон воспроизвёл 19 node failures.
+  После ограниченного test-only repair: ProfileGenerator 107/107, Unit
+  282 pass / 13 fail, Integration 452/452; без skips. Full command exit 1.
+- HTTP timeout/wrong-peer сценарии теперь достигают handler с подписанным DID2
+  placement; отдельный negative case сохраняет pre-HTTP fail-closed boundary.
+  Source-text/reflection ожидания заменены текущими DI/typed API проверками.
+- Durable publication/restart и exact-request conflict перенесены в Integration
+  с настоящей DID2 ceremony/verifier. Forged witness не резервирует authority,
+  не мутирует store и не мешает последующей valid публикации.
+- [Sanitized evidence и классификация всех 19 случаев](../xnode/docs/testing/s00-node-baseline-2026-10-03.md).
+  13 facade fixtures ещё устаревшие; current invite prerequisite требует
+  сверки с contract. S00/релиз не закрыты; runtime/prod/devices не изменены,
+  снятый admission/journal experiment не возвращён.
+
 ## 2026-10-03 — независимый source audit и консолидация документации
 
 - [Аудит](architecture/ARCHITECTURE-AUDIT-2026-10-03.md) отделил viable
