@@ -24,9 +24,9 @@ Production среда в этом аудите не проверялась и н
 
 ## Очередь
 
-| Этап | Статус на момент аудита | Что закрывает |
+| Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Shared full 546/546; Protocol full 2067 pass / 1 fail / 12 skips; XNode full 901 pass / 1 fail, read uncertainty regressions 4/4; прежние focused 40 pass / 2 fail не закрыты; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Shared checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md#s00-fixture-correction), [latest Shared/Protocol gates](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md#commands-and-gates), [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node checkpoints](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); stale raw-key observer исправлен без изменения rollback assertions; package/current authority, invite/XPP и intermittent Windows replacement открыты |
+| S00 | **В работе: Shared full 546/546; Protocol full 2067 pass / 1 fail / 12 skips; XNode full 907 pass / 1 B8 fail, native replacement 6/6, connected 49/49 и шесть concurrent repeats проходят; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Shared checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md#s00-fixture-correction), [latest Shared/Protocol gates](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md#commands-and-gates), [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [native replacement](../xnode/docs/testing/s00-native-replacement-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); actual error 5 связан с concurrent Unknown, bounded same-file retry проверен без ACL/source repair; процесс-источник denial не установлен; package/current authority и invite/XPP открыты |
 | S01 | **В работе: DR-0083/0084; Protocol revocation/floor 49/49, settlement boundary/registry 26/26; native custody 29/29; Shared exact unknown retry при 512 occupied slots проходит; full 546/546; node admission/peer consumers отсутствуют** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); local format/API, runtime compaction/renewal, object-horizon integration и application receipt contracts открыты |
 | S02 | Заблокирован S01 | Current XNode admission вместо PMA1/P04 и host UTC |
 | S03 | Заблокирован S02 | Grant-bound peer mutation, отдельные ID/key, durable quorum |
@@ -75,90 +75,28 @@ S09 проверяет сохранность и автоматическое в
 
 ## Следующий запуск Codex
 
-Продолжить **S00**: current XPP fixture migration и Windows storage investigation.
-ONION terminal metadata/schema/checker согласованы с уже принятыми DR-0049/0079/0081.
-Фреймы, positive bytes/hashes и 18 hostile classes не изменены. Новый parity test
-воспроизвёл четыре stale rows; после исправления privacy suite 64/64, final full
-Protocol 2016/1/12. Reviewed repin затронул один document source hash и derived
-registry digest, 174 anchors без изменений; strict registry/ONION проходят.
-Это не signed authority, runtime activation или device evidence:
-[текущий ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md).
-Protocol: пять stale XPU fixtures переведены на V2; reviewed responder API snapshot
-сверен с DR-0025/0026. Focused 40/40; full 2007/1/12, remaining package failure —
-retired MCG2, production graph — retained MAU2 consumer. Семь contact-негативов
-исполняются; два root contact/crypto consistency gate исправлены по approved
-inputs без repin. Ownership mappings и manifest integrity проходят, но не
-доказывают executable/native/physical acceptance. Подробности и skip classification:
-[Protocol checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md).
-Registry reader/DB закрыты полным source прогоном; 6 Windows skips отдельно
-прошли в actual Linux socket lane. Это не package/physical qualification.
-XPP audit подтвердил unsafe construction sealed authority через
-`GetUninitializedObject` в `PreKeyInventoryTestCapability`: положительные
-opaque-store/XPC cases нельзя считать current signed prekey evidence.
-Перенесены concurrency/exhaustion/last-resort-restart assertions в signed DID2
-claim runtime; исправлен ошибочный unknown на доказанном pre-reservation отказе.
-Checkpoint 5 переносит ещё три unsafe V1 claim scenarios на signed DID2 path:
-whole-wire replay, changed-request conflict и scope rejection до mutation.
-Восемь новых регрессий воспроизвели escape native Win32 errors; после исправления
-claim возвращает Unknown, peer — bodyless unsigned 503, exact reconciliation
-сохраняет ключ/generation. Regression 8/8; combined selection 40 pass / 2 fail:
-один native access denied, один rejected non-success result с непроверенной
-первопричиной. Full source 870 pass / 1 invite fail / 0 skips (871) не закрывает
-эти падения. Local external smoke и multi-node проходят с real Xray, но privacy
-без verified authority остаётся 503; это не delivery/device qualification.
-Подробности, mapping и digests —
-[Checkpoint 5](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-5--current-claim-bindings-and-native-io-uncertainty).
-Предыдущие lineage/Windows наблюдения сохранены в checkpoint 4; root cause
-storage nondeterminism не выяснена и не исправлена новым error containment.
-Checkpoint 6 заменил все восемь cases старого `ContactPreKeyXpc1ResponseTests`
-на current signed scenarios и сохранил обе contract boundaries. Удалён его
-514-line fabricated-capability fixture. Два inner-signature attacks проходят
-при доказанно правильной outer HTTP authentication; Unknown/reopen/exact retry
-сохраняют исходный ключ. XIC1 duplicate signer отклоняется до reservation;
-полностью staged signed manifest с неверной DPK2 подписью не активируется.
-Новые negatives 4/4; full 868 pass / 1 B8 fail / 0 skips (869), без удаления
-необъяснённых failures. Local external smoke проходит, не physical delivery.
-Default solution source build обнаружил Debug у out-of-solution Protocol refs;
-проверочный build явно сохраняет Release, package graph этим не закрыт.
-[Checkpoint 6](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-6--current-signed-prekey-negative-paths-no-legacy-response-fixture)
-содержит exact mapping, commands и hashes. Остальные unsafe fixtures ещё открыты.
-Перенести их scenario semantics на actual DID2 inventory/claim path;
-не удалять rotation/quota/replay/recovery coverage и не ослаблять verifier.
-Synthetic XPA fixture удалён; facade-сценарии перенесены на signed DID2 inputs.
-Свежий полный XNode checkpoint — 868 pass / 1 fail, без skips; оставшийся positive
-one-time invite требует current producer/consumer contract (B8), а не обхода
-verifier. Подробная классификация и границы evidence — по ссылке в строке S00.
-Root program input drift закрыт: schema согласована с уже закреплёнными 12
-machine inputs; raw LF aggregate перепривязан после сверки offline issuance
-producer, шестой DPE2 authorization включён в exact document set. Runtime,
-crypto/wire и accepted evidence blobs не изменены. Twelve program guard tests
-и десять contact guards проходят; ClassificationOnly проходит, default
-ProtocolPackageGO по-прежнему fails из-за отсутствующего executable evidence.
-Это input integrity, не package или release qualification. Подробности:
-[governance checkpoint](SPRINT-HISTORY.md#2026-10-03--s00-program-input-integrity).
-Продолжить **S01** от [DR-0083](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md):
-Protocol signed source/floor producer и independent vectors проверены; native
-protected custody реализован и проверен 29/29; последний full XNode после
-[read-uncertainty fix](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#checkpoint-7--native-read-uncertainty-preserves-signed-custody)
-901 pass / 1 B8 fail / 0 skips. [Native checkpoint](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md)
-фиксирует границы recovery, concurrency и isolated external smoke. Это ещё не
-активированный node consumer. Нельзя включать старую PMA1/P04 composition.
-Client semantic settlement/renewal/retirement tables теперь закреплены в
-[DR-0084](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md).
-Следом закрыть necessary local format/API и replay floor compaction producer
-с actual consumers, а также object-horizon/retained-route и оставшиеся node/peer/
-application-receipt contracts; затем current admission и issuer→node→client gate.
-Shared preflight теперь rejects full/new или changed retained route/body до
-grant acquisition и rechecks protected send root через issuer callback. Это
-ordering correction, не renewal/retirement: удалять entries без сохранения
-counter/sequence floors нельзя. Full Shared 545/545; фактические границы и
-остаток — в [checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md).
-Подробные owners, gates и шаблон задания находятся только в едином плане.
+Продолжить **S00**: закрыть current one-time publication prerequisite B8 и
+оставшиеся unsafe XPP/claim fixtures, перенося их сценарии на actual signed DID2
+producer/consumer без удаления quota/replay/rotation/recovery assertions.
+[Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md)
+содержит исходную классификацию. Новый
+[native replacement checkpoint](../xnode/docs/testing/s00-native-replacement-2026-10-03.md)
+связал concurrent non-success с actual Windows error 5, проверил bounded retry
+на native locks и сохраняет постоянный отказ как uncertainty. Это не определяет
+процесс, вызывающий denial, и не обещает успех при любой storage failure.
 
-Аудит разрешил documentation/architecture consolidation, а не возобновление
-production deployment или physical reset. Предыдущие разрешения в historical
-memory/checkpoints не трактуются как разрешение нового действия автоматически.
-Новый implementation запуск работает в границах явной команды пользователя.
+Продолжить **S01** от DR-0083/0084: закрыть necessary local floor/format/API
+с actual consumers, object-horizon/retained-route Retrieve/ACK и оставшиеся
+node/peer/application-receipt contracts. Затем выполнять current admission,
+peer quorum и issuer→node→client gate в порядке единого плана. Не включать
+retired PMA1/P04 composition и не удалять working entries без независимых floors.
+Последние полные результаты и их ограничения находятся в строках S00/S01;
+датированные прогоны — в checkpoints и [SPRINT-HISTORY](SPRINT-HISTORY.md),
+а не в параллельной очереди здесь.
+
+Новый запуск действует в рамках явной команды пользователя. Historical
+checkpoints не разрешают production deployment/reset/publication автоматически.
+Подробные owners, gates и шаблон задания находятся только в едином плане.
 
 ## Как обновлять этот файл
 

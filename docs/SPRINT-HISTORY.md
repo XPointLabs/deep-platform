@@ -4,6 +4,28 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-03 — S00: native Windows replacement budget
+
+- XNode `8db6ddd55dcef55476eca8bcabae35c4512ce638`: bounded retry для той же
+  flushed temporary file при native error 5/32/33, четыре attempts и waits
+  10/20/40 ms. Нет ACL/protection/source repair, destination-based success,
+  нового wire или request lifetime; permanent denial остаётся ошибкой.
+- Неизменённый concurrent сценарий воспроизвёл non-success. Actual barrier
+  observer связал его с `replace:claim-state:Win32Exception:5`, без secret/path
+  logging; процесс-источник denial не установлен. Исходные assertions сохранены.
+- Real Windows lock/read-only/missing-source regressions: before 1 pass / 5 fail,
+  after 6/6. Connected claim/journal/lineage 49/49; шесть отдельных concurrent
+  repeats проходят. Release build 0 warnings / 0 errors; full 907 pass /
+  1 неизменённый B8 prerequisite fail / 0 skips. Package/current admission открыт.
+- Isolated external smoke с real Xray проходит: fixture validation, десять
+  runner/contract tests, hard/soft runtime и manifested secret scan. Удалены
+  только временные containers/volumes; deep-dev сохранён. Linux smoke не
+  квалифицирует Windows syscall или physical business E2E. Production/devices/
+  operator secrets/registered keys не менялись. Mapping, commands и hashes:
+  [checkpoint](../xnode/docs/testing/s00-native-replacement-2026-10-03.md).
+- NEXT-SPRINT сокращён до текущей очереди; dated observations остаются в
+  checkpoints/history. Единый S00–S13 порядок и release blockers сохранены.
+
 ## 2026-10-03 — S01: settlement semantics and capacity/replay boundaries
 
 - Accepted [DR-0084](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md)
