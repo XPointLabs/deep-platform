@@ -26,10 +26,10 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Shared full 546/546; Protocol full 2071 pass / 1 fail / 12 skips; XNode full 1038 pass / 1 B8 fail, ingress 17/17; client/current peer/Retrieve/ACK/revocation 143/143; native replacement 6/6, claim connected 49/49 и шесть concurrent repeats проходят; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Shared checkpoint](../deep-client-shared/docs/testing/s01-send-preflight-2026-10-03.md#s00-fixture-correction), [latest Protocol gates](../deep-protocol/docs/testing/s03-store-settlement-2026-10-04.md), [ONION checkpoint](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact checkpoint](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [native replacement](../xnode/docs/testing/s00-native-replacement-2026-10-03.md), [ingress binding](../xnode/docs/testing/s00-mailbox-ingress-binding-2026-10-03.md), [latest Store-prefix gates](../xnode/docs/testing/s03-store-prefix-2026-10-04.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); assertions сохранены; package graph и invite/XPP открыты |
-| S01 | **В работе: DR-0083/0084; Protocol revocation/floor 49/49, settlement boundary/registry 26/26; native custody 29/29; current native admission candidate 19/19, connected 65/65; Shared exact unknown retry при 512 occupied slots проходит; full 546/546; активные node/peer consumers не подключены** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [native admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); local format/API, runtime compaction/renewal, object-horizon integration и application receipt contracts открыты |
-| S02 | **Native admission соединён с internal Store producer/peer и Retrieve/ACK обеих реплик; полная активация заблокирована S01** | [Admission checkpoint](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [server Store intent](../xnode/docs/testing/s03-server-intent-2026-10-04.md), [current Retrieve](../xnode/docs/testing/s03-current-retrieve-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): оба protected role floor, current source/time, holder/body и реальные replay/outcome/mutation/blob owners. Same-owner scope исключает повторное захватывание native floor locks. Program/DI, общий порядок cursor и distinct ID/key остаются открыты |
-| S03 | **Internal Store/current peer HTTP/quorum, Retrieve/ACK, canonical outcomes и authenticated local Store prefix проверены; Program/DI остаётся заблокирован S02** | [Store-prefix checkpoint](../xnode/docs/testing/s03-store-prefix-2026-10-04.md), [current ACK checkpoint](../xnode/docs/testing/s03-current-ack-2026-10-04.md), [server intent checkpoint](../xnode/docs/testing/s03-server-intent-2026-10-04.md), [client outcome checkpoint](../xnode/docs/testing/s03-client-outcome-2026-10-03.md), [HTTP checkpoint](../xnode/docs/testing/s03-current-peer-http-2026-10-03.md): actual MAU3, exact PRQ2 до effects, saved MQR3 в existing operation ledger; same-scope новый Store не проходит Pending из другого grant, включая intent до mutation. Проверка после holder signature, до replay reservation; original retry восстанавливает settlement без HTTP. Schema 6, reject 3/4/5, без миграции/нового журнала. Current connected 143/143, full 1038 pass / 1 B8 fail, Release build 0 warnings/errors, real-Xray smoke/3-node rehearsal pass. Single-writer client path/admission из DR-0086, startup/recovery, retained-route/object horizon, Program/DI и native distinct ID/key evidence открыты; не physical E2E |
+| S00 | **В работе: Shared full 547/547; Protocol full 2071 pass / 1 fail / 12 skips; XNode full 1043 pass / 1 B8 fail, current mailbox 148/148; ingress 17/17, native replacement 6/6, claim connected 49/49 и шесть concurrent repeats проходят; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Latest Shared gate](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [latest Node gate](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [Protocol gates](../deep-protocol/docs/testing/s03-store-settlement-2026-10-04.md), [ONION](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [native replacement](../xnode/docs/testing/s00-native-replacement-2026-10-03.md), [ingress binding](../xnode/docs/testing/s00-mailbox-ingress-binding-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); assertions сохранены; package graph и invite/XPP открыты |
+| S01 | **В работе: DR-0083/0084/0086; Protocol revocation/floor 49/49, settlement boundary/registry 26/26; native custody 29/29; matching writer/prefix/client candidate проверен, current mailbox 148/148; Shared exact unknown retry при 512 occupied slots проходит, full 547/547; shipping consumers не активированы** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); startup/local format/API, compaction/renewal, object horizon и application receipt contracts открыты |
+| S02 | **Native admission соединён с internal Store producer/peer и Retrieve/ACK обеих реплик; matching writer candidate реализован, активация заблокирована S01** | [Admission checkpoint](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [current Retrieve](../xnode/docs/testing/s03-current-retrieve-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): оба protected role floor, current source/time, holder/body и реальные replay/outcome/mutation/blob owners. Store только у ranked writer; Retrieve/ACK обеих реплик сохранены. Same-owner scope исключает повторный захват native floor locks. Program/DI, retained-route порядок и distinct ID/key остаются открыты |
+| S03 | **Internal Store/current peer HTTP/quorum, Retrieve/ACK, canonical outcomes, authenticated prefix и matching writer проверены; Program/DI заблокирован S02** | [Writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [Store-prefix checkpoint](../xnode/docs/testing/s03-store-prefix-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): actual MAU3, exact PRQ2 до effects, saved MQR3 в existing operation ledger; same-scope Store не проходит Pending другого grant, включая intent до mutation. Store client exit сохраняет authenticated PMS2 rank; non-writer client/peer Store reject до replay/mutation. Schema 6 без миграции/нового журнала. Current connected 148/148, full XNode 1043 pass / 1 B8 fail, Release builds 0 warnings/errors, real-Xray smoke/3-node rehearsal pass. Startup/recovery, retained-route/object horizon, Program/DI и native distinct ID/key evidence открыты; не physical E2E |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
 | S05 | Частичные producer/lifecycle компоненты; gate открыт | Current issuer→node и автоматические signed renewal/time/catch-up |
 | S06 | Не пройден | Два настоящих клиента через real selected-entry/replica endpoints |
@@ -42,7 +42,8 @@ Production среда в этом аудите не проверялась и н
 | S13 | Заблокирован release requirements | Одна artifact matrix, полный evidence catalog и reviews |
 
 Текущий S02/S03 client/peer batch: Protocol `afb09996313516b4e0467fc6d4b71169336c1f19`,
-XNode `6b6e37266d1a843cb0ce88fcbe6c1dcc6c750783`; consumer проверен через
+Shared `485c381280ca9b59d27eba12be43a7eb7d5f782f`,
+XNode `fe190b00211d129890d07d5e9b74331e51ad5c2a`; consumer проверен через
 source-cutover, не через опубликованный package или установленный client.
 
 ## Блокеры, которые нельзя потерять
@@ -52,8 +53,10 @@ source-cutover, не через опубликованный package или ус
   к активным Store/Retrieve/ACK и peer endpoints.
 - **B2:** protected-time/revocation/holder/selected-exit admission и peer proof
   mutation/quorum не замкнуты; node ID и receipt key в старом adapter слиты.
-  Internal Store уже имеет exact durable producer; его per-coordinator cursor
-  не обеспечивает общий порядок при отправке через обе выбранные ноды.
+  Internal Store имеет exact durable producer; matching Shared path и native
+  admission теперь допускают Store только через authenticated PMS2 writer.
+  Это связывает текущий cursor owner с подписанным выбором, но не квалифицирует
+  startup/retained-route порядок или shipping activation.
   Retrieve/ACK используют actual custody обеих реплик; exact ACK batch/quorum
   recovery проверен. Общий порядок/late completion и cross-coordinator ownership
   по-прежнему нужны до активации.
@@ -61,7 +64,9 @@ source-cutover, не через опубликованный package или ус
   фиксирует single-writer/path и closed Store-settlement API. Его
   [local prefix consumer](../xnode/docs/testing/s03-store-prefix-2026-10-04.md)
   уже проверяет signed past commitments до нового replay/cursor, но matching
-  client writer exit и native writer rejection ещё не реализованы: B2 открыт.
+  client writer exit и native writer rejection реализованы в internal candidate;
+  [matching writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md)
+  отделяет локальные проверки от activation и device evidence. B2 остаётся открыт.
   [Pending-prefix guard](../xnode/docs/testing/s03-pending-prefix-2026-10-04.md)
   теперь отклоняет live native Pending ниже continuation cursor до успешного
   outcome. Он не обнаруживает ещё не материализованный remote intent и не
@@ -104,8 +109,8 @@ producer/consumer без удаления quota/replay/rotation/recovery asserti
 на native locks и сохраняет постоянный отказ как uncertainty. Это не определяет
 процесс, вызывающий denial, и не обещает успех при любой storage failure.
 
-Продолжить **S01** от DR-0083/0084/0086: связать canonical writer client exit и
-native Store/peer rejection до replay; затем закрыть necessary local floor/format/API
+Продолжить **S01** от DR-0083/0084/0086: после matching canonical writer client exit
+и native Store/peer rejection закрыть necessary local floor/format/API
 с actual consumers, object-horizon/retained-route Retrieve/ACK и оставшиеся
 node/peer/application-receipt contracts. Current native admission и peer consumers
 уже соединяют protected MGR1 с реальными replay/outcome/mutation/blob owners;
@@ -116,8 +121,8 @@ connected gate. Серверный producer сохраняет exact signed inte
 Retrieve теперь читает actual mutation/blob custody обеих реплик и сохраняет
 canonical MRP1. Client ACK сохраняет whole-batch exact tombstone intent до peer
 effects, per-item MQR3 и final MAR1; lost-response/crash/reopen и pagination-expiry
-recovery проверены без remint. Общий порядок cursor/late completion между
-coordinators, guarded startup, retained-route/object horizon, native distinct ID/key
+recovery проверены без remint. Текущий writer/prefix не заменяет guarded startup,
+retained-route/late-completion порядок, object horizon и native distinct ID/key
 и shipping composition ещё не замкнуты. Затем выполнять current admission,
 peer quorum и issuer→node→client gate в порядке единого плана. Не включать
 retired PMA1/P04 composition и не удалять working entries без независимых floors.
