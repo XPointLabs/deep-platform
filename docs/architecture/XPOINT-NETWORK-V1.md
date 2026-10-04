@@ -963,6 +963,18 @@ Unsettled expiry/retirement, retained-route/descriptor history, object horizon
 and sustained lifecycle remain activation requirements. A bare timeout or new
 grant cannot discard an intent or prove absence of its remote effects.
 
+Under [DR-0087](../survival-program/decisions/DR-0087-current-mailbox-operation-custody.md),
+an independent protected root anchors the existing operation document before
+allocation, including startup before any native mutation. Missing/rolled-back
+data never means an empty first run. New-scope enrollment is explicit and cannot
+repair existing or interrupted custody. A bounded protected pending transition
+can finish only the already-flushed exact next document; it cannot recreate
+intent, nonce or cursor. Native recovery requires a current closed host and both
+role floors, not a synthetic client grant. Local format/implementation belongs
+to the [XNode owner](../../xnode/docs/mailbox-operation-custody.md). Joint rollback
+of the independent protected root and data can be undetected even with an intact
+key ring; it is outside this local guarantee.
+
 ## 10. Route selection
 
 ### 10.1 Entry guards
