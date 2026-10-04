@@ -1,0 +1,29 @@
+{
+  "package": "CONTACT-PUBLICATION-04",
+  "decision": "DR-0089",
+  "status": "FROZEN_TARGET_NOT_ACTIVE",
+  "runtimeActivation": false,
+  "envelopeVersion": 4,
+  "endpoint": "/api/v2/contact-publication-authority",
+  "requestMediaType": "application/vnd.deep.contact-publication-authority-request.v4+octet-stream",
+  "responseMediaType": "application/vnd.deep.contact-publication-authority-response.v4+octet-stream",
+  "minimumRequestBytes": 23322,
+  "maximumRequestBytes": 171614,
+  "minimumResponseBytes": 14682,
+  "maximumResponseBytes": 93092,
+  "publicLocatorBytes": 16,
+  "publicLocatorPosition": "after ownerRetrieveCapability32 and before LP32 exactPriorXpo1",
+  "kinds": [
+    { "id": 1, "name": "PermanentAddress", "publicLocator": "ZERO16", "policy": 9, "usageLimit": 0, "successors": true },
+    { "id": 2, "name": "OneTimeInvite", "publicLocator": "exact nonzero DIA1 tag5", "policy": 10, "usageLimit": 1, "successors": false }
+  ],
+  "registryEnvelopeVersion": 4,
+  "registryGenerationFenceVersion": 2,
+  "registryScope": ["network16", "directoryLookupKey32", "publicationKind1", "locatorHash32", "generation8"],
+  "reusableRouteJournalVersion": 9,
+  "reusableRouteJournalMaximumEntryBytes": 477527,
+  "clientOneTimeCustodyImplemented": false,
+  "forbiddenWitnessInputs": ["exactDIA1", "decryptionKey32", "resolverReadCapability16"],
+  "publisherSigningDomain": "Deep/ContactResolver/V2/publication-publisher",
+  "witnessAndNodeRecordVersions": "unchanged XPA1/XPU1 V2"
+}

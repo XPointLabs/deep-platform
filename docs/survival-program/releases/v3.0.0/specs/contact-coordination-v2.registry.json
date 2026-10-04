@@ -1,6 +1,6 @@
 {
   "package": "CONTACT-COORDINATION-02",
-  "decision": "DR-0079",
+  "decision": "DR-0089",
   "status": "FROZEN_TARGET_NOT_ACTIVE",
   "runtimeActivation": false,
   "outerOnionOperation": 4,
@@ -9,12 +9,12 @@
   "header": { "bytes": 12, "version": 2, "versionOffset": 4, "targetOffset": 6, "reservedOffset": 7, "totalOffset": 8 },
   "requestMagic": "XCA2",
   "responseMagic": "XCS2",
-  "contactMaximumRequestBytes": 171610,
+  "contactMaximumRequestBytes": 171626,
   "contactMaximumSuccessBytes": 131072,
   "targets": [
     { "id": 1, "name": "Route", "requestBodyVersion": 3, "responseBodyVersion": 3, "minimumRequestBodyBytes": 1159, "maximumRequestBodyBytes": 25065, "priorInviteBytes": 611, "minimumPriorRouteBytes": 4143, "maximumPriorRouteBytes": 23295, "minimumResponseBodyBytes": 2584, "maximumResponseBodyBytes": 15179, "issuedHeadRecordMaximumBytes": 4096 },
-    { "id": 2, "name": "Publication", "requestBodyVersion": 3, "responseBodyVersion": 3, "minimumRequestBodyBytes": 23306, "maximumRequestBodyBytes": 171598, "minimumPriorCommitBytes": 256, "maximumPriorCommitBytes": 16384, "minimumResponseBodyBytes": 14682, "maximumResponseBodyBytes": 93092 }
+    { "id": 2, "name": "Publication", "requestBodyVersion": 4, "responseBodyVersion": 4, "minimumRequestBodyBytes": 23322, "maximumRequestBodyBytes": 171614, "publicOneTimeLocatorBytes": 16, "minimumPriorCommitBytes": 256, "maximumPriorCommitBytes": 16384, "minimumResponseBodyBytes": 14682, "maximumResponseBodyBytes": 93092 }
   ],
-  "binding": ["exact enclosed route or publication request-V3/response-V3 canonical envelope", "target", "network16", "coordination nonce32", "current NETCODEC PMT2", "XRA1 tag6 random gateway shard", "nonzero route generation binds exact independently authenticated predecessor invite and six-record closure", "nonzero publication generation binds publisher-signed exact prior XPO and independently authenticated journal request/XPU history"],
+  "binding": ["exact enclosed route V3 or publication V4 canonical envelope", "target", "network16", "coordination nonce32", "current NETCODEC PMT2", "XRA1 tag6 random gateway shard", "nonzero route generation binds exact independently authenticated predecessor invite and six-record closure", "nonzero publication generation binds publisher-signed exact prior XPO and independently authenticated journal request/XPU history", "one-time genesis binds public locator16 and exact signed DCR/XIR kind/hash/expiry/usage without the DIA1 key"],
   "notAuthority": ["parsed wrapper", "gateway placement is not mailbox placement", "node access is not DID2 or witness authority"]
 }

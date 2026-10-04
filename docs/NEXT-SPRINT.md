@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: последний Shared full 547/547; свежий Protocol full 2079 pass / 1 fail / 12 skips; свежий XNode full 1117 pass / 1 B8 fail / 0 skips, current mailbox/MGR 198/198, owned one-time object 24/24; последний Protocol registry/parity 11/11; ingress 17/17, native replacement 6/6, claim connected 49/49 и шесть concurrent repeats проходят; Registry 331 pass / 0 fail + 6 Linux signer pass** | [Latest Shared gate](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [latest Node/Protocol full gates](../xnode/docs/testing/s00-one-time-object-2026-10-04.md), [Protocol parity](../deep-protocol/docs/testing/s03-descriptor-keys-2026-10-04.md), [ONION](../deep-protocol/docs/testing/s00-onion-baseline-2026-10-03.md), [contact](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [native replacement](../xnode/docs/testing/s00-native-replacement-2026-10-03.md), [ingress binding](../xnode/docs/testing/s00-mailbox-ingress-binding-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md); assertions сохранены; package graph и invite/XPP открыты |
+| S00 | **В работе: свежие Shared full 547/547; XNode full 1129/1129 / 0 skips, current mailbox/MGR 198/198; connected one-time publication/object/facade/carrier 53/53; Registry full 331 pass / 0 fail / 6 Windows skips, эти же 6 Unix signer cases проходят на Linux; Protocol full 2079 pass / 1 package fail / 12 skips** | [Current full matrix/evidence](../xnode/docs/testing/s00-one-time-publication-2026-10-04.md), [Registry baseline classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md); signed B8 publication/node claim prerequisite проходит без usage-toggle. Root CONTACT/crypto/ONION consistency, governance ClassificationOnly и documentation174 проходят; package graph/evidence mapping, shipping one-time custody и activation ещё открыты |
 | S01 | **В работе: DR-0083/0084/0086/0087; native operation format/host-only recovery реализованы; current mailbox/MGR 198/198, 13 новых receiver custody cases проходят; предыдущий focused custody 30/30; Protocol revocation/floor 49/49, settlement boundary/registry 26/26; native MGR custody 29/29; Shared exact unknown retry при 512 occupied slots проходит, последний full 547/547; shipping consumers не активированы** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [recovery checkpoint](../xnode/docs/testing/s03-store-recovery-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); whole-host startup/health/DI, client retirement formats/API, compaction/renewal, object horizon и application receipt contracts открыты |
 | S02 | **Native admission соединён с internal Store producer/peer и Retrieve/ACK обеих реплик; matching writer, separate descriptor-key candidate и signing custody до replay проверены, активация заблокирована S01** | [Admission checkpoint](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [current Retrieve](../xnode/docs/testing/s03-current-retrieve-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): оба protected role floor, current source/time, holder/body и реальные replay/outcome/mutation/blob owners. Store только у ranked writer; Retrieve/ACK обеих реплик сохранены. Same-owner scope исключает повторный захват native floor locks. Program/DI и retained-route порядок остаются открыты |
 | S03 | **Internal Store/current peer HTTP/quorum, Retrieve/ACK, authenticated prefix/writer, descriptor keys и independent operation custody проверены; Program/DI заблокирован S02** | [Receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [Store-prefix checkpoint](../xnode/docs/testing/s03-store-prefix-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): missing/rollback operations до первой mutation не допускают allocation; Store/Retrieve/ACK и peer требуют protected operation custody до replay и после callbacks, включая cached receipt. Authenticated pending replacement восстанавливает только exact PRQ2/nonce, без remint. Schema 6 и bounded independent root, не второй журнал. Current connected 198/198; свежие full/build и final-source real-Xray smoke/3-node результаты — в S00 checkpoint. Whole-host startup/health/DI, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
@@ -41,14 +41,18 @@ Production среда в этом аудите не проверялась и н
 | S12 | Отдельные компоненты; полный scope не квалифицирован | Carriers/bootstrap/push и relay-only calls |
 | S13 | Заблокирован release requirements | Одна artifact matrix, полный evidence catalog и reviews |
 
-Текущий S00/B8 owned one-time object batch: Protocol `010b94a16d65e46af91a88ba9787ee92b39e513b`,
-Shared `485c381280ca9b59d27eba12be43a7eb7d5f782f`,
-XNode `bf24f288d3a37f5e9f9568f54e5bfd0bf3958b08`; consumer проверен через
-source-cutover, не через опубликованный package или установленный client.
-Protocol/XNode полные gates повторены; package graph и B8 всё ещё failing.
-Shared/Registry в этом batch не менялись; их полные gates не повторялись.
-S02/S03 receiver-custody checkpoint сохраняет свою исходную матрицу/evidence;
-новый batch не активирует Program/DI, публикацию one-time или physical E2E.
+Текущий S00/B8 signed publication batch: Protocol `73f045491c7ca59dfcfdab21d161703e9df21238`,
+Registry `1f20f973a57378b78b536a84711a85a39a6341e6`,
+Shared `59eba8b7ddfd9090a99df51021c72e02b5da394c`,
+XNode `80b605e074a4125a27fff1cf2f47965ecc8b5494`.
+Full Shared 547/547, Node 1129/1129 / 0 skips. Connected selection 53/53;
+Registry full 331 pass / 0 fail / 6 skips, Protocol full 2079 pass / 1 fail /
+12 skips. Consumer проверяется через source-cutover, не через опубликованный
+package или установленный client. Signed one-time publication/node claim теперь
+имеют actual producer/consumer; package graph и весь shipping B8 не закрыты.
+Evidence: [publication checkpoint](../xnode/docs/testing/s00-one-time-publication-2026-10-04.md).
+S02/S03 checkpoints сохраняют свои исходные matrix/evidence; новый batch не
+активирует Program/DI, production provisioning, QR или physical E2E.
 
 ## Блокеры, которые нельзя потерять
 
@@ -113,17 +117,17 @@ S02/S03 receiver-custody checkpoint сохраняет свою исходную
   package/API/resource/evidence repin и actual installed matrix требуют проверки.
 - **B7:** files/groups/calls/multi-device/carriers/full release evidence остаются
   обязательными согласно [V1 scope](architecture/V1-RELEASE-SCOPE.md).
-- **B8:** по [DR-0088](survival-program/decisions/DR-0088-did2-owned-one-time-contact-object.md)
-  добавлен local owned DID2 kind-2 route/object author и exact AEAD restore;
-  [24 signed local cases](../xnode/docs/testing/s00-one-time-object-2026-10-04.md)
-  проходят. Threshold publication envelope V3 по-прежнему permanent-only:
-  отсутствуют key-free signed invitation commitment и protected client custody.
-  Positive node claim/replay сценарий
-  остаётся failing prerequisite. Сверить current contract и закрыть producer/
-  consumer; способность codec разобрать kind 2 не означает runtime support.
-  [B8 investigation](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#b8-investigation-real-missing-one-time-producer-contract)
-  подтверждает отсутствующий signed public locator/object/expiry commitment;
-  usage-limit toggle и передача secret DIA1 threshold не допустимы.
+- **B8:** owned kind-2 route/object/AEAD restore по DR-0088 и matched signed
+  publication по [DR-0089](survival-program/decisions/DR-0089-did2-one-time-publication-coordination.md)
+  реализованы в local connected path. Registry scope теперь различает независимые
+  приглашения, а actual signed node publication/claim/replay/AlreadyClaimed
+  проходит в [53-case selection](../xnode/docs/testing/s00-one-time-publication-2026-10-04.md).
+  Открыты account-owned one-time secret pending/winner custody, client commit
+  verification и exact restore до shipping export/dispatch. Reusable journal9
+  этих прав не даёт. Incomplete intent после expiry короткого request/XPA
+  требует явного lifecycle/reconciliation по S01/S04, а не нового nonce или
+  увеличения срока старой подписи. Matched provision/installed artifacts и physical contact
+  E2E ещё не проверены; usage-limit toggle и DIA1/key в threshold запрещены.
 
 `OfficialXPoint3` не передаёт данные при отсутствии одного обязательного узла;
 S09 проверяет сохранность и автоматическое восстановление после возврата.
@@ -131,15 +135,14 @@ S09 проверяет сохранность и автоматическое в
 
 ## Следующий запуск Codex
 
-Продолжить **S00**: закрыть current one-time publication prerequisite B8 и
-оставшиеся unsafe XPP/claim fixtures, перенося их сценарии на actual signed DID2
-producer/consumer без удаления quota/replay/rotation/recovery assertions.
-Owned kind-2 object уже реализован по DR-0088; следующий B8 batch должен
-согласованно закрыть key-free signed invitation commitment, независимый
-invitation scope в Registry generation fence и protected exact client intent.
-Текущий fence по directory leaf/generation не допускает несколько независимых
-genesis invitations. Не менять frozen V3 bytes на месте, не передавать DIA1/key
-свидетелям и не включать QR/UI до matched publication/custody consumers.
+Продолжить **S00**: завершить protected one-time pending/winner custody B8 и
+закрыть оставшиеся package/evidence failures, сохраняя
+quota/replay/rotation/recovery assertions. DR-0089 уже соединяет public locator,
+signed request, invitation-specific Registry reservation и actual node claim.
+Нельзя выдавать этот local connected path за account-owned intent/export:
+сначала bounded protected secret custody, exact AEAD restore и client two-replica
+commit verification без nonce/key remint; затем matched install/QR/device gate.
+Не добавлять old-envelope readers и не передавать DIA1/key свидетелям.
 [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md)
 содержит исходную классификацию. Новый
 [native replacement checkpoint](../xnode/docs/testing/s00-native-replacement-2026-10-03.md)

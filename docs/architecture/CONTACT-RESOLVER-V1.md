@@ -393,18 +393,31 @@ threshold over the XPoint/OHTTP path. The threshold validates current
 ADC1 V2/ADH1/ADP1 V2 plus exact DID2 commitment, DAB2/DCA1 V2/DCB1 V2/XIR1
 closure, but XPA1 exposes to the invite store only this canonical record:
 
-The bounded authority envelope uses
-`application/vnd.deep.contact-publication-authority-request.v2+octet-stream`
-and `application/vnd.deep.contact-publication-authority-response.v2+octet-stream`.
-The request is `23,302..155,210` bytes and carries one nonce-bound directory
-rollback floor, exact DCA1/DCR1/six-record route closure, operation/generation,
-protected DCR1, publication windows, owner Retrieve capability and the active
-publisher-device signature. The response is `14,682..93,092` bytes and repeats the
-exact network and nonce before `LP32(exactXPU1)`. Both sides reject trailing
-bytes, cross-network records, changed operation IDs and values outside these
-bounds. The client independently verifies the embedded XPA1 threshold, current
-view/placement and every publisher-authored XPU1 body field before it may stage
-the request for publication.
+The sole current bounded authority envelope follows
+[DR-0089](../survival-program/decisions/DR-0089-did2-one-time-publication-coordination.md)
+and [CONTACT-PUBLICATION-04](../survival-program/releases/v3.0.0/specs/contact-publication-v4.registry.json).
+It uses `application/vnd.deep.contact-publication-authority-request.v4+octet-stream`
+and `application/vnd.deep.contact-publication-authority-response.v4+octet-stream`.
+The request is `23,322..171,614` bytes. Its canonical order is
+`version:u16be(4) || flags:u16be(0) || total:u32be || network16 || nonce32 ||
+directoryLeaf32 || minimumHeadGeneration:u64be || minimumHeadHash32 ||
+exactDCA1[473] || LP32(exactDCR1) || LP32(exactSixRecordRouteClosure) ||
+operation32 || generation:u64be || predecessorObjectHash32 ||
+LP32(objectCiphertext) || issuedAt:u64be || expiresAt:u64be ||
+effectiveExpiresAt:u64be || ownerRetrieveCapability32 || publicLocator16 ||
+LP32(exactPriorXPO1) || publisherSignature64`.
+Permanent requests require ZERO16; one-time requests carry only the exact public
+DIA1 tag-5 locator, never DIA1, its key or full invitation hash. Signed DCR/XIR
+already bind kind, expected bundle, network, expiry and usage. One-time issuance
+is policy10/usage1/genesis only; reusable successors retain authenticated prior
+receipts. The entire unsigned request is publisher-signed under the unchanged
+suite-0x0301 V2 publication-publisher domain. V2/V3 envelopes reject; there is no
+dual reader. The response remains `14,682..93,092` bytes with version4 and the
+exact network/nonce before `LP32(exactXPU1)`. Both sides reject trailing bytes,
+cross-network records, changed operation IDs and out-of-bound values. The client
+independently verifies XPA1 threshold, current placement and every authored body
+field. Protected one-time pending/winner custody is still required before
+shipping export/dispatch; a locally verified response does not provide it.
 
 The private backend authenticates its calling node independently under
 [DR-0048](../survival-program/decisions/DR-0048-private-contact-coordination-peer-authentication.md).

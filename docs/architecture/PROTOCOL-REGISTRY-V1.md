@@ -410,8 +410,13 @@ old CONTACT-CODEC test does not authorize contact publication or device E2E.
 [DR-0088](../survival-program/decisions/DR-0088-did2-owned-one-time-contact-object.md)
 adds artifact-specific owned one-time genesis/restore over the unchanged DIA1
 grammar and DCB1/DCR1 V2. It adds no wire/version/domain allocation and does not
-activate publication: V3 coordination remains permanent-only until its missing
-key-free signed commitment and matched custody/consumers are frozen.
+activate publication by itself. The matched key-free coordination now follows
+[DR-0089](../survival-program/decisions/DR-0089-did2-one-time-publication-coordination.md):
+sole V4 request/response, public locator16, invitation-specific Registry scope,
+kind2/usage1 node genesis admission and reusable journal9. Closed metadata is
+[CONTACT-PUBLICATION-04](../survival-program/releases/v3.0.0/specs/contact-publication-v4.registry.json).
+One-time protected client custody, installed artifact/provisioning and physical
+evidence remain activation requirements; historical V3 bytes are not runtime inputs.
 
 ### 6.4 Account-directory transparency records
 

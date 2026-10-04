@@ -1,0 +1,12 @@
+{
+  "package": "CONTACT-PUBLICATION-04",
+  "decision": "DR-0089",
+  "runtimeActivation": false,
+  "input": "actual PQ-root DID2/device/directory/NET owned kind2 ceremony; no fabricated authority",
+  "owner": "xnode/tests/XNode.IntegrationTests/Runtime/DeepIdV2OneTimePublicationTests.cs",
+  "positive": "OwnedV4RequestBindsPublicLocatorWithoutExportingInvitationKey",
+  "signatureTamper": "ChangedPublicLocatorCannotReachWitnessCallbacks",
+  "kindMix": "ReusableEnvelopeRequiresZeroPublicOneTimeLocator",
+  "hostileOwner": "HostileV4FramingAndKindLocatorMixRejectBeforeAuthority",
+  "hostile": ["retired-v3", "retired-v2", "unknown-v5", "reserved", "truncated", "zero-one-time-locator", "trailing", "oversized"]
+}

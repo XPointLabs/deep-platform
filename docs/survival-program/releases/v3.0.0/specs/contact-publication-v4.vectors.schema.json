@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CONTACT-PUBLICATION-04 generated signed vector ownership",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["package", "decision", "runtimeActivation", "input", "owner", "positive", "signatureTamper", "kindMix", "hostileOwner", "hostile"],
+  "properties": {
+    "package": { "const": "CONTACT-PUBLICATION-04" },
+    "decision": { "const": "DR-0089" },
+    "runtimeActivation": { "const": false },
+    "input": { "const": "actual PQ-root DID2/device/directory/NET owned kind2 ceremony; no fabricated authority" },
+    "owner": { "const": "xnode/tests/XNode.IntegrationTests/Runtime/DeepIdV2OneTimePublicationTests.cs" },
+    "positive": { "const": "OwnedV4RequestBindsPublicLocatorWithoutExportingInvitationKey" },
+    "signatureTamper": { "const": "ChangedPublicLocatorCannotReachWitnessCallbacks" },
+    "kindMix": { "const": "ReusableEnvelopeRequiresZeroPublicOneTimeLocator" },
+    "hostileOwner": { "const": "HostileV4FramingAndKindLocatorMixRejectBeforeAuthority" },
+    "hostile": { "const": ["retired-v3", "retired-v2", "unknown-v5", "reserved", "truncated", "zero-one-time-locator", "trailing", "oversized"] }
+  }
+}

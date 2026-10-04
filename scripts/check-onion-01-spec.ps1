@@ -50,13 +50,27 @@ if ((@($groupOperation.requestMagic) -join '|') -cne 'GSW1|GSQ1' -or
 $contactOperation = $terminalOperations[3]
 if ((@($contactOperation.requestMagic) -join '|') -cne 'XPU1|XIQ1|XPK1|XUW1|XUQ1|XMG1|XPP1|XCA2' -or
     (@($contactOperation.successMagic) -join '|') -cne 'XPO1|XIS1|XPC1|XUS1|XMC2|XIC1|XCS2' -or
-    [int]$contactOperation.maxRequestBytes -ne (12 + 171598) -or
+    [int]$contactOperation.maxRequestBytes -ne (12 + 171614) -or
     [int]$contactOperation.maxSuccessBytes -ne 131072) {
     Fail 'ContactResolve exact pairing or bounds'
 }
 # DR-0081 adds the signed selector to MCG3/MCP3; current MAU3 wraps
-# header16 + presentation440 + the unchanged typed body. DR-0079 owns
-# the larger V3 coordination envelope above. Do not infer these from counts.
+# header16 + presentation440 + the unchanged typed body. DR-0089 owns
+# the V4 coordination envelope above. Do not infer these from counts.
+foreach ($name in @('registry','vectors')) {
+    $publicationPath = Join-Path $specRoot "contact-publication-v4.$name.json"
+    $publicationSchema = Join-Path $specRoot "contact-publication-v4.$name.schema.json"
+    if (!(Test-Path -LiteralPath $publicationPath -PathType Leaf) -or
+        !(Test-Path -LiteralPath $publicationSchema -PathType Leaf)) { Fail 'missing DR89 publication freeze' }
+    $publicationRaw = Get-Content -LiteralPath $publicationPath -Raw -Encoding UTF8
+    if (!($publicationRaw | Test-Json -SchemaFile $publicationSchema)) { Fail "DR89 publication $name schema" }
+}
+$publication = Get-Content -LiteralPath (Join-Path $specRoot 'contact-publication-v4.registry.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+if ($publication.envelopeVersion -ne 4 -or $publication.maximumRequestBytes -ne 171614 -or
+    $publication.runtimeActivation -or $publication.clientOneTimeCustodyImplemented -or
+    [int]$contactOperation.maxRequestBytes -ne 12 + [int]$publication.maximumRequestBytes) {
+    Fail 'DR89 publication and outer ContactResolve bounds/activation pairing'
+}
 foreach ($entry in @(
     @{ index = 0; request = (16 + 440 + 81920); response = 776; magic = 'MQR3' },
     @{ index = 1; request = (16 + 440 + 112 + 256); response = (1048576 - 20); magic = 'MRP1' },

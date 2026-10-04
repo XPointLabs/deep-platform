@@ -823,6 +823,10 @@ parsed invitation or local authored object does not authorize publication,
 redemption or consent. Secret invitation/key bytes never enter threshold
 coordination. Exact protected client custody and a publisher-signed key-free
 coordination commitment are required before shipping export or dispatch.
+The current key-free publisher/threshold exchange follows
+[DR-0089](../survival-program/decisions/DR-0089-did2-one-time-publication-coordination.md)
+and [CONTACT-RESOLVER §3.1](CONTACT-RESOLVER-V1.md#31-publish-xpu1).
+It does not replace the unfinished account-owned one-time pending/winner custody.
 
 Supported representations are text, deep link, QR and binary file. V1 never
 appends or embeds DCR1 after DIA1: all DID1/DIA1 representations carry only the

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CONTACT-PUBLICATION-04 closed metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["package", "decision", "status", "runtimeActivation", "envelopeVersion", "endpoint", "requestMediaType", "responseMediaType", "minimumRequestBytes", "maximumRequestBytes", "minimumResponseBytes", "maximumResponseBytes", "publicLocatorBytes", "publicLocatorPosition", "kinds", "registryEnvelopeVersion", "registryGenerationFenceVersion", "registryScope", "reusableRouteJournalVersion", "reusableRouteJournalMaximumEntryBytes", "clientOneTimeCustodyImplemented", "forbiddenWitnessInputs", "publisherSigningDomain", "witnessAndNodeRecordVersions"],
+  "properties": {
+    "package": { "const": "CONTACT-PUBLICATION-04" },
+    "decision": { "const": "DR-0089" },
+    "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
+    "runtimeActivation": { "const": false },
+    "envelopeVersion": { "const": 4 },
+    "endpoint": { "const": "/api/v2/contact-publication-authority" },
+    "requestMediaType": { "const": "application/vnd.deep.contact-publication-authority-request.v4+octet-stream" },
+    "responseMediaType": { "const": "application/vnd.deep.contact-publication-authority-response.v4+octet-stream" },
+    "minimumRequestBytes": { "const": 23322 },
+    "maximumRequestBytes": { "const": 171614 },
+    "minimumResponseBytes": { "const": 14682 },
+    "maximumResponseBytes": { "const": 93092 },
+    "publicLocatorBytes": { "const": 16 },
+    "publicLocatorPosition": { "const": "after ownerRetrieveCapability32 and before LP32 exactPriorXpo1" },
+    "kinds": { "const": [
+      { "id": 1, "name": "PermanentAddress", "publicLocator": "ZERO16", "policy": 9, "usageLimit": 0, "successors": true },
+      { "id": 2, "name": "OneTimeInvite", "publicLocator": "exact nonzero DIA1 tag5", "policy": 10, "usageLimit": 1, "successors": false }
+    ] },
+    "registryEnvelopeVersion": { "const": 4 },
+    "registryGenerationFenceVersion": { "const": 2 },
+    "registryScope": { "const": ["network16", "directoryLookupKey32", "publicationKind1", "locatorHash32", "generation8"] },
+    "reusableRouteJournalVersion": { "const": 9 },
+    "reusableRouteJournalMaximumEntryBytes": { "const": 477527 },
+    "clientOneTimeCustodyImplemented": { "const": false },
+    "forbiddenWitnessInputs": { "const": ["exactDIA1", "decryptionKey32", "resolverReadCapability16"] },
+    "publisherSigningDomain": { "const": "Deep/ContactResolver/V2/publication-publisher" },
+    "witnessAndNodeRecordVersions": { "const": "unchanged XPA1/XPU1 V2" }
+  }
+}
