@@ -26,9 +26,9 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: свежие Shared full 547/547; XNode full 1129/1129 / 0 skips, current mailbox/MGR 198/198; connected one-time publication/object/facade/carrier 53/53; Registry full 331 pass / 0 fail / 6 Windows skips, эти же 6 Unix signer cases проходят на Linux; Protocol full 2079 pass / 1 package fail / 12 skips** | [Current full matrix/evidence](../xnode/docs/testing/s00-one-time-publication-2026-10-04.md), [Registry baseline classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md); signed B8 publication/node claim prerequisite проходит без usage-toggle. Root CONTACT/crypto/ONION consistency, governance ClassificationOnly и documentation174 проходят; package graph/evidence mapping, shipping one-time custody и activation ещё открыты |
+| S00 | **В работе: свежий XNode full 1142/1142 / 0 skips; native terminal focused30/30; предыдущие Shared full 547/547, current mailbox/MGR 198/198, connected one-time publication/object/facade/carrier 53/53; Registry full 331 pass / 0 fail / 6 Windows skips, эти же 6 Unix signer cases проходят на Linux; Protocol full 2079 pass / 1 package fail / 12 skips** | [Native terminal full/evidence](../xnode/docs/testing/s02-native-terminal-2026-10-04.md), [publication matrix](../xnode/docs/testing/s00-one-time-publication-2026-10-04.md), [Registry baseline classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md); signed B8 publication/node claim prerequisite проходит без usage-toggle. Root CONTACT/crypto/ONION consistency, governance ClassificationOnly и documentation174 проходят; package graph/evidence mapping, shipping one-time custody и activation ещё открыты |
 | S01 | **В работе: DR-0083/0084/0086/0087; native operation format/host-only recovery реализованы; current mailbox/MGR 198/198, 13 новых receiver custody cases проходят; предыдущий focused custody 30/30; Protocol revocation/floor 49/49, settlement boundary/registry 26/26; native MGR custody 29/29; Shared exact unknown retry при 512 occupied slots проходит, последний full 547/547; shipping consumers не активированы** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [recovery checkpoint](../xnode/docs/testing/s03-store-recovery-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); whole-host startup/health/DI, client retirement formats/API, compaction/renewal, object horizon и application receipt contracts открыты |
-| S02 | **Native admission соединён с internal Store producer/peer и Retrieve/ACK обеих реплик; matching writer, separate descriptor-key candidate и signing custody до replay проверены, активация заблокирована S01** | [Admission checkpoint](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [current Retrieve](../xnode/docs/testing/s03-current-retrieve-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): оба protected role floor, current source/time, holder/body и реальные replay/outcome/mutation/blob owners. Store только у ranked writer; Retrieve/ACK обеих реплик сохранены. Same-owner scope исключает повторный захват native floor locks. Program/DI и retained-route порядок остаются открыты |
+| S02 | **Native terminal вызывает current Store/Retrieve/ACK с actual protected owner; focused ingress/sealed three-hop 30/30; активация заблокирована S01** | [Native terminal](../xnode/docs/testing/s02-native-terminal-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [Retrieve](../xnode/docs/testing/s03-current-retrieve-2026-10-04.md), [ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): оба protected role floor, current source/time, holder/body и реальные replay/outcome/mutation/blob owners. Store только у ranked writer; Retrieve/ACK обеих реплик сохранены. Same-owner scope исключает повторный захват native floor locks; missing/split DI не допускает старый fallback. Sealed three-hop calls локальные, mailbox peer использует реальный TLS/H2. Program/DI, retained-route/lifecycle и physical endpoints остаются открыты |
 | S03 | **Internal Store/current peer HTTP/quorum, Retrieve/ACK, authenticated prefix/writer, descriptor keys и independent operation custody проверены; Program/DI заблокирован S02** | [Receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [Store-prefix checkpoint](../xnode/docs/testing/s03-store-prefix-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): missing/rollback operations до первой mutation не допускают allocation; Store/Retrieve/ACK и peer требуют protected operation custody до replay и после callbacks, включая cached receipt. Authenticated pending replacement восстанавливает только exact PRQ2/nonce, без remint. Schema 6 и bounded independent root, не второй журнал. Current connected 198/198; свежие full/build и final-source real-Xray smoke/3-node результаты — в S00 checkpoint. Whole-host startup/health/DI, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
 | S05 | Частичные producer/lifecycle компоненты; gate открыт | Current issuer→node и автоматические signed renewal/time/catch-up |
@@ -41,7 +41,7 @@ Production среда в этом аудите не проверялась и н
 | S12 | Отдельные компоненты; полный scope не квалифицирован | Carriers/bootstrap/push и relay-only calls |
 | S13 | Заблокирован release requirements | Одна artifact matrix, полный evidence catalog и reviews |
 
-Текущий S00/B8 signed publication batch: Protocol `73f045491c7ca59dfcfdab21d161703e9df21238`,
+Зафиксированный S00/B8 signed publication batch: Protocol `73f045491c7ca59dfcfdab21d161703e9df21238`,
 Registry `1f20f973a57378b78b536a84711a85a39a6341e6`,
 Shared `59eba8b7ddfd9090a99df51021c72e02b5da394c`,
 XNode `80b605e074a4125a27fff1cf2f47965ecc8b5494`.
@@ -54,11 +54,28 @@ Evidence: [publication checkpoint](../xnode/docs/testing/s00-one-time-publicatio
 S02/S03 checkpoints сохраняют свои исходные matrix/evidence; новый batch не
 активирует Program/DI, production provisioning, QR или physical E2E.
 
+Последующий **Node-only native terminal batch**: XNode
+`3ce981bb750b3465377a418c0d5ddf363343a19f`, остальные child HEAD неизменны.
+Полный XNode 1142/1142 / 0 skips, focused30/30, warnings-as-errors build
+без warnings/errors; real-Xray smoke и three-node rehearsal завершились exit0.
+Полный integration763 занял30m45s. Старые17 ingress fixture cases заменены29
+current cases плюс sealed three-hop1; default full graph не сокращён.
+[Exact scope/receipt hashes](../xnode/docs/testing/s02-native-terminal-2026-10-04.md).
+Onion peer calls в этом scenario in-process; mailbox peer использует actual TLS/H2.
+Docker health/transport не доказывает current contact/mailbox или installed matrix:
+contact503 остаётся fail-closed. Program/DI, lifecycle и physical E2E открыты.
+
 ## Блокеры, которые нельзя потерять
 
 - **B1:** Protocol/Shared перешли к DR-0081, node Program всё ещё подключает
-  retired mailbox authority; current native admission/peer consumers не подключены
-  к активным Store/Retrieve/ACK и peer endpoints.
+  retired mailbox authority и не регистрирует current receiver/coordinator.
+  `NativeMailboxExitDispatcher` уже вызывает только current Store/Retrieve/ACK
+  с required protected operation owner, без retired adapter/ready-DTO fallback;
+  missing/split composition не включает runtime. Sealed three-hop local scenario
+  и два independent TLS/H2 mailbox stores проходят отдельный 1/1 check,
+  [final native-terminal gates](../xnode/docs/testing/s02-native-terminal-2026-10-04.md)
+  прошли: focused30/full1142, zero-warning build и real-Xray transport rehearsals;
+  Program/health, lifecycle и installed/physical endpoints не закрыты.
 - **B2:** protected-time/revocation/holder/selected-exit admission и peer proof
   mutation/quorum не замкнуты; node ID и receipt key в старом adapter слиты.
   Internal Store имеет exact durable producer; matching Shared path и native
