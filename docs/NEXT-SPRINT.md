@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: connected contact Node full1173/1173 и Shared full547/547; subsequent private authority-hop focused61/61, approved-package profile107/107, новый full Node pending; Registry full331/0/6 Windows skips (эти Unix signer cases проходят на Linux); Protocol full2079/1 package fail/12 skips** | [Contact descriptor matrix](../xnode/docs/testing/s00-contact-descriptor-2026-10-04.md), [private HTTP authority-hop](../xnode/docs/testing/s00-private-authority-2026-10-04.md), [Registry baseline](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md). Latest full/build/restore scopes не переносятся на новую source/installed matrix. Root CONTACT/crypto/ONION, governance ClassificationOnly и documentation174 проходят; Protocol package/source graph, shipping one-time custody и activation открыты |
+| S00 | **В работе: connected contact Node full1173/1173 и Shared full547/547; subsequent private authority-hop focused61/61, approved-package profile107/107, новый full Node1187/1187; Registry full331/0/6 Windows skips (эти Unix signer cases проходят на Linux); Protocol full2079/1 package fail/12 skips** | [Contact descriptor matrix](../xnode/docs/testing/s00-contact-descriptor-2026-10-04.md), [private HTTP authority-hop](../xnode/docs/testing/s00-private-authority-2026-10-04.md), [Registry baseline](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md), [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md). Latest full/build/restore scopes не переносятся на новую source/installed matrix. Root CONTACT/crypto/ONION, governance ClassificationOnly и documentation174 проходят; Protocol package/source graph, shipping one-time custody и activation открыты |
 | S01 | **В работе: DR-0083/0084/0086/0087; native operation format/host-only recovery реализованы; current mailbox/MGR 198/198, 13 новых receiver custody cases проходят; предыдущий focused custody 30/30; Protocol revocation/floor 49/49, settlement boundary/registry 26/26; native MGR custody 29/29; Shared exact unknown retry при 512 occupied slots проходит, последний full 547/547; shipping consumers не активированы** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [recovery checkpoint](../xnode/docs/testing/s03-store-recovery-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); whole-host startup/health/DI, client retirement formats/API, compaction/renewal, object horizon и application receipt contracts открыты |
 | S02 | **Native terminal вызывает current Store/Retrieve/ACK с actual protected owner; focused ingress/sealed three-hop 30/30; активация заблокирована S01** | [Native terminal](../xnode/docs/testing/s02-native-terminal-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [Retrieve](../xnode/docs/testing/s03-current-retrieve-2026-10-04.md), [ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): оба protected role floor, current source/time, holder/body и реальные replay/outcome/mutation/blob owners. Store только у ranked writer; Retrieve/ACK обеих реплик сохранены. Same-owner scope исключает повторный захват native floor locks; missing/split DI не допускает старый fallback. Sealed three-hop calls локальные, mailbox peer использует реальный TLS/H2. Program/DI, retained-route/lifecycle и physical endpoints остаются открыты |
 | S03 | **Internal Store/current peer HTTP/quorum, Retrieve/ACK, authenticated prefix/writer, descriptor keys и independent operation custody проверены; Program/DI заблокирован S02** | [Receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [Store-prefix checkpoint](../xnode/docs/testing/s03-store-prefix-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): missing/rollback operations до первой mutation не допускают allocation; Store/Retrieve/ACK и peer требуют protected operation custody до replay и после callbacks, включая cached receipt. Authenticated pending replacement восстанавливает только exact PRQ2/nonce, без remint. Schema 6 и bounded independent root, не второй журнал. Current connected 198/198; свежие full/build и final-source real-Xray smoke/3-node результаты — в S00 checkpoint. Whole-host startup/health/DI, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
@@ -88,14 +88,17 @@ contact в Docker: там missing-authority contact503. Это checkpoint про
 не готовый installed release или отмена B1–B8.
 
 Текущий private authority-hop source: XNode
-`9f9be67cc87a5a3bdc590fc914dde65ab81b1278`, DevOps
-`57ee845aec609466cd6b562aaf11180107ecb5f3`; Protocol/Shared/Registry из предыдущей
+`16a2c4c474daa55f33a7dd55140f9769fd5f86bb` (code gate на
+`9f9be67cc87a5a3bdc590fc914dde65ab81b1278`, subsequent checkpoint-only commit), DevOps
+`54fc3ab6911b8dc2f8cfa97dd7b767c2172cdc44`; Protocol/Shared/Registry из предыдущей
 матрицы неизменны. Final focused61, approved vendor-package profile107, locked
 ProfileGenerator restore и full solution zero-warning Release build проходят.
 Root documentation174 / CONTACT / crypto / ONION / governance ClassificationOnly,
-scoped source/docs/TRX scan18 и real-Xray smoke/three-node rehearsal проходят.
-Новый default full Node ещё выполняется: unit272/profile107 terminal0,
-integration pending. Предыдущий full1173 не evidence нового Node source.
+final scoped source/docs/TRX scan22 и real-Xray smoke/three-node rehearsal проходят.
+Новый default full Node1187/1187 завершён terminal0 без skips:
+unit272/profile107/integration808. DevOps harness16/16 и release-gate contracts51/51
+проходят; actual production-readiness exits1 с10 missing-evidence blockers, не
+release pass. Предыдущий full1173 не evidence нового Node source.
 
 - **B1:** Protocol/Shared перешли к DR-0081, node Program всё ещё подключает
   retired mailbox authority и не регистрирует current receiver/coordinator.
@@ -186,7 +189,7 @@ integration pending. Предыдущий full1173 не evidence нового No
   убрал оба node-ID/key alias guard в grant и route/publication HTTP clients:
   actual verified descriptor/selected placement перед HTTP и currentness после,
   unchanged DR48 public-key headers и grant node-ID transcript. Connected61/61 и
-  host Release zero-warning build проходят; новый full Node ещё выполняется.
+  host Release zero-warning build и новый full Node1187/1187 проходят без skips.
   Fresh isolated restore выявил другой global-cache content hash; vendor archive
   соответствует lock; fresh solution restore/build и отдельный locked
   ProfileGenerator restore/profile107 с task-owned package cache проходят без
@@ -212,7 +215,7 @@ signed request, invitation-specific Registry reservation и actual node claim.
 Нельзя выдавать этот local connected path за account-owned intent/export:
 Client two-replica commit verifier реализован по DR90; connected contact descriptor
 matrix имеет full Node1173/Shared547. Receipt-key composition исправлена локально,
-private HTTP-hop distinct ID/key consumer имеет focused61 и pending full Node;
+private HTTP-hop distinct ID/key consumer имеет focused61 и full Node1187;
 не повторять эти исправления по старому статусу. Package graph и deployed
 provisioning открыты. Затем bounded
 protected secret custody с retained genesis completion и exact AEAD restore,
