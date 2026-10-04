@@ -28,12 +28,12 @@ Production среда в этом аудите не проверялась и н
 | --- | --- | --- |
 | S00 | **В работе: account-owned one-time custody5/5, полный Shared552/552 без skips и Node downstream94/94; Protocol full2080/1 package fail/12 skips. Предыдущая private-hop matrix: Node1187/1187, Registry331/0/6 Windows skips** | [Owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md), [contact descriptor matrix](../xnode/docs/testing/s00-contact-descriptor-2026-10-04.md), [private HTTP authority-hop](../xnode/docs/testing/s00-private-authority-2026-10-04.md), [Registry baseline](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Старые full/build/restore scopes не переносятся на новую source/installed matrix. Root CONTACT/crypto/ONION, governance ClassificationOnly и documentation174 проходят; Protocol package/source graph, public one-time export, installed matrix и activation открыты |
 | S01 | **В работе: DR-0083/0084/0086/0087/0092; native operation custody и startup/readiness hook реализованы; host15/15, Program HTTP3/3, connected239/239. Node reproduction1205/0/0 завершён по TRX; исходный setup PartialFailure1204/1/0 не классифицирован. Независимые Store floors: Shared focused32/32, signed Protocol22/22; full Shared564/0/0 завершён, full Protocol2087/1/12. Shipping consumers не активированы** | [Store floors](../deep-client-shared/docs/testing/s01-owned-counter-floors-2026-10-04.md), [host recovery](../xnode/docs/testing/s01-host-recovery-2026-10-04.md), [revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); complete current Program/DI, global recovery, остальные client retirement formats/API, compaction/renewal, object horizon и application receipt contracts открыты |
-| S02 | **Current DI и actual Program peer pipeline: focused24/24, unit272/272; Store/Retrieve/ACK, pinned TLS/H2, cold replay и HTTP guards проверены. Новый full gate требуется; активация заблокирована S01** | [Current Program и exact evidence](../xnode/docs/testing/s02-current-program-2026-10-04.md), [Native terminal](../xnode/docs/testing/s02-native-terminal-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md). Реальный Program pipeline получает fixture-owned native endpoint; это не supported provisioning/network observer или ONION/device qualification. Production source/provisioning, global recovery, retained-route/lifecycle и physical endpoints остаются открыты |
-| S03 | **Current native peer/quorum, protected custody и Program HTTP cycle проверены; focused24/24. Broader gates и activation открыты** | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Предыдущий full1222/1/0 завершён: единственное падение — duplicated operator package-hash prose, actual pin/lock assertions сохранены и новый unit272 проходит. ACK setup timeout в этом прогоне не повторился, но причина не установлена. Whole-host recovery, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
+| S02 | **Current DI и actual Program peer pipeline: focused24/24, full1224/0/0 terminal0; Store/Retrieve/ACK, pinned TLS/H2, cold replay и HTTP guards проверены. Активация заблокирована S01** | [Current Program и exact evidence](../xnode/docs/testing/s02-current-program-2026-10-04.md), [Native terminal](../xnode/docs/testing/s02-native-terminal-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md). Реальный Program pipeline получает fixture-owned native endpoint; это не supported provisioning/network observer или ONION/device qualification. Production source/provisioning, global recovery, retained-route/lifecycle и physical endpoints остаются открыты |
+| S03 | **Current native peer/quorum, protected custody и Program HTTP cycle проверены; focused24/24, full1224/0/0 terminal0. Activation открыта** | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Previous full1222/1/0 исправлен без удаления actual pin/lock assertions. ACK setup timeout не повторился, но причина не установлена. Whole-host recovery, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
 | S05 | Частичные producer/lifecycle компоненты; gate открыт | Current issuer→node и автоматические signed renewal/time/catch-up |
 | S06 | Не пройден | Два настоящих клиента через real selected-entry/replica endpoints |
-| S07 | Отсутствуют полные runtime paths | Scheduler, offline history/queue, AppAck/read; затем полный 1:1 event/UI scope |
+| S07 | **Read-only local history реализована: Shared focused3/3, MAUI Clean95/95, smoke119/119; полный Shared выполняется. Этап не закрыт** | [Scope/evidence](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md). Fresh authority остаётся обязательной для mutations; scheduler, offline queue, AppAck/read и полный 1:1 event/UI scope открыты. Default Windows zero-warning build не квалифицирует HTTPS/Release/device composition |
 | S08 | **Release composition отсутствует** | Shipping graph без diagnostic-only flag и physical text/receipts |
 | S09 | Не квалифицирован | Sustained delivery, restart/rotation/offline recovery на той же identity |
 | S10 | Local attachment custody есть; remote flow не закрыт | Remote files/images/video/voice/avatar, integrity/resume/UI |
@@ -177,8 +177,10 @@ Protocol full2080/1/12 сохраняет package failure MCG2 и source gate MA
   закрепляет client semantic tables, не implementation. Source codec/node default
   остаются 7-day, sender caps object expiry by grant; matching retention,
   replay и retained-route Retrieve/ACK ещё не реализуют normative object horizon.
-- **B4:** network reconnect не draining outbox/inbox; fresh proofs блокируют
-  local history; AppAck/read события не включены в текущий DID2 consumer.
+- **B4:** network reconnect не draining outbox/inbox; read-only local history
+  отделена от fresh proofs в Shared и diagnostic UI, focused/full UI проходят,
+  новый full Shared ещё выполняется. Offline queue и AppAck/read события не
+  включены в текущий DID2 consumer.
 - **B5:** messaging DI зависит от diagnostic flag, запрещённого для Release;
   исходники исключённых services не доказывают shipping functionality.
 - **B6:** signed PMA2/PMT2 successor provisioning, current issuer readiness,
@@ -296,17 +298,20 @@ precommit scoped secret scan23 проходят. Новая source matrix не �
 Program/DI, release packages, production provisioning или physical endpoints.
 Matching canonical writer client exit и native Store/peer rejection уже проверены;
 
-Последующий current-Program source batch: XNode
-`bbbad7b6f36a9854fdb2c58c035959523a094161`; Shared
-`c5ed60757c5a563cf76f6afc60a3fdd62c52644f` (terminal Shared564), DevOps
-`e484335e5615d017c0579d9c5277f9f486a0f81f` и installer
-`df5fa6127cbd46d8212335adf645326484e922db` (только provisioning docs).
-Final focused23/23 связывает настоящую DI с двумя native stores, pinned TLS/H2,
-Store/Retrieve/ACK и cold exact replay. Initial full Node1220/3/0 не квалифицирует
-final source: две obsolete DI assertions заменены actual HTTP/config cases,
-ACK setup timeout не классифицирован. Fresh final-source full выполняется без
-фильтра с `-m:1`; production activation и physical0/4 остаются закрыты.
-Точная матрица и ограничения — в [current Program checkpoint](../xnode/docs/testing/s02-current-program-2026-10-04.md).
+Текущая source matrix: XNode `01494a54b505701e3cf507a02ec04dc7b5f556fb`
+(terminal checkpoint; product source `d821f8cc2cb7f85458dbce651f638b236901641b`),
+Shared `42aee0d8358d552f43bee256e0fb52cc1ab45e3b`,
+MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`,
+Protocol `8989ad6a787cdc8194106a5130fcfa832608e252`.
+DevOps `e484335e5615d017c0579d9c5277f9f486a0f81f` и installer
+`df5fa6127cbd46d8212335adf645326484e922db` не менялись.
+Unfiltered Node1224/0/0 завершён terminal0; actual Program peer cycle и scope —
+в [checkpoint](../xnode/docs/testing/s02-current-program-2026-10-04.md).
+Новый local-history slice проходит Shared focused3, MAUI Clean95/smoke119 и
+default Windows zero-warning compilation; полный Shared ещё выполняется на
+неизменённом source. Предыдущий Shared564 не квалифицирует новую матрицу.
+[Read-only evidence](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md)
+не закрывает scheduler/queue/AppAck, S06/S08 или physical0/4.
 
 Далее закрыть necessary local floor/format/API
 с actual consumers, object-horizon/retained-route Retrieve/ACK и оставшиеся
