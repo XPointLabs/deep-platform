@@ -1581,7 +1581,7 @@ eleven-tag projection under `SIGINPUT("Deep/XPoint/V1/MGR1/issuer",0x0201,projec
 the core hash is `SHA256-D("Deep/XPoint/V1/MGR1/core",projection)`. Issuance must
 be no earlier than the PMA2 role key's signed valid-from time. The role key
 comes only from the current root-authorized PMA2. The whole snapshot interval
-lies inside that policy, covers the current protected lower/upper interval and
+lies inside that policy, for current admission covers the protected lower/upper interval and
 has issued-at no later than its lower bound. No host UTC authority is accepted.
 
 Snapshot generations exactly increment, name the prior accepted core, retain
@@ -1596,6 +1596,8 @@ empty set, discard serials or reset genesis. Detailed transitions, callback and
 equivocation and explicit late first-enrollment rules are owned once by DR-0083.
 A genuinely new host may pin a fresh signed later generation; an existing floor
 still requires exact sequential catch-up and cannot use enrollment as recovery.
+Reserved issuer signing and historical floor-only catch-up follow DR-0083;
+neither an unsigned intent nor an expired intermediate supplies admission.
 Freshness is bounded eventual
 knowledge, not instant global revocation. Both role sources are required.
 

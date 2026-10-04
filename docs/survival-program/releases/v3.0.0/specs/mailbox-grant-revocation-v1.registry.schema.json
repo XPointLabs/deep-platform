@@ -3,7 +3,7 @@
   "$id": "urn:deep:xpoint:mailbox-grant-revocation-v1:registry",
   "type": "object",
   "additionalProperties": false,
-  "required": ["package", "decision", "status", "runtimeActivation", "owner", "magic", "version", "suite", "fieldCount", "minimumBytes", "maximumBytes", "maximumRevokedSerials", "maximumSnapshotLifetimeSeconds", "fields", "unsignedTags", "signatureDomain", "coreDomain", "signerSource", "timeSource", "floorScope", "floorSource", "initialEnrollment", "serialRetention", "clientWireChanged", "networkDistributionWireChanged", "retiredAuthorityReject", "activationGates"],
+  "required": ["package", "decision", "status", "runtimeActivation", "owner", "magic", "version", "suite", "fieldCount", "minimumBytes", "maximumBytes", "maximumRevokedSerials", "maximumSnapshotLifetimeSeconds", "fields", "unsignedTags", "signatureDomain", "coreDomain", "signerSource", "timeSource", "floorScope", "floorSource", "initialEnrollment", "serialRetention", "historicalCatchUp", "issuerReservation", "clientWireChanged", "networkDistributionWireChanged", "retiredAuthorityReject", "activationGates"],
   "properties": {
     "package": { "const": "CONTACT-CODEC-01/mailbox-grant-revocation-v1" },
     "decision": { "const": "DR-0083" },
@@ -46,6 +46,8 @@
       "existingFloor": "exact replay or sequential verified successor only; no reset or gap bypass"
     } },
     "serialRetention": { "const": "cumulative within exact PMA2 scope; no pruning or serial reuse" },
+    "historicalCatchUp": { "const": "existing protected floor only; exact signed replay or sequential successor; current host and no future not-before; expired candidate advances historical floor with exact readback but no admission capability" },
+    "issuerReservation": { "const": "durably reserve exact existing SIGINPUT before signing; retry identical bytes after uncertainty or expiry; verify actual role signature and committed readback; expired winner is history only and needs a fresh successor" },
     "clientWireChanged": { "const": false },
     "networkDistributionWireChanged": { "const": false },
     "retiredAuthorityReject": { "const": ["PMA1", "PMR1", "P04", "RIP1"] },

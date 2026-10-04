@@ -40,6 +40,8 @@
     "existingFloor": "exact replay or sequential verified successor only; no reset or gap bypass"
   },
   "serialRetention": "cumulative within exact PMA2 scope; no pruning or serial reuse",
+  "historicalCatchUp": "existing protected floor only; exact signed replay or sequential successor; current host and no future not-before; expired candidate advances historical floor with exact readback but no admission capability",
+  "issuerReservation": "durably reserve exact existing SIGINPUT before signing; retry identical bytes after uncertainty or expiry; verify actual role signature and committed readback; expired winner is history only and needs a fresh successor",
   "clientWireChanged": false,
   "networkDistributionWireChanged": false,
   "retiredAuthorityReject": ["PMA1", "PMR1", "P04", "RIP1"],

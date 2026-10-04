@@ -2,7 +2,7 @@
 
 Status: accepted narrow S01 contract; producer/consumer implementation and activation gated
 Date: 2026-10-03
-Amended: 2026-10-04 — explicit late first enrollment; no wire change
+Amended: 2026-10-04 — explicit late first enrollment, reserved issuance and floor-only catch-up; no wire change
 Decision owner: Mr. X (delegated architecture authority)
 
 ## Necessity and scope
@@ -49,7 +49,8 @@ recovery condition, not automatic genesis or account/node-key reset.
 | Exact replay | Same generation and exact core; signature and full current snapshot interval verify | Preserve floor, reverify read-back/currentness. Expiry never becomes replay authority. |
 | Successor | Exactly prior generation+1, exact prior core, nondecreasing issuance time and cumulative serial superset | Atomically install/read back successor; no admission from a merely verified candidate. Interrupted replacement reconciles exact old/new state; unknown writes remain unready. |
 | Stale/gap/fork | Lower generation, missing intermediate, same generation/different signed core, wrong predecessor or removed serial | No floor advance or mutation. Authenticated equivocation/removal latches scope; an unsigned hostile input cannot create a fork latch. Missing history needs bounded verified catch-up, not a floor reset. |
-| Expired prior floor | Protected prior may be expired but its exact scope/signature still verifies; candidate must be fresh | Allows proper successor planning only. Expired predecessor never supplies admission or negative revocation authority. |
+| Expired prior floor | Protected prior may be expired but its exact scope/signature still verifies; ordinary candidate must be fresh | Allows proper successor planning only. Expired predecessor never supplies admission or negative revocation authority. |
+| Historical catch-up | Exact restored existing floor; each signed candidate is exact replay or generation+1 with exact predecessor, nondecreasing issuance and cumulative serials; complete host authority is current, candidate not-before is not in the future | Expired intermediate may advance only the protected historical floor, with exact read-back. A separate closed history plan produces no revocation capability. Interrupted catch-up resumes from the restored step; ordinary admission remains unavailable until a fresh snapshot covers the full current interval. No enrollment, gap bypass or all-history buffer. |
 | Capacity | At most 4,096 distinct serials, no pruning within one PMA2 scope | Backpressure; no truncation/eviction. Operator may fence the whole scope with a properly signed PMA2/PMT2 successor. Existing operation outcomes and custody are retained. |
 | PMA2 rollover | Verified network/root lineage accepts new PMA2 and matching PMT2 | A genuinely new scope requires explicit first enrollment under this table. Old floors remain for recovery; old grants do not gain new membership, lifetime or serial. |
 
@@ -97,6 +98,14 @@ Grant checking additionally revalidates exact MCG3 issuer/network/membership/
 epoch/generation/lifecycle and rejects listed serials. This still is not holder,
 body, local selected-exit, replay, storage or receipt authority.
 
+`PlanCatchUpSuccessorAsync` returns only a closed historical write plan;
+`VerifyHistoricalCommitAsync` validates exact native read-back/current host and
+actual scoped floor hash, returning no admission capability. Ordinary
+`PlanAdvanceAsync` and `VerifyCommittedAsync` keep their fresh-snapshot checks.
+One bounded record per committed step permits catch-up beyond 64 generations
+without accepting a gap or buffering an unbounded chain. The host uses the same
+native concurrency owner, protections and signed-conflict latch for both paths.
+
 S02/S03 must obtain/recheck this capability before replay reservation and after
 peer/storage callbacks, before mutation and receipt release. Floor replacement
 and these checks use the same scoped concurrency owner; no stale capability
@@ -104,6 +113,28 @@ may slip through a concurrently committed successor. Expiry/revocation after
 a reservation preserves pending/unknown and original custody; it releases no
 receipt and deletes no reservation. A revoked grant cannot authorize a new
 mutation or fresh receipt through a cached successful result.
+
+## Issuer reservation and retry
+
+The issuer explicitly provisions its independent scoped ledger. Before the
+external signing callback it durably reserves the exact existing MGR1 SIGINPUT
+payload, generation, predecessor, cumulative serial set and time window. An
+uncertain signature or interrupted write never remints that generation with
+changed bytes. A pending reservation resumes the identical signing input,
+including after its snapshot window expires; completion rechecks current host,
+exact role key, actual signature and exact durable read-back. An expired winner
+is retained historical evidence only, never current readiness or admission; a
+proper fresh successor is then required. No unsigned reservation is distributed
+as a signed snapshot or accepted as the prior native floor.
+
+Protocol `PrepareCurrentAsync` / `RestoreReservedAsync` produce immutable,
+closed authoring data over the unchanged eleven-tag signature projection.
+`CompleteReservedAsync` uses the existing role-signer interface and yields exact
+signed bytes, not a floor/admission capability. The journal, not the signature
+callback or caller-provided candidate, owns the actual protected predecessor,
+reservation exclusion, cumulative ledger and committed winner. Losing that
+issuer state is recovery, never implicit genesis. Metadata/URLs/TLS do not
+replace signed verification or the independently protected journal root.
 
 S05 owns actual role-signer authoring, exact cumulative serial ledger, retained
 successor distribution, renewal and readiness/backpressure. Revocation's
@@ -119,6 +150,8 @@ stale/gap/fork/deletion; expired predecessor vs expired
 candidate; protected-clock rollback/foreign boot/full-interval boundary;
 callback crossing expiry or changing floor; cancellation and owned input bytes;
 native atomic install/read-back/reopen with missing/corrupt protection;
+expired intermediate catch-up with admission rejection, restart beyond 64 steps,
+exact reserved-signing retry after expiry and signer/commit interruption;
 revocation before reservation and after partial commit on current client/peer
 paths. Connected issuer/node/client, operational renewal and physical E2E are
 still mandatory. No release/production activation is granted by this freeze.
