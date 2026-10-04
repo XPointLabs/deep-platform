@@ -27,7 +27,7 @@ Production среда в этом аудите не проверялась и н
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
 | S00 | **В работе: account-owned one-time custody5/5, полный Shared552/552 без skips и Node downstream94/94; Protocol full2080/1 package fail/12 skips. Предыдущая private-hop matrix: Node1187/1187, Registry331/0/6 Windows skips** | [Owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md), [contact descriptor matrix](../xnode/docs/testing/s00-contact-descriptor-2026-10-04.md), [private HTTP authority-hop](../xnode/docs/testing/s00-private-authority-2026-10-04.md), [Registry baseline](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Старые full/build/restore scopes не переносятся на новую source/installed matrix. Root CONTACT/crypto/ONION, governance ClassificationOnly и documentation174 проходят; Protocol package/source graph, public one-time export, installed matrix и activation открыты |
-| S01 | **В работе: DR-0083/0084/0086/0087; native operation custody и actual startup/readiness hook реализованы; host15/15, Program HTTP3/3, connected239/239. Full Node1204/1/0: setup PartialFailure не классифицирован; diagnostic reproduction выполняется. Protocol revocation/floor49/49, settlement boundaries26/26; Shared exact unknown retry при 512 occupied slots проходит, последний full552/552. Shipping consumers не активированы** | [Host recovery](../xnode/docs/testing/s01-host-recovery-2026-10-04.md), [revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); complete current Program/DI, global recovery, client retirement formats/API, compaction/renewal, object horizon и application receipt contracts открыты |
+| S01 | **В работе: DR-0083/0084/0086/0087/0092; native operation custody и startup/readiness hook реализованы; host15/15, Program HTTP3/3, connected239/239. Node reproduction1205/0/0 завершён по TRX; исходный setup PartialFailure1204/1/0 не классифицирован. Независимые Store floors: Shared focused32/32, signed Protocol22/22; новый full Shared выполняется, full Protocol2087/1/12. Shipping consumers не активированы** | [Store floors](../deep-client-shared/docs/testing/s01-owned-counter-floors-2026-10-04.md), [host recovery](../xnode/docs/testing/s01-host-recovery-2026-10-04.md), [revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); complete current Program/DI, global recovery, остальные client retirement formats/API, compaction/renewal, object horizon и application receipt contracts открыты |
 | S02 | **Native terminal вызывает current Store/Retrieve/ACK с actual protected owner; focused ingress/sealed three-hop 30/30; активация заблокирована S01** | [Native terminal](../xnode/docs/testing/s02-native-terminal-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [Retrieve](../xnode/docs/testing/s03-current-retrieve-2026-10-04.md), [ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): оба protected role floor, current source/time, holder/body и реальные replay/outcome/mutation/blob owners. Store только у ranked writer; Retrieve/ACK обеих реплик сохранены. Same-owner scope исключает повторный захват native floor locks; missing/split DI не допускает старый fallback. Sealed three-hop calls локальные, mailbox peer использует реальный TLS/H2. Program/DI, retained-route/lifecycle и physical endpoints остаются открыты |
 | S03 | **Internal Store/current peer HTTP/quorum, Retrieve/ACK, authenticated prefix/writer, descriptor keys и independent operation custody проверены; Program/DI заблокирован S02** | [Receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [Store-prefix checkpoint](../xnode/docs/testing/s03-store-prefix-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): missing/rollback operations до первой mutation не допускают allocation; Store/Retrieve/ACK и peer требуют protected operation custody до replay и после callbacks, включая cached receipt. Authenticated pending replacement восстанавливает только exact PRQ2/nonce, без remint. Schema 6 и bounded independent root, не второй журнал. Current connected 198/198; свежие full/build и final-source real-Xray smoke/3-node результаты — в S00 checkpoint. Whole-host startup/health/DI, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
@@ -266,13 +266,34 @@ terminal239/0/0; full1204/1/0 сохраняет один необъяснённ
 до ACK/revocation branch. Изолированный ACK1 и startup selection20 проходят,
 но не определяют причину. Diagnostic-only checkpoint XNode
 `5d4c5d545b62ed0c98e99ddaf9b09dcd405b7d4f` сохраняет строгие assertions,
-runtime и deadlines; один полный reproduction уже запущен и ещё не завершён.
+runtime и deadlines; полный reproduction завершён1205/0/0 по трём terminal TRX.
+Original test-process exit handle утрачен, watcher exit0 не подменяет его.
+Причина исходного setup PartialFailure остаётся неизвестной; это не доказательство
+исправленного runtime bug. Reproduction использует прежние dependency binaries,
+а не последующий Store-floor source.
 Node1187 предыдущей матрицы не подменяет новый gate.
 [Scope/evidence](../xnode/docs/testing/s01-host-recovery-2026-10-04.md).
 Hook не регистрирует complete current receiver/coordinator graph и не проверяет
 все historical blobs/mutations. Не повторять hook вместо продолжения **S01**:
-local settlement/retirement floor/format/API и единый object-horizon/retained-route
-Retrieve/ACK activation fence остаются следующими открытыми требованиями.
+Независимые protected Store floors по
+[DR-0092](survival-program/decisions/DR-0092-did2-owned-mailbox-counter-floors.md)
+реализованы в существующем root без второго журнала/legacy reader. Shared focused32
+проверяет actual owner rollback/signing и exact retry при полной capacity;
+Protocol signed namespace22 проходит. Full Shared выполняется на финальных
+пересобранных зависимостях; full Protocol2087/1/12 сохраняет MCG2 package failure,
+source graph MAU2 и отдельные evidence skips. Не повторять floor implementation
+вместо продолжения интеграции. Остальные settlement/retirement formats/API,
+compaction/renewal и единый object-horizon/retained-route Retrieve/ACK activation
+fence остаются следующими открытыми требованиями.
+
+Зафиксированная Store-floor source matrix: Protocol
+`8989ad6a787cdc8194106a5130fcfa832608e252`, Shared
+`f60e03406790564b037fdeab3e89faca41dfb46b`, Node
+`d07f930720e049233698548a634b05c46a04b942` (только terminal reproduction checkpoint).
+Финальные Protocol/Shared и downstream XNode host Release builds — zero-warning,
+terminal0; strict registry и dry repins согласованы. Root documentation174 и
+precommit scoped secret scan23 проходят. Новая source matrix не активирует
+Program/DI, release packages, production provisioning или physical endpoints.
 Matching canonical writer client exit и native Store/peer rejection уже проверены;
 далее закрыть necessary local floor/format/API
 с actual consumers, object-horizon/retained-route Retrieve/ACK и оставшиеся
