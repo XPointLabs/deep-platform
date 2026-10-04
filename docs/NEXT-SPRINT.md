@@ -26,7 +26,7 @@ Production среда в этом аудите не проверялась и н
 
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: account-owned one-time custody5/5 и Node downstream94/94; новый full Shared выполняется; Protocol full2080/1 package fail/12 skips. Предыдущая private-hop matrix: Node1187/1187, Registry331/0/6 Windows skips** | [Owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md), [contact descriptor matrix](../xnode/docs/testing/s00-contact-descriptor-2026-10-04.md), [private HTTP authority-hop](../xnode/docs/testing/s00-private-authority-2026-10-04.md), [Registry baseline](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Старые full/build/restore scopes не переносятся на новую source/installed matrix. Root CONTACT/crypto/ONION, governance ClassificationOnly и documentation174 проходят; Protocol package/source graph, public one-time export, installed matrix и activation открыты |
+| S00 | **В работе: account-owned one-time custody5/5, полный Shared552/552 без skips и Node downstream94/94; Protocol full2080/1 package fail/12 skips. Предыдущая private-hop matrix: Node1187/1187, Registry331/0/6 Windows skips** | [Owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md), [contact descriptor matrix](../xnode/docs/testing/s00-contact-descriptor-2026-10-04.md), [private HTTP authority-hop](../xnode/docs/testing/s00-private-authority-2026-10-04.md), [Registry baseline](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Старые full/build/restore scopes не переносятся на новую source/installed matrix. Root CONTACT/crypto/ONION, governance ClassificationOnly и documentation174 проходят; Protocol package/source graph, public one-time export, installed matrix и activation открыты |
 | S01 | **В работе: DR-0083/0084/0086/0087; native operation format/host-only recovery реализованы; current mailbox/MGR 198/198, 13 новых receiver custody cases проходят; предыдущий focused custody 30/30; Protocol revocation/floor 49/49, settlement boundary/registry 26/26; native MGR custody 29/29; Shared exact unknown retry при 512 occupied slots проходит, последний full 547/547; shipping consumers не активированы** | [Revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [recovery checkpoint](../xnode/docs/testing/s03-store-recovery-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); whole-host startup/health/DI, client retirement formats/API, compaction/renewal, object horizon и application receipt contracts открыты |
 | S02 | **Native terminal вызывает current Store/Retrieve/ACK с actual protected owner; focused ingress/sealed three-hop 30/30; активация заблокирована S01** | [Native terminal](../xnode/docs/testing/s02-native-terminal-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [writer](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [Retrieve](../xnode/docs/testing/s03-current-retrieve-2026-10-04.md), [ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): оба protected role floor, current source/time, holder/body и реальные replay/outcome/mutation/blob owners. Store только у ranked writer; Retrieve/ACK обеих реплик сохранены. Same-owner scope исключает повторный захват native floor locks; missing/split DI не допускает старый fallback. Sealed three-hop calls локальные, mailbox peer использует реальный TLS/H2. Program/DI, retained-route/lifecycle и physical endpoints остаются открыты |
 | S03 | **Internal Store/current peer HTTP/quorum, Retrieve/ACK, authenticated prefix/writer, descriptor keys и independent operation custody проверены; Program/DI заблокирован S02** | [Receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [Store-prefix checkpoint](../xnode/docs/testing/s03-store-prefix-2026-10-04.md), [descriptor keys](../xnode/docs/testing/s03-descriptor-keys-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md): missing/rollback operations до первой mutation не допускают allocation; Store/Retrieve/ACK и peer требуют protected operation custody до replay и после callbacks, включая cached receipt. Authenticated pending replacement восстанавливает только exact PRQ2/nonce, без remint. Schema 6 и bounded independent root, не второй журнал. Current connected 198/198; свежие full/build и final-source real-Xray smoke/3-node результаты — в S00 checkpoint. Whole-host startup/health/DI, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
@@ -102,14 +102,15 @@ release pass. Предыдущий full1173 не evidence нового Node sour
 
 Текущая account-owned one-time custody matrix: Protocol
 `6afceb2fc457b2df9ea207f542204de945cbb746`, Shared
-`8ea1dfee456b9ac50559976dba15772eac68b24c` (code gate на
+`13c9b3da35bb94c8690b15d7c320c21885960da3` (code gate на
 `975190365838d63359ce91a6ada899a48b2a7e95`, subsequent checkpoint-only commit);
 XNode/Registry/DevOps неизменны.
 По [DR-0091](survival-program/decisions/DR-0091-did2-owned-one-time-custody.md)
 connected internal owner сохраняет exact DIA1/ciphertext до publication,
 восстанавливает AEAD/current authority и завершает retained genesis без remint.
 Final Shared focused5 и downstream Node94 проходят terminal0 без skips;
-full Shared пока выполняется, старые547 не evidence новой матрицы.
+full Shared552/552 завершён terminal0 без skips,39m39s; старые547 не evidence
+новой матрицы. Final scoped source/docs/TRX scan28 включает полный Shared receipt.
 Protocol full2080/1/12 сохраняет package failure MCG2 и source gate MAU2.
 [Exact scope/evidence](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md).
 Это local source integration, не shipping export, deployed/physical E2E или
@@ -213,8 +214,8 @@ Protocol full2080/1/12 сохраняет package failure MCG2 и source gate MA
   completion и exact restore теперь соединены с internal service/commit path
   по [DR-0091](survival-program/decisions/DR-0091-did2-owned-one-time-custody.md):
   один current journal10 без старого reader. Connected5/5 проверяют crash/reopen,
-  read-back faults, hostile storage и capacity до callbacks; full Shared ещё
-  выполняется. Public account-owned invitation operation/QR export и installed
+  read-back faults, hostile storage и capacity до callbacks; новый full Shared
+  552/552 завершён terminal0 без skips. Public account-owned invitation operation/QR export и installed
   artifacts остаются gated; нельзя объявлять внутренний producer shipping API.
   Incomplete intent после expiry короткого request/XPA
   требует явного lifecycle/reconciliation по S01/S04, а не нового nonce или
@@ -227,8 +228,8 @@ S09 проверяет сохранность и автоматическое в
 
 ## Следующий запуск Codex
 
-Продолжить **S00**: дождаться terminal полного Shared на текущей frozen source
-matrix; затем завершить gated public account-owned invitation operation/export B8
+Продолжить **S00**: terminal полного Shared552 на текущей custody source matrix
+получен; далее завершить gated public account-owned invitation operation/export B8
 и закрыть оставшиеся package/evidence failures, сохраняя
 quota/replay/rotation/recovery assertions. DR-0089 уже соединяет public locator,
 signed request, invitation-specific Registry reservation и actual node claim.
