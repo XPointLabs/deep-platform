@@ -75,6 +75,17 @@ Protocol/downstream/smoke receipts и full Node1161 — в его checkpoint.
 
 ## Блокеры, которые нельзя потерять
 
+Последующий connected contact source batch: Protocol
+`de091f1c87088636f5548fc21e219d28ef0732e6`, XNode
+`66f3f426e51ba86bd7881fd42b39fcc3ffa1e54e`; остальные child HEAD неизменны.
+Final reviewed contact assertions7/7, real TLS/H2/lost-response/reopen/resolve,
+wrong pin/descriptor signatures и current Registry route evidence проверены
+локально. Node default full и Shared production full ещё выполняются;
+Protocol full2079/1/12 сохраняет прежний package fail MCG2, source gate MAU2.
+Новый real-Xray smoke/three-node rehearsal terminal0 не квалифицирует current
+contact в Docker: там missing-authority contact503. Это checkpoint прогресса,
+не готовый installed release или отмена B1–B8.
+
 - **B1:** Protocol/Shared перешли к DR-0081, node Program всё ещё подключает
   retired mailbox authority и не регистрирует current receiver/coordinator.
   `NativeMailboxExitDispatcher` уже вызывает только current Store/Retrieve/ACK
@@ -154,8 +165,14 @@ Protocol/downstream/smoke receipts и full Node1161 — в его checkpoint.
   Исправлены проверки всех protected clock observations; old ID-as-key подписи
   отклоняются. Full Node1161 прошёл; Protocol сохраняет единственный package
   failure MCG2 и production source gate MAU2. Реальный
-  contact receipt producer/facade пока сохраняет ID/key alias — synthetic distinct-key
-  receipts не закрывают этот composition gap. Открыты account-owned one-time
+  contact receipt producer/facade, authenticated peer HTTP и permanent-contact read
+  verifier теперь используют independently signed descriptor keys в
+  [connected contact batch](../xnode/docs/testing/s00-contact-descriptor-2026-10-04.md).
+  Publish/lost-response/reopen/resolve проходят через actual TLS/H2 loopback;
+  wrong pin/foreign signatures отвергаются. Final reviewed assertions7/7,
+  текущие full Node и Shared production ещё выполняются; прежний full1161 не
+  считается evidence нового source. Private authority-hop alias, endpoint
+  provisioning и installed matrix не закрыты. Открыты account-owned one-time
   secret pending/winner custody, retained genesis completion и exact restore
   до shipping export/dispatch. Reusable journal9
   этих прав не даёт. Incomplete intent после expiry короткого request/XPA
