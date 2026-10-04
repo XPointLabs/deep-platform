@@ -3,6 +3,7 @@
 Status: accepted narrow S01 contract; producer/consumer implementation and activation gated
 Date: 2026-10-03
 Amended: 2026-10-04 — explicit late first enrollment, reserved issuance and floor-only catch-up; no wire change
+Amended: 2026-10-05 — bounded raw signed node-control distribution; MGR1 and NCP2 bytes unchanged
 Decision owner: Mr. X (delegated architecture authority)
 
 ## Necessity and scope
@@ -149,7 +150,35 @@ S05 owns actual role-signer authoring, exact cumulative serial ledger, retained
 successor distribution, renewal and readiness/backpressure. Revocation's
 eventual device/route propagation still follows CONTACT-AND-GROUP-PROTOCOL and
 RETENTION-AND-RECOVERY; nodes never receive those identities. This decision does
-not create a public JSON revocation endpoint or activate a private control API.
+not create a public JSON revocation endpoint or grant production activation.
+The candidate node-control transport allocation below is independent of admission.
+
+## Bounded retained control distribution
+
+CONTACT-RESOLVER §3.8 owns the exact HTTP path/grammar and the closed MGR1
+machine registry binds its limits. This is an anonymous read of identity-neutral
+already signed control records, not a contact query, mutable revocation command,
+new authority, or a client fallback. It acquires no proof/nonce, signs nothing,
+never enrolls a floor and does not append a ninth NCP2 chain.
+
+Each request returns one exact retained signed MGR1 under independently current
+complete issuer host authority. `latest` means the highest committed signed
+record, even if an expired winner awaits renewal; it never means an unsigned
+intent or invented empty set. Numeric reads may return expired intermediates.
+All responses still require independent role-signature, scope and protected
+time verification. No HTTP error is authoritative absence of revocations.
+Issuer outage may retain historical reads while its complete host is current;
+loss of current proof/root/policy/time must fail closed.
+
+Node refresh starts from both restored protected floors, never a candidate
+as predecessor. It verifies a fresh current-role signed latest target, then
+commits bounded one-record sequential steps using the existing native owner.
+An interrupted batch resumes from actual read-back, including beyond64 steps.
+No gap bypass, all-history buffer, enrollment fallback or health-triggered
+refresh is allowed. Each flight has a deadline/step budget and leaves admission
+unavailable until both role snapshots and the complete host are current.
+Existing API/package, positive/negative transport, native recovery and physical
+acceptance gates remain mandatory; this amendment is not release activation.
 
 Required tests: both actual role signatures; valid empty and revoked serial;
 wrong network/PMA/key/domain; malformed count/order/size; unknown version/suite;

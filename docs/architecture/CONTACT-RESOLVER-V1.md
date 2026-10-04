@@ -1601,6 +1601,27 @@ neither an unsigned intent nor an expired intermediate supplies admission.
 Freshness is bounded eventual
 knowledge, not instant global revocation. Both role sources are required.
 
+Candidate retained node-control reads use HTTPS GET at exactly
+`/api/v1/node-control/mailbox-revocations/{network}/{policy}/{role}/{generation}`.
+`network` is32 lowercase hex characters for the nonzero network ID; `policy`
+is64 lowercase hex characters for the nonzero current PMA2 core hash; `role`
+is exactly `1` or `2`; `generation` is either `latest` or canonical unpadded
+decimal1..1048576. No query, escaped/case alias, request body, Content-Type or
+Content-Encoding is accepted. Accept is exactly
+`application/vnd.deep.mailbox-grant-revocation.v1+octet-stream`.
+HTTP200 contains one exact signed MGR1, with that exact Content-Type, explicit
+Content-Length327..65863, no Content-Encoding, Cache-Control:no-store and
+X-Content-Type-Options:nosniff. The record must match all requested scope fields
+and a numeric generation exactly. The request has a5-second deadline and one
+non-queuing flight; contention is429, unavailable authority/history is503,
+invalid matched grammar is400 and non-HTTPS is403. Other HTTP results, TLS or
+headers do not authorize a floor or prove absence. No health, signing, observer
+proof or automatic provisioning runs in this read path. Requests carry no
+account, locator, device, holder or node identifier. Node consumers reject
+redirects, automatic decompression, missing/foreign framing and trailing bytes;
+their independently verified current host checks signatures/time and the native
+sequential predecessor before any floor commit. NCP2 remains eight-chain.
+
 ## 4. Rotation, quotas and abuse
 
 Usage and abuse accounting are separate. For `Reusable`, tag 10 and XPU1

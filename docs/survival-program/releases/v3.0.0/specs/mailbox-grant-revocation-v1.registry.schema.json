@@ -3,7 +3,7 @@
   "$id": "urn:deep:xpoint:mailbox-grant-revocation-v1:registry",
   "type": "object",
   "additionalProperties": false,
-  "required": ["package", "decision", "status", "runtimeActivation", "owner", "magic", "version", "suite", "fieldCount", "minimumBytes", "maximumBytes", "maximumRevokedSerials", "maximumSnapshotLifetimeSeconds", "fields", "unsignedTags", "signatureDomain", "coreDomain", "signerSource", "timeSource", "floorScope", "floorSource", "initialEnrollment", "serialRetention", "historicalCatchUp", "issuerReservation", "clientWireChanged", "networkDistributionWireChanged", "retiredAuthorityReject", "activationGates"],
+  "required": ["package", "decision", "status", "runtimeActivation", "owner", "magic", "version", "suite", "fieldCount", "minimumBytes", "maximumBytes", "maximumRevokedSerials", "maximumSnapshotLifetimeSeconds", "fields", "unsignedTags", "signatureDomain", "coreDomain", "signerSource", "timeSource", "floorScope", "floorSource", "initialEnrollment", "serialRetention", "historicalCatchUp", "issuerReservation", "clientWireChanged", "networkDistributionWireChanged", "nodeControl", "retiredAuthorityReject", "activationGates"],
   "properties": {
     "package": { "const": "CONTACT-CODEC-01/mailbox-grant-revocation-v1" },
     "decision": { "const": "DR-0083" },
@@ -50,6 +50,21 @@
     "issuerReservation": { "const": "durably reserve exact existing SIGINPUT before signing; retry identical bytes after uncertainty or expiry; verify actual role signature and committed readback; expired winner is history only and needs a fresh successor" },
     "clientWireChanged": { "const": false },
     "networkDistributionWireChanged": { "const": false },
+    "nodeControl": { "const": {
+      "method": "GET",
+      "path": "/api/v1/node-control/mailbox-revocations/{network}/{policy}/{role}/{generation}",
+      "mediaType": "application/vnd.deep.mailbox-grant-revocation.v1+octet-stream",
+      "network": "nonzero lowercase hex32",
+      "policy": "nonzero PMA2 core hash lowercase hex64",
+      "role": ["1", "2"],
+      "generation": "latest or unpadded decimal1..1048576",
+      "bodyBytes": 0,
+      "response": "one exact retained signed MGR1; no authority from HTTP",
+      "requestTimeoutSeconds": 5,
+      "maximumRecordsPerRequest": 1,
+      "singleFlight": true,
+      "healthConsumesNonce": false
+    } },
     "retiredAuthorityReject": { "const": ["PMA1", "PMR1", "P04", "RIP1"] },
     "activationGates": { "const": ["current closed producer APIs and signed vectors", "native protected floor install/readback/reopen", "current node admission and peer rechecks", "real issuer cumulative authoring/renewal", "connected text and physical E2E"] }
   }
