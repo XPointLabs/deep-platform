@@ -136,6 +136,15 @@ reservation exclusion, cumulative ledger and committed winner. Losing that
 issuer state is recovery, never implicit genesis. Metadata/URLs/TLS do not
 replace signed verification or the independently protected journal root.
 
+On resume, `VerifyReservedPredecessorAsync` rechecks the retained intent against
+that actual signed predecessor before any new signing callback. It rejects a
+changed predecessor, gap, cumulative removal, foreign scope or invalid prior
+signature; expired reservation recovery cannot introduce a signed fork.
+The journal durably retains cumulative additions that arrive while a prior
+intent is pending. They enter the next generation, not rewritten pending bytes.
+One-step completion may return history; this is not a claim that those newer
+additions are already propagated or that the issuer/node is ready.
+
 S05 owns actual role-signer authoring, exact cumulative serial ledger, retained
 successor distribution, renewal and readiness/backpressure. Revocation's
 eventual device/route propagation still follows CONTACT-AND-GROUP-PROTOCOL and
