@@ -24,6 +24,17 @@ Production среда в этом аудите не проверялась и н
 
 ## Очередь
 
+Текущий фокус: завершить уже запущенную квалификацию удаления недоступного
+Node authority-forwarding пути, затем одну вертикаль contact → text send/receive
+→ restart с её обязательными S01/S05 зависимостями. Не открывать новые независимые
+slices до этого сценария. Локальные component receipts не закрывают этап или
+релиз: полностью принятых этапов сейчас0/14, физический matrix0/4. Это процент
+конечной приёмки, а не оценка объёма написанного кода. Детали текущего удаления,
+focused74/0/0, smoke/rehearsal terminal0 и ещё выполняющийся full:
+[Node checkpoint](../xnode/docs/testing/s02-retired-forwarding-2026-10-04.md).
+Full1238 ниже относится к предыдущему Node source; он не квалифицирует новую
+правку. Остальные component/source matrices не изменились.
+
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
 | S00 | **В работе: current Node full1238/0/0, Registry full331/0/7 Windows skips и actual Linux socket7/0/0. Protocol full2087/1 package fail/12 skips; source graph MAU2 снова подтверждён** | [Registry final source](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md), [Node final source](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [Owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md). Все семь Windows socket-skips выполнены отдельно на Linux; это не full Linux suite. Старые full/build/restore scopes не переносятся на новую source/installed matrix. Root CONTACT/crypto/ONION, governance ClassificationOnly и documentation174 проходят; Protocol legacy authority/package/source graph, public one-time export, installed matrix и activation открыты |
@@ -232,8 +243,10 @@ S09 проверяет сохранность и автоматическое в
 
 ## Следующий запуск Codex
 
-Продолжить **S00**: terminal полного Shared552 на текущей custody source matrix
-получен. Public account-owned invitation operation/export B8 и package/evidence
+Текущий узкий фокус указан перед таблицей этапов; следующие checkpoints —
+контекст уже сделанных изменений, не задания на новый параллельный фронт.
+Terminal полного Shared552 на прежней custody source matrix получен.
+Public account-owned invitation operation/export B8 и package/evidence
 closure остаются обязательными, сохраняя
 quota/replay/rotation/recovery assertions. DR-0089 уже соединяет public locator,
 signed request, invitation-specific Registry reservation и actual node claim.
@@ -298,8 +311,10 @@ precommit scoped secret scan23 проходят. Новая source matrix не �
 Program/DI, release packages, production provisioning или physical endpoints.
 Matching canonical writer client exit и native Store/peer rejection уже проверены;
 
-Текущая source matrix: XNode `0ed0ccb11f80aabcef0373dabc4b03086c58935f`
-(checkpoint; product source `b3d37807993b83f705149d319622fc7da0923dd6`),
+Текущая source matrix: XNode `8298161fb0a1afadf7eefff38ecffbfadd14a178`
+(retired forwarding removal; focused74/0/0, smoke/rehearsal terminal0,
+unfiltered full ещё выполняется;
+[checkpoint](../xnode/docs/testing/s02-retired-forwarding-2026-10-04.md)),
 Shared `b238fb4f9bc750185e4fc431b1bf4ae6f33c2b1f`
 (terminal checkpoint; product source `42aee0d8358d552f43bee256e0fb52cc1ab45e3b`),
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`,
@@ -311,9 +326,11 @@ DevOps `e484335e5615d017c0579d9c5277f9f486a0f81f` и installer
 Предыдущий unfiltered Node1224/0/0 завершён terminal0 на product source
 `d821f8cc2cb7f85458dbce651f638b236901641b`; actual Program peer cycle и scope —
 в [checkpoint](../xnode/docs/testing/s02-current-program-2026-10-04.md).
-Новый explicit enrollment source проходит focused32/32, unfiltered full1238/0/0
+Предыдущий explicit enrollment source `b3d37807993b83f705149d319622fc7da0923dd6`
+проходит focused32/32, unfiltered full1238/0/0
 terminal0 и последовательные real-Xray Docker smoke/rehearsal.
-Предыдущие1224 не подменяют новый receipt. Existing key ring и
+Предыдущие1224 не подменяют enrollment receipt;1238 не квалифицируют последующее
+удаление forwarding. Existing key ring и
 signed genesis обязательны; normal startup не enroll/repair. Issuer production
 authoring/distribution/renewal и actual source socket qualification открыты:
 [enrollment evidence](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md).
