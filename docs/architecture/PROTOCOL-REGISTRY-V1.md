@@ -413,7 +413,10 @@ grammar and DCB1/DCR1 V2. It adds no wire/version/domain allocation and does not
 activate publication by itself. The matched key-free coordination now follows
 [DR-0089](../survival-program/decisions/DR-0089-did2-one-time-publication-coordination.md):
 sole V4 request/response, public locator16, invitation-specific Registry scope,
-kind2/usage1 node genesis admission and reusable journal9. Closed metadata is
+kind2/usage1 node genesis admission. Local account custody subsequently follows
+[DR-0091](../survival-program/decisions/DR-0091-did2-owned-one-time-custody.md),
+with the single current journal10 and typed retained one-time genesis APIs.
+This adds no public wire, magic, suite or coordination version. Closed metadata is
 [CONTACT-PUBLICATION-04](../survival-program/releases/v3.0.0/specs/contact-publication-v4.registry.json).
 One-time protected client custody, installed artifact/provisioning and physical
 evidence remain activation requirements; historical V3 bytes are not runtime inputs.

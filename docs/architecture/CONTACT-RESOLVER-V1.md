@@ -1679,5 +1679,10 @@ An expired request/XPA does not undo authenticated past commit evidence while
 the independently current object/route remains valid; it still forbids dispatch
 of that expired request. Loss of current authority or time continuity rejects
 even cached success. Account-owned pending/winner secret custody and exact AEAD
-restore remain mandatory before shipping export. Existing one-time authoring
-and V4 coordination do not provide those rights by themselves.
+restore remain mandatory before shipping export. Their connected local owner
+target is [DR-0091](../survival-program/decisions/DR-0091-did2-owned-one-time-custody.md):
+one current protected route journal, exact secret/ciphertext/request custody,
+independent read-back before callbacks, and exact AEAD restoration before
+threshold/replica dispatch or cached-commit return. No new public wire or secret
+coordination field is added. Existing one-time authoring and V4 coordination
+alone do not provide shipping export rights or installed evidence.

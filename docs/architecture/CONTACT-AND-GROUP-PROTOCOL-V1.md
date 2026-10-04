@@ -826,7 +826,13 @@ coordination commitment are required before shipping export or dispatch.
 The current key-free publisher/threshold exchange follows
 [DR-0089](../survival-program/decisions/DR-0089-did2-one-time-publication-coordination.md)
 and [CONTACT-RESOLVER §3.1](CONTACT-RESOLVER-V1.md#31-publish-xpu1).
-It does not replace the unfinished account-owned one-time pending/winner custody.
+Account-owned exact pending/winner custody follows
+[DR-0091](../survival-program/decisions/DR-0091-did2-owned-one-time-custody.md).
+Retained one-time genesis requires authenticated issuance plus current proof;
+it cannot adopt a predecessor or authorize a successor. The single protected
+route journal owns exact DIA1/ciphertext before publication callbacks and
+independently restores AEAD on resume. Shipping export and installed evidence
+remain gated; source custody alone does not authorize QR or prove delivery.
 
 Supported representations are text, deep link, QR and binary file. V1 never
 appends or embeds DCR1 after DIA1: all DID1/DIA1 representations carry only the
