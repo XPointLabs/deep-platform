@@ -815,6 +815,15 @@ response to the same random redemption operation. Permanent DID1 resolution
 uses its deterministic locator, returns the current DCR1 generation without a
 claim and never bypasses DAB1/DCB1 lineage, signature or closure verification.
 
+Owned DID2 one-time object authoring follows
+[DR-0088](../survival-program/decisions/DR-0088-did2-owned-one-time-contact-object.md).
+The existing DIA1 bytes protect only exact DCR1 V2; current kind-2 XIR1,
+device-signed DCB1 policy 10 and verified identity/support are mandatory. A
+parsed invitation or local authored object does not authorize publication,
+redemption or consent. Secret invitation/key bytes never enter threshold
+coordination. Exact protected client custody and a publisher-signed key-free
+coordination commitment are required before shipping export or dispatch.
+
 Supported representations are text, deep link, QR and binary file. V1 never
 appends or embeds DCR1 after DIA1: all DID1/DIA1 representations carry only the
 exact address/invitation encoding and resolution is mandatory. This avoids a

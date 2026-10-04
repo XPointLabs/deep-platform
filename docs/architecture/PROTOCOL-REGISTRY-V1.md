@@ -407,6 +407,11 @@ uses the existing resolver class. These parsed wrappers are not authority.
 Closed vector/API/package repin and shipping composition remain required.
 DIA1 must be audited against the resulting locator/closure. A green
 old CONTACT-CODEC test does not authorize contact publication or device E2E.
+[DR-0088](../survival-program/decisions/DR-0088-did2-owned-one-time-contact-object.md)
+adds artifact-specific owned one-time genesis/restore over the unchanged DIA1
+grammar and DCB1/DCR1 V2. It adds no wire/version/domain allocation and does not
+activate publication: V3 coordination remains permanent-only until its missing
+key-free signed commitment and matched custody/consumers are frozen.
 
 ### 6.4 Account-directory transparency records
 
