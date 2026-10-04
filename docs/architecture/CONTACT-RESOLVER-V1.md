@@ -1593,7 +1593,10 @@ PMA2 CoreRef, role and issuer key. An expired predecessor can prove that floor,
 but never absence of a current revocation. Missing/stale/gapped/forked state or
 capacity exhaustion makes the role unavailable; it does not manufacture an
 empty set, discard serials or reset genesis. Detailed transitions, callback and
-equivocation rules are owned once by DR-0083. Freshness is bounded eventual
+equivocation and explicit late first-enrollment rules are owned once by DR-0083.
+A genuinely new host may pin a fresh signed later generation; an existing floor
+still requires exact sequential catch-up and cannot use enrollment as recovery.
+Freshness is bounded eventual
 knowledge, not instant global revocation. Both role sources are required.
 
 ## 4. Rotation, quotas and abuse

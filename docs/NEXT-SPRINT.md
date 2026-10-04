@@ -27,16 +27,23 @@ Production среда в этом аудите не проверялась и н
 Текущий фокус: одна вертикаль contact → text send/receive
 → restart с её обязательными S01/S05 зависимостями. Не открывать новые независимые
 slices до этого сценария. Локальные component receipts не закрывают этап или
-релиз: полностью принятых этапов сейчас0/14, физический matrix0/4. Это процент
+релиз: полностью принятых этапов сейчас 0/14, физический matrix 0/4. Это процент
 конечной приёмки, а не оценка объёма написанного кода. Детали текущего удаления,
 focused74/0/0, smoke/rehearsal terminal0 и full1243/0/0 terminal0:
 [Node checkpoint](../xnode/docs/testing/s02-retired-forwarding-2026-10-04.md).
-Full1238 ниже относится к предыдущему Node source; новая правка имеет свой
-full1243 receipt. Остальные component/source matrices не изменились.
+Full1238 ниже относится к предыдущему Node source; удаление retired forwarding
+имеет свой full1243 receipt. Текущий связанный MGR1 lifecycle batch ещё не закрыт:
+DR-0083 согласован с поздним первым подключением новой ноды, Protocol selection
+62/0/0 и Node selection286/0/0 завершены terminal0; поздний initial-pin defect
+исправлен, но это не закрытие lifecycle. Точный scope и receipts:
+[MGR1 lifecycle checkpoint](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md).
+Предыдущие full1243 и Protocol full2087/1/12 не квалифицируют эти новые исходники.
+Issuer authoring/renewal, последовательный catch-up и runtime distribution
+остаются продолжением той же вертикали, не отдельными завершёнными этапами.
 
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: current Node full1243/0/0, Registry full331/0/7 Windows skips и actual Linux socket7/0/0. Protocol full2087/1 package fail/12 skips; source graph MAU2 снова подтверждён** | [Registry final source](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md), [Node final source](../xnode/docs/testing/s02-retired-forwarding-2026-10-04.md), [Owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md). Все семь Windows socket-skips выполнены отдельно на Linux; это не full Linux suite. Старые full/build/restore scopes не переносятся на новую source/installed matrix. Root CONTACT/crypto/ONION, governance ClassificationOnly и documentation174 проходят; Protocol legacy authority/package/source graph, public one-time export, installed matrix и activation открыты |
+| S00 | **В работе: предыдущий Node full1243/0/0; текущие selected Node286/0/0 и Protocol62/0/0. Registry full331/0/7 Windows skips и actual Linux socket7/0/0. Предыдущий Protocol full2087/1 package fail/12 skips; source graph MAU2 снова подтверждён** | [Registry source](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md), [текущий Node source](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md), [Owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md). Все семь Windows socket-skips выполнены отдельно на Linux; это не full Linux suite. Старые full/build/restore scopes не переносятся на новую source/installed matrix. Root CONTACT/crypto/ONION, governance ClassificationOnly и documentation174 проходят; Protocol legacy authority/package/source graph, public one-time export, installed matrix и activation открыты |
 | S01 | **В работе: DR-0083/0084/0086/0087/0092; native operation custody и startup/readiness hook реализованы; host15/15, Program HTTP3/3, connected239/239. Node reproduction1205/0/0 завершён по TRX; исходный setup PartialFailure1204/1/0 не классифицирован. Независимые Store floors: Shared focused32/32, signed Protocol22/22; full Shared564/0/0 завершён, full Protocol2087/1/12. Shipping consumers не активированы** | [Store floors](../deep-client-shared/docs/testing/s01-owned-counter-floors-2026-10-04.md), [host recovery](../xnode/docs/testing/s01-host-recovery-2026-10-04.md), [revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); complete current Program/DI, global recovery, остальные client retirement formats/API, compaction/renewal, object horizon и application receipt contracts открыты |
 | S02 | **Current DI и actual Program peer pipeline: focused24/24; после enrollment batch full1238/0/0 terminal0. Store/Retrieve/ACK, pinned TLS/H2, cold replay и HTTP guards проверены. Активация заблокирована S01** | [Current Program и exact evidence](../xnode/docs/testing/s02-current-program-2026-10-04.md), [current full](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md). Реальный Program pipeline получает fixture-owned native endpoint; это не configured network observer или ONION/device qualification. Production source/provisioning, global recovery, retained-route/lifecycle и physical endpoints остаются открыты |
 | S03 | **Current native peer/quorum, protected custody и Program HTTP cycle проверены; focused24/24, current full1238/0/0 terminal0. Activation открыта** | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [current full](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Previous full1222/1/0 исправлен без удаления actual pin/lock assertions. ACK setup timeout не повторился, но причина не установлена. Whole-host recovery, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
@@ -310,15 +317,14 @@ precommit scoped secret scan23 проходят. Новая source matrix не �
 Program/DI, release packages, production provisioning или physical endpoints.
 Matching canonical writer client exit и native Store/peer rejection уже проверены;
 
-Текущая source matrix: XNode `3d8ace0741fe0615a7d9c87e9f82c7b1b0f0c639`
-(terminal checkpoint; product source `8298161fb0a1afadf7eefff38ecffbfadd14a178`;
-retired forwarding removal; focused74/0/0, smoke/rehearsal terminal0,
-unfiltered full1243/0/0 terminal0;
-[checkpoint](../xnode/docs/testing/s02-retired-forwarding-2026-10-04.md)),
+Текущая source matrix: XNode `5c1509fb42225fd1d0a3141b587522252aef0278`
+(terminal checkpoint; product source `200313a4f2c1c0c99d6770dc685fa95b7e157e89`;
+late MGR1 initial pin; selected286/0/0 terminal0;
+[checkpoint](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md)),
 Shared `b238fb4f9bc750185e4fc431b1bf4ae6f33c2b1f`
 (terminal checkpoint; product source `42aee0d8358d552f43bee256e0fb52cc1ab45e3b`),
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`,
-Protocol `8989ad6a787cdc8194106a5130fcfa832608e252`.
+Protocol `d0c3f9d2dd053f9bb04411c41766e4e8b7098261` (selected62/0/0 terminal0).
 Registry `75aba0c19eb9e6fabd061da2febe38207715df52`
 (checkpoint; product source `dac2c5fd180ac03400a381ccfa7c320d326065c6`).
 DevOps `e484335e5615d017c0579d9c5277f9f486a0f81f` и installer
@@ -330,8 +336,12 @@ DevOps `e484335e5615d017c0579d9c5277f9f486a0f81f` и installer
 проходит focused32/32, unfiltered full1238/0/0
 terminal0 и последовательные real-Xray Docker smoke/rehearsal.
 Предыдущие1224 не подменяют enrollment receipt;1238 не квалифицируют последующее
-удаление forwarding. Existing key ring и
-signed genesis обязательны; normal startup не enroll/repair. Issuer production
+удаление forwarding или новый late-initial-pin source. Предыдущий forwarding
+checkpoint `3d8ace0741fe0615a7d9c87e9f82c7b1b0f0c639` на product
+`8298161fb0a1afadf7eefff38ecffbfadd14a178` имеет focused74/0/0, smoke/rehearsal0
+и unfiltered full1243/0/0; они не переносятся на текущую source matrix.
+Existing key ring и fresh signed initial snapshots по DR-0083 обязательны;
+normal startup не enroll/repair. Issuer production
 authoring/distribution/renewal и actual source socket qualification открыты:
 [enrollment evidence](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md).
 Максимальный canonical MGR1 signing input теперь проходит actual Unix socket;

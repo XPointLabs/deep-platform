@@ -33,6 +33,12 @@
   "timeSource": "complete current host protected monotonic lower/upper interval",
   "floorScope": ["networkId", "pma2CoreReference", "domain", "issuerPublicKey"],
   "floorSource": "exact previously accepted signed snapshot restored from protected host state",
+  "initialEnrollment": {
+    "scope": "explicit genuinely new protected host scope only",
+    "snapshot": "fresh canonical current-role issuer-signed snapshot at any generation >=1",
+    "initialPin": "immutable exact bytes; restored floor rejects lower generation or changed bytes at initial generation",
+    "existingFloor": "exact replay or sequential verified successor only; no reset or gap bypass"
+  },
   "serialRetention": "cumulative within exact PMA2 scope; no pruning or serial reuse",
   "clientWireChanged": false,
   "networkDistributionWireChanged": false,
