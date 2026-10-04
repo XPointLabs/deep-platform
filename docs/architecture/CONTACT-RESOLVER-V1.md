@@ -1655,3 +1655,29 @@ HTTPS as a hidden fallback.
 5. Spam, malformed-token, locator enumeration, padding and timing-negative tests.
 6. Android-to-Windows and Windows-to-Android first contact while recipient is
    offline, with Registry unavailable after verified network bootstrap.
+
+## 7. Owned DID2 one-time publication commitment
+
+Under [DR-0090](../survival-program/decisions/DR-0090-did2-one-time-publication-commit-verification.md),
+the closed `DeepIdV2PublicationCommitVerifier.VerifyOneTimeCommittedAsync` accepts
+only the current verified kind-2 route, `AuthoredDeepIdV2OneTimeContactObject`,
+exact owned V4 request, exact XPU1 and bounded XPO1. Its return type is the existing
+`VerifiedDeepIdV2PublicationCommit`. No caller-selected kind, clock, raw key or
+historical-currentness switch is exposed. The reusable verifier remains kind-1
+only; a one-time genesis cannot adopt a predecessor or nonzero generation.
+
+Capture all candidate/response bytes before callbacks. Require exact signed
+DCA/DCR/route/ciphertext/public-locator bindings, policy10/usage1, authenticated
+publisher and witness threshold, both distinct selected node receipts, and
+current identity/support/placement/time before and after verification. Receipt
+node IDs select signing keys from independently verified descriptor lineage;
+node-ID bytes are not signing keys. An invalid/missing replica signature cannot
+produce a commit. Unknown/retired envelopes or oversized responses reject.
+
+This verifies a past exact durable commitment, not renewed dispatch permission.
+An expired request/XPA does not undo authenticated past commit evidence while
+the independently current object/route remains valid; it still forbids dispatch
+of that expired request. Loss of current authority or time continuity rejects
+even cached success. Account-owned pending/winner secret custody and exact AEAD
+restore remain mandatory before shipping export. Existing one-time authoring
+and V4 coordination do not provide those rights by themselves.
