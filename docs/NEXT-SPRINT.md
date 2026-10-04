@@ -229,8 +229,8 @@ S09 проверяет сохранность и автоматическое в
 ## Следующий запуск Codex
 
 Продолжить **S00**: terminal полного Shared552 на текущей custody source matrix
-получен; далее завершить gated public account-owned invitation operation/export B8
-и закрыть оставшиеся package/evidence failures, сохраняя
+получен. Public account-owned invitation operation/export B8 и package/evidence
+closure остаются обязательными, сохраняя
 quota/replay/rotation/recovery assertions. DR-0089 уже соединяет public locator,
 signed request, invitation-specific Registry reservation и actual node claim.
 Нельзя выдавать этот local connected path за shipping export/device evidence:
@@ -240,8 +240,13 @@ private HTTP-hop distinct ID/key consumer имеет focused61 и full Node1187;
 не повторять эти исправления по старому статусу. Package graph и deployed
 provisioning открыты. Bounded protected secret custody с retained genesis
 completion и exact AEAD restore реализована по DR91 и проверена focused5;
-не повторять её по старому статусу. Далее public owned operation без raw-key
-import и matched install/QR/device gate, без nonce/key remint.
+не повторять её по старому статусу. Public owned operation требует отсутствия
+raw-key import/remint; matched install/QR/device gate выполняется после рабочего
+S06/S08 path по единому DAG, а не становится prerequisite реализации S01.
+Первый text-сценарий использует существующий постоянный контакт; одноразовый
+export не исключён из release scope, но не должен задерживать этот сценарий.
+Package legacy удаляется вместе с заменой реальных consumers, не косметическим
+удалением MCG2/MAU2 строк или ослаблением gate.
 Не добавлять old-envelope readers и не передавать DIA1/key свидетелям.
 [Node baseline](../xnode/docs/testing/s00-node-baseline-2026-10-03.md)
 содержит исходную классификацию. Новый
@@ -250,8 +255,12 @@ import и matched install/QR/device gate, без nonce/key remint.
 на native locks и сохраняет постоянный отказ как uncertainty. Это не определяет
 процесс, вызывающий denial, и не обещает успех при любой storage failure.
 
-Продолжить **S01** от DR-0083/0084/0086: после matching canonical writer client exit
-и native Store/peer rejection закрыть necessary local floor/format/API
+Следующий connected runtime slice — **S01** от DR-0083/0084/0086/0087:
+соединить existing host-only recovery с actual startup/readiness, сохраняя обе
+role leases, independent operation custody и запрет auto-enrollment. Whole-host
+checks не дают activation до закрытия lifecycle/retained-route/horizon fences.
+Matching canonical writer client exit и native Store/peer rejection уже проверены;
+далее закрыть necessary local floor/format/API
 с actual consumers, object-horizon/retained-route Retrieve/ACK и оставшиеся
 node/peer/application-receipt contracts. Current native admission и peer consumers
 уже соединяют protected MGR1 с реальными replay/outcome/mutation/blob owners;
