@@ -124,7 +124,9 @@ Protocol full2080/1/12 сохраняет package failure MCG2 и source gate MA
   и два independent TLS/H2 mailbox stores проходят отдельный 1/1 check,
   [final native-terminal gates](../xnode/docs/testing/s02-native-terminal-2026-10-04.md)
   прошли: focused30/full1142, zero-warning build и real-Xray transport rehearsals;
-  Program/health, lifecycle и installed/physical endpoints не закрыты.
+  [Actual startup/readiness hook](../xnode/docs/testing/s01-host-recovery-2026-10-04.md)
+  теперь соединён с non-enrolling operation recovery; complete current Program/DI,
+  global historical recovery, lifecycle и installed/physical endpoints не закрыты.
 - **B2:** protected-time/revocation/holder/selected-exit admission и peer proof
   mutation/quorum не замкнуты; node ID и receipt key в старом adapter слиты.
   Internal Store имеет exact durable producer; matching Shared path и native
@@ -255,10 +257,17 @@ Package legacy удаляется вместе с заменой реальны�
 на native locks и сохраняет постоянный отказ как uncertainty. Это не определяет
 процесс, вызывающий denial, и не обещает успех при любой storage failure.
 
-Следующий connected runtime slice — **S01** от DR-0083/0084/0086/0087:
-соединить existing host-only recovery с actual startup/readiness, сохраняя обе
-role leases, independent operation custody и запрет auto-enrollment. Whole-host
-checks не дают activation до закрытия lifecycle/retained-route/horizon fences.
+Текущий **S01** startup/readiness slice от DR-0083/0084/0086/0087 соединён
+с actual Program на XNode `77c946eefbd117ece248c7909aa8f6782b1aa4e3`:
+обе role leases, independent operation custody и запрет auto-enrollment сохранены.
+Focused host recovery15 и actual Program HTTP3 проходят; zero-warning Release
+build и final-source real-Xray smoke/three-node rehearsal проходят. Connected/full
+terminal ещё ожидаются; Node1187 предыдущей матрицы не подменяет новый gate.
+[Scope/evidence](../xnode/docs/testing/s01-host-recovery-2026-10-04.md).
+Hook не регистрирует complete current receiver/coordinator graph и не проверяет
+все historical blobs/mutations. Не повторять hook вместо продолжения **S01**:
+local settlement/retirement floor/format/API и единый object-horizon/retained-route
+Retrieve/ACK activation fence остаются следующими открытыми требованиями.
 Matching canonical writer client exit и native Store/peer rejection уже проверены;
 далее закрыть necessary local floor/format/API
 с actual consumers, object-horizon/retained-route Retrieve/ACK и оставшиеся
