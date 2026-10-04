@@ -31,9 +31,9 @@ Production среда в этом аудите не проверялась и н
 | S02 | **Current DI и actual Program peer pipeline: focused24/24, full1224/0/0 terminal0; Store/Retrieve/ACK, pinned TLS/H2, cold replay и HTTP guards проверены. Активация заблокирована S01** | [Current Program и exact evidence](../xnode/docs/testing/s02-current-program-2026-10-04.md), [Native terminal](../xnode/docs/testing/s02-native-terminal-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md). Реальный Program pipeline получает fixture-owned native endpoint; это не supported provisioning/network observer или ONION/device qualification. Production source/provisioning, global recovery, retained-route/lifecycle и physical endpoints остаются открыты |
 | S03 | **Current native peer/quorum, protected custody и Program HTTP cycle проверены; focused24/24, full1224/0/0 terminal0. Activation открыта** | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Previous full1222/1/0 исправлен без удаления actual pin/lock assertions. ACK setup timeout не повторился, но причина не установлена. Whole-host recovery, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
-| S05 | Частичные producer/lifecycle компоненты; gate открыт | Current issuer→node и автоматические signed renewal/time/catch-up |
+| S05 | **Явное new-node enrollment подключено к native DI/source: focused32/32, Docker smoke/rehearsal terminal0; новый full Node выполняется. Gate открыт** | [Scope/evidence](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md). Это не production activation или positive socket qualification configured source. Current issuer→node, MGR1 authoring/distribution и автоматические signed renewal/time/catch-up остаются открыты |
 | S06 | Не пройден | Два настоящих клиента через real selected-entry/replica endpoints |
-| S07 | **Read-only local history реализована: Shared focused3/3, MAUI Clean95/95, smoke119/119; полный Shared выполняется. Этап не закрыт** | [Scope/evidence](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md). Fresh authority остаётся обязательной для mutations; scheduler, offline queue, AppAck/read и полный 1:1 event/UI scope открыты. Default Windows zero-warning build не квалифицирует HTTPS/Release/device composition |
+| S07 | **Read-only local history реализована: Shared focused3/3 и full564/0/0 terminal0, MAUI Clean95/95, smoke119/119. Этап не закрыт** | [Scope/evidence](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md). Fresh authority остаётся обязательной для mutations; scheduler, offline queue, AppAck/read и полный 1:1 event/UI scope открыты. Default Windows zero-warning build не квалифицирует HTTPS/Release/device composition |
 | S08 | **Release composition отсутствует** | Shipping graph без diagnostic-only flag и physical text/receipts |
 | S09 | Не квалифицирован | Sustained delivery, restart/rotation/offline recovery на той же identity |
 | S10 | Local attachment custody есть; remote flow не закрыт | Remote files/images/video/voice/avatar, integrity/resume/UI |
@@ -298,18 +298,26 @@ precommit scoped secret scan23 проходят. Новая source matrix не �
 Program/DI, release packages, production provisioning или physical endpoints.
 Matching canonical writer client exit и native Store/peer rejection уже проверены;
 
-Текущая source matrix: XNode `01494a54b505701e3cf507a02ec04dc7b5f556fb`
-(terminal checkpoint; product source `d821f8cc2cb7f85458dbce651f638b236901641b`),
-Shared `42aee0d8358d552f43bee256e0fb52cc1ab45e3b`,
+Текущая source matrix: XNode `d900e0463ea8f66a6b6c09ebdb8b64d7e835cf05`
+(checkpoint; product source `b3d37807993b83f705149d319622fc7da0923dd6`),
+Shared `b238fb4f9bc750185e4fc431b1bf4ae6f33c2b1f`
+(terminal checkpoint; product source `42aee0d8358d552f43bee256e0fb52cc1ab45e3b`),
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`,
 Protocol `8989ad6a787cdc8194106a5130fcfa832608e252`.
 DevOps `e484335e5615d017c0579d9c5277f9f486a0f81f` и installer
 `df5fa6127cbd46d8212335adf645326484e922db` не менялись.
-Unfiltered Node1224/0/0 завершён terminal0; actual Program peer cycle и scope —
+Предыдущий unfiltered Node1224/0/0 завершён terminal0 на product source
+`d821f8cc2cb7f85458dbce651f638b236901641b`; actual Program peer cycle и scope —
 в [checkpoint](../xnode/docs/testing/s02-current-program-2026-10-04.md).
+Новый explicit enrollment source проходит focused32/32 и последовательные
+real-Xray Docker smoke/rehearsal, но его unfiltered Node gate ещё выполняется.
+Предыдущие1224 не квалифицируют новую node matrix. Existing key ring и
+signed genesis обязательны; normal startup не enroll/repair. Issuer production
+authoring/distribution/renewal и actual source socket qualification открыты:
+[enrollment evidence](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md).
 Новый local-history slice проходит Shared focused3, MAUI Clean95/smoke119 и
-default Windows zero-warning compilation; полный Shared ещё выполняется на
-неизменённом source. Предыдущий Shared564 не квалифицирует новую матрицу.
+default Windows zero-warning compilation; новый полный Shared564/0/0 завершается
+terminal0,33m21s на неизменённом source. Предыдущий Shared564 не подменяет этот receipt.
 [Read-only evidence](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md)
 не закрывает scheduler/queue/AppAck, S06/S08 или physical0/4.
 
