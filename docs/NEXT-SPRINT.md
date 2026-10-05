@@ -63,7 +63,8 @@ Removal batch зафиксирован локально: XNode
 Registry unchanged `f47ca7510dcf04ff59235387ccce66662c19f620`.
 Нейтральные capacity cases сохранены; superseded node ADR больше не содержит
 старой инструкции активации. Root pointers обновляются после этих child commits.
-Upload новых commits пока не подтверждён; прежние push ждут Git Credential Manager.
+Local commit не доказывает upload: точный branch HEAD проверяется отдельно
+через remote ref. Package publication, deployment и Release этим batch не выполнены.
 
 Последний завершённый локальный batch исправил cold explicit enrollment: bounded input
 capture/reject → protected head restore → explicit observer acquisition →
@@ -107,8 +108,8 @@ data cycle с owned client и masked selected-entry той же вертикал
 `d1ccb573d552960f0c1cb21a655483f4065e74d5`, Registry
 `f47ca7510dcf04ff59235387ccce66662c19f620`, XNode
 `f2ef177754369bc0da589c5f5db3e2f14c95fd9b`. Остальные child HEAD не изменены.
-Batch зафиксирован локально; четыре прежних push ещё ждут Git Credential Manager,
-upload этой matrix не подтверждён. Connected data/client граница остаётся
+Batch зафиксирован локально; его source gates не доказывают upload или deployment.
+Connected data/client граница остаётся
 открытой, но enrollment fix завершён и повторно не реализуется.
 
 | Этап | Текущий статус | Что закрывает |
