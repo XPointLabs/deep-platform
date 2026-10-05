@@ -77,6 +77,14 @@ ContactResolve pairing. Сверять с текущим producer/approved input
 suites на исправленных исходниках без unexplained failures/skips; harness error
 не считать product pass. Проверки crypto/time/quorum остаются строгими.
 
+Граница baseline и shipping уточнена в
+[DR-0095](../survival-program/decisions/DR-0095-baseline-and-shipping-gate-separation.md).
+Классифицированный Protocol actual-package/source defect сохраняет исходный
+FAIL и блокирует S08/релиз; он не расширяет S00 до замены всего native-графа.
+Source-cutover проверки текущего frozen пути не являются package/activation
+evidence. Неисправленные runtime/crypto/time/fixture failures остаются у своего
+этапа, а не скрываются переносом final package gate.
+
 ### S01 — закрыть недостающие контракты без нового wire по умолчанию
 
 **Владельцы:** XPointLabs (нормативные изменения), deep-protocol (закрытая
@@ -255,6 +263,11 @@ Release; не разрешать diagnostic flag для обхода этого 
 current conversation runtime/scheduler/platform secure storage/carrier. Сверить
 actual compiled assemblies, native assets, NuGet/source pins, API/resource scans
 и installed artifact digests; source build не заменяет package graph gate.
+
+До приёмки этого этапа закрыть retained native PMA1/PMR1 source/package
+dependency по reviewed current-owner mapping, без косметического переименования
+MAU2/MCG2, пустых verified facts или потери account/device/reset/recovery guards.
+Это обязательная dependency shipping graph по DR-0095, не parallel roadmap.
 
 **Выход:** пригодные к подписанию Android arm64 и Windows x64/arm64 artifacts.
 **Gate:** release-проекты собираются; на реально установленных Android/Windows
