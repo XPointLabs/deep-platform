@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-05**. Branch: `release-candidate/prod-20260909`.
+Обновлено: **2026-10-06**. Branch: `release-candidate/prod-20260909`.
 Единственный DAG и критерии приёмки:
 [IMPLEMENTATION-PLAN-V1](architecture/IMPLEMENTATION-PLAN-V1.md).
 Основание: [аудит](architecture/ARCHITECTURE-AUDIT-2026-10-03.md),
@@ -11,14 +11,20 @@
 ## Единственная следующая подзадача
 
 **S01 — оставшийся local format/API freeze для settlement/renewal/retirement.**
-Первый bounded slice — independent grant acquisitions, pending/current pointers
-и exact retained winner lookup. Scope-keyed journal сейчас хранит одну acquisition;
-простая замена записи нарушит pinned Store/read/ACK. Все affected callers и
-сохранённые floors сверены в
-[Shared contract inventory](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md).
-Далее freeze закрытого local layout/API с adoption/cold/hostile fixtures и
-согласованное изменение единственного reader и consumers; renewal runtime или
-retirement до их contract не включать. Согласованный object-horizon/retained-route Retrieve/ACK contract
+Следующая единственная подзадача — closed contract для expired/unknown grant
+acquisition settlement: exact original request, signed upper bound возможной
+выдачи, durable unresolved outcome и irreversible retirement fence. Не включать
+renewal/retirement runtime до его contract и не считать expiry доказательством
+отсутствия remotely issued grant.
+
+Первый bounded slice принят локально: independent acquisitions, pending/current
+pointers, predecessor linkage и exact original winner lookup во всех Store/read/ACK
+consumers. Shared `dbb3baee7a0e8a05bce78d715057740d03c85417`; required full
+production gate **567/0/0 terminal0**, все12 selected custody/original-Store/
+receive cases Passed, включая selectedSuccessor=true.
+[Точные inputs, receipt и границы](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md#final-source-acceptance--2026-10-06).
+Это local clean-break, не renewal, historic read authority или physical E2E.
+Согласованный object-horizon/retained-route Retrieve/ACK contract
 остаётся обязательной связанной границей S01, не разрешением включать новый
 wire или историческую authority. Уже реализованные Store floors, operation
 custody, startup/readiness hooks не реализовывать повторно. Затем идти по DAG к
@@ -51,12 +57,13 @@ source/package/API gates **не закрыты и блокируют S08/рел�
 
 Current consumer HEAD: Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
 Registry `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3`,
-Shared `4cf93496d6de5d139d456fb2c86b7ea224217b08`,
+Shared `dbb3baee7a0e8a05bce78d715057740d03c85417`,
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`.
 Node final assembly: input162ae plus the exact test-only fixture repair now in
 4ec06ae; production source не менялся. Registry final receipts use source f47ca75;
-0f0a0df добавляет только документацию этих результатов. Shared4cf9349 добавляет
-S01 inventory; runtime source остаётся b238fb4. Product root input
+0f0a0df добавляет только документацию этих результатов. Shareddbb3bae реализует
+первый S01 acquisition/pointer slice; full567/0/0 проверяет input4cf9349 plus
+exact committed patch, не signed shipping artifact. Product root input
 `79e84cd01dd95244bf68b0c20fb53a947e36e48f`; execution/status docs не меняют его
 frozen inputs. Точные compiled inputs и hashes находятся в repo checkpoints.
 Предыдущий Node1216/0/0 и Registry348/0/7 принадлежат предыдущим Protocol
@@ -70,7 +77,7 @@ Windows/Android Debug compilation и MAUI Clean95/Smoke119 — предыдущ�
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
 | --- | --- | --- |
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
-| S01 | Частично реализован; единственный следующий этап | [Client semantics](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Store floors](survival-program/decisions/DR-0092-did2-owned-mailbox-counter-floors.md). Local format/API, settlement/renewal/retirement, object horizon и retained-route contract остаются открыты |
+| S01 | Частично реализован; единственный следующий этап | [Acquisition/pointer slice принят локально](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md#final-source-acceptance--2026-10-06), [client semantics](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Store floors](survival-program/decisions/DR-0092-did2-owned-mailbox-counter-floors.md). Остальные local format/API, settlement/renewal/retirement, object horizon и retained-route contract открыты |
 | S02 | Current receiver/coordinator и guarded Program wiring реализованы; не принят | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md). Current observer/provisioning, whole-host recovery, retained-route и real selected-entry boundaries |
 | S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
 | S04 | Заблокирован оставшимися S01 contracts | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |

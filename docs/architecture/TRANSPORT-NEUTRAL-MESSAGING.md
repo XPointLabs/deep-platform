@@ -448,6 +448,11 @@ Delivered и не очищает outstanding application-receipt obligation.
 
 #### 8.4.2 Grant and route transitions
 
+Shared local serialization и internal acquisition/pointer API принадлежат
+[owned grant custody producer](../../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md).
+Это один current local reader; его layout не активирует renewal/retirement и
+не заменяет следующие semantic obligations или историческую authority.
+
 | Вход → переход | Durable ownership / authority | Retry / expiry / cancel | Crash/reopen obligation |
 | --- | --- | --- | --- |
 | New acquisition → pending XMG | Independent reachability-direction holder, unique exact request; actual route/locator/domain и current PMA2; protected CAS/read-back before issuer callback | Capacity rejects до issuance; никаких account/device/root signing substitutes | Seed/request сохраняются exact; callback/root mutation rejects winner adoption |
