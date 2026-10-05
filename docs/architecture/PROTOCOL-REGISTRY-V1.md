@@ -608,7 +608,7 @@ documents under `../../deep-protocol/docs/`.
 
 | Magic/set | Current meaning | Target status |
 | --- | --- | --- |
-| `PMA1`, `PMT1`, `PMS1` | Pre-cutover mailbox authority, topology and deterministic selection. | PMA1 remains `CURRENT_PRE_CUTOVER` only in the unresolved native DNP1 dependency; PMT1/PMS1 source is removed and `RETIRED_REJECT` under DR-0093. None is the target XNV-bound placement generation. |
+| `PMA1`, `PMT1`, `PMS1` | Pre-cutover mailbox authority, topology and deterministic selection. | PMA1 remains `CURRENT_PRE_CUTOVER` only in the unresolved native DNP1 dependency; PMT1/PMS1 source is removed and `RETIRED_REJECT` under DR-0093. PHP1 issuance and the PMR1 current-grant query adapter are removed under DR-0094; native PMR1 provenance is not current grant authority. None is the target XNV-bound placement generation. |
 | `PRA1`, `PSS1` | Pre-continuity advertisement/successor. | `RETIRED_REJECT`; source/API removed under DR-0093, allocations never reused. |
 | `RCD1`, `RDA1`, `RCR1`, `RHC1`, `RTC1`, `RCA1`, `PRA2`, `PSS2` | Pre-cutover owner/delegated route-continuity closure. | `RETIRED_REJECT`; source/API removed under DR-0093. DR-0004's current XRA1/XRC1/XSS1 semantics are unchanged; no reset is activated by source removal. |
 | `PMA2`, `PMT2`, `PMS2` | Root-authorized role-separated issuer policy, XNV1-bound projection and deterministic blinded selection; current algorithm profile follows DR-0081. | `FROZEN_TARGET_NOT_ACTIVE`; PMA2 is a NETCODEC authority record encoded with the shared canonical tagged grammar, while PMT2/PMS2 are consumed by CONTACT-CODEC-01. |

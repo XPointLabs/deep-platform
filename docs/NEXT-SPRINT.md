@@ -38,7 +38,13 @@ slices (включая вложения/группы) до text сценария
 написанного кода. Частичные проценты этапов без фиксированного знаменателя
 не назначаются; завершение локального slice не означает завершение этапа.
 
-В S00 удалён разрешённый DR-0093 route-control leaf и неактивный Node adapter,
+Текущий source batch по DR-0094 удаляет PHP1 и PMR1 current-grant query adapter.
+Protocol и Shared Production builds zero-warning; focused31/0/0 и retained native23/0/0.
+Новый unfiltered Protocol full2010/1/7 terminal1: actual-package MAU2 остаётся
+blocker. [Scope и receipts](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#mailbox-issuance-and-current-grant-adapter-retirement-2026-10-05).
+S00 не закрыт; новые physical и shipping claims отсутствуют.
+
+Предыдущий S00 batch удалил разрешённый DR-0093 route-control leaf и неактивный Node adapter,
 не заменяющий текущую MCG3 authority. Registry consistency и сборки Protocol,
 Shared, Node/Registry проходят без warnings/errors; focused Protocol routes14/0/0,
 registry10/0/0 и Node94/0/0. Новый Protocol full2005/1/7 terminal1 всё ещё
