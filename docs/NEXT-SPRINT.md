@@ -55,18 +55,21 @@ S01/S04 lifecycle, configured peer/client edges и shipping composition оста
 Локальный commit не равен push/deployment/Release.
 
 В этой же границе actual private Registry issuer → real HTTPS → compiled XNode
-forwarder → independent client verifier проверены: exact winner retry без
-повторной подписи, untrusted TLS/corrupt evidence без reservation. Registry
-focused1/0/0 и final unfiltered348/0/7 terminal0; whole Release build zero-warning.
+forwarder → independent client verifier → configured native Store/Retrieve/ACK
+и cold reopen проверены. Оба issuer role winners проходят actual configured
+proof/network/native owners; peer replication использует signed actual origins и
+real pinned TLS/H2. Exact Store/ACK retry не вызывает новых peer RPC и не
+воскрешает объект. Registry focused1/0/0 и final unfiltered348/0/7 terminal0;
+whole Release build zero-warning.
 [Scope/receipts](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md#connected-private-grant-exchange-2026-10-05).
-Synthetic resolver attestations/holder custody и TestServer route proof не
-квалифицируют actual resolver storage, native mailbox acceptance/data, protected
-Shared installation, selected ONION или devices. Следующий шаг — связать этот
-issuer с native admission/data и owned client той же вертикали; S05 не закрыт.
+Synthetic resolver attestations/holder/ciphertext и TestServer route proof не
+квалифицируют actual resolver authorization, protected Shared installation/E2EE,
+полный Program/selected ONION или devices. Следующий шаг — связать этот native
+data cycle с owned client и masked selected-entry той же вертикали; S05 не закрыт.
 
 Локальная source matrix этого batch: Protocol
 `d1ccb573d552960f0c1cb21a655483f4065e74d5`, Registry
-`1aa2ac7c8eeee549cb7d95336b33a098e161e942`, XNode
+`f47ca7510dcf04ff59235387ccce66662c19f620`, XNode
 `f2ef177754369bc0da589c5f5db3e2f14c95fd9b`. Остальные child HEAD не изменены.
 Batch зафиксирован локально; четыре прежних push ещё ждут Git Credential Manager,
 upload этой matrix не подтверждён. Следующий открытый шаг — connected data/client
@@ -79,7 +82,7 @@ upload этой matrix не подтверждён. Следующий откр�
 | S02 | **Current DI и actual Program peer pipeline: focused24/24; после enrollment batch full1238/0/0 terminal0. Store/Retrieve/ACK, pinned TLS/H2, cold replay и HTTP guards проверены. Активация заблокирована S01** | [Current Program и exact evidence](../xnode/docs/testing/s02-current-program-2026-10-04.md), [current full](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md). Реальный Program pipeline получает fixture-owned native endpoint; это не configured network observer или ONION/device qualification. Production source/provisioning, global recovery, retained-route/lifecycle и physical endpoints остаются открыты |
 | S03 | **Current native peer/quorum, protected custody и Program HTTP cycle проверены; focused24/24, current full1238/0/0 terminal0. Activation открыта** | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [current full](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Previous full1222/1/0 исправлен без удаления actual pin/lock assertions. ACK setup timeout не повторился, но причина не установлена. Whole-host recovery, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
-| S05 | **Actual HTTPS producer → configured proof/network/native enrollment → signed successor → cold reopen/stop → actual Program startup/readiness проверены на synthetic inputs. Private grant issuer→HTTPS forwarder→client verifier проверен отдельно; Registry full348/0/7, unchanged Node full1301/0/0 terminal0. >64 successors и observational authority проверены. Этап открыт** | [Текущий lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md), [предыдущее enrollment](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [signer/grant boundary](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md). Configured peer data/client cycle, deployed provisioning/shared443/proxy, bounded deployed acquisition и complete issuer→native acceptance→owned client остаются открыты. Это не production activation или physical qualification |
+| S05 | **Actual HTTPS producer → configured proof/network/native enrollment → signed successor → cold reopen/stop → actual Program startup/readiness проверены на synthetic inputs. Private grant issuer→HTTPS forwarder→client verifier→configured native Store/Retrieve/ACK/cold reopen проверен; Registry full348/0/7, unchanged Node full1301/0/0 terminal0. >64 successors и observational authority проверены. Этап открыт** | [Текущий lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md), [предыдущее enrollment](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [signer/grant boundary](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md). Полный Program/selected-entry/owned client cycle, deployed provisioning/shared443/proxy и bounded deployed acquisition остаются открыты. Это не production activation или physical qualification |
 | S06 | Не пройден | Два настоящих клиента через real selected-entry/replica endpoints |
 | S07 | **Read-only local history реализована: Shared focused3/3 и full564/0/0 terminal0, MAUI Clean95/95, smoke119/119. Этап не закрыт** | [Scope/evidence](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md). Fresh authority остаётся обязательной для mutations; scheduler, offline queue, AppAck/read и полный 1:1 event/UI scope открыты. Default Windows zero-warning build не квалифицирует HTTPS/Release/device composition |
 | S08 | **Release composition отсутствует** | Shipping graph без diagnostic-only flag и physical text/receipts |
