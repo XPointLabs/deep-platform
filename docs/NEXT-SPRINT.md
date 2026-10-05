@@ -11,16 +11,16 @@
 ## Единственная следующая подзадача
 
 **S01 — оставшийся local format/API freeze для settlement/renewal/retirement.**
-Следующая единственная подзадача — authenticated late-result settlement для
-exact original closed-unresolved acquisition: независимая current verification
-позднего exact successful result и protected adoption/reopen, без восстановления
-expired request или повторного issuer callback. После её приёмки закрыть
-irreversible retirement fence; не включать renewal/retirement runtime до его
-contract и не считать expiry доказательством отсутствия remotely issued grant.
+Следующая единственная подзадача — closed producer/consumer contract для
+irreversible namespace retirement fence: какие independently current signed
+evidence и actual protected floors необратимо исключают exact old replay scope,
+и как они сохраняются после crash/reopen. Не включать cleanup/renewal/retirement
+runtime до contract; expiry, fresh grant, cache miss и capacity сами по себе
+не доказывают отсутствие remotely issued grant или право удалить dependencies.
 
 Исходная signed-policy ceiling, lower-bound expiry proof и запрещённые substitute
 outcomes уточнены у [semantic owner](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#842-grant-and-route-transitions).
-В принятом локально Shared slice единственный local reader generation4 хранит original
+Предыдущий принятый Shared slice с local reader generation4 хранит original
 policy/route ceiling и closed-unresolved outcome; internal owner entry закрывает
 expired request по independently current own proof/time без старого route или
 issuer callback. Final focused custody12/0/0 проверяет uncertainty boundary,
@@ -29,8 +29,18 @@ production gate **570/0/0 terminal0**, все15 selected custody/original-Store/
 receive cases Passed; actual Production build **0 warnings, 0 errors terminal0**.
 Shared `840d27d6746eed85eace456d5c78b9eb916b9642`;
 [receipt, inputs и границы](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md#original-issuance-ceiling-and-closed-unresolved-custody--2026-10-06-accepted-slice).
-Runtime renewal, late-result settlement и
-irreversible fence producer/consumer ещё не приняты. Весь S01 не закрыт.
+Runtime renewal и irreversible fence producer/consumer ещё не приняты.
+Принятый late-result slice использует единственный current local reader generation5 с раздельными
+received/adopted late states; сетевой wire не меняется. Actual Deposit/Retrieve,
+шесть handover faults, cold resume без повторного issuer callback, сохранение
+newer winner/pending и callback-window crossing проходят focused17/0/0 terminal0.
+Его собственный required full current-source gate **575/0/0 terminal0**, все20
+selected custody/original-Store/owned-receive cases Passed, семь frozen inputs
+совпали после завершения; actual Production build **0 warnings, 0 errors**.
+Shared `ce31023e6629c29d00702a7dc6e09ae683479a87`;
+[late-result receipt и границы](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md#authenticated-late-result-adoption--2026-10-06-accepted-slice).
+Generation4 receipt выше — evidence своего исходника, не substitute текущего
+gate. Весь S01 не закрыт; новый independent slice до retirement contract не открывается.
 
 Первый bounded slice принят локально: independent acquisitions, pending/current
 pointers, predecessor linkage и exact original winner lookup во всех Store/read/ACK
@@ -72,7 +82,7 @@ source/package/API gates **не закрыты и блокируют S08/рел�
 
 Current tested consumer source inputs: Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
 Registry `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3`,
-Shared `840d27d6746eed85eace456d5c78b9eb916b9642`,
+Shared `ce31023e6629c29d00702a7dc6e09ae683479a87`,
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`.
 Node final assembly: input162ae plus the exact test-only fixture repair now in
 4ec06ae; production source не менялся. Registry final receipts use source f47ca75;
@@ -80,7 +90,9 @@ Node final assembly: input162ae plus the exact test-only fixture repair now in
 первый S01 acquisition/pointer slice; full567/0/0 проверяет input4cf9349 plus
 exact committed patch. Shared840d27d добавляет original issuance ceiling и
 closed-unresolved custody; full570/0/0 проверяет inputb82c584 plus exact committed
-patch. Обе Shared matrices — source/test-internals, не signed shipping artifacts.
+patch. Sharedce31023 добавляет authenticated late-result/cold-resume slice;
+full575/0/0 проверяет input840d27d plus exact committed patch. Все Shared matrices
+здесь — source/test-internals, не signed shipping artifacts.
 Product root input
 `79e84cd01dd95244bf68b0c20fb53a947e36e48f`; execution/status docs не меняют его
 frozen inputs. Точные compiled inputs и hashes находятся в repo checkpoints.
@@ -95,7 +107,7 @@ Windows/Android Debug compilation и MAUI Clean95/Smoke119 — предыдущ�
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
 | --- | --- | --- |
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
-| S01 | Частично реализован; единственный следующий этап | Acquisition/pointer и [original ceiling/closed-unresolved slices приняты локально](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md#original-issuance-ceiling-and-closed-unresolved-custody--2026-10-06-accepted-slice), [client semantics](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Store floors](survival-program/decisions/DR-0092-did2-owned-mailbox-counter-floors.md). Late-result settlement, irreversible fence, остальные local format/API, renewal/retirement, object horizon и retained-route contract открыты |
+| S01 | Частично реализован; единственный следующий этап | Acquisition/pointer, original ceiling/closed-unresolved и [authenticated late-result slices приняты локально](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md#authenticated-late-result-adoption--2026-10-06-accepted-slice), [client semantics](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Store floors](survival-program/decisions/DR-0092-did2-owned-mailbox-counter-floors.md). Irreversible fence, остальные local format/API, renewal/retirement, object horizon и retained-route contract открыты |
 | S02 | Current receiver/coordinator и guarded Program wiring реализованы; не принят | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md). Current observer/provisioning, whole-host recovery, retained-route и real selected-entry boundaries |
 | S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
 | S04 | Заблокирован оставшимися S01 contracts | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
