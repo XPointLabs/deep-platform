@@ -30,8 +30,8 @@ source/package failure и его реальные зависимости.** По
 2026-10-05 завершился exit1 на MAU2 в ProductionMailboxAuthorityCodec;
 это retained consumer, а не основание переименовать строку или ослабить gate.
 Последующие этапы содержат уже реализованные части, но не являются параллельными
-активными задачами. «В работе» в таблице означает незавершённый этап,
-а не отдельную одновременно исполняемую задачу. Следующий этап берётся после проверки его зависимостей по
+активными задачами. «В работе» в старых строках таблицы означает частичную
+реализацию, не активную задачу или приёмку. Следующий этап берётся после проверки его зависимостей по
 единому DAG; connected probes сами по себе этап не закрывают. Новые независимые
 slices (включая вложения/группы) до text сценария не открываются. Полностью
 принятых этапов0/14, physical matrix0/4; это конечная приёмка, не процент
@@ -42,6 +42,28 @@ slices (включая вложения/группы) до text сценария
 terminal exit1, MCG2 в compiled assembly. [Команда и TRX/hash](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#focused-recheck-2026-10-05).
 Оба воспроизведённых отказа относятся к remaining legacy graph; runtime и gates
 в этом recheck не менялись. Полные suites повторно не запускались.
+
+Текущая S00 очистка XNode удаляет29 compiled PMA1/PMR1
+provider/cache/fanout типов и их отдельный retired-runtime corpus. Whole solution
+source-cutover build: exit0,0 warnings/errors. Три capacity codec cases сохранены,
+добавлены29 actual-assembly absence cases. Focused current host/admission/peer
+проверка завершена terminal0:287/0/0,28m53s. Новый unfiltered full завершён
+terminal0:1233/0/0 (854 integration,107 profile,272 unit). Downstream Registry
+build zero-warning и connected grant/native cycle1/0/0 также завершены;
+это не новый Registry full. Real-Xray Docker smoke и трёхнодовый rehearsal на этих исходниках
+завершены exit0; contact503 без authority не квалифицирует доставку. Предыдущий
+full1301 относится к Node `f2ef177`, не к этой изменённой source matrix.
+[Точный scope](../xnode/docs/testing/s02-retired-forwarding-2026-10-04.md#s00-continuation-compiled-pma1-providercache-removal-2026-10-05).
+Protocol governance/membership consumers и его source/package gate failures
+этой node-only очисткой не исправлены; S00 остаётся открыт.
+
+Removal batch зафиксирован локально: XNode
+`b565337603434ca2df08cd9abd91ff28c8e289d6`, Protocol documentation-only
+`981ab767a61c5b364eea7472fe623d12bc24750d` (runtime по-прежнему `d1ccb573`),
+Registry unchanged `f47ca7510dcf04ff59235387ccce66662c19f620`.
+Нейтральные capacity cases сохранены; superseded node ADR больше не содержит
+старой инструкции активации. Root pointers обновляются после этих child commits.
+Upload новых commits пока не подтверждён; прежние push ждут Git Credential Manager.
 
 Последний завершённый локальный batch исправил cold explicit enrollment: bounded input
 capture/reject → protected head restore → explicit observer acquisition →
@@ -91,12 +113,12 @@ upload этой matrix не подтверждён. Connected data/client гра
 
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
-| S00 | **В работе: Protocol selected111/0/0; current Node focused76/0/0 и full1301/0/0 terminal0; linked Registry full348/0/7, sequential solution build zero-warning. Linux socket7/0/0 относится к неизменённому adapter input. Прежние HTTP503/native Windows denial не классифицированы; Protocol full2087/1/12 не квалифицирует текущий package graph** | [Текущий lifecycle/source receipt](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md), [Registry signer/grant source](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md), [Owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md). Старые full/build/restore scopes не переносятся на новую source/installed matrix. Protocol legacy authority/package/source graph, public one-time export, installed matrix и activation открыты |
+| S00 | **Единственный активный этап: current Node removal focused287/0/0 и full1233/0/0 terminal0; downstream Registry build zero-warning и connected1/0/0. Protocol source MAU2 / actual-package MCG2 остаются open. Прежние HTTP503/native Windows denial/ACK setup PartialFailure не классифицированы** | [Текущая removal matrix и receipts](../xnode/docs/testing/s02-retired-forwarding-2026-10-04.md#s00-continuation-compiled-pma1-providercache-removal-2026-10-05), [Protocol actual-package recheck](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#focused-recheck-2026-10-05), [Owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md). Legacy authority/package/recovery graph, native/capture omissions, public one-time export, installed matrix и activation открыты |
 | S01 | **В работе: DR-0083/0084/0086/0087/0092; native operation custody и startup/readiness hook реализованы; host15/15, Program HTTP3/3, connected239/239. Node reproduction1205/0/0 завершён по TRX; исходный setup PartialFailure1204/1/0 не классифицирован. Независимые Store floors: Shared focused32/32, signed Protocol22/22; full Shared564/0/0 завершён, full Protocol2087/1/12. Shipping consumers не активированы** | [Store floors](../deep-client-shared/docs/testing/s01-owned-counter-floors-2026-10-04.md), [host recovery](../xnode/docs/testing/s01-host-recovery-2026-10-04.md), [revocation contract](survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), [client semantic contract](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [Protocol evidence](../deep-protocol/docs/testing/s01-mailbox-revocation-2026-10-03.md), [native evidence](../xnode/docs/testing/s01-mailbox-revocation-native-2026-10-03.md), [settlement boundaries](../deep-client-shared/docs/testing/s01-settlement-boundaries-2026-10-03.md); complete current Program/DI, global recovery, остальные client retirement formats/API, compaction/renewal, object horizon и application receipt contracts открыты |
 | S02 | **Current DI и actual Program peer pipeline: focused24/24; после enrollment batch full1238/0/0 terminal0. Store/Retrieve/ACK, pinned TLS/H2, cold replay и HTTP guards проверены. Активация заблокирована S01** | [Current Program и exact evidence](../xnode/docs/testing/s02-current-program-2026-10-04.md), [current full](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [admission](../xnode/docs/testing/s02-current-mailbox-admission-2026-10-03.md). Реальный Program pipeline получает fixture-owned native endpoint; это не configured network observer или ONION/device qualification. Production source/provisioning, global recovery, retained-route/lifecycle и physical endpoints остаются открыты |
 | S03 | **Current native peer/quorum, protected custody и Program HTTP cycle проверены; focused24/24, current full1238/0/0 terminal0. Activation открыта** | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [current full](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [receiver custody](../xnode/docs/testing/s03-host-custody-2026-10-04.md), [operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [writer checkpoint](../xnode/docs/testing/s03-mailbox-writer-2026-10-04.md), [matching client](../deep-client-shared/docs/testing/s03-mailbox-writer-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Previous full1222/1/0 исправлен без удаления actual pin/lock assertions. ACK setup timeout не повторился, но причина не установлена. Whole-host recovery, deployed provisioning, retained-route/retirement/object horizon открыты; не physical E2E |
 | S04 | Заблокирован S01 | Expiry/renewal, unknown outcome, bounded journals |
-| S05 | **Actual HTTPS producer → configured proof/network/native enrollment → signed successor → cold reopen/stop → actual Program startup/readiness проверены на synthetic inputs. Private grant issuer→HTTPS forwarder→client verifier→configured native Store/Retrieve/ACK/cold reopen проверен; Registry full348/0/7, unchanged Node full1301/0/0 terminal0. >64 successors и observational authority проверены. Этап открыт** | [Текущий lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md), [предыдущее enrollment](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [signer/grant boundary](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md). Полный Program/selected-entry/owned client cycle, deployed provisioning/shared443/proxy и bounded deployed acquisition остаются открыты. Это не production activation или physical qualification |
+| S05 | **Actual HTTPS producer → configured proof/network/native enrollment → signed successor → cold reopen/stop → actual Program startup/readiness проверены на synthetic inputs. Private grant issuer→HTTPS forwarder→client verifier→configured native Store/Retrieve/ACK/cold reopen проверен; Registry full348/0/7, Node full1301/0/0 в исходной matrix slice; текущая Node cleanup full1233/0/0 terminal0. >64 successors и observational authority проверены. Этап открыт** | [Текущий lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md), [предыдущее enrollment](../xnode/docs/testing/s05-explicit-mailbox-enrollment-2026-10-04.md), [signer/grant boundary](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md). Полный Program/selected-entry/owned client cycle, deployed provisioning/shared443/proxy и bounded deployed acquisition остаются открыты. Это не production activation или physical qualification |
 | S06 | Не пройден | Два настоящих клиента через real selected-entry/replica endpoints |
 | S07 | **Read-only local history реализована: Shared focused3/3 и full564/0/0 terminal0, MAUI Clean95/95, smoke119/119. Этап не закрыт** | [Scope/evidence](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md). Fresh authority остаётся обязательной для mutations; scheduler, offline queue, AppAck/read и полный 1:1 event/UI scope открыты. Default Windows zero-warning build не квалифицирует HTTPS/Release/device composition |
 | S08 | **Release composition отсутствует** | Shipping graph без diagnostic-only flag и physical text/receipts |
