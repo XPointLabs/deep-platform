@@ -18,6 +18,17 @@ evidence и actual protected floors необратимо исключают exac
 runtime до contract; expiry, fresh grant, cache miss и capacity сами по себе
 не доказывают отсутствие remotely issued grant или право удалить dependencies.
 
+Внутри этого же подпункта исправлен воспроизведённый PMT2 selection-epoch
+rollback: signed generations сами по себе не запрещали `7 -> 6 -> 9` или
+`7 -> 8 -> 7`. [DR-0096](survival-program/decisions/DR-0096-mailbox-selection-epoch-continuity.md)
+закрепляет nondecreasing epoch; focused24/0/0, все24 Passed в полном gate,
+Release Protocol/actual Shared Production builds0 warnings/0 errors.
+Protocol `31a36fdbea6484331cc4ed989e6a449375f9482d`.
+[Точные inputs и receipts](../deep-protocol/docs/testing/s01-selection-epoch-continuity-2026-10-06.md).
+Whole solution2018/1/7 terminal1 сохраняет прежний MAU2 package blocker.
+Это prerequisite того же retirement contract, не закрытие S01 и не разрешение
+на cleanup; следующая задача не меняется.
+
 Исходная signed-policy ceiling, lower-bound expiry proof и запрещённые substitute
 outcomes уточнены у [semantic owner](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#842-grant-and-route-transitions).
 Предыдущий принятый Shared slice с local reader generation4 хранит original
@@ -74,13 +85,15 @@ Release package matrix, deployed mailbox или physical delivery evidence.
 Protocol `ed7153e12cc0749e875a047705566bf0a99338b9` удаляет PHP1 и PMR1
 current-grant query adapter по DR-0094. Protocol/Shared Production builds
 zero-warning; focused31/0/0 и retained native23/0/0 terminal0.
-Whole Protocol **2010/1/7, terminal1**: actual-package/assembly rejects MAU2.
+Whole Protocol до epoch correction **2010/1/7, terminal1**; текущий полный
+source gate **2018/1/7, terminal1**: actual-package/assembly rejects MAU2.
 Оставшаяся native PMA1/PMR1 routing/genesis/recovery dependency и строгие
 source/package/API gates **не закрыты и блокируют S08/релиз**. Их выполнение
 отнесено к shipping closure по DR-0095, не отменено и не заменено green status.
 [Scope и receipts](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#mailbox-issuance-and-current-grant-adapter-retirement-2026-10-05).
 
-Current tested consumer source inputs: Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
+Последние independently tested consumer source inputs (каждый receipt относится
+только к своим frozen dependencies): Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
 Registry `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3`,
 Shared `ce31023e6629c29d00702a7dc6e09ae683479a87`,
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`.
@@ -93,6 +106,9 @@ closed-unresolved custody; full570/0/0 проверяет inputb82c584 plus exac
 patch. Sharedce31023 добавляет authenticated late-result/cold-resume slice;
 full575/0/0 проверяет input840d27d plus exact committed patch. Все Shared matrices
 здесь — source/test-internals, не signed shipping artifacts.
+Protocol31a36fd исправляет epoch continuity; actual Shared Production с ним
+компилируется zero-warning. Shared575 receipt использовал Protocoled7153e и
+не становится новым full Shared/installed evidence после этого repin.
 Product root input
 `79e84cd01dd95244bf68b0c20fb53a947e36e48f`; execution/status docs не меняют его
 frozen inputs. Точные compiled inputs и hashes находятся в repo checkpoints.

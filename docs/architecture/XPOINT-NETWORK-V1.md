@@ -847,6 +847,17 @@ and required PMT generation rule; it never contains current/next PMT2 hashes.
 PMT2 contains its own predecessor and next-PMT2 commitment. This one-way
 `XNV1 -> PMT2` construction follows DR-0004 and has no hash cycle.
 
+Under [DR-0096](../survival-program/decisions/DR-0096-mailbox-selection-epoch-continuity.md),
+PMT2 tag6 selection epoch MUST be nondecreasing at every authenticated successor
+step, including intermediate records in complete protected-history restoration.
+An unchanged epoch permits routine projection renewal; a larger PMT2 generation
+does not authorize a smaller epoch. The existing DNH2/DNF2 owner preserves the
+exact protected predecessor and reads back the new floor before releasing current
+authority. A tuple-only forward checkpoint is not a substitute for that epoch
+floor. This verification prerequisite is not, by itself, authority to retire
+grants, counters, retained routes or accepted objects; the sole retirement owner
+is [TRANSPORT-NEUTRAL-MESSAGING section8.4](TRANSPORT-NEUTRAL-MESSAGING.md#84-owned-attempt-settlement-renewal-and-retirement).
+
 PMT2 tag 14 is the witnessed ADH1 audit anchor used when that PMT generation was
 issued. It does not bind the latest mutable directory head: account admission and
 routine ADH1 renewal advance directory freshness without rotating XVP1/XNV1/XNH1
