@@ -24,12 +24,26 @@ Production среда в этом аудите не проверялась и н
 
 ## Очередь
 
-Текущий фокус — одна вертикаль contact → двусторонний text → restart
-с необходимыми S01/S05 зависимостями по единому DAG. Новые независимые slices
-(включая вложения/группы) до этого сценария не открываются. Полностью принятых
-этапов0/14, physical matrix0/4; это конечная приёмка, не процент написанного кода.
+Цель ближайшего результата — contact → двусторонний text → restart.
+**Единственная активная подзадача сейчас — S00: remaining Protocol production
+source/package failure и его реальные зависимости.** Повторный source gate
+2026-10-05 завершился exit1 на MAU2 в ProductionMailboxAuthorityCodec;
+это retained consumer, а не основание переименовать строку или ослабить gate.
+Последующие этапы содержат уже реализованные части, но не являются параллельными
+активными задачами. «В работе» в таблице означает незавершённый этап,
+а не отдельную одновременно исполняемую задачу. Следующий этап берётся после проверки его зависимостей по
+единому DAG; connected probes сами по себе этап не закрывают. Новые независимые
+slices (включая вложения/группы) до text сценария не открываются. Полностью
+принятых этапов0/14, physical matrix0/4; это конечная приёмка, не процент
+написанного кода. Частичные проценты этапов без фиксированного знаменателя
+не назначаются; завершение локального slice не означает завершение этапа.
 
-Текущий связанный batch исправляет cold explicit enrollment: bounded input
+Точечный actual-package recheck Protocol на той же source matrix:0/1/0,
+terminal exit1, MCG2 в compiled assembly. [Команда и TRX/hash](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#focused-recheck-2026-10-05).
+Оба воспроизведённых отказа относятся к remaining legacy graph; runtime и gates
+в этом recheck не менялись. Полные suites повторно не запускались.
+
+Последний завершённый локальный batch исправил cold explicit enrollment: bounded input
 capture/reject → protected head restore → explicit observer acquisition →
 native enrollment. Readiness не получает nonce и не enroll-ит host. Actual
 Registry HTTPS producer → configured compiled node DI/native custody →
@@ -51,7 +65,7 @@ shared443/proxy, peer data cycle или устройства. Smoke/rehearsal te
 Unexplained Registry HTTP503/native Windows denial не объявлены исправленными.
 S01/S04 lifecycle, configured peer/client edges и shipping composition остаются
 открыты. Исправление регрессии и локальные control/startup проверки завершены;
-следующая работа — connected data/client граница той же text вертикали по плану.
+connected data/client граница относится к text вертикали после её prerequisites.
 Локальный commit не равен push/deployment/Release.
 
 В этой же границе actual private Registry issuer → real HTTPS → compiled XNode
@@ -64,7 +78,7 @@ whole Release build zero-warning.
 [Scope/receipts](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md#connected-private-grant-exchange-2026-10-05).
 Synthetic resolver attestations/holder/ciphertext и TestServer route proof не
 квалифицируют actual resolver authorization, protected Shared installation/E2EE,
-полный Program/selected ONION или devices. Следующий шаг — связать этот native
+полный Program/selected ONION или devices. После prerequisites нужно связать native
 data cycle с owned client и masked selected-entry той же вертикали; S05 не закрыт.
 
 Локальная source matrix этого batch: Protocol
@@ -72,8 +86,8 @@ data cycle с owned client и masked selected-entry той же вертикал
 `f47ca7510dcf04ff59235387ccce66662c19f620`, XNode
 `f2ef177754369bc0da589c5f5db3e2f14c95fd9b`. Остальные child HEAD не изменены.
 Batch зафиксирован локально; четыре прежних push ещё ждут Git Credential Manager,
-upload этой matrix не подтверждён. Следующий открытый шаг — connected data/client
-граница в той же text вертикали, не повторная реализация этого enrollment fix.
+upload этой matrix не подтверждён. Connected data/client граница остаётся
+открытой, но enrollment fix завершён и повторно не реализуется.
 
 | Этап | Текущий статус | Что закрывает |
 | --- | --- | --- |
