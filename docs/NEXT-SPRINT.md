@@ -8,38 +8,32 @@
 и [DR-0095](survival-program/decisions/DR-0095-baseline-and-shipping-gate-separation.md).
 Здесь статус незавершённой работы, не хронология и не второй план.
 
-## Единственная активная подзадача
+## Единственная следующая подзадача
 
-**S00 — финальная проверка серверного source baseline на текущем Protocol.**
-Root ClassificationOnly, CONTACT, crypto и ONION проходят. Registry solution
-source-cutover build завершён с0 warnings/errors. Первый provider run не запустил
-тесты: локальный Docker engine отсутствовал. После запуска локального Desktop и
-проверки Linux engine новый полный Registry run с disposable tmpfs PostgreSQL
-завершён terminal0:348/0/7. Linux signer7/0/0 terminal0 покрывает ровно семь
-Windows skips, не превращая их в Windows passes. Оба owned containers удалены.
-Node final-source build завершён: 0 warnings/errors. Полный прогон ещё
-выполняется; terminal receipt не получен. Уже наблюдалось падение
-`CurrentClientAckRevokedRoleCannotReleaseCachedAggregate`: подготовительный
-Store получил PartialFailure/1 replica, peer TaskCanceledException, HTTP request
-дошёл до host, но complete response не наблюдался. Основная ACK/revocation
-проверка ещё не достигнута. Внешних конкурентных builds не было; прежняя
-гипотеза о build load не объясняет этот повтор. Причина остаётся открытой;
-следующая работа — точная HTTP/native phase диагностика без изменения deadline,
-assertions, crypto/time/floors или blanket отключения test parallelism.
-Старые full результаты не подменяют эти новые проверки.
-
-После S00 брать одну незавершённую S01 подзадачу: оставшийся local format/API
-freeze для settlement/renewal/retirement и единый object-horizon/retained-route
-Retrieve/ACK contract. Уже реализованные Store floors, operation custody,
-startup/readiness hooks не реализовывать повторно. Затем идти по DAG к
+**S01 — оставшийся local format/API freeze для settlement/renewal/retirement.**
+Сначала сверить принятые client transitions, реальные journals/owner callers и
+оставшиеся API gaps; закрыть bounded local contract с retry/expiry/cancel/crash
+правилами. Согласованный object-horizon/retained-route Retrieve/ACK contract
+остаётся обязательной связанной границей S01, не разрешением включать новый
+wire или историческую authority. Уже реализованные Store floors, operation
+custody, startup/readiness hooks не реализовывать повторно. Затем идти по DAG к
 contact/consent → двустороннему text → durable receive/receipt → restart.
 Новые независимые slices files/groups/calls до text milestone не открываются.
 
-Полностью принятых этапов **0/14**, физические сценарии **0/4**.
+Полностью принятых этапов **1/14 (около 7%)**, физические сценарии **0/4**.
 Это приёмка, не процент написанного кода. В текущем запуске нет production
 deployment, device install/reset, публикации Release или main merge.
 
 ## Точная текущая граница evidence
+
+S00 source baseline принят: Node **1220/0/0**, Registry **348/0/7** и точное
+альтернативное Linux покрытие этих семи skips **7/0/0**, все terminal0.
+Все 19 исходных Node scenario groups и 31 Registry cases независимо сопоставлены
+с Passed в свежих полных receipts. Node/Registry source builds zero-warning;
+required isolated real-Xray smoke и root governance проходят. Это не uniformly
+Release package matrix, deployed mailbox или physical delivery evidence.
+[Node scope/receipts](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#current-peer-https-setup-investigation--2026-10-05),
+[Registry scope/receipts](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md#current-source-baseline--2026-10-05).
 
 Protocol `ed7153e12cc0749e875a047705566bf0a99338b9` удаляет PHP1 и PMR1
 current-grant query adapter по DR-0094. Protocol/Shared Production builds
@@ -50,12 +44,15 @@ source/package/API gates **не закрыты и блокируют S08/рел�
 отнесено к shipping closure по DR-0095, не отменено и не заменено green status.
 [Scope и receipts](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#mailbox-issuance-and-current-grant-adapter-retirement-2026-10-05).
 
-Current consumer HEAD: Node `162ae3e10c8ca02faa2200302d1dc0e5befdb5cb`,
-Registry `f47ca7510dcf04ff59235387ccce66662c19f620`,
+Current consumer HEAD: Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
+Registry `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3`,
 Shared `b238fb4f9bc750185e4fc431b1bf4ae6f33c2b1f`,
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`.
-Root input `79e84cd01dd95244bf68b0c20fb53a947e36e48f`; текущий doc batch
-меняет только очередь/порядок, не эту product source matrix.
+Node final assembly: input162ae plus the exact test-only fixture repair now in
+4ec06ae; production source не менялся. Registry final receipts use source f47ca75;
+0f0a0df добавляет только документацию этих результатов. Product root input
+`79e84cd01dd95244bf68b0c20fb53a947e36e48f`; execution/status docs не меняют его
+frozen inputs. Точные compiled inputs и hashes находятся в repo checkpoints.
 Предыдущий Node1216/0/0 и Registry348/0/7 принадлежат предыдущим Protocol
 dependencies. Registry Release solution также строит внешние dependencies в
 Debug: это source baseline, не uniformly Release artifact matrix.
@@ -66,8 +63,8 @@ Windows/Android Debug compilation и MAUI Clean95/Smoke119 — предыдущ�
 
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
 | --- | --- | --- |
-| S00 | Активен; Registry/platform проверки завершены, Node full идёт с воспроизведённым setup failure | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Свежая согласованная source matrix, без unexplained failures/skips; root governance уже проходит |
-| S01 | Частично реализован; сейчас не активен | [Client semantics](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Store floors](survival-program/decisions/DR-0092-did2-owned-mailbox-counter-floors.md). Local format/API, settlement/renewal/retirement, object horizon и retained-route contract остаются открыты |
+| S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
+| S01 | Частично реализован; единственный следующий этап | [Client semantics](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md), [Store floors](survival-program/decisions/DR-0092-did2-owned-mailbox-counter-floors.md). Local format/API, settlement/renewal/retirement, object horizon и retained-route contract остаются открыты |
 | S02 | Current receiver/coordinator и guarded Program wiring реализованы; не принят | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md). Current observer/provisioning, whole-host recovery, retained-route и real selected-entry boundaries |
 | S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
 | S04 | Заблокирован оставшимися S01 contracts | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
