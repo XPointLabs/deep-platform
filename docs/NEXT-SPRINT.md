@@ -38,6 +38,19 @@ slices (включая вложения/группы) до text сценария
 написанного кода. Частичные проценты этапов без фиксированного знаменателя
 не назначаются; завершение локального slice не означает завершение этапа.
 
+В S00 удалён разрешённый DR-0093 route-control leaf и неактивный Node adapter,
+не заменяющий текущую MCG3 authority. Registry consistency и сборки Protocol,
+Shared, Node/Registry проходят без warnings/errors; focused Protocol routes14/0/0,
+registry10/0/0 и Node94/0/0. Новый Protocol full2005/1/7 terminal1 всё ещё
+останавливается на MAU2 actual-package/source. Новый Node full не квалифицирован:
+integration наблюдает отказы, ожидаются terminal receipt и изолированная
+классификация, а не ослабление timeout/assertions. [Точный scope и receipts](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#authorized-route-control-leaf-retirement-2026-10-05).
+S00, shipping/physical и релиз этим leaf не закрыты.
+Leaf зафиксирован локально: Protocol `2ae11346af2d1c691627e395702ac78fc1210ef8`,
+Node `6e0095fa4fcef89bbc527bc3fbc5018cc72f7900`; новый full Node ещё идёт.
+Перед новым batch remote refs предыдущих Protocol `83a0f32` и Node `65fdf1f`
+проверены; новые commits требуют отдельной проверки upload.
+
 Завершённая Node подзадача того же S00 удаляет13 неиспользуемых development-composition
 типов. Два live admission limiter и четыре нейтральных теста перенесены дословно;
 нейтральные transport assertions сохранены. Current-host reject проверен и для
