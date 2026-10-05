@@ -56,6 +56,15 @@ x64 выполнялся под эмуляцией на том же ARM64 хос
 Android или physical E2E. Operator capture и source/package blockers открыты.
 [Граница и receipts](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#explicit-windows-native-execution-2026-10-05).
 
+Default Windows native discovery исправлен в Protocol
+`83a0f32656d1cc5315b548c3488111cc6fa05886`: пять state-machine cases
+выполняются без локальной Rust-сборки/explicit input, через approved loader.
+ARM64 и x64 focused6/0/0; missing explicit input fail-closed, не fallback/skip.
+Новый whole-solution Protocol full2121/1/7 (main1885/1/7, routes131/0/0,
+carrier105/0/0), terminal1: actual-package MCG2 остаётся единственным failure.
+Это закрытие omission harness, не source/package GO или приёмка S00.
+[Scope и receipts](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#default-windows-native-discovery-correction-2026-10-05).
+
 Точечный actual-package recheck Protocol на той же source matrix:0/1/0,
 terminal exit1, MCG2 в compiled assembly. [Команда и TRX/hash](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#focused-recheck-2026-10-05).
 Оба воспроизведённых отказа относятся к remaining legacy graph; runtime и gates
