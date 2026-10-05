@@ -468,6 +468,50 @@ current time/network/issuer successors не может требовать пре
 успеха expired data-plane attempt. Distribution bytes остаются untrusted до
 independent verification; bootstrap не переносит recipient metadata на Registry.
 
+**Expired/unknown acquisition: исходная граница возможной выдачи.** До первого
+issuer callback owner MUST защищённо сохранить exact original XMG1, holder
+custody и immutable evidence для conservative upper bound возможного MCG3.
+Evidence включает independently verified original PMA2, связанную с exact PMT2
+этого request, и original signed route closure. Их protected references должны
+восстанавливаться в exact bytes; один hash без retained producer не достаточен.
+Bound — минимум signed expiry original PMA2 и всех original route records,
+ограничивающих выдачу по
+[CONTACT-RESOLVER §3.7](CONTACT-RESOLVER-V1.md#37-privacy-routed-mailbox-grant-acquisition-xmg1--xmc2).
+Это conservative ceiling, не срок действительного полученного grant. Более
+короткие issuer/effective-time limits могут ограничивать реальную выдачу, но
+unsigned effective-expiry, локальное UTC и XMG/XMC deadline не уменьшают ceiling.
+Fresh policy/route не заменяют исходные evidence и не пересчитывают старый bound.
+Missing/foreign/rolled-back evidence fails closed; reader не достраивает его.
+
+Истечение original acquisition window подтверждается independently authenticated
+protected time: lower bound достиг original XMG expiry. Upper bound, пересекающий
+expiry, уже запрещает обычный dispatch, но не доказывает этот terminal transition.
+Owner сохраняет explicit unresolved disposition посредством protected CAS и
+exact read-back; он не утверждает BeforeForward, non-issuance или non-delivery.
+Callback timeout/cancel/crash сохраняет possible issuance. Неподписанный failure
+XMC2, `UnknownOrExpired`, HTTP error или cache miss не являются authenticated
+отрицательным доказательством. После такого закрытия original XMG не dispatches,
+не re-signs и не re-windows; successor остаётся отдельной acquisition с retained
+predecessor uncertainty, не перезаписью старой строки.
+
+Поздний exact successful XMC2 может стать usable winner только через existing
+independent retained-success verification, пока полный current grant/issuer/route
+interval допускает его. Expired request restoration для этого не используется;
+неподдерживаемая historical verification оставляет outcome unresolved, без
+synthetic winner или нового запроса. До/после CAS crash/reopen сохраняет один
+original outcome и не повторяет issuer callback для закрытого acquisition.
+
+Даже достижение possible-grant ceiling не доказывает отсутствия выданного grant
+и само по себе не разрешает retirement replay floors или accepted-object paths.
+Retirement отдельно требует irreversible exclusion exact old replay namespace
+под independently current signed policy и actual protected floors, плюс закрытие
+всех зависимостей по §8.4.3/8.4.4. Current grant, issuer rollover, freshness expiry
+или отсутствие serial в свежем snapshot не заменяют это доказательство. Пока
+closed producer/consumer такой fence не квалифицирован, compaction сохраняет
+dependencies и применяет bounded backpressure. Эти требования не активируют
+runtime, новый local reader или публичную verification API; их bounded local
+format/API и fault fixtures остаются частью незавершённого S01.
+
 #### 8.4.3 Compaction and boundedness
 
 Перед освобождением working-set slot owner MUST сохранить отдельные protected

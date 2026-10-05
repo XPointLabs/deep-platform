@@ -17,6 +17,11 @@ acquisition settlement: exact original request, signed upper bound возмож�
 renewal/retirement runtime до его contract и не считать expiry доказательством
 отсутствия remotely issued grant.
 
+Исходная signed-policy ceiling, lower-bound expiry proof и запрещённые substitute
+outcomes уточнены у [semantic owner](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#842-grant-and-route-transitions).
+Generation3 их пока не хранит; bounded local format/API, fault fixtures и
+irreversible fence producer/consumer ещё не приняты. Следующая задача не меняется.
+
 Первый bounded slice принят локально: independent acquisitions, pending/current
 pointers, predecessor linkage и exact original winner lookup во всех Store/read/ACK
 consumers. Shared `dbb3baee7a0e8a05bce78d715057740d03c85417`; required full
@@ -55,9 +60,10 @@ source/package/API gates **не закрыты и блокируют S08/рел�
 отнесено к shipping closure по DR-0095, не отменено и не заменено green status.
 [Scope и receipts](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#mailbox-issuance-and-current-grant-adapter-retirement-2026-10-05).
 
-Current consumer HEAD: Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
+Current tested consumer source inputs: Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
 Registry `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3`,
-Shared `dbb3baee7a0e8a05bce78d715057740d03c85417`,
+Shared `dbb3baee7a0e8a05bce78d715057740d03c85417`
+(documentation-only HEAD `b82c5846dc3412abc7f09f312a41db79ec5e66b2`),
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`.
 Node final assembly: input162ae plus the exact test-only fixture repair now in
 4ec06ae; production source не менялся. Registry final receipts use source f47ca75;
