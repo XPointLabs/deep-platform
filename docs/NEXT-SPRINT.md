@@ -11,9 +11,14 @@
 ## Единственная следующая подзадача
 
 **S01 — оставшийся local format/API freeze для settlement/renewal/retirement.**
-Сначала сверить принятые client transitions, реальные journals/owner callers и
-оставшиеся API gaps; закрыть bounded local contract с retry/expiry/cancel/crash
-правилами. Согласованный object-horizon/retained-route Retrieve/ACK contract
+Первый bounded slice — independent grant acquisitions, pending/current pointers
+и exact retained winner lookup. Scope-keyed journal сейчас хранит одну acquisition;
+простая замена записи нарушит pinned Store/read/ACK. Все affected callers и
+сохранённые floors сверены в
+[Shared contract inventory](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md).
+Далее freeze закрытого local layout/API с adoption/cold/hostile fixtures и
+согласованное изменение единственного reader и consumers; renewal runtime или
+retirement до их contract не включать. Согласованный object-horizon/retained-route Retrieve/ACK contract
 остаётся обязательной связанной границей S01, не разрешением включать новый
 wire или историческую authority. Уже реализованные Store floors, operation
 custody, startup/readiness hooks не реализовывать повторно. Затем идти по DAG к
@@ -46,11 +51,12 @@ source/package/API gates **не закрыты и блокируют S08/рел�
 
 Current consumer HEAD: Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
 Registry `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3`,
-Shared `b238fb4f9bc750185e4fc431b1bf4ae6f33c2b1f`,
+Shared `4cf93496d6de5d139d456fb2c86b7ea224217b08`,
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`.
 Node final assembly: input162ae plus the exact test-only fixture repair now in
 4ec06ae; production source не менялся. Registry final receipts use source f47ca75;
-0f0a0df добавляет только документацию этих результатов. Product root input
+0f0a0df добавляет только документацию этих результатов. Shared4cf9349 добавляет
+S01 inventory; runtime source остаётся b238fb4. Product root input
 `79e84cd01dd95244bf68b0c20fb53a947e36e48f`; execution/status docs не меняют его
 frozen inputs. Точные compiled inputs и hashes находятся в repo checkpoints.
 Предыдущий Node1216/0/0 и Registry348/0/7 принадлежат предыдущим Protocol
