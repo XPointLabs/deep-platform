@@ -36,8 +36,21 @@ held snapshot читает и exact-rechecks8 actual roots
 и отдельно отмечает send/read work/floors, traversal, ordinary/asset work и
 незакрытые receipt/object/retained-route obligations. Focused25/0/0 terminal0;
 это local dependency facts, не eligible disposition или сериализованный флаг
-«settled». Следующий переход остаётся здесь же: закрытый retirement/recovery
-profile с complete readbacks; до него никакой cleanup не активируется.
+«settled». Этот prerequisite сам по себе не активирует cleanup.
+
+Текущий source checkpoint: Shared `25204bfa68a200f3ce8b2e4b53a4b05e11226d51`.
+Actual held producer и closed recovery/abort profile для одного closed unused
+Deposit acquisition без dependencies реализованы; NativeFence guard связан с
+complete account/device binding и существующим floor. Build0 warnings/errors,
+corrected focused39/0/0 terminal0: encrypted journal reopen, пять handover,
+обе cancellation boundaries, changed/missing bindings/guards/floor/staging и
+отказ удаления known/unresolved Retrieve custody без staging.
+[Точные границы и сохранённые FAIL](../deep-client-shared/docs/testing/s01-closed-deposit-retirement-2026-10-06.md).
+Current full на706 unique cases запущен с62 frozen inputs,200 current required
+иall687 prior names; ещё не завершён и не принят. Следующий единственный шаг —
+дождаться terminal и exact receipt/input qualification этого же profile.
+Receipt/object/retained-route и остальные S01 closures не объявлены завершёнными;
+S02 и независимые files/groups/calls не открываются по focused результату.
 
 ## Уже принятый outbox-only блок — не реализовывать повторно
 
