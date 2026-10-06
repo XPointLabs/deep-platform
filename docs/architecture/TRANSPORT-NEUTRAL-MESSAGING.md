@@ -572,6 +572,59 @@ pending, rejected, unknown, expired and cancelled work beyond the existing
 handover fault. Those counts are current implementation boundaries, not new
 product limits or permission for an unbounded floor/tombstone collection.
 
+**Dependency-closed batch and recovery contract.** One batch belongs to one
+actual account lease and one SQLCipher database/transaction. Work spanning
+different database keys is split into separately recoverable batches; SQL
+transactions across application, transport and ratchet databases are not
+assumed atomic. A protected plan binds the account/network/instance, its own
+monotonic revision, the exact SQL target, affected row selectors/dispositions,
+and exact predecessor/successor commitments of every changed protected root.
+It also binds unchanged dependency roots. Plan construction is private to the
+owner and reads actual custody; decoding a plan, a supplied digest, row count
+or serialized `verified`/`settled` flag never authorizes deletion.
+
+| Dependency being compacted | What must remain independently protected/verifiable |
+| --- | --- |
+| Ordinary command / transport payload | Authored and replay floors; exact committed event/ciphertext until retry work ends; separate local history and outstanding application receipt work; terminal disposition does not claim recipient delivery |
+| Grant acquisition / holder / route | Every original pending or unknown attempt, active read/ACK, successor linkage and accepted-object obligation; namespace exclusion is a prerequisite, not this dependency closure |
+| Captured Retrieve page / ACK | Authenticated event and semantic materialization, dedup, due receipt work, exact ACK request/result and traversal agreement; captured page or Store success is not application receipt completion |
+| Ratchet journal prefix | Independently protected checkpoint, monotonic lifetime ordinal and current ratchet commitment; verifiable retained history, initial contact/acceptance evidence and authenticated peer route; deleting a prefix must not orphan those consumers |
+| Attachment work / object-only key | Remaining offer/upload/download/resume and authenticated materialization obligations; local history keys and remote retained-object authority are separate dependencies |
+
+Selection distinguishes removal of outbox-only data, local-history deletion,
+and retirement of a replay namespace. They are not interchangeable dispositions.
+A batch cannot delete the last verifiable source of contact consent, semantic
+materialization, due receipt work or a retained-object path. Unknown work cannot
+be classified as successful, rejected or BeforeForward by compaction. Missing
+dependencies stop selection before any destructive write. Unavailable retained
+read/ACK or migration keeps the dependent scope pinned, not silently eligible.
+
+After plan persist/read-back, the only permitted SQL outcomes are the exact
+predecessor or exact committed successor, including counters, dedup, history and
+receipt obligations, not merely the absence of selected rows. Before SQL, all
+changed roots still match the predecessor and unchanged guards still match.
+After SQL, protected roots are adopted in a deterministic order using CAS and
+exact read-back. A crash may leave a prefix adopted; any non-prefix mixture,
+missing mandatory root, changed guard or third SQL/root outcome fails closed.
+No network callback, new encryption, request regeneration or payload rehydration
+is a recovery step. Ordinary readers/writers do not bypass an active plan.
+
+Cancellation before SQL permits abandoning the exact plan only after SQL and
+all roots are proven unchanged. Once SQL commits, cancellation stops execution
+but leaves the plan owning exact recovery; it cannot clear or reselect the batch.
+Completing that already committed local transaction does not acquire new
+network authority. Any namespace-retirement disposition must already have its
+irreversible exclusion fence committed/read-back before losing the original
+custody needed to verify it. A cold reader cannot mint that fence. The plan is
+cleared only after exact SQL/root agreement; active reconciliation commitments
+are not retained as payload-derived audit tombstones.
+
+This freezes dependency and recovery semantics, not a new wire value, private
+byte layout, runtime compactor or receipt scheduler. Shared owns the matching
+local API/layout and S04 producer/consumer fixtures. The existing full-chain
+ratchet SQL reader cannot consume compacted history until that checkpoint path
+is implemented and qualified; this contract does not waive its current checks.
+
 #### 8.4.4 Object lifetime integration fence
 
 Admission, original attempt/request window, logical retry deadline and accepted
