@@ -38,9 +38,9 @@ object read/ACK или production epoch-handover qualification. Whole S01 ост
 частичным; другой independent slice не открывается.
 
 Проверены actual consumers следующего contract: protected Store floors уже
-живут отдельно от send entries, но
+живут отдельно от send entries; исходно
 [owned text SQL reconciliation](../deep-client-shared/src/Deep.Client.Shared/Persistence/SqliteDeepMailboxStore.OwnedTextOutbox.cs)
-проверяет authored sequence по retained entries, а
+проверял authored sequence по retained entries, а
 [messaging SQL verifier](../deep-client-shared/src/Deep.Client.Shared/Persistence/DeviceV2/Did2MessagingSqlJournal.cs)
 проверяет полную цепочку от registered empty и каждый journal-bound event.
 Удаление этих rows без согласованного protected predecessor/checkpoint не
@@ -48,6 +48,23 @@ object read/ACK или production epoch-handover qualification. Whole S01 ост
 outbox-only cleanup, replay-floor retirement и local history: no count-derived
 sequence reset, no lost materialization/receipt work, no payload retention под
 видом audit tombstone. Runtime cleanup по-прежнему не активирован.
+
+Authored-floor часть этого же contract реализована по
+[DR-0098](survival-program/decisions/DR-0098-owned-authored-counter-floors.md):
+один current local text reader, независимые next-sequence floors и transition
+revision, actual owner CAS/read-back перед SQL, проверка floor/counter даже при
+пустом working set и catalog-backed projection. Final focused25/0/0 и actual
+Production build0 warnings/0 errors terminal0. Candidate connected28/0/0
+включает actual account/consent/native ratchet pending/SQL/stable faults, но
+предшествует последней negative-shape правке; не substitute final gate.
+[Frozen inputs/receipts](../deep-client-shared/docs/testing/s01-authored-counter-floors-2026-10-06.md).
+Required full current-source Shared gate **591/0/0 terminal0**; все25 final unit
++11 connected cases отдельно mapped to Passed, все14 frozen inputs совпали после
+gate. Bounded source slice принят: Shared
+`e451c075ebd898ba83adb72ce6b93553b1001fc3`; Protocol source не менялся.
+Compaction plan/recovery, messaging
+checkpoint и accepted-object/retained-route integration остаются в том же S01;
+cleanup, новый independent этап и physical/release activation не включены.
 
 Внутри этого же подпункта исправлен воспроизведённый PMT2 selection-epoch
 rollback: signed generations сами по себе не запрещали `7 -> 6 -> 9` или
@@ -126,7 +143,7 @@ source/package/API gates **не закрыты и блокируют S08/рел�
 Последние independently tested consumer source inputs (каждый receipt относится
 только к своим frozen dependencies): Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
 Registry `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3`,
-Shared `f4982e38c0848161f4b289218c62fb050e7bec5d`,
+Shared `e451c075ebd898ba83adb72ce6b93553b1001fc3`,
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`.
 Node final assembly: input162ae plus the exact test-only fixture repair now in
 4ec06ae; production source не менялся. Registry final receipts use source f47ca75;
@@ -143,6 +160,10 @@ Protocol31a36fd исправляет epoch continuity; actual Shared Production 
 Sharedf4982e3 квалифицирует epoch-exclusion prerequisite: full583/0/0 использует
 Protocol4fa9f95 и точные frozen inputs из связанного checkpoint. Это не пересборка
 Node/Registry/MAUI или installed evidence их текущих gitlinks.
+Sharede451c07 квалифицирует independent authored-floor slice: full591/0/0
+проверяет inputf4982e3 plus exact committed patch, с Protocol4fa9f95 и всеми14
+frozen inputs из своего checkpoint. Не активирует runtime compaction и не
+переквалифицирует shipping/device evidence остальных consumers.
 Product root input
 `79e84cd01dd95244bf68b0c20fb53a947e36e48f`; execution/status docs не меняют его
 frozen inputs. Точные compiled inputs и hashes находятся в repo checkpoints.

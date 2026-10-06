@@ -4,6 +4,11 @@ Status: accepted local clean break; connected/device activation gated
 Date: 2026-10-02
 Decision owner: Mr. X (delegated architecture authority)
 
+Current private reader/counter layout is superseded by
+[DR-0098](DR-0098-owned-authored-counter-floors.md); the prior generation2 and
+count-derived revision below are not another supported reader. Store adoption,
+original retry and no-delivery-claim obligations remain unchanged.
+
 Extend the existing DR30/46 protected ordinary-command journal, not a second
 outbox or UI Preferences marker. Header version2 only; entry phase1 is pending
 SQL authoring, phase2 is stable authored, phase3 is stable with verified mailbox

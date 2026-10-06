@@ -8,7 +8,9 @@ Decision owner: Mr. X (delegated architecture authority)
 
 The current journal generation and verified Store-completion phase are governed
 by [DR-0067](DR-0067-did2-ordinary-store-completion-and-ui-retry.md), which supersedes
-the original version1/two-phase grammar below. Original-event ownership, SQL
+the original version1/two-phase grammar below. The independent current authored
+floor and local reader are superseded by [DR-0098](DR-0098-owned-authored-counter-floors.md).
+Original-event ownership, SQL
 integrity and contiguous sequence requirements remain in force.
 
 The account owner, under its actual lease and current DR-0027 endpoint/retirement
