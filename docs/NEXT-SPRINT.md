@@ -21,12 +21,27 @@ Cancel после SQL не очищает plan и не восстанавлив�
 [Current consumer/API mapping](../deep-client-shared/docs/architecture/owned-authored-counter-custody.md#compaction-dependencyapi-target-not-runtime-activation)
 указывает реальные затронутые readers и обязательные crash/reopen границы.
 
-Осталось реализовать согласованные bounded local plan/layout, обязательную
-registration и owner API; проверить protected commit/read-back, exact recovery,
-checkpoint/history verifier и сохранение outstanding work. Это одна связанная
-подзадача того же S01, не разрешение открыть independent files/groups/calls.
-Actual `Did2MessagingSqlJournal` всё ещё проверяет полную цепочку и каждый event
-от registered empty: rows нельзя удалять без matching protected checkpoint.
+Source checkpoint Shared `9b5ca981449666576e1560e847e79cfbfea378cb`:
+mandatory plan/history registration, schema3 readers, exact staging,
+held prefix selection, complete SQL effects, checkpoint CAS/adoption,
+stored recovery и durable pre-SQL abort реализованы.
+Startup recovery предшествует ordinary opens; другие пути требуют idle-plan.
+Это narrow local prefix API, не включённый scheduler cleanup и не remote
+settlement. ContactAccept/history/exact replay и следующий ratchet сохранены.
+
+Текущая приёмка: [repo checkpoint](../deep-client-shared/docs/testing/s01-compaction-plan-model-2026-10-06.md#current-coupled-full-gate--running-not-accepted).
+Pre-sanitization focused/native131/0/0 terminal0 проверил шесть handover,
+обе cancel boundaries, missing staging/peer-state, same-shape payload
+substitution и SQL rollback после commit marker. Final structural130/0/0
+terminal0 и non-test Production build0 warnings/errors. Один fresh full
+source gate выполняется на39 frozen inputs; до terminal0, exact mappings
+и input recheck текущий блок не принят. Его host/source не меняются.
+История отдельных candidates и старого model full627 с неизвестным exit
+хранится только в repo checkpoint; она не квалифицирует этот source.
+
+После завершения приёмки — оставшиеся S01 bounded APIs/dispositions,
+durable retirement/dependency fences и receipt/object closure.
+Independent files/groups/calls до этих prerequisites не открываются.
 Object-horizon/retained-route Retrieve/ACK contract остаётся связанным activation
 fence; текущий sole read path нельзя удалять без закрытого receive/ACK или
 authenticated migration. Runtime cleanup/renewal/retirement не активированы.
@@ -54,7 +69,8 @@ Contract-only commits: Shared `0b38a6dc895b38b833377355b9d80f41c8b6604b`
 Strict registry/generator и все175 anchors проходят; allocations/inventory
 не менялись. Focused registry/parity12/0/0 terminal0, Protocol Release build0
 warnings/errors, root documentation174 и governance helper22/0/0.
-Это не implemented plan API, fresh full Shared/package/device evidence или
+Эти contract-only receipts не доказывают реализованную owner API,
+fresh full Shared/package/device evidence или
 закрытие S01. Точные inputs/receipts остаются в связанных repo checkpoints.
 
 ## Точная граница общей приёмки
@@ -85,7 +101,7 @@ Completed chronology — в repo checkpoints, Git и [SPRINT-HISTORY](SPRINT-HIS
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
 | --- | --- | --- |
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
-| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Remaining bounded plan/layout/owner API, checkpoint/dependency fault fixtures, durable retirement fence и object-horizon/retained-route contract. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
+| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Old model full outcomes627 Passed, original exit unavailable; fresh current full gate running, not accepted. Registration/staging и history reader/capture имеют отдельные focused/native receipts. Held prefix SQL/adoption/recovery owner implemented; pre-sanitization focused/native131 Passed, current structural130 Passed. Remaining other dispositions, durable retirement fence и object-horizon/retained-route contract. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
 | S02 | Current receiver/coordinator и guarded Program wiring реализованы; не принят | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md). Current observer/provisioning, whole-host recovery, retained-route и real selected-entry boundaries |
 | S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
 | S04 | Заблокирован оставшимися S01 contracts | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
