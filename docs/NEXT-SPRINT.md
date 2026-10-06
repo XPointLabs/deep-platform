@@ -37,6 +37,18 @@ exclusion prerequisite не заменяет dependency closure/compaction plan,
 object read/ACK или production epoch-handover qualification. Whole S01 остаётся
 частичным; другой independent slice не открывается.
 
+Проверены actual consumers следующего contract: protected Store floors уже
+живут отдельно от send entries, но
+[owned text SQL reconciliation](../deep-client-shared/src/Deep.Client.Shared/Persistence/SqliteDeepMailboxStore.OwnedTextOutbox.cs)
+проверяет authored sequence по retained entries, а
+[messaging SQL verifier](../deep-client-shared/src/Deep.Client.Shared/Persistence/DeviceV2/Did2MessagingSqlJournal.cs)
+проверяет полную цепочку от registered empty и каждый journal-bound event.
+Удаление этих rows без согласованного protected predecessor/checkpoint не
+является допустимым compaction. В том же bounded contract нужно разделить
+outbox-only cleanup, replay-floor retirement и local history: no count-derived
+sequence reset, no lost materialization/receipt work, no payload retention под
+видом audit tombstone. Runtime cleanup по-прежнему не активирован.
+
 Внутри этого же подпункта исправлен воспроизведённый PMT2 selection-epoch
 rollback: signed generations сами по себе не запрещали `7 -> 6 -> 9` или
 `7 -> 8 -> 7`. [DR-0096](survival-program/decisions/DR-0096-mailbox-selection-epoch-continuity.md)
