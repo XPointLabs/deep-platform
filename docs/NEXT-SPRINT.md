@@ -33,9 +33,14 @@ settlement. ContactAccept/history/exact replay и следующий ratchet с�
 Pre-sanitization focused/native131/0/0 terminal0 проверил шесть handover,
 обе cancel boundaries, missing staging/peer-state, same-shape payload
 substitution и SQL rollback после commit marker. Final structural130/0/0
-terminal0 и non-test Production build0 warnings/errors. Один fresh full
-source gate выполняется на39 frozen inputs; до terminal0, exact mappings
-и input recheck текущий блок не принят. Его host/source не меняются.
+terminal0 и non-test Production build0 warnings/errors. First full677/1/0
+terminal1: все678 discovery names и131 required cases mapped, но один manual
+catalog fixture не зарегистрировал mandatory history root. Setup исправлен;
+hostile-SQL fixture также доведён до actual schema rejection, missing-history
+rejection проверяет unchanged state. Corrected focused149/0/0 terminal0.
+Один corrected full gate выполняется на40 frozen inputs; runtime source
+не изменён. До terminal0, exact mappings и input recheck блок не принят.
+Его host/source не меняются.
 История отдельных candidates и старого model full627 с неизвестным exit
 хранится только в repo checkpoint; она не квалифицирует этот source.
 
