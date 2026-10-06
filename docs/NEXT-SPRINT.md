@@ -11,12 +11,31 @@
 ## Единственная следующая подзадача
 
 **S01 — оставшийся local format/API freeze для settlement/renewal/retirement.**
-Следующая единственная подзадача — closed producer/consumer contract для
-irreversible namespace retirement fence: какие independently current signed
-evidence и actual protected floors необратимо исключают exact old replay scope,
-и как они сохраняются после crash/reopen. Не включать cleanup/renewal/retirement
+Следующая единственная подзадача — protected compaction-plan/floor contract для
+irreversible namespace retirement fence: dependency closure, порядок protected
+commit/read-back и сохранение accepted-object/retained-route obligations после
+crash/reopen. Epoch-exclusion prerequisite ниже принят отдельно; он не является
+полной deletion permission. Не включать cleanup/renewal/retirement
 runtime до contract; expiry, fresh grant, cache miss и capacity сами по себе
 не доказывают отсутствие remotely issued grant или право удалить dependencies.
+
+Узкий held epoch-exclusion prerequisite по
+[DR-0097](survival-program/decisions/DR-0097-owned-mailbox-epoch-exclusion.md)
+реализован на существующих generation5 + actual DNH2/anchor, без нового reader
+или marker. Producer и повторный consumer recheck удерживают actual account
+lease, exact original acquisition/root/instance и independently current signed
+policy/time. Known/closed-unresolved, lower-ceiling boundary, same-epoch refusal,
+cold reopen, missing root/anchor, clock rollback, expired proof, cancel/dispose:
+focused25/0/0 terminal0, actual Production build0 warnings/0 errors.
+[Frozen inputs и receipts](../deep-client-shared/docs/testing/s01-mailbox-epoch-exclusion-2026-10-06.md).
+Required full Shared gate **583/0/0 terminal0**; все25 focused + семь owned-send
+и два owned-receive cases Passed, все девять frozen inputs совпали после gate.
+Bounded local source slice принят: Shared `f4982e38c0848161f4b289218c62fb050e7bec5d`,
+Protocol `4fa9f95989db38d1012bd65c0dd73326824b8b91` (только normative source-hash repin).
+Namespace
+exclusion prerequisite не заменяет dependency closure/compaction plan, retained
+object read/ACK или production epoch-handover qualification. Whole S01 остаётся
+частичным; другой independent slice не открывается.
 
 Внутри этого же подпункта исправлен воспроизведённый PMT2 selection-epoch
 rollback: signed generations сами по себе не запрещали `7 -> 6 -> 9` или
@@ -95,7 +114,7 @@ source/package/API gates **не закрыты и блокируют S08/рел�
 Последние independently tested consumer source inputs (каждый receipt относится
 только к своим frozen dependencies): Node `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`,
 Registry `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3`,
-Shared `ce31023e6629c29d00702a7dc6e09ae683479a87`,
+Shared `f4982e38c0848161f4b289218c62fb050e7bec5d`,
 MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`.
 Node final assembly: input162ae plus the exact test-only fixture repair now in
 4ec06ae; production source не менялся. Registry final receipts use source f47ca75;
@@ -109,6 +128,9 @@ full575/0/0 проверяет input840d27d plus exact committed patch. Все S
 Protocol31a36fd исправляет epoch continuity; actual Shared Production с ним
 компилируется zero-warning. Shared575 receipt использовал Protocoled7153e и
 не становится новым full Shared/installed evidence после этого repin.
+Sharedf4982e3 квалифицирует epoch-exclusion prerequisite: full583/0/0 использует
+Protocol4fa9f95 и точные frozen inputs из связанного checkpoint. Это не пересборка
+Node/Registry/MAUI или installed evidence их текущих gitlinks.
 Product root input
 `79e84cd01dd95244bf68b0c20fb53a947e36e48f`; execution/status docs не меняют его
 frozen inputs. Точные compiled inputs и hashes находятся в repo checkpoints.

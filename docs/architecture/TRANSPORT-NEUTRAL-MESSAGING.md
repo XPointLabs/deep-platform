@@ -512,6 +512,39 @@ dependencies и применяет bounded backpressure. Эти требован
 runtime, новый local reader или публичную verification API; их bounded local
 format/API и fault fixtures остаются частью незавершённого S01.
 
+**Закрытый epoch-exclusion prerequisite.** Для exact protected acquisition
+допустим следующий узкий producer/consumer по
+[DR-0097](../survival-program/decisions/DR-0097-owned-mailbox-epoch-exclusion.md).
+Owner получает independently current complete network и signed PMA2, затем под
+actual account lease читает exact original grant root и native DNH2/floor/anchor.
+Current PMT2 selection epoch MUST быть строго выше original protected PMT2 epoch;
+каждый authenticated intermediate step соблюдает
+[DR-0096](../survival-program/decisions/DR-0096-mailbox-selection-epoch-continuity.md).
+Authenticated lower time MUST достигнуть original possible-grant ceiling. Это
+закрывает overlap старой admission policy; ни ceiling, ни epoch advance отдельно
+не заменяют полный prerequisite. Known winner дополнительно связан с exact
+original request/route/epoch; closed-unresolved использует original PMT2 epoch,
+не выдуманный serial или grant generation. Pending acquisition не подходит.
+
+Capability не сериализуется и не передаётся UI: она удерживает actual lease,
+account/network/instance и exact acquisition/root. Consumer повторно проверяет
+current policy/time, exact journal и actual protected floor до использования.
+Dispose, cancellation, expired proof, clock discontinuity, changed/missing root
+или anchor не разрешают effect. Crash уничтожает transient capability; после
+reopen новый producer независимо проверяет signed chain от actual retained DNH2
+и original custody. Bare digest, cached receipt и tuple-only checkpoint не
+восстанавливают authority. Unchanged authority lineage обязательна; rollover,
+reset или forward-only joins без сохранённого exact floor недоступны. Совместный
+откат SQL и protected storage остаётся вне локальной гарантии DR-0012.
+
+Этот prerequisite исключает admission старого epoch, но **не** является полной
+retirement/deletion permission и не доказывает non-issuance или non-delivery.
+S04 consumer всё ещё обязан закрыть exact dependencies и защитить/read-back
+compaction plan/floors по §8.4.3/8.4.4 до SQL cleanup. Original holder, grants,
+requests, object paths и replay floors здесь не удаляются. Production epoch
+handover/provisioning остаётся S05 activation gate; обычный operational successor
+с тем же epoch не заменяет эту церемонию или physical evidence.
+
 #### 8.4.3 Compaction and boundedness
 
 Перед освобождением working-set slot owner MUST сохранить отдельные protected
