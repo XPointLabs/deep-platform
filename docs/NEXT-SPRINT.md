@@ -12,11 +12,28 @@
 
 **S01 — bounded outbox-only disposition/API и dependency closure.**
 
-Следующий единственный переход: определить bounded owner selection из actual
-settlement custody, сохраняя независимые history/receipt obligations и floors.
+Следующий единственный переход: завершить affected-reader и fault/cold/full
+qualification bounded outbox-only API из actual settlement custody, сохраняя
+независимые history/receipt obligations и floors.
 Признак Stored, SQL row count или parser metadata не разрешают удаление.
 Matching SQL reader и protected roots должны иметь один recoverable batch;
-runtime lifecycle/scheduler cleanup остаются S04. Ниже — уже принятая prefix
+runtime lifecycle/scheduler cleanup остаются S04. В working source реализованы
+held selection/staging, complete application SQL effects/writer и stored recovery,
+Store и exact E2EE replay после удаления working copy. Native recovery fixture
+33/0/0 terminal0, structural71/0/0 terminal0;19 frozen inputs matched. Это
+receipt до последнего E2EE reader join. Cached encryption104/0/0 terminal0
+проверил этот join; final structural103/0/0 terminal0 даёт unique fixture case IDs.
+Final production и isolated host builds0 warnings/errors, discovery687 unique.
+Source checkpoint Shared `574d934347fb21f48453def7541a0a7a7a86d06d`
+закоммичен и запушен; working tree Shared чистое. Required coupled full запущен
+на isolated final host:687 unique discovery, all678 prior и161 current required,
+55 frozen inputs. Manifest `artifacts/s01-outbox-owner-final-full/expected-qualification.json`
+(Shared-relative), SHA256 `4095F2C250FF4361BA62BD4A2C5C4C17EB347F4680464051E8B4FF85105D5336`.
+Итогового receipt ещё нет; source checkpoint не закрывает блок.
+Runtime time/lease checks не ослаблены.
+[Точный checkpoint и сохранённые FAIL](../deep-client-shared/docs/testing/s01-ordinary-outbox-disposition-2026-10-06.md).
+Блок не принят до reader closure и required coupled full gate.
+Ниже — уже принятая prefix
 подзадача, prerequisite этого перехода, а не задание реализовать её снова.
 
 В этой же подзадаче закрыт найденный same-scope replay defect: absent ordinary
