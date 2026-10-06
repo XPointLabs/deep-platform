@@ -31,6 +31,14 @@ Focused23/0/0 terminal0, build0 warnings/errors; это не current full gate.
 complete crash/recovery gate ещё не закрыты. Незавершённый S01 не получает
 «готово» по этой выборке; [точная граница проверок](../deep-client-shared/docs/testing/s01-native-replay-fence-2026-10-06.md).
 
+Продолжение этого же блока: Shared `258c6c4a4fb612d9c58dacd10b14709ed4a8647b`,
+held snapshot читает и exact-rechecks8 actual roots
+и отдельно отмечает send/read work/floors, traversal, ordinary/asset work и
+незакрытые receipt/object/retained-route obligations. Focused25/0/0 terminal0;
+это local dependency facts, не eligible disposition или сериализованный флаг
+«settled». Следующий переход остаётся здесь же: закрытый retirement/recovery
+profile с complete readbacks; до него никакой cleanup не активируется.
+
 ## Уже принятый outbox-only блок — не реализовывать повторно
 
 Shared `574d934347fb21f48453def7541a0a7a7a86d06d`: bounded held selection/staging,
