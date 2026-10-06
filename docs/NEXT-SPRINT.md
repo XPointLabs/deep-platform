@@ -19,6 +19,14 @@ Matching SQL reader и protected roots должны иметь один recovera
 runtime lifecycle/scheduler cleanup остаются S04. Ниже — уже принятая prefix
 подзадача, prerequisite этого перехода, а не задание реализовать её снова.
 
+В этой же подзадаче закрыт найденный same-scope replay defect: absent ordinary
+entry больше не позволяет reserve новый Pending для retained native operation.
+Focused source checkpoint Shared `132871df56b749ee569a6439f9800bff10932dd8`.
+[Focused prerequisite receipt](../deep-client-shared/docs/testing/s01-authored-counter-floors-2026-10-06.md#outbox-replay-prerequisite--focused-only):
+26/0/0 terminal0, actual native case и25 unit cases mapped Passed, non-test build
+0 warnings/errors. Это не accepted disposition/API batch: его selection,
+dependency/recovery closure и required coupled full gate ещё впереди.
+
 Dependency/recovery semantics приняты у
 [sole owner §8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness):
 одна SQLCipher database/transaction на batch, exact predecessor/successor SQL,
