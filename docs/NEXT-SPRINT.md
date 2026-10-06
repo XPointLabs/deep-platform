@@ -22,6 +22,15 @@ Sole semantics — [§8.4.2–8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md
 current consumer mapping — [Shared](../deep-client-shared/docs/architecture/owned-authored-counter-custody.md#remaining-closure).
 Independent files/groups/calls до этих prerequisites не открываются.
 
+Текущий working checkpoint этого же блока: Shared
+`84be73d9402a18771ef466a30077200d8ab3cca4` читает actual native DNH2
+floor/marker/history anchor как unchanged NativeFence guard под held exclusion
+и после cold reopen. Новый floor, journal generation или wire не добавлены.
+Focused23/0/0 terminal0, build0 warnings/errors; это не current full gate.
+Это только local guard facts: dependency-closed retirement owner/profile и его
+complete crash/recovery gate ещё не закрыты. Незавершённый S01 не получает
+«готово» по этой выборке; [точная граница проверок](../deep-client-shared/docs/testing/s01-native-replay-fence-2026-10-06.md).
+
 ## Уже принятый outbox-only блок — не реализовывать повторно
 
 Shared `574d934347fb21f48453def7541a0a7a7a86d06d`: bounded held selection/staging,
