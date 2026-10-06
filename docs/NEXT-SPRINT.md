@@ -10,33 +10,21 @@
 
 ## Единственная следующая подзадача
 
-**S01 — durable retirement fence для exact replay namespace.**
+**S01 — persistent application-receipt obligation.**
 
-Следующий единственный переход: закрыть matching bounded owner API/local custody
-для необратимого retirement fence на основе уже принятого held epoch-exclusion
-prerequisite. Проверить actual protected floors, dependency guards и cold reopen;
-reader не создаёт fence из tuple/hash или свежего grant. Незакрытые send/read/ACK,
-receipt и accepted-object/retained-route obligations оставляют scope pinned.
-Это не scheduler cleanup/S04 и не разрешение удалить outstanding dependencies.
-Sole semantics — [§8.4.2–8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#842-grant-and-route-transitions),
-current consumer mapping — [Shared](../deep-client-shared/docs/architecture/owned-authored-counter-custody.md#remaining-closure).
+Следующий единственный переход: сохранить обязательство application receipt
+атомарно с authenticated semantic materialization/dedup и проверить его
+восстановление после прерывания. Обязательство независимо от transport ACK,
+outbox/prefix cleanup; Store/tombstone не означают Delivered/Read.
+Работа ограничена bounded local owner/API и crash/reopen fixtures. Отправка
+AppAck, scheduler и UI-статусы S07 пока не открываются. Accepted-object/
+retained-route closure и retirement известных send/read floors остаются
+следующими незавершёнными S01 переходами, не параллельными задачами.
+Sole semantics — [§8.4.1](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#841-delivery-transitions)
+и [§8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
 Independent files/groups/calls до этих prerequisites не открываются.
 
-Текущий working checkpoint этого же блока: Shared
-`84be73d9402a18771ef466a30077200d8ab3cca4` читает actual native DNH2
-floor/marker/history anchor как unchanged NativeFence guard под held exclusion
-и после cold reopen. Новый floor, journal generation или wire не добавлены.
-Focused23/0/0 terminal0, build0 warnings/errors; это не current full gate.
-Это только local guard facts: dependency-closed retirement owner/profile и его
-complete crash/recovery gate ещё не закрыты. Незавершённый S01 не получает
-«готово» по этой выборке; [точная граница проверок](../deep-client-shared/docs/testing/s01-native-replay-fence-2026-10-06.md).
-
-Продолжение этого же блока: Shared `258c6c4a4fb612d9c58dacd10b14709ed4a8647b`,
-held snapshot читает и exact-rechecks8 actual roots
-и отдельно отмечает send/read work/floors, traversal, ordinary/asset work и
-незакрытые receipt/object/retained-route obligations. Focused25/0/0 terminal0;
-это local dependency facts, не eligible disposition или сериализованный флаг
-«settled». Этот prerequisite сам по себе не активирует cleanup.
+## Принятый unused Deposit retirement profile — не реализовывать повторно
 
 Текущий source checkpoint: Shared `25204bfa68a200f3ce8b2e4b53a4b05e11226d51`.
 Actual held producer и closed recovery/abort profile для одного closed unused
@@ -46,9 +34,13 @@ corrected focused39/0/0 terminal0: encrypted journal reopen, пять handover,
 обе cancellation boundaries, changed/missing bindings/guards/floor/staging и
 отказ удаления known/unresolved Retrieve custody без staging.
 [Точные границы и сохранённые FAIL](../deep-client-shared/docs/testing/s01-closed-deposit-retirement-2026-10-06.md).
-Current full на706 unique cases запущен с62 frozen inputs,200 current required
-иall687 prior names; ещё не завершён и не принят. Следующий единственный шаг —
-дождаться terminal и exact receipt/input qualification этого же profile.
+Current full завершён и принят:706/0/0, observed process terminal0;
+706 unique cases, все200 current required иall687 prior names mapped Passed,
+62/62 frozen inputs unchanged. Receipt SHA256
+`B3184583AF4062BB220A5AE5BF37D1DAB8BAFC09F1367A6956C8B582ECD33987`;
+manifest SHA256 `5C9400C06D95AD97EF253D4EF0098A7886EADEFC544EEBB2C1D6A97A1F8B70F7`.
+Закрыт только closed unused Deposit profile; принятие документировано в Shared
+`5d900b44ca60c884ffcc2773e61d123a703f9ca3`. Это не весь S01 и не S04 cleanup.
 Receipt/object/retained-route и остальные S01 closures не объявлены завершёнными;
 S02 и независимые files/groups/calls не открываются по focused результату.
 
@@ -174,7 +166,7 @@ Completed chronology — в repo checkpoints, Git и [SPRINT-HISTORY](SPRINT-HIS
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
 | --- | --- | --- |
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
-| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Prefix owner qualified на full678; outbox-only owner/recovery и affected readers qualified на current full687/0/0 terminal0, all161 current/all678 prior cases Passed,55/55 inputs exact. FAIL receipts preserved. Следующий единственный блок — durable retirement fence; receipt/object-horizon/retained-route closure остаётся открытым. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
+| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Prefix owner qualified на full678; outbox-only owner/recovery — full687. Closed unused Deposit retirement profile — current full706/0/0 terminal0, all200 current/all687 prior cases Passed,62/62 inputs exact. FAIL receipts preserved. Следующий единственный блок — persistent application-receipt obligation; accepted-object/retained-route и known-floor retirement closure открыты. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
 | S02 | Current receiver/coordinator и guarded Program wiring реализованы; не принят | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md). Current observer/provisioning, whole-host recovery, retained-route и real selected-entry boundaries |
 | S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
 | S04 | Заблокирован оставшимися S01 contracts | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
