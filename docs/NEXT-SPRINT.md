@@ -10,7 +10,14 @@
 
 ## Единственная следующая подзадача
 
-**S01 — matching bounded local compaction-plan/API и checkpoint contract.**
+**S01 — bounded outbox-only disposition/API и dependency closure.**
+
+Следующий единственный переход: определить bounded owner selection из actual
+settlement custody, сохраняя независимые history/receipt obligations и floors.
+Признак Stored, SQL row count или parser metadata не разрешают удаление.
+Matching SQL reader и protected roots должны иметь один recoverable batch;
+runtime lifecycle/scheduler cleanup остаются S04. Ниже — уже принятая prefix
+подзадача, prerequisite этого перехода, а не задание реализовать её снова.
 
 Dependency/recovery semantics приняты у
 [sole owner §8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness):
@@ -29,7 +36,7 @@ Startup recovery предшествует ordinary opens; другие пути 
 Это narrow local prefix API, не включённый scheduler cleanup и не remote
 settlement. ContactAccept/history/exact replay и следующий ratchet сохранены.
 
-Текущая приёмка: [repo checkpoint](../deep-client-shared/docs/testing/s01-compaction-plan-model-2026-10-06.md#current-coupled-full-gate--running-not-accepted).
+Приёмка prefix API: [repo checkpoint](../deep-client-shared/docs/testing/s01-compaction-plan-model-2026-10-06.md#current-coupled-full-gate--accepted-prefix-slice).
 Pre-sanitization focused/native131/0/0 terminal0 проверил шесть handover,
 обе cancel boundaries, missing staging/peer-state, same-shape payload
 substitution и SQL rollback после commit marker. Final structural130/0/0
@@ -38,13 +45,15 @@ terminal1: все678 discovery names и131 required cases mapped, но один 
 catalog fixture не зарегистрировал mandatory history root. Setup исправлен;
 hostile-SQL fixture также доведён до actual schema rejection, missing-history
 rejection проверяет unchanged state. Corrected focused149/0/0 terminal0.
-Один corrected full gate выполняется на40 frozen inputs; runtime source
-не изменён. До terminal0, exact mappings и input recheck блок не принят.
-Его host/source не меняются.
+Corrected fixture input Shared `23988df2204202374c6c0edb8b709495aaf6e1e8`:
+full678/0/0 terminal0 с explicit shell marker; all678 discovery names,
+all150 unique required cases и627 prior cases mapped Passed, без missing/extra,
+duplicates или skips.40/40 frozen inputs rechecked exact; runtime source
+не изменён. Narrow prefix block принят на этой matrix, весь S01 ещё не закрыт.
 История отдельных candidates и старого model full627 с неизвестным exit
 хранится только в repo checkpoint; она не квалифицирует этот source.
 
-После завершения приёмки — оставшиеся S01 bounded APIs/dispositions,
+После принятой prefix подзадачи — оставшиеся S01 bounded APIs/dispositions,
 durable retirement/dependency fences и receipt/object closure.
 Independent files/groups/calls до этих prerequisites не открываются.
 Object-horizon/retained-route Retrieve/ACK contract остаётся связанным activation
@@ -106,7 +115,7 @@ Completed chronology — в repo checkpoints, Git и [SPRINT-HISTORY](SPRINT-HIS
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
 | --- | --- | --- |
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
-| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Old model full outcomes627 Passed, original exit unavailable; fresh current full gate running, not accepted. Registration/staging и history reader/capture имеют отдельные focused/native receipts. Held prefix SQL/adoption/recovery owner implemented; pre-sanitization focused/native131 Passed, current structural130 Passed. Remaining other dispositions, durable retirement fence и object-horizon/retained-route contract. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
+| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Narrow held prefix SQL/adoption/recovery owner qualified: current full678/0/0 terminal0, all150 required +627 prior cases Passed,40/40 inputs exact. First full FAIL preserved; old model receipt не подменяет current matrix. Следующий bounded outbox-only disposition/API; remaining durable retirement fence и object-horizon/retained-route contract. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
 | S02 | Current receiver/coordinator и guarded Program wiring реализованы; не принят | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md). Current observer/provisioning, whole-host recovery, retained-route и real selected-entry boundaries |
 | S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
 | S04 | Заблокирован оставшимися S01 contracts | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
