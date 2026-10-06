@@ -24,6 +24,21 @@ Sole semantics — [§8.4.1](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#841-del
 и [§8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
 Independent files/groups/calls до этих prerequisites не открываются.
 
+Source checkpoint этой же подзадачи: Shared
+`6e9d2b3c5d111f596291dcc4ce1d96a1c1f12c4a` (producer `aaf233b`).
+Atomic inbox/recipient receipt obligation и bounded owned local reader
+реализованы. Native focused53/0/0 terminal0 проверил receive/reopen и сохранение
+work после ordinary-outbox cleanup; final structural/schema58/0/0 terminal0
+проверил уникальные case labels и отказ schema8 без repair. Actual solution и
+non-test Production builds0 warnings/errors. Это не current full acceptance.
+[Consumer mapping](../deep-client-shared/docs/architecture/owned-application-receipt-obligations.md),
+[точные receipts и сохранённые FAIL](../deep-client-shared/docs/testing/s01-application-receipt-obligations-2026-10-06.md).
+Первый full остановлен после stale schema8 fixture, без объявления приёмки;
+fixture исправлен. Current full запущен на726 unique cases,259 current required,
+706 prior cases (705 unchanged names + один явно переименованный raw-key case),
+171 frozen inputs. Следующий единственный шаг — terminal и exact qualification
+этого же source. Пока он не принят, не открывать новый переход или S02.
+
 ## Принятый unused Deposit retirement profile — не реализовывать повторно
 
 Текущий source checkpoint: Shared `25204bfa68a200f3ce8b2e4b53a4b05e11226d51`.
