@@ -96,6 +96,12 @@ terminal1 и отдельный production graph/MAU2 FAIL сохранены,
 Это не protected rollback/provenance, renewed issuer, usable successor
 disambiguation, signed elapsed-history/horizon или node Retrieve–ACK closure.
 S01 и последующие runtime stages остаются не приняты; процент не повышается.
+Проверка реальных callers подтвердила, что XMG1 не подписывает exact route hash,
+а current139-byte replica evidence и issuer требуют live current closure.
+Следующий batch связывает exact retained selection, protected native read-back,
+two-store evidence и renewed issuer/owned request/result consumers; нельзя
+выдавать private lookup как Current evidence или менять смысл expiry на readUntil.
+Новый wire/domain этой проверкой не выделен.
 
 ## Принятое recipient receipt obligation — не реализовывать повторно
 
@@ -247,10 +253,10 @@ Registry input `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3` (runtimef47ca75).
 Registry Release solution строила внешние dependencies в Debug; это source
 baseline, не uniformly Release package matrix.
 
-Последний full Protocol receipt2057/1/7 terminal1 сохраняет реальный MAU2
+Последний full Protocol receipt2088/1/7 terminal1 сохраняет реальный MAU2
 actual-package/assembly blocker; native PMA1/PMR1 routing/genesis/recovery
 closure остаётся S08/релизом по DR-0095. Assertions и required gates не отменены.
-[Current Protocol receipt](../deep-protocol/docs/testing/s01-retained-mailbox-read-2026-10-07.md#mandatory-current-source-qualification),
+[Current Protocol receipt](../deep-protocol/docs/testing/s01-retained-route-contract-repin-2026-10-07.md),
 [native join scope](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#mailbox-issuance-and-current-grant-adapter-retirement-2026-10-05).
 Normative repin не переквалифицирует Node/Registry/MAUI, signed shipping artifacts
 или physical delivery. MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`,
