@@ -130,8 +130,9 @@ Bounded XMG2 source slices qualified; это не закрытие S01 или sh
 Четыре завершённых repo slices зафиксированы локально: Protocol`53deca6`,
 Shared`1f43bc0`, Registry`d6a0c8b`, Node`f993017`.
 Registry CI configuration/evidence follow-up: `e694282`.
-Leaf trees чистые; root normative/gitlinks и matched Protocol CI repin готовятся
-к общему push. Commits не означают shipping acceptance.
+Source commits и root normative checkpoint `c284062` запушены в release-candidate.
+Matched Protocol CI repin `b57051a` использует этот exact cross-protocol snapshot;
+approved DNP1 snapshot не менялся. Commits не означают shipping acceptance.
 Перед push обнаружен такой же CI provider drift: оба Registry workflow использовали
 deep_ci вместо strict deep_s00. Только service/health/provider configuration
 выравнивается с уже qualified локальным lane; assertions/runtime source unchanged.
