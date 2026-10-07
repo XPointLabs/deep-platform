@@ -942,6 +942,24 @@ expiration. Quotas are enforced per blinded mailbox capability before storage, a
 proof-of-work or Privacy Pass-style unlinkable tokens MAY be required for unsolicited
 message requests.
 
+Under [DR-0099](../survival-program/decisions/DR-0099-retained-mailbox-read-selection.md),
+retained read selection is distinct from current Store admission. A still-current
+Active Retrieve MCG3 MAY name an earlier exact PMT2 artifact and its epoch only
+when that step is already authenticated in the complete current protected network
+lineage. Its issuer, signature, generation floor, validity interval, maximum
+lifetime and policy remain independently current. Expired grants and old issuer
+keys are not promoted to authority. Store retains exact current PMT2/epoch checks.
+The additive host API returns copied replica facts only; holder, exact request,
+current MGR1/protected floor, replay, selected local exit and mutation checks remain
+mandatory. Historical PMT rows select node IDs; current admitted Mailbox-role
+descriptors supply keys and transport. Missing history or removed replicas is a
+retention gap, never an unsigned rerank or successful empty catch-up. Bounds and
+cold exact-history reminting follow the existing complete NETCODEC lineage caps.
+Forward-only/terminal-only joins cannot manufacture an omitted retained step.
+Renewed retained issuance and owner/node consumers remain separate activation
+requirements under TRANSPORT-NEUTRAL-MESSAGING §8.4.4; no retention claim follows
+from this host increment.
+
 ### 9.1 Current two-replica Store ordering
 
 Under [DR-0086](../survival-program/decisions/DR-0086-current-mailbox-store-order.md),

@@ -25,6 +25,19 @@ Sole semantics — [§8.4.1](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#841-del
 и [§8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
 Independent files/groups/calls до этих prerequisites не открываются.
 
+Source checkpoint внутри этой же подзадачи: Protocol
+`550de0109677d18739c743af13047582e0006f3e` по
+[DR-0099](survival-program/decisions/DR-0099-retained-mailbox-read-selection.md).
+Closed host retained-selection/MGR1 API реализованы; current Store не ослаблен,
+expired grants не восстанавливаются. Focused194/0/0 terminal0;194 unique
+results/definitions/test/execution IDs mapped Passed. Registry gate terminal0,
+reviewed source/hash repin без wire/domain allocations. Mandatory Protocol full
+и actual package/API/resource gate ещё не квалифицированы на этом source.
+[Границы, команды и сохранённые FAIL](../deep-protocol/docs/testing/s01-retained-mailbox-read-2026-10-07.md).
+Единственный текущий шаг — обязательная qualification этого checkpoint.
+Retained issuer/holder/typed node Retrieve–ACK и object horizon остаются внутри
+этой же незавершённой подзадачи; не переходить к S02 или known-floor cleanup.
+
 ## Принятое recipient receipt obligation — не реализовывать повторно
 
 Source checkpoint: Shared

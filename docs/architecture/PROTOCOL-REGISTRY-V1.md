@@ -624,6 +624,13 @@ API for authenticating past exact Store commitments in the current projection.
 It creates no current grant/replay/dispatch authority and allocates no wire ID.
 Writer/path/prefix implementation and package activation remain separately gated.
 
+[DR-0099](../survival-program/decisions/DR-0099-retained-mailbox-read-selection.md)
+freezes additive retained-read replica facts and current MGR1/floor validation
+for a still-current Retrieve MCG3 naming a PMT2 step in the verified protected
+network lineage. Current Store remains current-selection-only. No wire/domain
+allocation or expired-grant reader is introduced; retained issuance, owner/node
+composition and object-horizon activation remain separately gated.
+
 DR-0081 supersedes only DR-0004's neutral grant/presentation/envelope/result
 choice; route selection, privacy and ownership remain mandatory. `XRR1` alone is not a routable deposit
 closure; the exact XRA1/XRC1/XRR1/XSS1 plus PMT2/PMS2 closure in the contact/XPoint
