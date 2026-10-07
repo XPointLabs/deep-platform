@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-06**. Branch: `release-candidate/prod-20260909`.
+Обновлено: **2026-10-07**. Branch: `release-candidate/prod-20260909`.
 Единственный DAG и критерии приёмки:
 [IMPLEMENTATION-PLAN-V1](architecture/IMPLEMENTATION-PLAN-V1.md).
 Основание: [аудит](architecture/ARCHITECTURE-AUDIT-2026-10-03.md),
@@ -10,34 +10,43 @@
 
 ## Единственная следующая подзадача
 
-**S01 — persistent application-receipt obligation.**
+**S01 — accepted-object horizon / retained-route Retrieve–ACK contract.**
 
-Следующий единственный переход: сохранить обязательство application receipt
-атомарно с authenticated semantic materialization/dedup и проверить его
-восстановление после прерывания. Обязательство независимо от transport ACK,
-outbox/prefix cleanup; Store/tombstone не означают Delivered/Read.
-Работа ограничена bounded local owner/API и crash/reopen fixtures. Отправка
-AppAck, scheduler и UI-статусы S07 пока не открываются. Accepted-object/
-retained-route closure и retirement известных send/read floors остаются
-следующими незавершёнными S01 переходами, не параллельными задачами.
+Следующий единственный переход: закрыть producer/consumer authority для чтения
+и transport ACK уже принятых объектов после смены route/selection epoch.
+Admission/grant expiry не заменяет object horizon; expired grant не становится
+новым admission. Сначала проверяется фактическая граница current-only API и
+фиксируется закрытый контракт, затем его producer и consumers. Не увеличивать
+TTL отдельно от codec/node/replay/tombstone/retained-route closure.
+Работа ограничена S01 contract/API; runtime lifecycle остаётся S04.
+Retirement известных send/read floors — следующая, не параллельная подзадача.
+Отправка AppAck, scheduler и UI-статусы S07 пока не открываются.
 Sole semantics — [§8.4.1](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#841-delivery-transitions)
 и [§8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
 Independent files/groups/calls до этих prerequisites не открываются.
 
-Source checkpoint этой же подзадачи: Shared
+## Принятое recipient receipt obligation — не реализовывать повторно
+
+Source checkpoint: Shared
 `6e9d2b3c5d111f596291dcc4ce1d96a1c1f12c4a` (producer `aaf233b`).
 Atomic inbox/recipient receipt obligation и bounded owned local reader
 реализованы. Native focused53/0/0 terminal0 проверил receive/reopen и сохранение
 work после ordinary-outbox cleanup; final structural/schema58/0/0 terminal0
 проверил уникальные case labels и отказ schema8 без repair. Actual solution и
-non-test Production builds0 warnings/errors. Это не current full acceptance.
+non-test Production builds0 warnings/errors.
 [Consumer mapping](../deep-client-shared/docs/architecture/owned-application-receipt-obligations.md),
 [точные receipts и сохранённые FAIL](../deep-client-shared/docs/testing/s01-application-receipt-obligations-2026-10-06.md).
 Первый full остановлен после stale schema8 fixture, без объявления приёмки;
-fixture исправлен. Current full запущен на726 unique cases,259 current required,
+fixture исправлен. Current full принят:726/0/0, observed process terminal0 и
+qualification terminal0;726 unique cases,259 current required,
 706 prior cases (705 unchanged names + один явно переименованный raw-key case),
-171 frozen inputs. Следующий единственный шаг — terminal и exact qualification
-этого же source. Пока он не принят, не открывать новый переход или S02.
+171/171 frozen inputs unchanged. Independent terminal readback подтвердил exact
+Passed mapping всех results/definitions/test/execution IDs без missing/extra.
+Receipt SHA256 `30708DE6560EBCDE227A2D604C2220CFAE930982E0031601A8789DC92886667A`;
+manifest SHA256 `4E7A35CED642E3D9261B6F023FA6259910F375FE2FF5D7ECC26B2C67BF4556D9`.
+Acceptance commit `843539cc24770e77cf99d7597657d75c7bc6f968` pushed.
+Принят только этот блок, не весь S01, scheduler или physical E2E.
+S02 остаётся закрыт до остальных S01 closures.
 
 ## Принятый unused Deposit retirement profile — не реализовывать повторно
 
@@ -181,7 +190,7 @@ Completed chronology — в repo checkpoints, Git и [SPRINT-HISTORY](SPRINT-HIS
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
 | --- | --- | --- |
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
-| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Prefix owner qualified на full678; outbox-only owner/recovery — full687. Closed unused Deposit retirement profile — current full706/0/0 terminal0, all200 current/all687 prior cases Passed,62/62 inputs exact. FAIL receipts preserved. Следующий единственный блок — persistent application-receipt obligation; accepted-object/retained-route и known-floor retirement closure открыты. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
+| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Prefix owner qualified на full678; outbox-only owner/recovery — full687; closed unused Deposit retirement — full706. Recipient receipt obligation — full726/0/0, process/qualification terminal0, all259 current/all706 prior cases Passed,171/171 inputs exact. FAIL receipts preserved. Единственный следующий блок — accepted-object/retained-route contract; known-floor retirement остаётся после него. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
 | S02 | Current receiver/coordinator и guarded Program wiring реализованы; не принят | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md). Current observer/provisioning, whole-host recovery, retained-route и real selected-entry boundaries |
 | S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
 | S04 | Заблокирован оставшимися S01 contracts | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
