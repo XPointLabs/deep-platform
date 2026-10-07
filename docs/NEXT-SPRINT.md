@@ -189,7 +189,18 @@ CI repin Protocol`f3051e8` привязан к нормативному root sna
 approved DNP1 snapshot не менялся. Новый GitHub run ещё не квалифицирован.
 Docker Linux engine после перезапуска доступен (28.3.3). GitHub CI предыдущего
 Node checkpoint `f993017` завершился success, run37599716229; это не проверка
-нового dirty candidate. Shared run37599717431 на последнем снимке in_progress.
+нового candidate. Current Node run37612271733 (`4aae71d`) ещё in_progress:
+unit job success, integration job выполняется. Root run37612440895
+(`708ce6f`) success. Protocol run37612377828 (`f3051e8`) завершён failure
+на actual assembly/resource/public API graph; MAU2 blocker подтверждён,
+не отменён локальной matrix qualification.
+Shared run37599717431 (`1f43bc0`) завершён failure: Windows723/3/0,
+Linux portable595/79/0. Три Windows failures — actual ContactAccept custody
+tests: CI не получает требуемый contact-codec-v1.vectors.json из root docs,
+loader fail-closed с FileNotFoundException. Это CI input gap, не product pass.
+Linux failures дополнительно включают PlatformNotSupportedException в
+current ML-KEM-dependent paths; existing portable filter не закрывает provider
+gap. Фильтры/assertions не ослаблены, CI failures остаются открытыми.
 Общая приёмка по-прежнему1/14 (~7%), physical0/4, release не готов.
 
 ## Принятое recipient receipt obligation — не реализовывать повторно
