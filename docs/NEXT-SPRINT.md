@@ -43,6 +43,14 @@ authority с actual protected route/capability lookup. Typed node Retrieve–ACK
 object horizon остаются внутри
 этой же незавершённой подзадачи; не переходить к S02 или known-floor cleanup.
 
+Внутри проверки actual lookup исправлен partial-GC defect в Node
+`27f8c5cf88ba1d48678353c7417f23f910e91f11`: неверный XUR checkpoint теперь
+отклоняется до удаления DCR predecessors в памяти. Focused14/0/0 terminal0;
+current full запущен, его приёмка ещё не заявлена. Required Docker smoke пока
+не выполнен: local Docker engine недоступен. Это local source increment,
+не retained issuance или завершение текущей подзадачи.
+[Границы и сохранённый FAIL](../xnode/docs/testing/s01-retained-lookup-2026-10-07.md).
+
 ## Принятое recipient receipt obligation — не реализовывать повторно
 
 Source checkpoint: Shared
