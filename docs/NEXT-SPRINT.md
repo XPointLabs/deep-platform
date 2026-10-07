@@ -160,6 +160,36 @@ Protected rollback/read-back, обе retained attestations, renewed issuer/owned
 holder и node Retrieve–ACK/object horizon остаются тем же следующим переходом.
 S01 не закрыт; S02/S04 и physical0/4 не активированы.
 
+Продолжение того же business batch по
+[DR-0103](survival-program/decisions/DR-0103-protected-retained-route-document.md):
+native checkpoint защищает exact generation5 resolver document, independent
+node/network enrollment, one pending transition и captured read/serialize bytes.
+Native DID2 composition требует protected owner без fallback; explicit
+`contact-resolver-enroll` проверяет actual source/history/root/PMA2/time/signing
+custody до и после fresh enrollment. No startup import/reset/key generation.
+Final coupled196/0/0 и neutral resolver15/0/0 terminal0; real signed inputs,
+persisted key ring, cold/crash/rollback/purpose/scope/ABA/orphan/DI/command boundaries.
+Новый isolated external/no-mock smoke terminal0, исходные6 dev containers/data
+сохранены. Оригинальный полный Native gate завершён terminal0:1294/0/0
+(Integration936, ProfileGenerator107, Unit251). Post-terminal qualifier0:
+all1242 prior/all211 final focused exact executions и2351 unchanged inputs.
+Coupled02 harness FAIL195/1/0 сохранён (ошибка типа ожидаемой Windows exception).
+Принят только native custody/composition slice, не весь этап: two-store retained evidence, renewed issuer/owned holder,
+typed Retrieve–ACK и object horizon остаются одним текущим S01 closure.
+[Точный candidate receipt](../xnode/docs/testing/s01-protected-retained-route-2026-10-07.md).
+Mechanical Protocol source-hash repin: restore/build0 warnings/errors,
+strict registry0, original full2091/1/7 terminal1. Standalone qualifier0
+сохраняет все2099 prior exact executions и2012 unchanged inputs;
+known MAU2 package FAIL/7 skips и отдельный graph FAIL не отменены.
+Evidence ownership0 — mapping, не executed package approval.
+[Protocol repin receipt](../deep-protocol/docs/testing/s01-protected-retained-route-repin-2026-10-07.md).
+Проверенные source commits Node`4aae71d`, Protocol`fc874c7` запушены
+в release-candidate; это не приёмка shipping/physical paths.
+Docker Linux engine после перезапуска доступен (28.3.3). GitHub CI предыдущего
+Node checkpoint `f993017` завершился success, run37599716229; это не проверка
+нового dirty candidate. Shared run37599717431 на последнем снимке in_progress.
+Общая приёмка по-прежнему1/14 (~7%), physical0/4, release не готов.
+
 ## Принятое recipient receipt obligation — не реализовывать повторно
 
 Source checkpoint: Shared

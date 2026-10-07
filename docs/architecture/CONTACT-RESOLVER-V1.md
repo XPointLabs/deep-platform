@@ -1636,6 +1636,32 @@ lookup cannot mint or install MCG3, prove historical availability, retire replay
 custody or dispatch Retrieve/ACK. Runtime activation and physical acceptance
 remain separate gates of this same S01 closure.
 
+[DR-0103](../survival-program/decisions/DR-0103-protected-retained-route-document.md)
+requires an independent native checkpoint of the exact generation5 document,
+not a duplicate retained-route journal. Bind it to the local node/network and
+fixed relative resolver path, using separate Data Protection enrollment and
+checkpoint purposes. Persist only hash/length, local generation and one pending
+hash/length/temporary basename. Production key-ring, checkpoint and replaceable
+node-data directories are disjoint and explicitly provisioned.
+
+| Protected native transition | Durable effect / rejection | Recovery |
+| --- | --- | --- |
+| Explicit fresh enrollment; no document or prior root | Create canonical empty document and authenticated enrollment/checkpoint | Existing unprotected state is never imported or blessed |
+| Normal reopen | Verify node/network/purpose and committed document hash/length | Missing/tampered/split state is unavailable; never empty reenrollment |
+| New document mutation | Verify predecessor; validate/flush exact candidate; persist/read back pending root; replace/flush; commit/read back root | One pending transition, no successful partial custody |
+| Failure before/after replacement or checkpoint commit | Fault open store; retain exact anchored temporary and root | Only protected predecessor plus exact prepared file, or already-installed exact prepared file |
+| Retained evidence lookup | Recheck protected document before and after actual current authority callbacks | Snapshot change, cancel, authority/horizon loss rejects before signing |
+| Data-only rollback, foreign node/network, missing key ring or changed protected root | Fail closed; preserve evidence | No public Resolve, schema migration or reminted floor |
+
+An unanchored temporary cannot authorize recovery, including a temporary
+enrollment or checkpoint record. Remove only exact owner-formatted orphan
+temporaries after authenticated committed document read-back; missing records
+and unknown custody entries remain unavailable and are preserved. Validate the
+full existing document grammar before completing a pending replace. Joint rollback of both
+matching document and independent root is not detected by this local mechanism;
+worker/key-ring compromise is also outside its guarantee. These metadata are
+not current two-store evidence, renewed grant authority or deletion permission.
+
 ### 3.8 Current mailbox grant revocation
 
 MGR1 is the identity-neutral node-control revocation record allocated by
