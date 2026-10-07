@@ -1583,6 +1583,47 @@ owned holder/request custody and node Retrieve–ACK composition remain gated un
 their producer/consumer and cold/crash closure is implemented. No retention or
 physical delivery claim follows from this prerequisite.
 
+### 3.7.2 Independent retained-read custody
+
+[DR-0101](../survival-program/decisions/DR-0101-retained-mailbox-route-custody.md)
+separates private retained-read lookup from public DCR predecessor retention.
+An actual closed current XPA1 capability must bind the exact XPU1 before it
+creates custody. Capture exact original route, network, locator, publication
+request hash and Retrieve-domain capability digest; never persist the owner
+Retrieve capability, account keys or a second DCR ciphertext copy in this table.
+Commit custody atomically with the admitted publication. Raw opaque inputs,
+parsed route tuples and a caller's historical flag cannot mint this producer.
+
+`lastPossibleAdmission` is the minimum of signed publication effective expiry
+and the validity ends of original XRR1/XRA1/XRC1/XSS1/PMT2/PMS2. `readUntil` is
+that bound plus the maximum mailbox object horizon owned by
+[RETENTION-AND-RECOVERY](RETENTION-AND-RECOVERY-V1.md#1-service-and-protocol-retention).
+It bounds lookup eligibility; it does not extend any accepted object's own
+signed expiry or make a new Store valid. Original short grant/XPU/XPA request
+expiry does not shorten this independent horizon. Public DCR GC never deletes
+the private read custody. This increment does not authorize its retirement.
+
+| Input / transition | Durable effect or result | Failure / retry |
+| --- | --- | --- |
+| Exact publication plus closed current XPA1 | Publication and private read custody in one durable replace | Lost/failed replace remains unknown until reopen; no partial custody success |
+| Entry/route-byte quota exhausted | Reject new admission; existing custody unchanged | Backpressure, no live-path eviction; original exact replay unchanged |
+| DR-0100 closed current Retrieve request | Match exact network/locator/domain digest/PMT2 ArtRef/PMS2 hash | Missing custody is unavailable, not empty catch-up |
+| Matching original route before `readUntil` | Copied private lookup facts only | Not a Current route, issuer/holder/grant/ACK authority |
+| Different exact closures match the same scope | Conflict, no route released | Never choose latest; issuer disambiguation remains gated |
+| Identical exact closures from admitted publications | Same exact route with maximum independently admitted horizon | No public tuple may extend that horizon |
+| Final current interval reaches horizon, authority loss or cancel | No usable route released; no storage mutation | Same original request revalidation, no implicit renewal |
+| Durable mutation during clock/authority callback | Reject captured lookup snapshot | Fresh lookup under the original still-current request |
+| Old node generation, missing table or invalid route/bounds on reopen | Fail closed and quarantine | No migration, empty substitution or public resolve recovery |
+
+Current-only resolve, Deposit, evidence transcript and wire formats remain
+unchanged. Node local state generation5 uses the existing ownership/integrity
+envelope; its SHA/ACL/lifetime lease is not a cryptographic rollback floor.
+Protected rollback/provenance closure and both actual selected stores' current
+authenticated evidence are prerequisites for renewed issuance. The private
+lookup cannot mint or install MCG3, prove historical availability, retire replay
+custody or dispatch Retrieve/ACK. Runtime activation and physical acceptance
+remain separate gates of this same S01 closure.
+
 ### 3.8 Current mailbox grant revocation
 
 MGR1 is the identity-neutral node-control revocation record allocated by

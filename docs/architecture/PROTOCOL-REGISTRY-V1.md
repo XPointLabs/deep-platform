@@ -17,6 +17,11 @@ DR-0081 freezes the missing authenticated binding as MCG3/MCP3/MAU3 and XMC2,
 under PMA2 profile 2. The current node admission/peer runtime remains an
 activation gate; the selector gap is no longer an undecided wire allocation.
 
+[DR-0101](../survival-program/decisions/DR-0101-retained-mailbox-route-custody.md)
+freezes independent bounded private node read-route custody and typed lookup.
+It adds no protocol allocation or Current-route evidence and cannot authorize
+renewed issuance; private node state generation5 rejects its predecessor.
+
 [DR-0069](../survival-program/decisions/DR-0069-did2-retired-identity-surface-removal.md)
 closes the old identity source producers and their positive contact vectors.
 The machine registry excludes retired constants; consumer/API/package closure
