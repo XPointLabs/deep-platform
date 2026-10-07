@@ -203,6 +203,22 @@ current ML-KEM-dependent paths; existing portable filter не закрывает
 gap. Фильтры/assertions не ослаблены, CI failures остаются открытыми.
 Общая приёмка по-прежнему1/14 (~7%), physical0/4, release не готов.
 
+Protocol producer внутри того же S01 qualified и запушен: `6da94ba`
+по [DR-0104](survival-program/decisions/DR-0104-current-retained-retrieve-issuance.md).
+Closed current retained Retrieve issuance/result и bounded holder request APIs
+проверяют original protected-history PMT2, обе current descriptor-key подписи,
+current issuer/time и exact route; не создают native owner/publication custody.
+Final focused207/0/0; full2132/1/7 terminal1; qualification0 сохраняет all2099
+prior/all207 focused и3023 immutable inputs. MAU2 package/graph FAIL и7 skips
+сохранены. Registry/machine/docs gates0; root guards28/0, включая проверку actual
+Node enum: private read RPC18, не занятый prekey staging RPC12.
+[Точные receipts и границы](../deep-protocol/docs/testing/s01-retained-retrieve-issuance-2026-10-07.md).
+CI получает exact root normative snapshot`9f6d123`; нового CI pass пока нет.
+Следующий шаг — actual Node protected read-back/signing вокруг callbacks и
+две независимые реплики через peer HTTP, затем private issuer replay и owned
+Shared installation; typed Retrieve–ACK/object horizon остаются тем же S01.
+Это source checkpoint, не runtime activation; процент приёмки не повышается.
+
 ## Принятое recipient receipt obligation — не реализовывать повторно
 
 Source checkpoint: Shared
