@@ -214,10 +214,38 @@ prior/all207 focused и3023 immutable inputs. MAU2 package/graph FAIL и7 skips
 Node enum: private read RPC18, не занятый prekey staging RPC12.
 [Точные receipts и границы](../deep-protocol/docs/testing/s01-retained-retrieve-issuance-2026-10-07.md).
 CI получает exact root normative snapshot`9f6d123`; нового CI pass пока нет.
-Следующий шаг — actual Node protected read-back/signing вокруг callbacks и
-две независимые реплики через peer HTTP, затем private issuer replay и owned
-Shared installation; typed Retrieve–ACK/object horizon остаются тем же S01.
+Actual Node protected read-back/signing вокруг callbacks и две независимые
+реплики через peer HTTP реализованы как следующий source candidate, не принятый
+полный S01. Затем — private issuer replay и owned Shared installation;
+typed Retrieve–ACK/object horizon остаются тем же S01.
 Это source checkpoint, не runtime activation; процент приёмки не повышается.
+
+Native Node checkpoint `1c1f7cf`: private RPC18/receipt7 проверяют actual current source,
+descriptor signing custody, closed fresh Retrieve XMG2 и независимый protected
+document/root до и после подписи. Не current139-byte cross-feed и не подпись
+скопированных route/hash. Final Release focused147/0/0 terminal0 (36 новых
+executions); Release solution0 warnings/errors. Actual две protected реплики,
+TLS/H2, cold reopen, lost read/signature replies, отсутствующая admission,
+подмена каждого tuple field, source/time/cancel/root/document/revision loss и
+hostile bounded codec проверены. Public AcquireMailboxGrant caller ещё current;
+Registry/held Shared/elapsed-route/typed Retrieve–ACK не объявлены замкнутыми.
+Обязательные isolated external/no-mock smoke и multi-node rehearsal terminal0;
+последний доказывает real Xray и intentional privacy503 без authority, не
+retained delivery. Шесть исходных dev containers/data сохранены.
+[Exact candidate receipt](../xnode/docs/testing/s01-retained-native-peer-2026-10-07.md).
+Original full Node завершён terminal0:1330/0/0 (Integration972/Profile107/Unit251).
+Отдельный qualifier terminal0: exact union all1294 prior+36 new/all147 focused,
+complete execution mappings и1462 captured source/binary inputs unchanged.
+Исходный qualifier terminal1 ожидал1331 из-за ручной ошибки подсчёта; он и
+original manifest сохранены, новый qualifier проверяет точный набор, не ослабляет
+assertions и не заменяет full. Root guards30/0/0 включают отдельно
+wrong-owner и duplicate-allocation negative fixtures; initial14/2 сохранён как
+fixture diagnostic mismatch. Нормативные machine inputs/production guards
+не ослаблены. Приёмка остаётся1/14 (~7%), physical0/4, релиз не готов.
+Previous Node`4aae71d` CI run37612271733 завершил build/integration/Linux artifact
+jobs success; это не текущая candidate matrix. Current Protocol`6da94ba`
+run37617830920 failure на exact-three actual graph: production retired MAU2.
+ML-DSA run37617830796 success не переквалифицирует основной graph FAIL.
 
 ## Принятое recipient receipt obligation — не реализовывать повторно
 

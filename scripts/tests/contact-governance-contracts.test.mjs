@@ -78,14 +78,30 @@ rejects('retained RPC slot cannot collide with actual prekey staging', ({ fixtur
   const file = join(fixture, 'xnode/src/XNode/ContactReplicaTransportContracts.cs');
   const source = readFileSync(file, 'utf8');
   assert.ok(source.includes('StageDid2PreKeyPublication = 12'));
-  writeFileSync(file, source.replace('StageDid2PreKeyPublication = 12', 'StageDid2PreKeyPublication = 18'));
+  // Exercise wrong ownership without triggering the separate duplicate-value
+  // guard first now that the actual retained consumer owns operation18.
+  writeFileSync(file, source.replace(/^\s*ReadRetainedMailboxGrantRoute = 18\s*\r?$/m, '')
+    .replace('StageDid2PreKeyPublication = 12', 'StageDid2PreKeyPublication = 18'));
 }, /target reuses existing consumer allocation/);
 rejects('retained receipt slot cannot reuse another actual signing purpose', ({ fixture }) => {
   const file = join(fixture, 'xnode/src/XNode.Core/ContactResolver/ContactServiceReceiptAuthority.cs');
   const source = readFileSync(file, 'utf8');
   assert.ok(source.includes('ResolveRead = 5'));
-  writeFileSync(file, source.replace('ResolveRead = 5', 'ResolveRead = 7'));
+  writeFileSync(file, source.replace(/^\s*MailboxRetainedRead = 7,\s*\r?$/m, '')
+    .replace('ResolveRead = 5', 'ResolveRead = 7'));
 }, /target reuses existing consumer allocation/);
+rejects('implemented retained RPC rejects a duplicate prekey allocation', ({ fixture }) => {
+  const file = join(fixture, 'xnode/src/XNode/ContactReplicaTransportContracts.cs');
+  const source = readFileSync(file, 'utf8');
+  assert.ok(source.includes('ReadRetainedMailboxGrantRoute = 18'));
+  writeFileSync(file, source.replace('StageDid2PreKeyPublication = 12', 'StageDid2PreKeyPublication = 18'));
+}, /private consumer allocation collision/);
+rejects('implemented retained receipt rejects a duplicate signing allocation', ({ fixture }) => {
+  const file = join(fixture, 'xnode/src/XNode.Core/ContactResolver/ContactServiceReceiptAuthority.cs');
+  const source = readFileSync(file, 'utf8');
+  assert.ok(source.includes('MailboxRetainedRead = 7'));
+  writeFileSync(file, source.replace('ResolveRead = 5', 'ResolveRead = 7'));
+}, /private consumer allocation collision/);
 rejects('unknown retained transcript property rejects at the closed schema', ({ read, write }) => {
   const file = specs + 'mailbox-retained-read-v2.registry.json';
   const contract = read(file); contract.unreviewed = true; write(file, contract);
