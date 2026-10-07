@@ -46,8 +46,15 @@ object horizon остаются внутри
 Внутри проверки actual lookup исправлен partial-GC defect в Node
 `27f8c5cf88ba1d48678353c7417f23f910e91f11`: неверный XUR checkpoint теперь
 отклоняется до удаления DCR predecessors в памяти. Focused14/0/0 terminal0;
-current full запущен, его приёмка ещё не заявлена. Required Docker smoke пока
-не выполнен: local Docker engine недоступен. Это local source increment,
+current full1223/0/0 terminal0. Exact mappings сохраняютall1220 prior/all14
+required cases;1066 captured inputs unchanged. Qualification0 после явного
+исправления снимка ещё не собранного ProfileGenerator: его executed binary
+пинован post-terminal, не объявлен pre-run frozen. После перезапуска Docker
+оператором required external/no-mock smoke завершён terminal0: fixture validation,
+10 infrastructure tests и все4 hard/5 soft runtime checks Passed; Xray running,
+mocked=false. Изолированный Compose cleanup сохранил6 исходных dev-контейнеров.
+Оба mandatory Node gate приняты только для этого GC increment;
+это не current issuer/Release package qualification, physical E2E,
 не retained issuance или завершение текущей подзадачи.
 [Границы и сохранённый FAIL](../xnode/docs/testing/s01-retained-lookup-2026-10-07.md).
 
