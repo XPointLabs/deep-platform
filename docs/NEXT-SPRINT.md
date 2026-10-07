@@ -247,6 +247,30 @@ jobs success; это не текущая candidate matrix. Current Protocol`6da9
 run37617830920 failure на exact-three actual graph: production retired MAU2.
 ML-DSA run37617830796 success не переквалифицирует основной graph FAIL.
 
+Matched private Registry/Node source candidate внутри того же S01
+зафиксирован в Registry`9ffe51c` и Node`8607c60`:
+разделяет обязательные evidence kind/horizon и forwarding purposes. Actual
+current Registry host проверяет retained136-byte evidence; permanent winner
+scope связывает kind/horizon/current authority, без remint/reset/compatibility.
+Release source builds0 warnings/errors; focused Registry29/0/0 и Node157/0/0.
+Registry original full363/1/7 terminal1: existing configured native first Store
+вернул OutcomeUnknownAfterForward; exact frozen repeat1/0/0 не устанавливает
+причину/исправление и не отменяет FAIL. Matrix check сохраняет all356 prior+15
+new, all29 required Passed,7 exact skips и3703 immutable inputs unchanged;
+FullAccepted=false/terminal1. Node full-after-capture1339/1/0 terminal1:
+existing observed revocation refresh достиг30-second deadline вместо64-step
+IOException; frozen repeat обоих случаев2/0/0 за8s не отменяет FAIL. Exact matrix
+сохраняет all1330 prior+10 new/all157 focused Passed и3703 unchanged inputs;
+FullAccepted=false/terminal1. Причина роста wall time не установлена. Premature
+Node launch до capture остановлен terminal-1, не принят и не заменяет оригинал.
+Required isolated no-mock smoke/multi-node0 сохранили6 исходных dev containers;
+это инфраструктура, не retained delivery. Public node caller ещё current-only;
+actual protected peer/issuer join, held Shared owner/result, elapsed route и typed
+Retrieve–ACK/object horizon остаются здесь же. S01 не закрыт;1/14 (~7%),
+physical0/4, релиз не готов.
+[Registry receipt](../deep-registry-api/docs/testing/s01-retained-private-issuer-2026-10-07.md),
+[Node receipt](../xnode/docs/testing/s01-retained-private-forwarding-2026-10-07.md).
+
 ## Принятое recipient receipt obligation — не реализовывать повторно
 
 Source checkpoint: Shared
