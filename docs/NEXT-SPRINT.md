@@ -31,11 +31,16 @@ Source checkpoint внутри этой же подзадачи: Protocol
 Closed host retained-selection/MGR1 API реализованы; current Store не ослаблен,
 expired grants не восстанавливаются. Focused194/0/0 terminal0;194 unique
 results/definitions/test/execution IDs mapped Passed. Registry gate terminal0,
-reviewed source/hash repin без wire/domain allocations. Mandatory Protocol full
-и actual package/API/resource gate ещё не квалифицированы на этом source.
+reviewed source/hash repin без wire/domain allocations. Current full2057/1/7
+terminal1: все194 required exact Passed,701/701 inputs unchanged; unchanged
+MAU2 actual-package FAIL и семь исходных skips сохранены. Post-terminal comparison
+с current prior receipts сохраняет2024 distinct case-sensitive names; correction
+obsolete comparator и прежняя MemberData metadata shape явно описаны в receipt.
+Это local source qualification, не green actual package/API/resource acceptance.
 [Границы, команды и сохранённые FAIL](../deep-protocol/docs/testing/s01-retained-mailbox-read-2026-10-07.md).
-Единственный текущий шаг — обязательная qualification этого checkpoint.
-Retained issuer/holder/typed node Retrieve–ACK и object horizon остаются внутри
+Единственный следующий шаг — закрытая renewed retained Retrieve issuance/holder
+authority с actual protected route/capability lookup. Typed node Retrieve–ACK и
+object horizon остаются внутри
 этой же незавершённой подзадачи; не переходить к S02 или known-floor cleanup.
 
 ## Принятое recipient receipt obligation — не реализовывать повторно
@@ -188,7 +193,7 @@ Registry input `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3` (runtimef47ca75).
 Registry Release solution строила внешние dependencies в Debug; это source
 baseline, не uniformly Release package matrix.
 
-Последний full Protocol receipt2018/1/7 terminal1 сохраняет реальный MAU2
+Последний full Protocol receipt2057/1/7 terminal1 сохраняет реальный MAU2
 actual-package/assembly blocker; native PMA1/PMR1 routing/genesis/recovery
 closure остаётся S08/релизом по DR-0095. Assertions и required gates не отменены.
 [Protocol scope/receipt](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#mailbox-issuance-and-current-grant-adapter-retirement-2026-10-05).
