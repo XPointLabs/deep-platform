@@ -196,7 +196,8 @@ baseline, не uniformly Release package matrix.
 Последний full Protocol receipt2057/1/7 terminal1 сохраняет реальный MAU2
 actual-package/assembly blocker; native PMA1/PMR1 routing/genesis/recovery
 closure остаётся S08/релизом по DR-0095. Assertions и required gates не отменены.
-[Protocol scope/receipt](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#mailbox-issuance-and-current-grant-adapter-retirement-2026-10-05).
+[Current Protocol receipt](../deep-protocol/docs/testing/s01-retained-mailbox-read-2026-10-07.md#mandatory-current-source-qualification),
+[native join scope](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#mailbox-issuance-and-current-grant-adapter-retirement-2026-10-05).
 Normative repin не переквалифицирует Node/Registry/MAUI, signed shipping artifacts
 или physical delivery. MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`,
 Windows/Android Debug и Clean95/Smoke119 относятся к прежней matrix,
