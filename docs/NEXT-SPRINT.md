@@ -264,6 +264,18 @@ Windows/Android Debug и Clean95/Smoke119 относятся к прежней m
 не installed/shipping evidence текущих dependencies.
 В текущей работе нет production deploy/reset, публикации Release или main merge.
 Completed chronology — в repo checkpoints, Git и [SPRINT-HISTORY](SPRINT-HISTORY.md).
+
+Текущий исходный local dev-контур после перезапуска engine не ready:
+publisher process running, ready marker absent, повторяется `ArgumentException`;
+Registry возвращает `did2-authority-unavailable`, privacy authority всех3 nodes
+unavailable. Read-only bounded public XNA1 diagnostic показывает expiry
+2026-10-06T14:07:38Z; host UTC уже позже. Это чтение поля, не fresh trusted-time
+или подписи qualification. Constructor operational successor запрещает окно за
+пределами XNA1; диагноз согласуется с истёкшей offline authority, не с engine.
+Signed authority/delegation renewal с сохранением genesis/keys/floors относится
+к S05. Никаких reset, volume deletion, authority bypass или нового dev genesis
+не сделано. Отдельный mandatory smoke текущего S01 increment был healthy;
+его PASS нельзя переносить на эти6 исходных retained dev containers.
 ## Этапы
 
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
