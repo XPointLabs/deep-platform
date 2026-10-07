@@ -185,6 +185,8 @@ Evidence ownership0 — mapping, не executed package approval.
 [Protocol repin receipt](../deep-protocol/docs/testing/s01-protected-retained-route-repin-2026-10-07.md).
 Проверенные source commits Node`4aae71d`, Protocol`fc874c7` запушены
 в release-candidate; это не приёмка shipping/physical paths.
+CI repin Protocol`f3051e8` привязан к нормативному root snapshot`7ad7594`;
+approved DNP1 snapshot не менялся. Новый GitHub run ещё не квалифицирован.
 Docker Linux engine после перезапуска доступен (28.3.3). GitHub CI предыдущего
 Node checkpoint `f993017` завершился success, run37599716229; это не проверка
 нового dirty candidate. Shared run37599717431 на последнем снимке in_progress.
