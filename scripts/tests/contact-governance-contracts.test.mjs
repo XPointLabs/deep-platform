@@ -18,6 +18,12 @@ const inputs = [
   'scripts/check-contact-codec-spec.ps1', vectorsPath, anchorPath,
   specs + 'contact-codec-v1.vectors.schema.json', specs + 'deep-crypto-v1.registry.json',
   specs + 'mailbox-authorization-v3.registry.json',
+  specs + 'mailbox-retained-read-v2.registry.json',
+  specs + 'mailbox-retained-read-v2.registry.schema.json',
+  specs + 'mailbox-retained-read-v2.vectors.json',
+  specs + 'mailbox-retained-read-v2.vectors.schema.json',
+  'xnode/src/XNode/ContactReplicaTransportContracts.cs',
+  'xnode/src/XNode.Core/ContactResolver/ContactServiceReceiptAuthority.cs',
   'docs/architecture/CONTACT-RESOLVER-V1.md', 'docs/architecture/CONTACT-AND-GROUP-PROTOCOL-V1.md',
   'docs/architecture/XPOINT-NETWORK-V1.md', executionPath,
 ];
@@ -67,6 +73,23 @@ test('current retained neutral input passes without implying crypto execution', 
   assert.equal(result.status, 0, result.output);
   assert.match(result.output, /not executable\/package\/physical evidence/);
 });
+
+rejects('retained RPC slot cannot collide with actual prekey staging', ({ fixture }) => {
+  const file = join(fixture, 'xnode/src/XNode/ContactReplicaTransportContracts.cs');
+  const source = readFileSync(file, 'utf8');
+  assert.ok(source.includes('StageDid2PreKeyPublication = 12'));
+  writeFileSync(file, source.replace('StageDid2PreKeyPublication = 12', 'StageDid2PreKeyPublication = 18'));
+}, /target reuses existing consumer allocation/);
+rejects('retained receipt slot cannot reuse another actual signing purpose', ({ fixture }) => {
+  const file = join(fixture, 'xnode/src/XNode.Core/ContactResolver/ContactServiceReceiptAuthority.cs');
+  const source = readFileSync(file, 'utf8');
+  assert.ok(source.includes('ResolveRead = 5'));
+  writeFileSync(file, source.replace('ResolveRead = 5', 'ResolveRead = 7'));
+}, /target reuses existing consumer allocation/);
+rejects('unknown retained transcript property rejects at the closed schema', ({ read, write }) => {
+  const file = specs + 'mailbox-retained-read-v2.registry.json';
+  const contract = read(file); contract.unreviewed = true; write(file, contract);
+}, /All values fail against the false schema at '\/unreviewed'/);
 
 rejects('a missing positive target rejects even with a reminted fixture anchor',
   ({ vectors }) => vectors.primitives.pop(), /Value should have at least 13 items at '\/primitives'|primitive targets\/order/);

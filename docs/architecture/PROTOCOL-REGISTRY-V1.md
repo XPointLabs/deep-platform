@@ -648,6 +648,14 @@ lookup. Its current source authenticates exact Retrieve XMG2 under DR-0102 and a
 PMT2 under the current host, not route/capability ownership or issuance. No wire,
 domain or local-generation allocation; actual lookup and activation remain gated.
 
+[DR-0104](../survival-program/decisions/DR-0104-current-retained-retrieve-issuance.md)
+freezes the independent retained-read signing transcript and closed current
+Retrieve issuance/result APIs. Its hash-bound
+[machine contract](../survival-program/releases/v3.0.0/specs/mailbox-retained-read-v2.registry.json)
+allocates no new public record or suite. Actual two-store protected read-back,
+private issuer replay, owned client installation and node Retrieve/ACK remain
+one coupled activation fence; source qualification is not runtime acceptance.
+
 DR-0081 supersedes only DR-0004's neutral grant/presentation/envelope/result
 choice; route selection, privacy and ownership remain mandatory. `XRR1` alone is not a routable deposit
 closure; the exact XRA1/XRC1/XRR1/XSS1 plus PMT2/PMS2 closure in the contact/XPoint

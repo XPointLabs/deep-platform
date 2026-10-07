@@ -138,8 +138,39 @@ $contact = @($registry.packages | Where-Object { $_.id -eq 'CONTACT-CODEC-01' })
 if ($contact.Count -ne 1 -or $contact[0].status -ne 'FROZEN_TARGET_NOT_ACTIVE') { Fail 'CONTACT package status' }
 if (-not $registry.activationGates.contactCodecFieldsClosed) { Fail 'contact field gate' }
 if ($registry.contactCodec.status -ne 'FROZEN_TARGET_NOT_ACTIVE' -or $registry.contactCodec.vectors -ne 'contact-codec-v1.vectors.json') { Fail 'registry contact manifest' }
+# DR-0104 is a separately hash-bound private transcript, not a new public magic.
+foreach ($taskRetainedName in @('registry', 'vectors')) {
+    $taskRetainedInput = Join-Path $specRoot "mailbox-retained-read-v2.$taskRetainedName.json"
+    $taskRetainedSchema = Join-Path $specRoot "mailbox-retained-read-v2.$taskRetainedName.schema.json"
+    if (-not (Test-Path -LiteralPath $taskRetainedInput -PathType Leaf) -or
+        -not (Test-Path -LiteralPath $taskRetainedSchema -PathType Leaf) -or
+        -not (Test-Json -LiteralPath $taskRetainedInput -SchemaFile $taskRetainedSchema)) {
+        Fail "DR-0104 closed $taskRetainedName input/schema"
+    }
+}
 # Machine schema, independent digest, exact bounds and negative mappings above
 # remain mandatory. Architecture prose is not a snapshot; documentation links
 # and rendering are checked by Test-XPointDocumentation.ps1.
+$taskRetainedContract = Get-Content -Raw -LiteralPath (Join-Path $specRoot 'mailbox-retained-read-v2.registry.json') | ConvertFrom-Json
+# The target is inactive: its slot may be unused, but never occupied by another
+# actual consumer operation. Once wired, the exact operation name must match.
+foreach ($taskAllocation in @(
+    @{ Path='xnode/src/XNode/ContactReplicaTransportContracts.cs'; Enum='ContactReplicaRpcOperation';
+       Number=$taskRetainedContract.privateReadRpcOperation; Name='ReadRetainedMailboxGrantRoute' },
+    @{ Path='xnode/src/XNode.Core/ContactResolver/ContactServiceReceiptAuthority.cs'; Enum='ContactServiceReceiptKind';
+       Number=$taskRetainedContract.privateReceiptKind; Name='MailboxRetainedRead' }
+)) {
+    $taskConsumer = [IO.File]::ReadAllText((Join-Path $repoRoot $taskAllocation.Path))
+    $taskEnum = [regex]::Match($taskConsumer, 'enum\s+' + $taskAllocation.Enum + '(?:\s*:\s*\w+)?\s*\{(?<body>[^}]+)\}')
+    if (-not $taskEnum.Success) { Fail 'DR-0104 actual consumer enum missing' }
+    $taskRows = [regex]::Matches($taskEnum.Groups['body'].Value, '(?<name>\w+)\s*=\s*(?<number>\d+)')
+    if (@($taskRows | Group-Object { $_.Groups['number'].Value } | Where-Object Count -gt 1).Count -ne 0) {
+        Fail 'private consumer allocation collision'
+    }
+    foreach ($taskRow in $taskRows) {
+        if ([int]$taskRow.Groups['number'].Value -eq $taskAllocation.Number -and
+            $taskRow.Groups['name'].Value -cne $taskAllocation.Name) { Fail 'DR-0104 target reuses existing consumer allocation' }
+    }
+}
 Write-Host 'CONTACT-CODEC retained neutral specification consistency check passed (not executable/package/physical evidence).'
 Write-Host "Primitives: $(@($vectors.primitives).Count); hostile fixtures: $(@($vectors.hostileFixtures).Count); policy negatives: $(@($vectors.negativeCases).Count); runtime: inactive"

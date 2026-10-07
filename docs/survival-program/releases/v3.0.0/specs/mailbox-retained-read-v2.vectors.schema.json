@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "package",
+    "decision",
+    "runtimeActivation",
+    "positive",
+    "negative"
+  ],
+  "properties": {
+    "package": {
+      "const": "CONTACT-CODEC-01/mailbox-retained-read-v2"
+    },
+    "decision": {
+      "const": "DR-0104"
+    },
+    "runtimeActivation": {
+      "const": false
+    },
+    "positive": {
+      "const": {
+        "requestHashHex": "1111111111111111111111111111111111111111111111111111111111111111",
+        "locatorHashHex": "2222222222222222222222222222222222222222222222222222222222222222",
+        "retrieveCapabilityDigestHex": "3333333333333333333333333333333333333333333333333333333333333333",
+        "originalRouteHashHex": "4444444444444444444444444444444444444444444444444444444444444444",
+        "readUntil": 300,
+        "tupleHex": "1111111111111111111111111111111111111111111111111111111111111111222222222222222222222222222222222222222222222222222222222222222233333333333333333333333333333333333333333333333333333333333333334444444444444444444444444444444444444444444444444444444444444444000000000000012c",
+        "signingInputHex": "446565702f436f6e746163745265736f6c7665722f56322f6d61696c626f782d72657461696e65642d72656164000201000000881111111111111111111111111111111111111111111111111111111111111111222222222222222222222222222222222222222222222222222222222222222233333333333333333333333333333333333333333333333333333333333333334444444444444444444444444444444444444444444444444444444444444444000000000000012c"
+      }
+    },
+    "negative": {
+      "const": [
+        "wrong-tuple-length",
+        "zero-request-hash",
+        "zero-locator-hash",
+        "zero-retrieve-digest",
+        "zero-original-route-hash",
+        "zero-horizon",
+        "current139-cross-feed",
+        "deposit-proof",
+        "wrong-current-store-key",
+        "duplicated-replica",
+        "missing-protected-history",
+        "route-hash-substitution",
+        "readUntil-beyond-original-ceiling",
+        "expired-horizon",
+        "callback-expiry-or-clock-change",
+        "cancel-before-signing",
+        "issuer-key-substitution",
+        "result-route-substitution",
+        "removed-original-selected-node"
+      ]
+    }
+  }
+}

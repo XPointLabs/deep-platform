@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "package",
+    "decision",
+    "status",
+    "runtimeActivation",
+    "newMagic",
+    "suite",
+    "requestMagic",
+    "requestBytes",
+    "requestMaximumSeconds",
+    "resultMagic",
+    "successBytes",
+    "grantMagic",
+    "grantBytes",
+    "role",
+    "replicaCount",
+    "tupleBytes",
+    "tupleFields",
+    "signingDomain",
+    "forwardingSigningDomain",
+    "forwardingFields",
+    "capabilityDigestDomain",
+    "objectHorizonMaximumSeconds",
+    "originalRouteOrder",
+    "originalRouteMaximumBytes",
+    "retiredTranscriptCrossFeed",
+    "currentEvidenceStores",
+    "historicalProjection",
+    "issuer",
+    "grantExpiry",
+    "grantSelection",
+    "currentDescriptorResolution",
+    "storeAllowed",
+    "rerankAllowed",
+    "importUnprotectedAllowed",
+    "legacyReader",
+    "authorityEvidenceKind",
+    "privateReceiptKind",
+    "privateReadRpcOperation"
+  ],
+  "properties": {
+    "package": {
+      "const": "CONTACT-CODEC-01/mailbox-retained-read-v2"
+    },
+    "decision": {
+      "const": "DR-0104"
+    },
+    "status": {
+      "const": "FROZEN_TARGET_NOT_ACTIVE"
+    },
+    "runtimeActivation": {
+      "const": false
+    },
+    "newMagic": {
+      "const": []
+    },
+    "suite": {
+      "const": "0x0201"
+    },
+    "requestMagic": {
+      "const": "XMG2"
+    },
+    "requestBytes": {
+      "const": 435
+    },
+    "requestMaximumSeconds": {
+      "const": 120
+    },
+    "resultMagic": {
+      "const": "XMC2"
+    },
+    "successBytes": {
+      "const": 510
+    },
+    "grantMagic": {
+      "const": "MCG3"
+    },
+    "grantBytes": {
+      "const": 304
+    },
+    "role": {
+      "const": "Retrieve"
+    },
+    "replicaCount": {
+      "const": 2
+    },
+    "tupleBytes": {
+      "const": 136
+    },
+    "tupleFields": {
+      "const": [
+        [
+          "requestHash",
+          0,
+          32
+        ],
+        [
+          "locatorHash",
+          32,
+          32
+        ],
+        [
+          "retrieveCapabilityDigest",
+          64,
+          32
+        ],
+        [
+          "originalRouteHash",
+          96,
+          32
+        ],
+        [
+          "readUntil",
+          128,
+          8
+        ]
+      ]
+    },
+    "signingDomain": {
+      "const": "Deep/ContactResolver/V2/mailbox-retained-read"
+    },
+    "forwardingSigningDomain": {
+      "const": "Deep/Registry/Internal/V2/mailbox-retained-read-authority"
+    },
+    "forwardingFields": {
+      "const": ["LP32(exactXMG2)", "LP32(exactOriginalRoute)", "readUntil:u64be", "originalResponseDeadline:u64be", "forwardingNodeId32", "issuedAt:u64be", "nonce32"]
+    },
+    "capabilityDigestDomain": {
+      "const": "Deep/ContactResolver/V1/grant-capability/retrieve"
+    },
+    "objectHorizonMaximumSeconds": {
+      "const": 2592000
+    },
+    "originalRouteOrder": {
+      "const": [
+        "XRR1",
+        "XRA1",
+        "XRC1",
+        "XSS1",
+        "PMT2",
+        "PMS2"
+      ]
+    },
+    "originalRouteMaximumBytes": {
+      "const": 23295
+    },
+    "retiredTranscriptCrossFeed": {
+      "const": "reject current139-byte mailbox-grant-route transcript"
+    },
+    "currentEvidenceStores": {
+      "const": "exact current ContactResolve placement using XMG2 locator"
+    },
+    "historicalProjection": {
+      "const": "exact original PMT2 from current verified protected history"
+    },
+    "issuer": {
+      "const": "actual current PMA2 Retrieve role and generation floor"
+    },
+    "grantExpiry": {
+      "const": "minimum current NET/PMA2/role lifetime/readUntil"
+    },
+    "grantSelection": {
+      "const": "original exact PMT2/epoch/PMS2 selection and XRR1 placement"
+    },
+    "currentDescriptorResolution": {
+      "const": true
+    },
+    "storeAllowed": {
+      "const": false
+    },
+    "rerankAllowed": {
+      "const": false
+    },
+    "importUnprotectedAllowed": {
+      "const": false
+    },
+    "legacyReader": {
+      "const": false
+    },
+    "authorityEvidenceKind": {
+      "const": 2
+    },
+    "privateReceiptKind": {
+      "const": 7
+    },
+    "privateReadRpcOperation": {
+      "const": 18
+    }
+  }
+}

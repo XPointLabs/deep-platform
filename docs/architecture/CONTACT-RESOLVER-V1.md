@@ -1662,6 +1662,79 @@ matching document and independent root is not detected by this local mechanism;
 worker/key-ring compromise is also outside its guarantee. These metadata are
 not current two-store evidence, renewed grant authority or deletion permission.
 
+### 3.7.3 Current retained Retrieve issuance
+
+[DR-0104](../survival-program/decisions/DR-0104-current-retained-retrieve-issuance.md)
+completes the closed producer/consumer target of §3.7.1–3.7.2. Runtime activation
+remains gated. The exact additional transcript is frozen in the
+[machine registry](../survival-program/releases/v3.0.0/specs/mailbox-retained-read-v2.registry.json),
+[schema](../survival-program/releases/v3.0.0/specs/mailbox-retained-read-v2.registry.schema.json),
+[vectors](../survival-program/releases/v3.0.0/specs/mailbox-retained-read-v2.vectors.json)
+and [vector schema](../survival-program/releases/v3.0.0/specs/mailbox-retained-read-v2.vectors.schema.json).
+No XMG2/XMC2/MCG3 fields, suites or Store semantics change.
+
+Each current selected ContactResolve store signs only successful independently
+protected retained lookup under:
+
+```text
+SIGINPUT("Deep/ContactResolver/V2/mailbox-retained-read", 0x0201,
+  SHA256(exactXMG2):32 || locatorHash32 || RetrieveCapabilityDigest32 ||
+  SHA256(exactOriginalRouteClosure):32 || readUntil:u64be)
+```
+
+The tuple is exactly136 bytes; the digest is the existing Retrieve-domain
+capability digest. There is no caller disposition/current flag. Failure has no
+retained attestation or route authority. The current139-byte route attestation
+cannot cross-feed this domain. Both current selected stores must attest the same
+route and horizon, independently of the forwarding node. Actual protected
+document, request, current source/descriptor signing key and cancellation are
+rechecked around signing; copied private facts are insufficient. Unknown private
+receipt/authority kinds reject. A newly selected store without that original
+protected custody is unavailable, not an import or unsigned replica handover.
+Private authority evidence kind2, receipt kind7 and read RPC operation18 are
+allocated by the machine contract; they are not new public service operations.
+Private RPC12..17 already belong to DID2 prekey operations and MUST NOT be reused.
+Retained forwarding signs only the success candidate under the distinct purpose
+`Deep/Registry/Internal/V2/mailbox-retained-read-authority`, suite0x0201, followed
+by `LP32(exactXMG2) || LP32(exactOriginalRoute) || readUntil:u64be ||
+originalResponseDeadline:u64be || forwardingNodeId32 || issuedAt:u64be || nonce32`.
+The prefix is the ordinary purpose bytes, zero separator and suite:u16be;
+there is no outer tuple length. This binds dispatch kind/horizon/deadline and
+prevents cross-feed from current forwarding, but does not replace store evidence.
+
+The current host verifier checks holder proof, exact request window≤120s and
+original PMT2 from its verified protected lineage. The canonical six-record
+graph, network, PMT2 ArtRef, PMS2 and exact route hash must match. Both current
+ContactResolve descriptor-key signatures prove admitted route/capability custody;
+the issuer does not promote old witness keys or caller UTC to current authority.
+`readUntil` is nonzero, covers the full current interval, and is at most the
+minimum original route-record validity end plus the normative object horizon.
+This is only a ceiling: it never extends an accepted object's own expiry.
+
+| Transition | Durable effect / authority | Failure / retry |
+| --- | --- | --- |
+| Owned original path plus actual current host | Author fresh holder-signed Retrieve XMG2 only | No historical issuance/Store authority; pending exact bytes stay fixed |
+| Both protected stores attest exact original path/horizon | Closed current retained issuance capability | Missing/mismatched store, route, digest, horizon or current key rejects |
+| Current issuer signs after live rechecks | Fresh short Retrieve MCG3, original selection/placement | Current NET/PMA2/role lifetime/readUntil ceiling; fresh serial, no old-grant renewal |
+| Original ranked mailbox node not currently admitted | Unavailable | No rerank or new Store into retained selection |
+| Paired real issuer success plus owner-held holder/route custody | Verify then durably install current Retrieve credential | Exact request/result/route/holder conflict is permanent; unknown response exact-retries |
+| Cold recheck of retained winner | Same still-current grant only | Envelope expiry is historical; expired/revoked grant never refreshed implicitly |
+| Node Retrieve/transport ACK | Current issuer/revocation/holder/replay checks plus original selection | No object TTL extension, resurrection, Store admission or application receipt claim |
+
+Grant expiry is the minimum of current network/policy/role lifetime and readUntil;
+its membership/epoch/selection input and placement bind the original route.
+Resolve original selected node IDs through current descriptors and keys. XMC2
+tag7 remains exact request tag11; its response deadline is the original XMG2
+deadline. The native permanent winner scope also binds the retained evidence
+kind/horizon and actual current authority, so different evidence cannot be an
+exact retry. No raw historical flag or parsed route installs credentials.
+
+Shared preserves its existing held account/device/holder/guard and protected
+original-publication/route binding. Protocol authoring and result verification
+do not create those owners or expose signing keys. Node admission, replay and
+tombstone consumers and accepted-object horizon must close together before
+activation. This target is not shipping or physical acceptance.
+
 ### 3.8 Current mailbox grant revocation
 
 MGR1 is the identity-neutral node-control revocation record allocated by
