@@ -631,6 +631,12 @@ network lineage. Current Store remains current-selection-only. No wire/domain
 allocation or expired-grant reader is introduced; retained issuance, owner/node
 composition and object-horizon activation remain separately gated.
 
+[DR-0100](../survival-program/decisions/DR-0100-retained-mailbox-read-request-context.md)
+freezes an additive closed current request/time context before retained-read
+lookup. It authenticates exact Retrieve XMG1 and an already verified retained
+PMT2 under the current host, not route/capability ownership or issuance. No wire,
+domain or local-generation allocation; actual lookup and activation remain gated.
+
 DR-0081 supersedes only DR-0004's neutral grant/presentation/envelope/result
 choice; route selection, privacy and ownership remain mandatory. `XRR1` alone is not a routable deposit
 closure; the exact XRA1/XRC1/XRR1/XSS1 plus PMT2/PMS2 closure in the contact/XPoint

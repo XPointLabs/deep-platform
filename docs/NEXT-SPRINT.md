@@ -58,6 +58,19 @@ mocked=false. Изолированный Compose cleanup сохранил6 ис�
 не retained issuance или завершение текущей подзадачи.
 [Границы и сохранённый FAIL](../xnode/docs/testing/s01-retained-lookup-2026-10-07.md).
 
+Следующий source candidate внутри этой же S01-подзадачи: Protocol
+`7bc90f0e3b78c103d1108516d3879d458a0e402b` по
+[DR-0100](survival-program/decisions/DR-0100-retained-mailbox-read-request-context.md).
+Closed current Retrieve request/time context перед retained lookup реализован:
+actual host/PMA2/time, holder proof и exact PMT2 из protected lineage; не capability
+ownership, historical route authentication или issuance. Coupled166/0/0 terminal0,
+включая31 new cases; restore и Release solution build0 warnings/errors.
+Registry source/hash mapping принят без wire/domain/local-generation allocations.
+Current full и actual package/API/resource gate ещё не завершены; candidate не
+объявлен приёмкой текущей подзадачи. Actual bounded lookup, renewed issuance,
+owned holder/request custody и node Retrieve–ACK остаются тем же единственным
+следующим переходом. S02/S04 lifecycle и independent files/groups не открываются.
+
 ## Принятое recipient receipt obligation — не реализовывать повторно
 
 Source checkpoint: Shared

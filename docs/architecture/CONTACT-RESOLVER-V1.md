@@ -1548,6 +1548,41 @@ or result is a permanent conflict;
 lost response exact-replays the byte-identical XMC2. The service stores no
 account/device identity and logs no reachability capability or holder key.
 
+### 3.7.1 Current request context for retained-read lookup
+
+[DR-0100](../survival-program/decisions/DR-0100-retained-mailbox-read-request-context.md)
+freezes an additive request/time prerequisite for the retained-read path of
+[DR-0099](../survival-program/decisions/DR-0099-retained-mailbox-read-selection.md).
+The current-only §3.7 issuance path and its route expiry checks are unchanged.
+The new path accepts only a freshly signed Retrieve XMG1 naming an exact PMT2
+already authenticated in the complete current protected lineage. The request's
+PMS2 hash and role capability remain untrusted lookup inputs until both current
+selected stores authenticate the same original retained route/capability custody.
+No caller-selected historical clock, boolean, issuer or raw PMT2 is accepted.
+
+The closed `VerifiedMailboxRetainedReadRequestV2` is minted only by
+`VerifiedMailboxHostAuthorityV2.VerifyRetainedReadRequestAsync(exactXmg1, ct)`.
+It exposes copied exact request, projection reference and selection hash;
+`ReadCurrentTimeAsync(ct)` returns authenticated current full-interval time,
+and `EnsureCurrentAsync(ct)` performs the same live revalidation. Neither method
+changes the original request or authorizes deletion from a saved time tuple.
+
+| Input / transition | Result / durable effect | Retry / boundary |
+| --- | --- | --- |
+| Exact holder-signed Retrieve XMG1, current host and one exact retained PMT2 | Closed request/time context only; no storage mutation | Same exact request; original window at most120s |
+| Deposit, foreign network, malformed signature/size or missing projection | Reject before lookup/issuer callback | No unsigned rerank or historical fallback |
+| Full current interval reaches request/host/PMA2 bound | Reject before release | No implicit nonce/window/grant renewal |
+| Boot mismatch, clock rollback or cancellation during recheck | Reject; no authority returned | Preserve independently existing pending work |
+| Parsed PMS2 hash/capability without authenticated retained custody | Still unverified; cannot issue/install a grant | Both actual current stores remain mandatory |
+| Returned current time facts without dependency closure | No deletion/compaction authority | Object horizon and replay custody remain independent |
+
+This API does not verify the original route/publication, current recipient identity,
+owner capability, mailbox selected nodes, MGR1 floor, exact operation or transport
+ACK. It does not sign or install MCG3 or change XMG1/XMC2 bytes. Retained issuance,
+owned holder/request custody and node Retrieve–ACK composition remain gated until
+their producer/consumer and cold/crash closure is implemented. No retention or
+physical delivery claim follows from this prerequisite.
+
 ### 3.8 Current mailbox grant revocation
 
 MGR1 is the identity-neutral node-control revocation record allocated by
