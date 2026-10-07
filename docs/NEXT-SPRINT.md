@@ -136,7 +136,17 @@ approved DNP1 snapshot не менялся. Commits не означают shippi
 Перед push обнаружен такой же CI provider drift: оба Registry workflow использовали
 deep_ci вместо strict deep_s00. Только service/health/provider configuration
 выравнивается с уже qualified локальным lane; assertions/runtime source unchanged.
-Bounded scalar/connection checks0; фактический GitHub CI ещё не запускался.
+Bounded scalar/connection checks0. Exact-HEAD GitHub Registry CI
+[37599715974](https://github.com/XPointLabs/deep-registry-api/actions/runs/37599715974):
+restore/build passed, Linux full352/4/0 terminal1 — четыре connected client-prekey
+tests не имеют release-approved ML-KEM asset для Linux RID. Это platform/asset
+gap, не Windows WriteState failure; tests не пропущены/подменены, image publish
+skipped. Windows native349/0/7 не квалифицирует эти Linux crypto paths.
+Root documentation CI
+[37599834121](https://github.com/XPointLabs/deep-platform/actions/runs/37599834121)
+Passed. Protocol CI
+[37599786798](https://github.com/XPointLabs/deep-protocol/actions/runs/37599786798)
+остановился на known actual package/API/resource graph FAIL; gate не обходился.
 Дополнительный Registry full с SCRAM/PGPASSWORD:348/1/7 terminal1.
 Новый UnauthorizedAccessException при protected nonce-ledger WriteState на
 publication replay сохранён и расследуется, не объявлен baseline или исправленным.
