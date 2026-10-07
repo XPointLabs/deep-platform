@@ -77,7 +77,7 @@ Actual bounded lookup, renewed issuance,
 owned holder/request custody и node Retrieve–ACK остаются тем же единственным
 следующим переходом. S02/S04 lifecycle и independent files/groups не открываются.
 
-Actual bounded Node custody/lookup source candidate по
+Actual bounded Node custody/lookup qualified source increment по
 [DR-0101](survival-program/decisions/DR-0101-retained-mailbox-route-custody.md)
 реализован: atomic verified XPA publication, independent private route/domain
 digest, bounded admission horizon, typed current request/time lookup, snapshot
@@ -85,9 +85,11 @@ recheck и conflict вместо latest-route угадывания. Public Resol
 private generation5 rejects4, без production reset. Release solution build0
 warnings/errors; focused21/0/0 terminal0. Новый isolated mandatory Docker smoke
 terminal0,10 инфраструктурных tests и4 hard/5 soft checks; исходные6 dev containers
-сохранены. Full Node native run ещё идёт,834 prelaunch inputs frozen; ожидаемые
-1241 не объявляются наблюдаемыми. Не запускать второй full поверх первого.
-[Точный pending checkpoint](../xnode/docs/testing/s01-retained-route-custody-2026-10-07.md).
+сохранены. Оригинальный full Node native run завершён terminal0:1241/0/0
+(Integration884, ProfileGenerator107, Unit250); qualifier terminal0 подтвердил
+all1223 prior/all21 focused exact cases и834 unchanged prelaunch inputs.
+Повторный full не запускался, expectations не менялись.
+[Точные результаты и hashes](../xnode/docs/testing/s01-retained-route-custody-2026-10-07.md).
 Normative registry repin не меняет allocations; current Protocol full2088/1/7
 terminal1 и отдельный production graph/MAU2 FAIL сохранены,
 [receipts](../deep-protocol/docs/testing/s01-retained-route-contract-repin-2026-10-07.md).
