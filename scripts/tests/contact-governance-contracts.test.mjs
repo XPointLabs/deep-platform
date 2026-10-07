@@ -17,6 +17,7 @@ const executionPath = 'deep-protocol/tests/Deep.Protocol.Tests/ContactV2/Current
 const inputs = [
   'scripts/check-contact-codec-spec.ps1', vectorsPath, anchorPath,
   specs + 'contact-codec-v1.vectors.schema.json', specs + 'deep-crypto-v1.registry.json',
+  specs + 'mailbox-authorization-v3.registry.json',
   'docs/architecture/CONTACT-RESOLVER-V1.md', 'docs/architecture/CONTACT-AND-GROUP-PROTOCOL-V1.md',
   'docs/architecture/XPOINT-NETWORK-V1.md', executionPath,
 ];
@@ -73,6 +74,18 @@ rejects('an allowed but substituted positive target cannot preserve the count',
   ({ vectors }) => { vectors.primitives[0].target = 'XUR1'; }, /primitive targets\/order/);
 rejects('retired DCB1 positive input cannot return',
   ({ vectors }) => { vectors.primitives[0].target = 'DCB1'; }, /The string value is not a match for the indicated regular expression at[\s\S]*'\/primitives\/0\/target'|retired positive contact input/);
+rejects('retired XMG1 positive input cannot return',
+  ({ vectors }) => { vectors.records[0].target = 'XMG1'; }, /The string value is not a match|retired positive contact input/);
+rejects('the retired XMG1 signature purpose cannot return in the current machine contract',
+  ({ read, write }) => {
+    const path = specs + 'mailbox-authorization-v3.registry.json';
+    const contract = read(path); contract.acquisitionRequest.signatureDomain = 'Deep/ContactResolver/V1/XMG1'; write(path, contract);
+  }, /XMG2 machine route\/signature contract/);
+rejects('the route hash cannot silently move outside the signed current request projection',
+  ({ read, write }) => {
+    const path = specs + 'mailbox-authorization-v3.registry.json';
+    const contract = read(path); contract.acquisitionRequest.exactRouteHashTag = 12; write(path, contract);
+  }, /XMG2 machine route\/signature contract/);
 rejects('damaged exact primitive bytes reject at their independent hash',
   ({ vectors }) => { vectors.primitives[0].fixtureBytesHex = '00' + vectors.primitives[0].fixtureBytesHex.slice(2); }, /fixture hash/);
 rejects('a changed signature input rejects despite a correct whole-document anchor',

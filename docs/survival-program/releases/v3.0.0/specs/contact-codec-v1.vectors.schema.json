@@ -10,7 +10,7 @@
     "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
     "canonicalBounds": {
       "type": "object", "additionalProperties": false,
-      "required": ["XRA1", "XMG1", "XMC2", "PMA2", "DMC2/2", "DMC2/3", "DMC2/14"],
+      "required": ["XRA1", "XMG2", "XMC2", "PMA2", "DMC2/2", "DMC2/3", "DMC2/14"],
       "properties": {
         "DMC2/2": { "$ref": "#/$defs/privateContactControlBounds" },
         "DMC2/3": { "$ref": "#/$defs/privateContactControlBounds" },
@@ -22,7 +22,7 @@
             "signatureProjectionBytes": { "const": 478 }
           }
         },
-        "XMG1": {
+        "XMG2": {
           "type": "object", "additionalProperties": false,
           "required": ["recordBytes"],
           "properties": { "recordBytes": { "const": 435 } }
@@ -109,7 +109,7 @@
       "required": ["id", "target", "fixtureBytesHex", "sha256", "purpose"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-        "target": { "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMA2|PMT2|PMS2|XRC1|XSS1|XRR1|XMG1|XMC2|DIA1|DMC2/[2-4]|DMC2/14)$" },
+        "target": { "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMA2|PMT2|PMS2|XRC1|XSS1|XRR1|XMG2|XMC2|DIA1|DMC2/[2-4]|DMC2/14)$" },
         "fixtureBytesHex": { "$ref": "#/$defs/hex" },
         "sha256": { "$ref": "#/$defs/hash" },
         "purpose": { "enum": ["signature-projection", "hash-projection", "canonical-grammar", "payload-grammar"] }
@@ -145,7 +145,7 @@
       }
     },
     "target": {
-      "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMA2|PMT2|PMS2|XRC1|XSS1|XRR1|XMG1|XMC2|DIA1|DMC2/[2-4]|DMC2/14)$"
+      "type": "string", "pattern": "^(XIR1|XUR1|XRA1|PMA2|PMT2|PMS2|XRC1|XSS1|XRR1|XMG2|XMC2|DIA1|DMC2/[2-4]|DMC2/14)$"
     },
     "negative": {
       "type": "object", "additionalProperties": false,

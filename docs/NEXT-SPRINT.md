@@ -103,6 +103,52 @@ two-store evidence и renewed issuer/owned request/result consumers; нельз�
 выдавать private lookup как Current evidence или менять смысл expiry на readUntil.
 Новый wire/domain этой проверкой не выделен.
 
+Текущий согласованный source batch внутри этой подзадачи —
+[DR-0102](survival-program/decisions/DR-0102-exact-mailbox-request-route-binding.md):
+XMG2 вместо XMG1, exact route hash в holder-signed tag11 и новый purpose.
+Author/restore, native holder scope, current issuer, result verification и private
+retained lookup обновляются совместно; старого reader/alias/migration нет.
+Current vectors удаляют положительный XMG1 и выполняют новую holder signature;
+старый magic остаётся лишь отрицательным input. Проверка двух фактически
+подписанных closures с одинаковыми PMT/PMS/capability изолирует новое binding;
+это не admitted publication successor или retained issuance evidence.
+Final focused Protocol110/0/0, Shared6/0/0, Node60/0/0 и Registry17/0/0;
+все четыре solution build0 warnings/errors. Mandatory isolated external/no-mock
+Docker smoke0:10 инфраструктурных tests,4 hard/5 soft checks,7 healthy services;
+6 исходных dev containers сохранены. Protocol original full2091/1/7 terminal1,
+post-terminal qualification0 сохраняет все2096 prior executions и2008 inputs;
+unchanged MAU2 package FAIL/7 skips и отдельный graph FAIL не отменены.
+Registry first full335/14/7 terminal1 сохранён: DB guard требовал deep_s00,
+не route_test. Official isolated provider повторил без rebuild:349/0/7 terminal0;
+qualification0, all355 prior outcomes,2145 immutable inputs unchanged. Один
+overcaptured test-state JSON изменился при штатном read/write; это отдельно
+отмечено, не объявлено immutable или доказательством fixture isolation.
+Node original full1242/0/0 terminal0; qualifier0 сохраняет all1241 prior cases
+и2337 immutable inputs. Оригинальный Shared full завершён terminal0:726/0/0;
+qualification0 сохраняет all726 prior cases и2050 immutable inputs.
+Bounded XMG2 source slices qualified; это не закрытие S01 или shipping gate.
+Четыре завершённых repo slices зафиксированы локально: Protocol`53deca6`,
+Shared`1f43bc0`, Registry`d6a0c8b`, Node`f993017`.
+Registry CI configuration/evidence follow-up: `e694282`.
+Leaf trees чистые; root normative/gitlinks и matched Protocol CI repin готовятся
+к общему push. Commits не означают shipping acceptance.
+Перед push обнаружен такой же CI provider drift: оба Registry workflow использовали
+deep_ci вместо strict deep_s00. Только service/health/provider configuration
+выравнивается с уже qualified локальным lane; assertions/runtime source unchanged.
+Bounded scalar/connection checks0; фактический GitHub CI ещё не запускался.
+Дополнительный Registry full с SCRAM/PGPASSWORD:348/1/7 terminal1.
+Новый UnauthorizedAccessException при protected nonce-ledger WriteState на
+publication replay сохранён и расследуется, не объявлен baseline или исправленным.
+Один bounded repeat всех трёх crash modes на тех же binaries/SCRAM прошёл3/0/0;
+отказ не воспроизведён, причина не установлена, исходный full FAIL остаётся открытым.
+[Protocol receipt](../deep-protocol/docs/testing/s01-exact-request-binding-2026-10-07.md),
+[Registry receipt](../deep-registry-api/docs/testing/s01-exact-request-binding-2026-10-07.md),
+[Shared receipt](../deep-client-shared/docs/testing/s01-exact-request-binding-2026-10-07.md),
+[Node receipt/smoke](../xnode/docs/testing/s01-exact-request-binding-2026-10-07.md).
+Protected rollback/read-back, обе retained attestations, renewed issuer/owned
+holder и node Retrieve–ACK/object horizon остаются тем же следующим переходом.
+S01 не закрыт; S02/S04 и physical0/4 не активированы.
+
 ## Принятое recipient receipt obligation — не реализовывать повторно
 
 Source checkpoint: Shared

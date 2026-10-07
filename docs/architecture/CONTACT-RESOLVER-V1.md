@@ -35,7 +35,7 @@ generation. This is availability quorum, not a disjointness claim.
 ### 2.1 CONTACT-CODEC canonical record rule
 
 `CONTACT-CODEC-01` owns `DCB1`, `DCR1`, `DIA1`, `XIR1`, `XPS1`, `XPI1`,
-`XPP1`, `XIC1`, `XPK1`, `XPC1`, `XUR1`, `XMG1`, `XMC2`, and the
+`XPP1`, `XIC1`, `XPK1`, `XPC1`, `XUR1`, `XMG2`, `XMC2`, and the
 DR-0004 route/placement records `XRA1`, `XRC1`, `XRR1`, `XSS1`, `PMT2`, `PMS2`.
 They use exactly this one binary grammar; this section is the sole grammar source
 for those records:
@@ -1443,7 +1443,7 @@ core is `SHA256-D("Deep/XPoint/V1/XRR1/core", projection)`. The resolver returns
 this complete client closure only inside the read-capability-protected response;
 the deposit service receives only tag 10 or a tag-15 replica capability.
 
-### 3.7 Privacy-routed mailbox grant acquisition: `XMG1` / `XMC2`
+### 3.7 Privacy-routed mailbox grant acquisition: `XMG2` / `XMC2`
 
 The exact authorization wire and signed selector clean break are owned by
 [DR-0081](../survival-program/decisions/DR-0081-did2-mailbox-selection-grant-clean-break.md)
@@ -1478,7 +1478,7 @@ account, device, recovery, DPM1 mailbox-role, route-owner and sealing keys.
 
 A client holding a verified current XRR1 route closure obtains short-lived MCG3
 grants through the existing `ContactResolve=4` onion operation. Direct Registry
-issuance, JSON invitations and public grant endpoints are forbidden. `XMG1`,
+issuance, JSON invitations and public grant endpoints are forbidden. `XMG2`,
 version 1, suite `0x0201`, has exactly 12 fields:
 
 | Tag | Value | Size |
@@ -1493,14 +1493,25 @@ version 1, suite `0x0201`, has exactly 12 fields:
 | 8 | exact current PMS2 hash | 32 |
 | 9 | issued-at Unix seconds | 8 |
 | 10 | expires-at Unix seconds | 8 |
-| 11 | random request nonce | 32 |
+| 11 | SHA-256(exact six-record route closure) | 32; nonzero |
 | 12 | holder proof-of-possession signature | 64 |
 
-XMG1 is exactly 435 bytes. Tag 12 signs the canonical projection tags 1..11
-under `SIGINPUT("Deep/ContactResolver/V1/XMG1", 0x0201, projection)`. Its
+XMG2 is exactly 435 bytes. Tag 12 signs the canonical projection tags 1..11
+under `SIGINPUT("Deep/ContactResolver/V2/XMG2", 0x0201, projection)`. Its
 window is non-empty and at most 300 seconds. Tags 7/8 must equal the exact
 verified placement carried by the XRR1 closure; the request neither carries nor
 permits lookup by DeepAccountId, DeepDeviceId, DID1, DPD1 or DPM1.
+
+[DR-0102](../survival-program/decisions/DR-0102-exact-mailbox-request-route-binding.md)
+retires XMG1 without a reader or conversion. XMG2 tag11 signs exact route intent,
+not a second random nonce; tag2 is independently random for each new operation.
+Current author/restore, issuer and route lookup require this exact hash. Retained
+lookup matches it in addition to network/locator/role capability/PMT2/PMS2;
+it cannot choose the newest route or accept an unsigned caller hash instead.
+Success XMC2 tag7 MUST equal request tag11 and the independently verified route
+hash. A changed hash is a changed request, not an exact retry. Old pending/winner
+requests reject through their existing current readers; no implicit remint,
+local-state migration or authority/TTL extension follows from this clean break.
 
 The service uses tag 3 only to select the exact two resolver replicas, resolves
 tag 4 only as a random capability in that publication-bound route state, and
@@ -1510,7 +1521,7 @@ then atomically journals the request. A Deposit request requires exact XRR1 tag
 capability for the other domain is rejected. The owner capability is never
 returned by a public resolve. The service issues one exact current-epoch MCG3
 grant whose network, domain and holder key equal the request, while epoch and
-placement equal the verified XRR1/PMT2/PMS2 route closure. XMG1 tag 4 is only a role-scoped authorization
+placement equal the verified XRR1/PMT2/PMS2 route closure. XMG2 tag 4 is only a role-scoped authorization
 secret and is never interpreted as the placement identifier.
 For the grant, `PlacementCommitment` is exactly
 `MailboxPlacementCommitment.Compute(BlindedPlacementId(XRR1.tag10))`,
@@ -1533,7 +1544,7 @@ Grant expiry is the minimum of XRR1, XRC1, PMT2, PMS2 and issuer validity.
 | 2 | exact grant operation ID | 32 |
 | 3 | result | 2; `1=Success`, `2=UnknownOrExpired`, `3=RateLimited`, `4=Unavailable`, `5=Conflict` |
 | 4 | authenticated server time | 8 |
-| 5 | SHA-256(exact XMG1) | 32 |
+| 5 | SHA-256(exact XMG2) | 32 |
 | 6 | response expires-at Unix seconds | 8 |
 | 7 | SHA-256(exact verified route closure), or ZERO32 on non-success | 32 |
 | 8 | exact current MCG3, or empty on non-success | `0 or 304` |
@@ -1554,31 +1565,31 @@ account/device identity and logs no reachability capability or holder key.
 freezes an additive request/time prerequisite for the retained-read path of
 [DR-0099](../survival-program/decisions/DR-0099-retained-mailbox-read-selection.md).
 The current-only §3.7 issuance path and its route expiry checks are unchanged.
-The new path accepts only a freshly signed Retrieve XMG1 naming an exact PMT2
+The new path accepts only a freshly signed Retrieve XMG2 naming an exact PMT2
 already authenticated in the complete current protected lineage. The request's
-PMS2 hash and role capability remain untrusted lookup inputs until both current
+exact route hash, PMS2 hash and role capability remain untrusted lookup inputs until both current
 selected stores authenticate the same original retained route/capability custody.
 No caller-selected historical clock, boolean, issuer or raw PMT2 is accepted.
 
 The closed `VerifiedMailboxRetainedReadRequestV2` is minted only by
-`VerifiedMailboxHostAuthorityV2.VerifyRetainedReadRequestAsync(exactXmg1, ct)`.
-It exposes copied exact request, projection reference and selection hash;
+`VerifiedMailboxHostAuthorityV2.VerifyRetainedReadRequestAsync(exactXmg2, ct)`.
+It exposes copied exact request, projection reference, selection hash and exact route hash;
 `ReadCurrentTimeAsync(ct)` returns authenticated current full-interval time,
 and `EnsureCurrentAsync(ct)` performs the same live revalidation. Neither method
 changes the original request or authorizes deletion from a saved time tuple.
 
 | Input / transition | Result / durable effect | Retry / boundary |
 | --- | --- | --- |
-| Exact holder-signed Retrieve XMG1, current host and one exact retained PMT2 | Closed request/time context only; no storage mutation | Same exact request; original window at most120s |
+| Exact holder-signed Retrieve XMG2, current host and one exact retained PMT2 | Closed request/time context only; no storage mutation | Same exact request; original window at most120s |
 | Deposit, foreign network, malformed signature/size or missing projection | Reject before lookup/issuer callback | No unsigned rerank or historical fallback |
-| Full current interval reaches request/host/PMA2 bound | Reject before release | No implicit nonce/window/grant renewal |
+| Full current interval reaches request/host/PMA2 bound | Reject before release | No implicit operation/window/grant renewal |
 | Boot mismatch, clock rollback or cancellation during recheck | Reject; no authority returned | Preserve independently existing pending work |
 | Parsed PMS2 hash/capability without authenticated retained custody | Still unverified; cannot issue/install a grant | Both actual current stores remain mandatory |
 | Returned current time facts without dependency closure | No deletion/compaction authority | Object horizon and replay custody remain independent |
 
 This API does not verify the original route/publication, current recipient identity,
 owner capability, mailbox selected nodes, MGR1 floor, exact operation or transport
-ACK. It does not sign or install MCG3 or change XMG1/XMC2 bytes. Retained issuance,
+ACK. It does not sign or install MCG3 or change XMG2/XMC2 bytes. Retained issuance,
 owned holder/request custody and node Retrieve–ACK composition remain gated until
 their producer/consumer and cold/crash closure is implemented. No retention or
 physical delivery claim follows from this prerequisite.
@@ -1607,16 +1618,17 @@ the private read custody. This increment does not authorize its retirement.
 | --- | --- | --- |
 | Exact publication plus closed current XPA1 | Publication and private read custody in one durable replace | Lost/failed replace remains unknown until reopen; no partial custody success |
 | Entry/route-byte quota exhausted | Reject new admission; existing custody unchanged | Backpressure, no live-path eviction; original exact replay unchanged |
-| DR-0100 closed current Retrieve request | Match exact network/locator/domain digest/PMT2 ArtRef/PMS2 hash | Missing custody is unavailable, not empty catch-up |
+| DR-0100/0102 closed current Retrieve request | Match exact network/locator/domain digest/PMT2 ArtRef/PMS2 hash/route hash | Missing custody is unavailable, not empty catch-up |
 | Matching original route before `readUntil` | Copied private lookup facts only | Not a Current route, issuer/holder/grant/ACK authority |
-| Different exact closures match the same scope | Conflict, no route released | Never choose latest; issuer disambiguation remains gated |
+| Same capability/selection scope with a different exact route hash | No match for that route | Only the holder-signed tag11 selects a closure; never choose latest |
 | Identical exact closures from admitted publications | Same exact route with maximum independently admitted horizon | No public tuple may extend that horizon |
 | Final current interval reaches horizon, authority loss or cancel | No usable route released; no storage mutation | Same original request revalidation, no implicit renewal |
 | Durable mutation during clock/authority callback | Reject captured lookup snapshot | Fresh lookup under the original still-current request |
 | Old node generation, missing table or invalid route/bounds on reopen | Fail closed and quarantine | No migration, empty substitution or public resolve recovery |
 
 Current-only resolve, Deposit, evidence transcript and wire formats remain
-unchanged. Node local state generation5 uses the existing ownership/integrity
+unchanged by DR-0101; DR-0102 separately replaces acquisition XMG1 with XMG2.
+Node local state generation5 uses the existing ownership/integrity
 envelope; its SHA/ACL/lifetime lease is not a cryptographic rollback floor.
 Protected rollback/provenance closure and both actual selected stores' current
 authenticated evidence are prerequisites for renewed issuance. The private

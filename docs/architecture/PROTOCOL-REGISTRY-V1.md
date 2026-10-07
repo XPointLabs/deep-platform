@@ -22,6 +22,11 @@ freezes independent bounded private node read-route custody and typed lookup.
 It adds no protocol allocation or Current-route evidence and cannot authorize
 renewed issuance; private node state generation5 rejects its predecessor.
 
+[DR-0102](../survival-program/decisions/DR-0102-exact-mailbox-request-route-binding.md)
+replaces XMG1 with XMG2 and a new signature purpose, binding the exact original
+six-record route hash. The current issuer/holder/lookup/result source cutover
+must close together; retained issuance and runtime activation remain gated.
+
 [DR-0069](../survival-program/decisions/DR-0069-did2-retired-identity-surface-removal.md)
 closes the old identity source producers and their positive contact vectors.
 The machine registry excludes retired constants; consumer/API/package closure
@@ -470,7 +475,8 @@ Normative source: `XPOINT-NETWORK-V1.md`.
 | `NFP1` | bounded authority/checkpoint/source-membership proof manifest for XNF1 merge. | mirrors package; clients verify | `FROZEN_TARGET_NOT_ACTIVE` |
 | `XIR1` | long-lived invite rendezvous embedded in DCB1; never a current message deposit route. | contact owner authors; selected invite-store pair hosts | DID2-bound V2 `TARGET_UNFROZEN`; isolated 611-byte candidate verifies DCA1 V2 issuer only, old V1 bytes are not release authority |
 | `XRR1` | short-lived established-contact/message deposit reachability. It is not a public Deep ID artifact. | contact owner authors; selected mailbox pair hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
-| `XMG1` | privacy-routed proof-of-possession request for short-lived mailbox grants bound to exact XRR1 reachability. | contact client authors; ContactResolve authority verifies | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01 |
+| `XMG1` | Retired acquisition request without exact route-closure intent. | no current author or reader | `RETIRED_REJECT`; DR-0102 |
+| `XMG2` | Holder-signed mailbox acquisition request binding the exact six-record route hash. | contact client authors; ContactResolve authority verifies | `FROZEN_TARGET_NOT_ACTIVE`; DR-0102 / CONTACT-CODEC-01 |
 | `XMC1` | Retired mailbox-grant result without authenticated selection binding. | no current author or reader | `RETIRED_REJECT`; DR-0081 |
 | `XMC2` | closed acquisition result carrying exactly one selector-bound MCG3 only on success. | ContactResolve authority authors; contact client verifies | `FROZEN_TARGET_NOT_ACTIVE`; DR-0081 / CONTACT-CODEC-01 |
 | `XUR1` | established-contact update rendezvous capability/record. | contact owner authors; update-rendezvous service hosts | `FROZEN_TARGET_NOT_ACTIVE`; CONTACT-CODEC-01. [DR-0021](../survival-program/decisions/DR-0021-did2-contact-rendezvous-issuer.md) freezes a DID2-only current issuer/time verifier; identity-neutral wire is unchanged, independent placement/route, contact state and shipping/device closure remain gates |
@@ -618,7 +624,7 @@ documents under `../../deep-protocol/docs/`.
 | `RCD1`, `RDA1`, `RCR1`, `RHC1`, `RTC1`, `RCA1`, `PRA2`, `PSS2` | Pre-cutover owner/delegated route-continuity closure. | `RETIRED_REJECT`; source/API removed under DR-0093. DR-0004's current XRA1/XRC1/XSS1 semantics are unchanged; no reset is activated by source removal. |
 | `PMA2`, `PMT2`, `PMS2` | Root-authorized role-separated issuer policy, XNV1-bound projection and deterministic blinded selection; current algorithm profile follows DR-0081. | `FROZEN_TARGET_NOT_ACTIVE`; PMA2 is a NETCODEC authority record encoded with the shared canonical tagged grammar, while PMT2/PMS2 are consumed by CONTACT-CODEC-01. |
 | `XRA1`, `XRC1`, `XRR1`, `XSS1` | DR-0004 owner authorization, live route, shared reachability and retained successor closure. | `FROZEN_TARGET_NOT_ACTIVE`; pre-cutover continuity records reject. |
-| `XMG1`, `XMC2` | Privacy-routed request/closed result for holder-specific selector-bound grants. | `FROZEN_TARGET_NOT_ACTIVE` under CONTACT-CODEC-01 / DR-0081; no direct Registry or Session-derived issuance path. |
+| `XMG2`, `XMC2` | Privacy-routed request/closed result for holder-specific exact-route/selector-bound grants. | `FROZEN_TARGET_NOT_ACTIVE` under CONTACT-CODEC-01 / DR-0081/0102; no direct Registry or Session-derived issuance path. |
 | `MAU2`, `MCP2`, `MCG2` | Retired authorization without an issuer-authenticated PMS2 selector. | `RETIRED_REJECT`; DR-0081, no reader, conversion or positive corpus. |
 | `MAU3`, `MCP3`, `MCG3` | Identity-neutral request, holder presentation and issuer-signed selection-bound grant. | `FROZEN_TARGET_NOT_ACTIVE`; exact contract is DR-0081 and mailbox-authorization-v3.registry.json. |
 | `MGR1` | Current role-issuer-signed cumulative random grant-serial revocations and protected host floor. | `FROZEN_TARGET_NOT_ACTIVE`; exact contract is DR-0083 / CONTACT-RESOLVER-V1 §3.8 and mailbox-grant-revocation-v1.registry.json. |
@@ -638,7 +644,7 @@ composition and object-horizon activation remain separately gated.
 
 [DR-0100](../survival-program/decisions/DR-0100-retained-mailbox-read-request-context.md)
 freezes an additive closed current request/time context before retained-read
-lookup. It authenticates exact Retrieve XMG1 and an already verified retained
+lookup. Its current source authenticates exact Retrieve XMG2 under DR-0102 and an already verified retained
 PMT2 under the current host, not route/capability ownership or issuance. No wire,
 domain or local-generation allocation; actual lookup and activation remain gated.
 
@@ -650,7 +656,7 @@ specifications is mandatory. Implementations may not reopen or replace that choi
 `MAU3/MCP3/MCG3` is the one canonical mailbox authorization envelope; this
 does not retain Session identity. The MCG3 holder is a random, independently
 generated, reachability-scoped Ed25519 key held in protected client storage.
-`XMG1/XMC2` is the only production acquisition path for its grants. A device,
+`XMG2/XMC2` is the only production acquisition path for its grants. A device,
 account, recovery, DPM1 or synthetic Session key MUST NOT be substituted as the
 holder, and the grant service receives no DeepAccountId or DeepDeviceId.
 Exact framing, PMA2 profile2, signed successor rollout, peer MIP1 proof profile
@@ -701,7 +707,7 @@ Resolved planning inputs, still requiring machine schemas/codecs, are:
 
 | Input | Accepted source | Consequence |
 | --- | --- | --- |
-| mailbox clean-break | `CONTACT-RESOLVER-V1.md` and `RETENTION-AND-RECOVERY-V1.md` | target uses PMT2/PMS2 plus XRR1-bound XMG1/XMC1 grant acquisition; PMT1/PMS1 and Session-derived/direct-Registry issuance remain pre-cutover only |
+| mailbox clean-break | `CONTACT-RESOLVER-V1.md` and `RETENTION-AND-RECOVERY-V1.md` | target uses PMT2/PMS2 plus exact route-bound XMG2/XMC2 grant acquisition; PMT1/PMS1 and Session-derived/direct-Registry issuance remain pre-cutover only |
 | invite/prekey service | `CONTACT-RESOLVER-V1.md` | XNode owns two-replica invite/prekey stores; Registry is distribution cache only |
 | account freshness | `ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md` | ADC1/ADH1/ADP1/ADL1 are mandatory inputs to new contact/device selection |
 | retention/recovery | `RETENTION-AND-RECOVERY-V1.md` | all runtime GC, capacity, recovery UX and time-travel gates consume one matrix |

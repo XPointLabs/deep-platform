@@ -469,14 +469,14 @@ current time/network/issuer successors не может требовать пре
 independent verification; bootstrap не переносит recipient metadata на Registry.
 
 **Expired/unknown acquisition: исходная граница возможной выдачи.** До первого
-issuer callback owner MUST защищённо сохранить exact original XMG1, holder
+issuer callback owner MUST защищённо сохранить exact original XMG2, holder
 custody и immutable evidence для conservative upper bound возможного MCG3.
 Evidence включает independently verified original PMA2, связанную с exact PMT2
 этого request, и original signed route closure. Их protected references должны
 восстанавливаться в exact bytes; один hash без retained producer не достаточен.
 Bound — минимум signed expiry original PMA2 и всех original route records,
 ограничивающих выдачу по
-[CONTACT-RESOLVER §3.7](CONTACT-RESOLVER-V1.md#37-privacy-routed-mailbox-grant-acquisition-xmg1--xmc2).
+[CONTACT-RESOLVER §3.7](CONTACT-RESOLVER-V1.md#37-privacy-routed-mailbox-grant-acquisition-xmg2--xmc2).
 Это conservative ceiling, не срок действительного полученного grant. Более
 короткие issuer/effective-time limits могут ограничивать реальную выдачу, но
 unsigned effective-expiry, локальное UTC и XMG/XMC deadline не уменьшают ceiling.

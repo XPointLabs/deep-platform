@@ -4,8 +4,30 @@
   "status": "FROZEN_TARGET_NOT_ACTIVE",
   "runtimeActivation": false,
   "owner": "deep-protocol",
-  "newMagic": ["MCG3", "MCP3", "MAU3", "XMC2"],
-  "retiredReject": ["MCG2", "MCP2", "MAU2", "XMC1"],
+  "newMagic": ["MCG3", "MCP3", "MAU3", "XMC2", "XMG2"],
+  "retiredReject": ["MCG2", "MCP2", "MAU2", "XMC1", "XMG1"],
+  "requestBindingDecision": "DR-0102",
+  "acquisitionRequest": {
+    "magic": "XMG2",
+    "version": 1,
+    "suite": "0x0201",
+    "bytes": 435,
+    "tags": 12,
+    "fieldBytes": [16, 32, 32, 32, 32, 1, 38, 32, 8, 8, 32, 64],
+    "signatureProjectionTags": [1,2,3,4,5,6,7,8,9,10,11],
+    "signatureProjectionBytes": 363,
+    "signatureDomain": "Deep/ContactResolver/V2/XMG2",
+    "exactRouteHashTag": 11,
+    "exactRouteHashBytes": 32,
+    "exactRouteHashNonzero": true,
+    "routeHash": "SHA256(exact six-record XRR1/XRA1/XRC1/XSS1/PMT2/PMS2 closure)",
+    "operationIdTag": 2,
+    "operationIdIndependentlyRandom": true,
+    "currentRequestMaximumSeconds": 120,
+    "structuralRequestMaximumSeconds": 300,
+    "successResultRouteHashMustEqualRequest": true,
+    "legacyReader": false
+  },
   "pma2CurrentAlgorithmProfile": 2,
   "pma2HistoricalAlgorithmProfile": 1,
   "grant": {
@@ -83,7 +105,7 @@
     "routeClosureHashTag": 7,
     "grantTag": 8,
     "grantBytes": 304,
-    "requestMagicUnchanged": "XMG1"
+    "requestMagic": "XMG2"
   },
   "peerProof": {
     "container": "MIP1",

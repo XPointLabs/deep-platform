@@ -11,10 +11,11 @@ $resolverPath = Join-Path $repoRoot 'docs\architecture\CONTACT-RESOLVER-V1.md'
 $applicationPath = Join-Path $repoRoot 'docs\architecture\CONTACT-AND-GROUP-PROTOCOL-V1.md'
 $networkPath = Join-Path $repoRoot 'docs\architecture\XPOINT-NETWORK-V1.md'
 $registryPath = Join-Path $specRoot 'deep-crypto-v1.registry.json'
+$mailboxPath = Join-Path $specRoot 'mailbox-authorization-v3.registry.json'
 $executionTestPath = Join-Path $repoRoot 'deep-protocol\tests\Deep.Protocol.Tests\ContactV2\CurrentContactSecurityTests.cs'
 
 function Fail([string]$message) { throw "CONTACT-CODEC specification check failed: $message" }
-foreach ($path in @($schemaPath, $vectorsPath, $anchorPath, $resolverPath, $applicationPath, $networkPath, $registryPath, $executionTestPath)) {
+foreach ($path in @($schemaPath, $vectorsPath, $anchorPath, $resolverPath, $applicationPath, $networkPath, $registryPath, $mailboxPath, $executionTestPath)) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { Fail "missing $path" }
 }
 try {
@@ -22,6 +23,7 @@ try {
     $vectors = $vectorsRaw | ConvertFrom-Json
     $registry = Get-Content -LiteralPath $registryPath -Raw -Encoding UTF8 | ConvertFrom-Json
     $anchor = Get-Content -LiteralPath $anchorPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    $mailbox = Get-Content -LiteralPath $mailboxPath -Raw -Encoding UTF8 | ConvertFrom-Json
 } catch { Fail "invalid JSON: $($_.Exception.Message)" }
 if (-not ($vectorsRaw | Test-Json -SchemaFile $schemaPath)) { Fail 'vectors do not satisfy schema' }
 if ($anchor.artifact -ne 'contact-codec-v1.vectors.json') { Fail 'anchor artifact' }
@@ -31,7 +33,7 @@ if ($anchor.sha256 -cne $vectorDigest) { Fail 'anchor digest' }
 if ($vectors.status -ne 'FROZEN_TARGET_NOT_ACTIVE') { Fail 'vectors status' }
 $bounds = $vectors.canonicalBounds
 if ($bounds.XRA1.recordBytes -ne 550 -or $bounds.XRA1.signatureProjectionBytes -ne 478) { Fail 'XRA1 canonical bounds' }
-foreach ($retired in @('DCB1','DCR1','XMC1')) {
+foreach ($retired in @('DCB1','DCR1','XMC1','XMG1')) {
     if ($bounds.PSObject.Properties.Name -ccontains $retired -or
         @($vectors.primitives.target) -ccontains $retired -or
         @($vectors.records.target) -ccontains $retired) {
@@ -48,6 +50,22 @@ foreach ($kind in @('DMC2/2','DMC2/3')) {
 }
 if ($bounds.XMC2.failureRecordBytes -ne 206 -or $bounds.XMC2.successRecordBytes -ne 510) {
     Fail 'XMC2 exact selector-bound grant bounds'
+}
+if ($bounds.XMG2.recordBytes -ne 435) { Fail 'XMG2 exact route-bound request size' }
+$request = $mailbox.acquisitionRequest
+if ($mailbox.requestBindingDecision -cne 'DR-0102' -or
+    $request.magic -cne 'XMG2' -or $request.version -ne 1 -or $request.suite -cne '0x0201' -or
+    $request.bytes -ne 435 -or $request.tags -ne 12 -or
+    (@($request.fieldBytes) -join '|') -cne '16|32|32|32|32|1|38|32|8|8|32|64' -or
+    (@($request.signatureProjectionTags) -join '|') -cne '1|2|3|4|5|6|7|8|9|10|11' -or
+    $request.signatureProjectionBytes -ne 363 -or $request.signatureDomain -cne 'Deep/ContactResolver/V2/XMG2' -or
+    $request.exactRouteHashTag -ne 11 -or $request.exactRouteHashBytes -ne 32 -or
+    $request.exactRouteHashNonzero -cne $true -or $request.operationIdTag -ne 2 -or
+    $request.operationIdIndependentlyRandom -cne $true -or
+    $request.currentRequestMaximumSeconds -ne 120 -or $request.structuralRequestMaximumSeconds -ne 300 -or
+    $request.successResultRouteHashMustEqualRequest -cne $true -or $request.legacyReader -cne $false -or
+    $mailbox.result.requestMagic -cne 'XMG2' -or @($mailbox.retiredReject) -cnotcontains 'XMG1') {
+    Fail 'XMG2 machine route/signature contract'
 }
 if ($bounds.'DMC2/14'.minimumPayloadBytes -ne 4215 -or $bounds.'DMC2/14'.maximumPayloadBytes -ne 23367 -or
     $bounds.'DMC2/14'.minimumRecordBytes -ne 4497 -or $bounds.'DMC2/14'.maximumRecordBytes -ne 23649) { Fail 'DMC2/14 canonical bounds' }
@@ -88,7 +106,7 @@ foreach ($fixture in @($vectors.ed25519Fixtures)) {
 $hostileIds = @($vectors.hostileFixtures | ForEach-Object { [string]$_.id })
 $requiredHostileIds = @('xra1-u32-overflow','dmc2-route-closure-hash-mismatch',
     'xra1-header-reserved','xra1-noncanonical-tag','xra1-declared-overflow',
-    'xra1-operation-mask-zero','xra1-maximum-hellos-zero','xrr1-minimum-reader-zero')
+    'xra1-operation-mask-zero','xra1-maximum-hellos-zero','xrr1-minimum-reader-zero','xmg1-retired-request')
 if (($hostileIds -join '|') -cne ($requiredHostileIds -join '|') -or
     $hostileIds.Count -ne @($hostileIds | Select-Object -Unique).Count) {
     Fail 'hostile fixture ids'
