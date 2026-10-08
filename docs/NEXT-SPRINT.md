@@ -61,6 +61,47 @@ shipping packages или разрешением Release/main merge.
 Известный failed run допускает остановку с сохранением ошибки, входов и aborted
 terminal; это не full PASS. Независимые heavy gates не совмещать.
 
+### Локальный test-harness follow-up — 2026-10-08, без push
+
+До full теперь выполняется реальный `FixturePreflight=true`: signed windows,
+successor overlap, lease после setup/encrypted reopen, frozen vectors и
+необходимые native/DB providers. Root `scripts/TestGate.psm1` — единственный
+runner/input/TRX implementation; обязательный порядок и команды закреплены в
+[AGENTS](../AGENTS.md#canonical-local-test-invocation). Windows interpreter —
+PowerShell5.1; Protocol witnesses отдельно требуют7.5.4. Named skips/known
+FAIL классифицируются явно, interrupted/empty/missing evidence не становятся PASS.
+
+Новый Shared full **756/0/0 за36m03s**, preflight10.39s, весь runner37m37s.
+Относительно предыдущей оптимизации это ещё **1m50s (4.8%)** для full либо
+**1m30s (3.8%)** для полного runner. Основная польза preflight — предотвращение
+позднего повторного full, а не уменьшение криптографической работы; величина
+наблюдаемая, не SLO. [Exact observation](../deep-client-shared/docs/ARCHITECTURE.md#fixture-preflight-and-unified-runner-observation--2026-10-08).
+Node follow-up прошёл1364/0/0; Protocol сохранил2132/1/7 и actual native1/
+`FullAccepted=false` из-за известного MAU2 package boundary.
+
+Registry provider/preflight проходят. `registry-full-03` дал365/0/7/test0,
+но его qualifier1 сохранён: manifest захватил изменяемый generated
+`bin/.../artifacts/registry-state.json`. Это правило capture исправлено без
+исключения executable inputs. Последующие `registry-full-04`/`05` дали364/1/7:
+`ActualTlsProofAcquisitionAndSignedControlReachNodeConsumers` faulted MGR1 при
+проверке rollback clock в configured Program. Эти full не приняты; serial
+override не помог и не оставлен. Причина не объявлена доказанной и custody
+guards не ослаблены. Final `registry-full-06` прошёл365/0/7/all phase exits0,
+exact372 mappings/2637 inputs unchanged; это matching full финального runner.
+Прежние MGR1 FAIL сохранены: intermittent failure не объявлен исправленным
+из-за одного последующего PASS. Прежняя functional matrix выше не переписана.
+Оригинальные receipts/terminals сохраняются под `artifacts/test-gate-20261008/`
+в соответствующих repos; helper snapshots у разных запусков различаются.
+Финальные common contracts30/0 проверены в PowerShell5.1 и7.5.4; provider
+wrapper guards12/0 в обоих interpreter. Current Shared/Node/Protocol preflight
+прошли отдельно, а финальный reader независимо прочитал сохранённые full matrices.
+Это не переобозначение старых input snapshots как новой source qualification.
+CI preflight wiring изменено, удалённое выполнение не проверено. Этот follow-up
+не закрывает S01, shipping/package/platform или physical blockers.
+Локальные child commits: Shared `aab0aa4`, Node `c000dc1`, Protocol `2c8f1a5`,
+Registry `0f4b06f`, DevOps `1aaa835`; root содержит общий механизм и matching
+pointers. Push/publish/deploy/Release/main merge не выполнялись.
+
 Теперь — **known send/read floor retirement/dependency fences**, не S02 или
 параллельный feature batch. Sole retained read path нельзя удалять без закрытого
 receive/ACK или authenticated migration. Expiry, новый grant, cache miss и capacity
@@ -103,8 +144,9 @@ Source-cutover, uniformly Release shipping package graph, installed artifacts
 и физический сценарий — разные evidence boundaries.
 Matching functional source commits ранее запушены в release-candidate: Shared
 `a5c6d7d`, Protocol `e48484c`, Node `f3477d1`, Registry `7587fa5`.
-Shared test-throughput follow-up `f45e4b8` и соответствующий root pointer остаются
-локальными, без push; child trees чистые. Никакой Release/main merge этим не
+Shared test-throughput follow-up `f45e4b8` и новый test-harness batch выше с
+соответствующими root pointers остаются локальными, без push; child trees чистые.
+Никакой Release/main merge этим не
 выполнен. Следующий функциональный шаг — known send/read floor retirement
 и dependency fences, не повтор уже принятой Registry Windows qualification,
 не переход к S02 и не повтор неизменённых Shared/Node full gates.
