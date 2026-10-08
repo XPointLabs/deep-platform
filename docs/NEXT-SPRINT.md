@@ -11,13 +11,17 @@ FAIL — в связанных repo-checkpoints и Git, не второй backlo
 
 ## Единственная текущая подзадача
 
-**S01 — accepted-object horizon / retained-route Retrieve–ACK.**
+**S01 — known send/read floor retirement / dependency fences.**
 
-Закрыть единый producer/consumer путь чтения и transport ACK уже принятых
-объектов после смены route/selection epoch. Admission/grant expiry не заменяет
-object horizon; expired grant не разрешает новое admission. Current Store
-остаётся current-only. Не увеличивать TTL отдельно от codec/node/replay/
-tombstone/retained-route closure; не добавлять compatibility reader/fallback.
+Предыдущий accepted-object/retained-route batch квалифицирован на matching
+Windows source matrices ниже. Следующий единый пакет — deletion permission для
+known send/read floors: exact dependency index, irreversible namespace exclusion,
+held account lease, все8 protected roots/native SQL fence и crash recovery.
+Текущий owner намеренно pin-ит каждый known grant/catalog и каждый Retrieve;
+нельзя просто убрать эти запреты без доказанного закрытия зависимостей.
+Новый grant, expiry, пустой poll, отсутствие SQL rows или capacity не разрешают
+удаление floor либо последнего retained read/ACK path. Безопасное освобождение
+slots не remint-ит pending/unknown request и не увеличивает128/512.
 
 Sole semantics —
 [delivery transitions §8.4.1](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#841-delivery-transitions),
@@ -30,21 +34,26 @@ protected native read-back —
 closed issuer/result —
 [DR-0104](survival-program/decisions/DR-0104-current-retained-retrieve-issuance.md).
 
-Текущий coupled source batch связывает public Retrieve с двумя независимыми
+Принятый bounded coupled source batch связывает public Retrieve с двумя независимыми
 protected native stores/private issuer и actual Shared account/publication/
 holder custody. Typed native Retrieve/ACK использует original selected pair,
 current protected MGR1 и current authority/time; Store остаётся current-only.
 Sender, codecs, SQL inbox и native blob/tombstone retention согласованы с
-normative object horizon. Это ещё не runtime activation или закрытие S01.
+normative object horizon. Store остаётся current-only; expired grant не разрешает
+новое admission. Это ещё не runtime activation или закрытие S01.
 
 | Проверка текущего batch | Наблюдаемое evidence / оставшаяся часть |
 | --- | --- |
 | Shared | Full736/0/0, actual test/qualification exits0, exact mappings и1795 inputs unchanged. Source commit `a5c6d7d` запушен вместе с matching Protocol/Node; дерево чистое, не release acceptance. [Current source receipt](../deep-client-shared/docs/testing/s01-retained-owner-2026-10-07.md#current-full-source-qualification--2026-10-08) |
-| Node | Current full1354/0/0, build/test/qualification0, exact required cases и2188 inputs unchanged. Original fixture FAIL/aborted full-03 сохранены, expiry guards не ослаблены. Native source matrix принята, не shipping/device. [Native receipt](../xnode/docs/testing/s01-retained-private-forwarding-2026-10-07.md) |
+| Node | Matching full1363/0/0, build/test/qualification0, exact required mappings/2191 inputs unchanged;9 new path-security cases included. Uncached Windows path-check оптимизация не убирает guards/deadlines. [Current terminal](../xnode/docs/testing/s01-native-store-path-safety-2026-10-08.md#matching-full-and-docker-terminal) |
 | Protocol | Current full2132/1/7, actual test1; exact source qualification0/all2140 prior/all50 focused/3030 inputs unchanged. Initial TRX-counter qualifier FAIL сохранён; independent post-terminal correction подтверждает исходные receipts, не переписывает их. Actual graph1 MAU2, evidence mapping0; package/release FAIL остаётся. [Producer](../deep-protocol/docs/testing/s01-retained-retrieve-issuance-2026-10-07.md#matching-accepted-object-horizon-source-matrix--2026-10-08), [package boundary](../deep-protocol/docs/testing/s01-retained-route-contract-repin-2026-10-07.md) |
-| Registry | Matching build0, full363/1/7/test1/qualification1, exact371 cases/3715 inputs unchanged. Diagnostic full снова363/1/7: peer200/296 bytes/4.5s/uncancelled, native Store504/unknown после15s. Transport framing получен; точный local completion/budget failure ещё открыт, не доказанная quorum acceptance. Nonce-ledger case/3 crash modes Passed, не causal fix прежнего FAIL. [Private issuer](../deep-registry-api/docs/testing/s01-retained-private-issuer-2026-10-07.md#matching-horizon-full-and-native-store-diagnosis--2026-10-08), [nonce replay](../deep-registry-api/docs/testing/s01-exact-request-binding-2026-10-07.md) |
-| Docker | Required isolated external/no-mock smoke0 и multi-node0 выполнены после Node acceptance.6 исходных dev containers сохранены; disposable project resources удалены штатными scripts. Infrastructure PASS не доказывает retained delivery/readiness |
+| Registry | Matching build0/full364/0/7/test0/qualification0: exact371 cases/3718 inputs unchanged. Первый Store завершился за11s при прежнем15s budget; actual quorum/exact retry/Retrieve/ACK/cold reopen Passed. Current Windows source matrix принята вместе с Node/Docker evidence. Все прежние FAIL сохранены, exclusive historical cause и nonce-ledger causal fix не объявлены. [Private issuer](../deep-registry-api/docs/testing/s01-retained-private-issuer-2026-10-07.md#native-store-path-optimization-and-matching-full--2026-10-08), [nonce replay](../deep-registry-api/docs/testing/s01-exact-request-binding-2026-10-07.md) |
+| Docker | Fresh required isolated external/no-mock smoke0 и multi-node0 после matching Node terminal/independent qualification0;6 исходных dev containers сохранены. Disposable project resources удалены штатными scripts. Infrastructure PASS не доказывает retained delivery/readiness |
 | CI | Shared missing ContactAccept input исправлен pinned root checkout в source; bounded graph checks0, GitHub execution не проверен. Linux native ML-KEM provider gap и Protocol actual package/API/resource FAIL открыты |
+
+Этот qualified source пакет закоммичен и запушен: Node `f3477d1`, Registry
+`7587fa5`. Source-cutover receipts не являются qualification опубликованных
+shipping packages или разрешением Release/main merge.
 
 Рабочий цикл: законченный функциональный пакет → build/targeted tests →
 пакет исправлений → mandatory full/connected gate → раздельные child commits
@@ -52,8 +61,8 @@ normative object horizon. Это ещё не runtime activation или закр�
 Известный failed run допускает остановку с сохранением ошибки, входов и aborted
 terminal; это не full PASS. Независимые heavy gates не совмещать.
 
-После приёмки этого пакета — **known send/read floor retirement/dependency fences**,
-не параллельная задача. Sole retained read path нельзя удалять без закрытого
+Теперь — **known send/read floor retirement/dependency fences**, не S02 или
+параллельный feature batch. Sole retained read path нельзя удалять без закрытого
 receive/ACK или authenticated migration. Expiry, новый grant, cache miss и capacity
 не являются deletion permission. Runtime renewal/cleanup остаётся S04.
 Scheduler/AppAck/UI S07 и independent files/groups/calls сейчас не открывать.
@@ -113,7 +122,7 @@ Seed-машины — production, не UAT; владелец разрешил т
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
 | --- | --- | --- |
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
-| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Prefix owner qualified на full678; outbox-only owner/recovery — full687; closed unused Deposit retirement — full706. Recipient receipt obligation — full726/0/0, process/qualification terminal0, all259 current/all706 prior cases Passed,171/171 inputs exact. FAIL receipts preserved. Единственный следующий блок — accepted-object/retained-route contract; known-floor retirement остаётся после него. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
+| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Prefix/outbox-only/unused Deposit/recipient obligation slices qualified на своих matrices. Accepted-object/retained-route matching Windows source batch квалифицирован выше; Protocol shipping FAIL сохранён по DR-0095. Следующий блок — known send/read floor retirement/dependency fences. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
 | S02 | Current receiver/coordinator и guarded Program wiring реализованы; не принят | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md). Current observer/provisioning, whole-host recovery, retained-route и real selected-entry boundaries |
 | S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
 | S04 | Заблокирован оставшимися S01 contracts | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
@@ -141,7 +150,8 @@ Seed-машины — production, не UAT; владелец разрешил т
   Новый source increment согласует codec/node с product horizon и убирает
   sender cap by original grant; current Shared/Node source matrices приняты,
   matching Protocol matrix квалифицирована с сохранённым shipping FAIL;
-  Registry connected qualification ещё открыта.
+  Registry connected Windows source qualification закрыта; shipping/owned
+  clients и known-floor/dependency closure остаются открыты.
   Предыдущие29-case Shared и429/1 native receipts его не покрывают.
   Normative horizon закрывается вместе с replay/retained-route read/ACK; старый
   pending/unknown intent нельзя remint или evict для освобождения места.
