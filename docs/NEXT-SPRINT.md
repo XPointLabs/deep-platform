@@ -44,7 +44,7 @@ normative object horizon. Store остаётся current-only; expired grant н�
 
 | Проверка текущего batch | Наблюдаемое evidence / оставшаяся часть |
 | --- | --- |
-| Shared | Full736/0/0, actual test/qualification exits0, exact mappings и1795 inputs unchanged. Source commit `a5c6d7d` запушен вместе с matching Protocol/Node; дерево чистое, не release acceptance. [Current source receipt](../deep-client-shared/docs/testing/s01-retained-owner-2026-10-07.md#current-full-source-qualification--2026-10-08) |
+| Shared | Functional batch `a5c6d7d` ранее квалифицирован736/0/0 и запушен. Test-throughput follow-up `f45e4b8` локальный, без push: full751/0/0 за37m53s, actual build/test/qualification0, exact prior736+new15 и1794 inputs unchanged. Два isolated methods, scoped crash hooks; assertions/crypto/deadlines сохранены. Не release acceptance. [Functional receipt](../deep-client-shared/docs/testing/s01-retained-owner-2026-10-07.md#current-full-source-qualification--2026-10-08), [test execution](../deep-client-shared/docs/ARCHITECTURE.md#production-test-execution) |
 | Node | Matching full1363/0/0, build/test/qualification0, exact required mappings/2191 inputs unchanged;9 new path-security cases included. Uncached Windows path-check оптимизация не убирает guards/deadlines. [Current terminal](../xnode/docs/testing/s01-native-store-path-safety-2026-10-08.md#matching-full-and-docker-terminal) |
 | Protocol | Current full2132/1/7, actual test1; exact source qualification0/all2140 prior/all50 focused/3030 inputs unchanged. Initial TRX-counter qualifier FAIL сохранён; independent post-terminal correction подтверждает исходные receipts, не переписывает их. Actual graph1 MAU2, evidence mapping0; package/release FAIL остаётся. [Producer](../deep-protocol/docs/testing/s01-retained-retrieve-issuance-2026-10-07.md#matching-accepted-object-horizon-source-matrix--2026-10-08), [package boundary](../deep-protocol/docs/testing/s01-retained-route-contract-repin-2026-10-07.md) |
 | Registry | Matching build0/full364/0/7/test0/qualification0: exact371 cases/3718 inputs unchanged. Первый Store завершился за11s при прежнем15s budget; actual quorum/exact retry/Retrieve/ACK/cold reopen Passed. Current Windows source matrix принята вместе с Node/Docker evidence. Все прежние FAIL сохранены, exclusive historical cause и nonce-ledger causal fix не объявлены. [Private issuer](../deep-registry-api/docs/testing/s01-retained-private-issuer-2026-10-07.md#native-store-path-optimization-and-matching-full--2026-10-08), [nonce replay](../deep-registry-api/docs/testing/s01-exact-request-binding-2026-10-07.md) |
@@ -101,9 +101,12 @@ S00 принят как source baseline на своих frozen inputs:
 [Registry](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md#current-source-baseline--2026-10-05).
 Source-cutover, uniformly Release shipping package graph, installed artifacts
 и физический сценарий — разные evidence boundaries.
-Matching source commits запушены в release-candidate: Shared `a5c6d7d`,
-Protocol `e48484c`, Node `2804023`; child trees чистые. Никакой Release/main merge
-этим не выполнен. Текущий следующий шаг этого batch — диагностика Registry FAIL,
+Matching functional source commits ранее запушены в release-candidate: Shared
+`a5c6d7d`, Protocol `e48484c`, Node `f3477d1`, Registry `7587fa5`.
+Shared test-throughput follow-up `f45e4b8` и соответствующий root pointer остаются
+локальными, без push; child trees чистые. Никакой Release/main merge этим не
+выполнен. Следующий функциональный шаг — known send/read floor retirement
+и dependency fences, не повтор уже принятой Registry Windows qualification,
 не переход к S02 и не повтор неизменённых Shared/Node full gates.
 Raw artifact scan ранее fail-closed на двух Android PNGs; selected source scan
 не квалифицирует их или полный release upload. FAIL receipts не удалять.
