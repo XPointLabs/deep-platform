@@ -64,3 +64,24 @@ wrong role/route/domain/store/key, absent history/custody, changed evidence,
 callback expiry/rollback/boot/cancel, lost replies and cold/crash exact retry.
 Source tests alone do not close S01, shipping graph or device E2E. No production
 reset, key remint, GitHub Release or main merge follows from this decision.
+
+## Matching object-retention implementation fence
+
+This accepted source cutover also authorizes aligning the existing MEO1 TTL and
+PRQ2 retention bounds with the sole product matrix in
+[RETENTION-AND-RECOVERY](../../architecture/RETENTION-AND-RECOVERY-V1.md#1-service-and-protocol-retention)
+and DEEP-CRYPTO §13. No magic, layout, signing purpose or crypto suite changes.
+The retained-read machine registry already freezes that object horizon. Current
+NET/PMA2/role/grant validity remains a separate admission condition, not a cap
+on an accepted object's signed expiry or a permission for stale Store.
+
+Current native Store and ACK must derive the same private replay/mutation
+retention bound from the exact signed object expiry, not whichever network
+authority happens to be current. The existing replay grace stays unchanged.
+Exact retry cannot extend expiry or rebind an object. Consumer/package pins must
+be rebuilt and qualified together. Old native records whose private retention
+bound was authority-end-derived are incompatible with the new ACK invariant;
+they fail closed, with no adapter, migration, silent deletion or automatic reset.
+Any explicit data reset remains a separate operator action; node identity,
+signing keys, protected authority history and production volumes are untouched
+by the source change. Previously passing receipts do not qualify this increment.

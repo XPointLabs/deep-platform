@@ -1,449 +1,113 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-07**. Branch: `release-candidate/prod-20260909`.
-Единственный DAG и критерии приёмки:
+Обновлено: **2026-10-08**. Branch: `release-candidate/prod-20260909`.
+Единственный DAG и критерии приёмки —
 [IMPLEMENTATION-PLAN-V1](architecture/IMPLEMENTATION-PLAN-V1.md).
 Основание: [аудит](architecture/ARCHITECTURE-AUDIT-2026-10-03.md),
 [DR-0082](survival-program/decisions/DR-0082-integration-first-delivery-baseline.md)
 и [DR-0095](survival-program/decisions/DR-0095-baseline-and-shipping-gate-separation.md).
-Здесь незавершённая работа, не хронология и не второй план.
+Здесь только текущая очередь. Подробные команды, commits, manifests и сохранённые
+FAIL — в связанных repo-checkpoints и Git, не второй backlog.
 
-## Единственная следующая подзадача
+## Единственная текущая подзадача
 
-**S01 — accepted-object horizon / retained-route Retrieve–ACK contract.**
+**S01 — accepted-object horizon / retained-route Retrieve–ACK.**
 
-Следующий единственный переход: закрыть producer/consumer authority для чтения
-и transport ACK уже принятых объектов после смены route/selection epoch.
-Admission/grant expiry не заменяет object horizon; expired grant не становится
-новым admission. Сначала проверяется фактическая граница current-only API и
-фиксируется закрытый контракт, затем его producer и consumers. Не увеличивать
-TTL отдельно от codec/node/replay/tombstone/retained-route closure.
-Работа ограничена S01 contract/API; runtime lifecycle остаётся S04.
-Retirement известных send/read floors — следующая, не параллельная подзадача.
-Отправка AppAck, scheduler и UI-статусы S07 пока не открываются.
-Sole semantics — [§8.4.1](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#841-delivery-transitions)
-и [§8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
-Independent files/groups/calls до этих prerequisites не открываются.
+Закрыть единый producer/consumer путь чтения и transport ACK уже принятых
+объектов после смены route/selection epoch. Admission/grant expiry не заменяет
+object horizon; expired grant не разрешает новое admission. Current Store
+остаётся current-only. Не увеличивать TTL отдельно от codec/node/replay/
+tombstone/retained-route closure; не добавлять compatibility reader/fallback.
 
-Source checkpoint внутри этой же подзадачи: Protocol
-`550de0109677d18739c743af13047582e0006f3e` по
-[DR-0099](survival-program/decisions/DR-0099-retained-mailbox-read-selection.md).
-Closed host retained-selection/MGR1 API реализованы; current Store не ослаблен,
-expired grants не восстанавливаются. Focused194/0/0 terminal0;194 unique
-results/definitions/test/execution IDs mapped Passed. Registry gate terminal0,
-reviewed source/hash repin без wire/domain allocations. Current full2057/1/7
-terminal1: все194 required exact Passed,701/701 inputs unchanged; unchanged
-MAU2 actual-package FAIL и семь исходных skips сохранены. Post-terminal comparison
-с current prior receipts сохраняет2024 distinct case-sensitive names; correction
-obsolete comparator и прежняя MemberData metadata shape явно описаны в receipt.
-Это local source qualification, не green actual package/API/resource acceptance.
-[Границы, команды и сохранённые FAIL](../deep-protocol/docs/testing/s01-retained-mailbox-read-2026-10-07.md).
-Единственный следующий шаг — закрытая renewed retained Retrieve issuance/holder
-authority с actual protected route/capability lookup. Typed node Retrieve–ACK и
-object horizon остаются внутри
-этой же незавершённой подзадачи; не переходить к S02 или known-floor cleanup.
+Sole semantics —
+[delivery transitions §8.4.1](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#841-delivery-transitions),
+[boundedness §8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness)
+и [retained issuance §3.7.3](architecture/CONTACT-RESOLVER-V1.md#373-current-retained-retrieve-issuance).
+Связанные решения — DR-0099–0104; exact route request —
+[DR-0102](survival-program/decisions/DR-0102-exact-mailbox-request-route-binding.md),
+protected native read-back —
+[DR-0103](survival-program/decisions/DR-0103-protected-retained-route-document.md),
+closed issuer/result —
+[DR-0104](survival-program/decisions/DR-0104-current-retained-retrieve-issuance.md).
 
-Внутри проверки actual lookup исправлен partial-GC defect в Node
-`27f8c5cf88ba1d48678353c7417f23f910e91f11`: неверный XUR checkpoint теперь
-отклоняется до удаления DCR predecessors в памяти. Focused14/0/0 terminal0;
-current full1223/0/0 terminal0. Exact mappings сохраняютall1220 prior/all14
-required cases;1066 captured inputs unchanged. Qualification0 после явного
-исправления снимка ещё не собранного ProfileGenerator: его executed binary
-пинован post-terminal, не объявлен pre-run frozen. После перезапуска Docker
-оператором required external/no-mock smoke завершён terminal0: fixture validation,
-10 infrastructure tests и все4 hard/5 soft runtime checks Passed; Xray running,
-mocked=false. Изолированный Compose cleanup сохранил6 исходных dev-контейнеров.
-Оба mandatory Node gate приняты только для этого GC increment;
-это не current issuer/Release package qualification, physical E2E,
-не retained issuance или завершение текущей подзадачи.
-[Границы и сохранённый FAIL](../xnode/docs/testing/s01-retained-lookup-2026-10-07.md).
+Текущий coupled source batch связывает public Retrieve с двумя независимыми
+protected native stores/private issuer и actual Shared account/publication/
+holder custody. Typed native Retrieve/ACK использует original selected pair,
+current protected MGR1 и current authority/time; Store остаётся current-only.
+Sender, codecs, SQL inbox и native blob/tombstone retention согласованы с
+normative object horizon. Это ещё не runtime activation или закрытие S01.
 
-Следующий source candidate внутри этой же S01-подзадачи: Protocol
-`7bc90f0e3b78c103d1108516d3879d458a0e402b` по
-[DR-0100](survival-program/decisions/DR-0100-retained-mailbox-read-request-context.md).
-Closed current Retrieve request/time context перед retained lookup реализован:
-actual host/PMA2/time, holder proof и exact PMT2 из protected lineage; не capability
-ownership, historical route authentication или issuance. Final coupled225/0/0
-terminal0 (all194 prior +31 new cases); restore и Debug/Release solution builds
-0 warnings/errors.
-Registry source/hash mapping принят без wire/domain/local-generation allocations.
-Current full2088/1/7 terminal1: все225 current required exact Passed, все881 inputs
-и семь Debug assemblies unchanged; все2063 prior display names сохранены.
-Matrix qualification0 не отменяет unchanged MAU2 actual-package FAIL и семь skips;
-production graph отдельно terminal1/MAU2. Это local source qualification только
-request/time prerequisite, не green package gate или приёмка текущей подзадачи.
-[Команды и точные receipts](../deep-protocol/docs/testing/s01-retained-read-request-2026-10-07.md).
-Actual bounded lookup, renewed issuance,
-owned holder/request custody и node Retrieve–ACK остаются тем же единственным
-следующим переходом. S02/S04 lifecycle и independent files/groups не открываются.
+| Проверка текущего batch | Наблюдаемое evidence / оставшаяся часть |
+| --- | --- |
+| Shared | Full736/0/0, actual test/qualification exits0, exact mappings и1795 inputs unchanged. Source commit `a5c6d7d` запушен вместе с matching Protocol/Node; дерево чистое, не release acceptance. [Current source receipt](../deep-client-shared/docs/testing/s01-retained-owner-2026-10-07.md#current-full-source-qualification--2026-10-08) |
+| Node | Current full1354/0/0, build/test/qualification0, exact required cases и2188 inputs unchanged. Original fixture FAIL/aborted full-03 сохранены, expiry guards не ослаблены. Native source matrix принята, не shipping/device. [Native receipt](../xnode/docs/testing/s01-retained-private-forwarding-2026-10-07.md) |
+| Protocol | Current full2132/1/7, actual test1; exact source qualification0/all2140 prior/all50 focused/3030 inputs unchanged. Initial TRX-counter qualifier FAIL сохранён; independent post-terminal correction подтверждает исходные receipts, не переписывает их. Actual graph1 MAU2, evidence mapping0; package/release FAIL остаётся. [Producer](../deep-protocol/docs/testing/s01-retained-retrieve-issuance-2026-10-07.md#matching-accepted-object-horizon-source-matrix--2026-10-08), [package boundary](../deep-protocol/docs/testing/s01-retained-route-contract-repin-2026-10-07.md) |
+| Registry | Linked source build0. Original connected full363/1/7 и protected nonce-ledger full348/1/7 открыты; isolated passes не устанавливают причину. [Private issuer](../deep-registry-api/docs/testing/s01-retained-private-issuer-2026-10-07.md), [nonce replay](../deep-registry-api/docs/testing/s01-exact-request-binding-2026-10-07.md) |
+| Docker | Required isolated external/no-mock smoke0 и multi-node0 выполнены после Node acceptance.6 исходных dev containers сохранены; disposable project resources удалены штатными scripts. Infrastructure PASS не доказывает retained delivery/readiness |
+| CI | Shared missing ContactAccept input исправлен pinned root checkout в source; bounded graph checks0, GitHub execution не проверен. Linux native ML-KEM provider gap и Protocol actual package/API/resource FAIL открыты |
 
-Actual bounded Node custody/lookup qualified source increment по
-[DR-0101](survival-program/decisions/DR-0101-retained-mailbox-route-custody.md)
-реализован: atomic verified XPA publication, independent private route/domain
-digest, bounded admission horizon, typed current request/time lookup, snapshot
-recheck и conflict вместо latest-route угадывания. Public Resolve/Deposit unchanged;
-private generation5 rejects4, без production reset. Release solution build0
-warnings/errors; focused21/0/0 terminal0. Новый isolated mandatory Docker smoke
-terminal0,10 инфраструктурных tests и4 hard/5 soft checks; исходные6 dev containers
-сохранены. Оригинальный full Node native run завершён terminal0:1241/0/0
-(Integration884, ProfileGenerator107, Unit250); qualifier terminal0 подтвердил
-all1223 prior/all21 focused exact cases и834 unchanged prelaunch inputs.
-Повторный full не запускался, expectations не менялись.
-[Точные результаты и hashes](../xnode/docs/testing/s01-retained-route-custody-2026-10-07.md).
-Normative registry repin не меняет allocations; current Protocol full2088/1/7
-terminal1 и отдельный production graph/MAU2 FAIL сохранены,
-[receipts](../deep-protocol/docs/testing/s01-retained-route-contract-repin-2026-10-07.md).
-Это не protected rollback/provenance, renewed issuer, usable successor
-disambiguation, signed elapsed-history/horizon или node Retrieve–ACK closure.
-S01 и последующие runtime stages остаются не приняты; процент не повышается.
-Проверка реальных callers подтвердила, что XMG1 не подписывает exact route hash,
-а current139-byte replica evidence и issuer требуют live current closure.
-Следующий batch связывает exact retained selection, protected native read-back,
-two-store evidence и renewed issuer/owned request/result consumers; нельзя
-выдавать private lookup как Current evidence или менять смысл expiry на readUntil.
-Новый wire/domain этой проверкой не выделен.
+Рабочий цикл: законченный функциональный пакет → build/targeted tests →
+пакет исправлений → mandatory full/connected gate → раздельные child commits
+и разрешённый push → root pointers. Не запускать full после каждой правки файла.
+Известный failed run допускает остановку с сохранением ошибки, входов и aborted
+terminal; это не full PASS. Независимые heavy gates не совмещать.
 
-Текущий согласованный source batch внутри этой подзадачи —
-[DR-0102](survival-program/decisions/DR-0102-exact-mailbox-request-route-binding.md):
-XMG2 вместо XMG1, exact route hash в holder-signed tag11 и новый purpose.
-Author/restore, native holder scope, current issuer, result verification и private
-retained lookup обновляются совместно; старого reader/alias/migration нет.
-Current vectors удаляют положительный XMG1 и выполняют новую holder signature;
-старый magic остаётся лишь отрицательным input. Проверка двух фактически
-подписанных closures с одинаковыми PMT/PMS/capability изолирует новое binding;
-это не admitted publication successor или retained issuance evidence.
-Final focused Protocol110/0/0, Shared6/0/0, Node60/0/0 и Registry17/0/0;
-все четыре solution build0 warnings/errors. Mandatory isolated external/no-mock
-Docker smoke0:10 инфраструктурных tests,4 hard/5 soft checks,7 healthy services;
-6 исходных dev containers сохранены. Protocol original full2091/1/7 terminal1,
-post-terminal qualification0 сохраняет все2096 prior executions и2008 inputs;
-unchanged MAU2 package FAIL/7 skips и отдельный graph FAIL не отменены.
-Registry first full335/14/7 terminal1 сохранён: DB guard требовал deep_s00,
-не route_test. Official isolated provider повторил без rebuild:349/0/7 terminal0;
-qualification0, all355 prior outcomes,2145 immutable inputs unchanged. Один
-overcaptured test-state JSON изменился при штатном read/write; это отдельно
-отмечено, не объявлено immutable или доказательством fixture isolation.
-Node original full1242/0/0 terminal0; qualifier0 сохраняет all1241 prior cases
-и2337 immutable inputs. Оригинальный Shared full завершён terminal0:726/0/0;
-qualification0 сохраняет all726 prior cases и2050 immutable inputs.
-Bounded XMG2 source slices qualified; это не закрытие S01 или shipping gate.
-Четыре завершённых repo slices зафиксированы локально: Protocol`53deca6`,
-Shared`1f43bc0`, Registry`d6a0c8b`, Node`f993017`.
-Registry CI configuration/evidence follow-up: `e694282`.
-Source commits и root normative checkpoint `c284062` запушены в release-candidate.
-Matched Protocol CI repin `b57051a` использует этот exact cross-protocol snapshot;
-approved DNP1 snapshot не менялся. Commits не означают shipping acceptance.
-Перед push обнаружен такой же CI provider drift: оба Registry workflow использовали
-deep_ci вместо strict deep_s00. Только service/health/provider configuration
-выравнивается с уже qualified локальным lane; assertions/runtime source unchanged.
-Bounded scalar/connection checks0. Exact-HEAD GitHub Registry CI
-[37599715974](https://github.com/XPointLabs/deep-registry-api/actions/runs/37599715974):
-restore/build passed, Linux full352/4/0 terminal1 — четыре connected client-prekey
-tests не имеют release-approved ML-KEM asset для Linux RID. Это platform/asset
-gap, не Windows WriteState failure; tests не пропущены/подменены, image publish
-skipped. Windows native349/0/7 не квалифицирует эти Linux crypto paths.
-Root documentation CI
-[37599834121](https://github.com/XPointLabs/deep-platform/actions/runs/37599834121)
-Passed. Protocol CI
-[37599786798](https://github.com/XPointLabs/deep-protocol/actions/runs/37599786798)
-остановился на known actual package/API/resource graph FAIL; gate не обходился.
-Дополнительный Registry full с SCRAM/PGPASSWORD:348/1/7 terminal1.
-Новый UnauthorizedAccessException при protected nonce-ledger WriteState на
-publication replay сохранён и расследуется, не объявлен baseline или исправленным.
-Один bounded repeat всех трёх crash modes на тех же binaries/SCRAM прошёл3/0/0;
-отказ не воспроизведён, причина не установлена, исходный full FAIL остаётся открытым.
-[Protocol receipt](../deep-protocol/docs/testing/s01-exact-request-binding-2026-10-07.md),
-[Registry receipt](../deep-registry-api/docs/testing/s01-exact-request-binding-2026-10-07.md),
-[Shared receipt](../deep-client-shared/docs/testing/s01-exact-request-binding-2026-10-07.md),
-[Node receipt/smoke](../xnode/docs/testing/s01-exact-request-binding-2026-10-07.md).
-Protected rollback/read-back, обе retained attestations, renewed issuer/owned
-holder и node Retrieve–ACK/object horizon остаются тем же следующим переходом.
-S01 не закрыт; S02/S04 и physical0/4 не активированы.
-
-Продолжение того же business batch по
-[DR-0103](survival-program/decisions/DR-0103-protected-retained-route-document.md):
-native checkpoint защищает exact generation5 resolver document, independent
-node/network enrollment, one pending transition и captured read/serialize bytes.
-Native DID2 composition требует protected owner без fallback; explicit
-`contact-resolver-enroll` проверяет actual source/history/root/PMA2/time/signing
-custody до и после fresh enrollment. No startup import/reset/key generation.
-Final coupled196/0/0 и neutral resolver15/0/0 terminal0; real signed inputs,
-persisted key ring, cold/crash/rollback/purpose/scope/ABA/orphan/DI/command boundaries.
-Новый isolated external/no-mock smoke terminal0, исходные6 dev containers/data
-сохранены. Оригинальный полный Native gate завершён terminal0:1294/0/0
-(Integration936, ProfileGenerator107, Unit251). Post-terminal qualifier0:
-all1242 prior/all211 final focused exact executions и2351 unchanged inputs.
-Coupled02 harness FAIL195/1/0 сохранён (ошибка типа ожидаемой Windows exception).
-Принят только native custody/composition slice, не весь этап: two-store retained evidence, renewed issuer/owned holder,
-typed Retrieve–ACK и object horizon остаются одним текущим S01 closure.
-[Точный candidate receipt](../xnode/docs/testing/s01-protected-retained-route-2026-10-07.md).
-Mechanical Protocol source-hash repin: restore/build0 warnings/errors,
-strict registry0, original full2091/1/7 terminal1. Standalone qualifier0
-сохраняет все2099 prior exact executions и2012 unchanged inputs;
-known MAU2 package FAIL/7 skips и отдельный graph FAIL не отменены.
-Evidence ownership0 — mapping, не executed package approval.
-[Protocol repin receipt](../deep-protocol/docs/testing/s01-protected-retained-route-repin-2026-10-07.md).
-Проверенные source commits Node`4aae71d`, Protocol`fc874c7` запушены
-в release-candidate; это не приёмка shipping/physical paths.
-CI repin Protocol`f3051e8` привязан к нормативному root snapshot`7ad7594`;
-approved DNP1 snapshot не менялся. Новый GitHub run ещё не квалифицирован.
-Docker Linux engine после перезапуска доступен (28.3.3). GitHub CI предыдущего
-Node checkpoint `f993017` завершился success, run37599716229; это не проверка
-нового candidate. Current Node run37612271733 (`4aae71d`) ещё in_progress:
-unit job success, integration job выполняется. Root run37612440895
-(`708ce6f`) success. Protocol run37612377828 (`f3051e8`) завершён failure
-на actual assembly/resource/public API graph; MAU2 blocker подтверждён,
-не отменён локальной matrix qualification.
-Shared run37599717431 (`1f43bc0`) завершён failure: Windows723/3/0,
-Linux portable595/79/0. Три Windows failures — actual ContactAccept custody
-tests: CI не получает требуемый contact-codec-v1.vectors.json из root docs,
-loader fail-closed с FileNotFoundException. Это CI input gap, не product pass.
-Linux failures дополнительно включают PlatformNotSupportedException в
-current ML-KEM-dependent paths; existing portable filter не закрывает provider
-gap. Фильтры/assertions не ослаблены, CI failures остаются открытыми.
-Общая приёмка по-прежнему1/14 (~7%), physical0/4, release не готов.
-
-Protocol producer внутри того же S01 qualified и запушен: `6da94ba`
-по [DR-0104](survival-program/decisions/DR-0104-current-retained-retrieve-issuance.md).
-Closed current retained Retrieve issuance/result и bounded holder request APIs
-проверяют original protected-history PMT2, обе current descriptor-key подписи,
-current issuer/time и exact route; не создают native owner/publication custody.
-Final focused207/0/0; full2132/1/7 terminal1; qualification0 сохраняет all2099
-prior/all207 focused и3023 immutable inputs. MAU2 package/graph FAIL и7 skips
-сохранены. Registry/machine/docs gates0; root guards28/0, включая проверку actual
-Node enum: private read RPC18, не занятый prekey staging RPC12.
-[Точные receipts и границы](../deep-protocol/docs/testing/s01-retained-retrieve-issuance-2026-10-07.md).
-CI получает exact root normative snapshot`9f6d123`; нового CI pass пока нет.
-Actual Node protected read-back/signing вокруг callbacks и две независимые
-реплики через peer HTTP реализованы как следующий source candidate, не принятый
-полный S01. Затем — private issuer replay и owned Shared installation;
-typed Retrieve–ACK/object horizon остаются тем же S01.
-Это source checkpoint, не runtime activation; процент приёмки не повышается.
-
-Native Node checkpoint `1c1f7cf`: private RPC18/receipt7 проверяют actual current source,
-descriptor signing custody, closed fresh Retrieve XMG2 и независимый protected
-document/root до и после подписи. Не current139-byte cross-feed и не подпись
-скопированных route/hash. Final Release focused147/0/0 terminal0 (36 новых
-executions); Release solution0 warnings/errors. Actual две protected реплики,
-TLS/H2, cold reopen, lost read/signature replies, отсутствующая admission,
-подмена каждого tuple field, source/time/cancel/root/document/revision loss и
-hostile bounded codec проверены. Public AcquireMailboxGrant caller ещё current;
-Registry/held Shared/elapsed-route/typed Retrieve–ACK не объявлены замкнутыми.
-Обязательные isolated external/no-mock smoke и multi-node rehearsal terminal0;
-последний доказывает real Xray и intentional privacy503 без authority, не
-retained delivery. Шесть исходных dev containers/data сохранены.
-[Exact candidate receipt](../xnode/docs/testing/s01-retained-native-peer-2026-10-07.md).
-Original full Node завершён terminal0:1330/0/0 (Integration972/Profile107/Unit251).
-Отдельный qualifier terminal0: exact union all1294 prior+36 new/all147 focused,
-complete execution mappings и1462 captured source/binary inputs unchanged.
-Исходный qualifier terminal1 ожидал1331 из-за ручной ошибки подсчёта; он и
-original manifest сохранены, новый qualifier проверяет точный набор, не ослабляет
-assertions и не заменяет full. Root guards30/0/0 включают отдельно
-wrong-owner и duplicate-allocation negative fixtures; initial14/2 сохранён как
-fixture diagnostic mismatch. Нормативные machine inputs/production guards
-не ослаблены. Приёмка остаётся1/14 (~7%), physical0/4, релиз не готов.
-Previous Node`4aae71d` CI run37612271733 завершил build/integration/Linux artifact
-jobs success; это не текущая candidate matrix. Current Protocol`6da94ba`
-run37617830920 failure на exact-three actual graph: production retired MAU2.
-ML-DSA run37617830796 success не переквалифицирует основной graph FAIL.
-
-Matched private Registry/Node source candidate внутри того же S01
-зафиксирован в Registry`9ffe51c` и Node`8607c60`:
-разделяет обязательные evidence kind/horizon и forwarding purposes. Actual
-current Registry host проверяет retained136-byte evidence; permanent winner
-scope связывает kind/horizon/current authority, без remint/reset/compatibility.
-Release source builds0 warnings/errors; focused Registry29/0/0 и Node157/0/0.
-Registry original full363/1/7 terminal1: existing configured native first Store
-вернул OutcomeUnknownAfterForward; exact frozen repeat1/0/0 не устанавливает
-причину/исправление и не отменяет FAIL. Matrix check сохраняет all356 prior+15
-new, all29 required Passed,7 exact skips и3703 immutable inputs unchanged;
-FullAccepted=false/terminal1. Node full-after-capture1339/1/0 terminal1:
-existing observed revocation refresh достиг30-second deadline вместо64-step
-IOException; frozen repeat обоих случаев2/0/0 за8s не отменяет FAIL. Exact matrix
-сохраняет all1330 prior+10 new/all157 focused Passed и3703 unchanged inputs;
-FullAccepted=false/terminal1. Причина роста wall time не установлена. Premature
-Node launch до capture остановлен terminal-1, не принят и не заменяет оригинал.
-Required isolated no-mock smoke/multi-node0 сохранили6 исходных dev containers;
-это инфраструктура, не retained delivery. Public node caller ещё current-only;
-actual protected peer/issuer join, held Shared owner/result, elapsed route и typed
-Retrieve–ACK/object horizon остаются здесь же. S01 не закрыт;1/14 (~7%),
-physical0/4, релиз не готов.
-[Registry receipt](../deep-registry-api/docs/testing/s01-retained-private-issuer-2026-10-07.md),
-[Node receipt](../xnode/docs/testing/s01-retained-private-forwarding-2026-10-07.md).
-
-## Принятое recipient receipt obligation — не реализовывать повторно
-
-Source checkpoint: Shared
-`6e9d2b3c5d111f596291dcc4ce1d96a1c1f12c4a` (producer `aaf233b`).
-Atomic inbox/recipient receipt obligation и bounded owned local reader
-реализованы. Native focused53/0/0 terminal0 проверил receive/reopen и сохранение
-work после ordinary-outbox cleanup; final structural/schema58/0/0 terminal0
-проверил уникальные case labels и отказ schema8 без repair. Actual solution и
-non-test Production builds0 warnings/errors.
-[Consumer mapping](../deep-client-shared/docs/architecture/owned-application-receipt-obligations.md),
-[точные receipts и сохранённые FAIL](../deep-client-shared/docs/testing/s01-application-receipt-obligations-2026-10-06.md).
-Первый full остановлен после stale schema8 fixture, без объявления приёмки;
-fixture исправлен. Current full принят:726/0/0, observed process terminal0 и
-qualification terminal0;726 unique cases,259 current required,
-706 prior cases (705 unchanged names + один явно переименованный raw-key case),
-171/171 frozen inputs unchanged. Independent terminal readback подтвердил exact
-Passed mapping всех results/definitions/test/execution IDs без missing/extra.
-Receipt SHA256 `30708DE6560EBCDE227A2D604C2220CFAE930982E0031601A8789DC92886667A`;
-manifest SHA256 `4E7A35CED642E3D9261B6F023FA6259910F375FE2FF5D7ECC26B2C67BF4556D9`.
-Acceptance commit `843539cc24770e77cf99d7597657d75c7bc6f968` pushed.
-Принят только этот блок, не весь S01, scheduler или physical E2E.
-S02 остаётся закрыт до остальных S01 closures.
-
-## Принятый unused Deposit retirement profile — не реализовывать повторно
-
-Текущий source checkpoint: Shared `25204bfa68a200f3ce8b2e4b53a4b05e11226d51`.
-Actual held producer и closed recovery/abort profile для одного closed unused
-Deposit acquisition без dependencies реализованы; NativeFence guard связан с
-complete account/device binding и существующим floor. Build0 warnings/errors,
-corrected focused39/0/0 terminal0: encrypted journal reopen, пять handover,
-обе cancellation boundaries, changed/missing bindings/guards/floor/staging и
-отказ удаления known/unresolved Retrieve custody без staging.
-[Точные границы и сохранённые FAIL](../deep-client-shared/docs/testing/s01-closed-deposit-retirement-2026-10-06.md).
-Current full завершён и принят:706/0/0, observed process terminal0;
-706 unique cases, все200 current required иall687 prior names mapped Passed,
-62/62 frozen inputs unchanged. Receipt SHA256
-`B3184583AF4062BB220A5AE5BF37D1DAB8BAFC09F1367A6956C8B582ECD33987`;
-manifest SHA256 `5C9400C06D95AD97EF253D4EF0098A7886EADEFC544EEBB2C1D6A97A1F8B70F7`.
-Закрыт только closed unused Deposit profile; принятие документировано в Shared
-`5d900b44ca60c884ffcc2773e61d123a703f9ca3`. Это не весь S01 и не S04 cleanup.
-Receipt/object/retained-route и остальные S01 closures не объявлены завершёнными;
-S02 и независимые files/groups/calls не открываются по focused результату.
-
-## Уже принятый outbox-only блок — не реализовывать повторно
-
-Shared `574d934347fb21f48453def7541a0a7a7a86d06d`: bounded held selection/staging,
-complete application SQL effects/writer, stored recovery/abort, Store и exact
-E2EE replay после удаления working copy приняты на current coupled full.
-Full687/0/0 terminal0 с explicit shell marker:687 unique results/definitions,
-all161 current required иall678 prior cases mapped Passed,55/55 frozen inputs
-exact после terminal. Receipt (Shared-relative)
-`artifacts/s01-outbox-owner-final-full/s01-outbox-owner-final-full.trx`, SHA256
-`D3FCF3437971DA0B3B5FE416B3CDBF5C46E20CFA1E428E4CC3BCD5306DF07F2E`;
-start16:52:43.0696231+05, finish18:31:44.6302396+05.
-Manifest SHA256 `4095F2C250FF4361BA62BD4A2C5C4C17EB347F4680464051E8B4FF85105D5336`.
-[Точная команда, matrix и сохранённые FAIL](../deep-client-shared/docs/testing/s01-ordinary-outbox-disposition-2026-10-06.md#current-coupled-full-gate--accepted-outbox-only-slice).
-Independent history, native send/grant/receipt custody, counters и asset keys
-сохранены; никаких namespace/floor retirement, runtime scheduler, shipping или
-physical claims. Принят этот блок, не весь S01. Ниже — также принятый prefix
-prerequisite, а не задание реализовать его снова.
-
-В этой же подзадаче закрыт найденный same-scope replay defect: absent ordinary
-entry больше не позволяет reserve новый Pending для retained native operation.
-Focused source checkpoint Shared `132871df56b749ee569a6439f9800bff10932dd8`.
-[Focused prerequisite receipt](../deep-client-shared/docs/testing/s01-authored-counter-floors-2026-10-06.md#outbox-replay-prerequisite--focused-only):
-26/0/0 terminal0, actual native case и25 unit cases mapped Passed, non-test build
-0 warnings/errors. Этот focused receipt сам по себе не квалифицирует
-disposition/API; приёмка owner-блока относится к current full выше.
-
-Dependency/recovery semantics приняты у
-[sole owner §8.4.3](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness):
-одна SQLCipher database/transaction на batch, exact predecessor/successor SQL,
-guarded dependency closure и deterministic prefix protected-root adoption.
-Отдельны outbox-only cleanup, local history, crypto checkpoint и receipt work.
-Cancel после SQL не очищает plan и не восстанавливает удалённый payload.
-[Current consumer/API mapping](../deep-client-shared/docs/architecture/owned-authored-counter-custody.md#compaction-dependencyapi-target-not-runtime-activation)
-указывает реальные затронутые readers и обязательные crash/reopen границы.
-
-Source checkpoint Shared `9b5ca981449666576e1560e847e79cfbfea378cb`:
-mandatory plan/history registration, schema3 readers, exact staging,
-held prefix selection, complete SQL effects, checkpoint CAS/adoption,
-stored recovery и durable pre-SQL abort реализованы.
-Startup recovery предшествует ordinary opens; другие пути требуют idle-plan.
-Это narrow local prefix API, не включённый scheduler cleanup и не remote
-settlement. ContactAccept/history/exact replay и следующий ratchet сохранены.
-
-Приёмка prefix API: [repo checkpoint](../deep-client-shared/docs/testing/s01-compaction-plan-model-2026-10-06.md#current-coupled-full-gate--accepted-prefix-slice).
-Pre-sanitization focused/native131/0/0 terminal0 проверил шесть handover,
-обе cancel boundaries, missing staging/peer-state, same-shape payload
-substitution и SQL rollback после commit marker. Final structural130/0/0
-terminal0 и non-test Production build0 warnings/errors. First full677/1/0
-terminal1: все678 discovery names и131 required cases mapped, но один manual
-catalog fixture не зарегистрировал mandatory history root. Setup исправлен;
-hostile-SQL fixture также доведён до actual schema rejection, missing-history
-rejection проверяет unchanged state. Corrected focused149/0/0 terminal0.
-Corrected fixture input Shared `23988df2204202374c6c0edb8b709495aaf6e1e8`:
-full678/0/0 terminal0 с explicit shell marker; all678 discovery names,
-all150 unique required cases и627 prior cases mapped Passed, без missing/extra,
-duplicates или skips.40/40 frozen inputs rechecked exact; runtime source
-не изменён. Narrow prefix block принят на этой matrix, весь S01 ещё не закрыт.
-История отдельных candidates и старого model full627 с неизвестным exit
-хранится только в repo checkpoint; она не квалифицирует этот source.
-
-После принятых prefix и outbox-only подзадач — оставшиеся S01 bounded
-dispositions, durable retirement/dependency fences и receipt/object closure.
-Independent files/groups/calls до этих prerequisites не открываются.
-Object-horizon/retained-route Retrieve/ACK contract остаётся связанным activation
-fence; текущий sole read path нельзя удалять без закрытого receive/ACK или
-authenticated migration. Runtime cleanup/renewal/retirement не активированы.
-Expiry, свежий grant, cache miss и capacity не являются deletion permission.
+После приёмки этого пакета — **known send/read floor retirement/dependency fences**,
+не параллельная задача. Sole retained read path нельзя удалять без закрытого
+receive/ACK или authenticated migration. Expiry, новый grant, cache miss и capacity
+не являются deletion permission. Runtime renewal/cleanup остаётся S04.
+Scheduler/AppAck/UI S07 и independent files/groups/calls сейчас не открывать.
 
 ## Уже принятые prerequisites — не реализовывать повторно
 
-- [Grant acquisition/pointer, original ceiling/closed-unresolved и late-result custody](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md).
+- [Grant acquisition/pointer, original ceiling, closed-unresolved и late-result custody](../deep-client-shared/docs/testing/s01-grant-acquisition-contract-2026-10-05.md).
 - [Store counter floors](survival-program/decisions/DR-0092-did2-owned-mailbox-counter-floors.md)
   и [PMT2 epoch continuity](../deep-protocol/docs/testing/s01-selection-epoch-continuity-2026-10-06.md).
-- [Held epoch-exclusion prerequisite](../deep-client-shared/docs/testing/s01-mailbox-epoch-exclusion-2026-10-06.md):
-  Shared `f4982e38c0848161f4b289218c62fb050e7bec5d`, full583/0/0 terminal0,
-  все25 focused +7 send +2 receive cases Passed, 9/9 frozen inputs matched.
-  Это не dependency closure или полная deletion permission.
+- [Held epoch-exclusion](../deep-client-shared/docs/testing/s01-mailbox-epoch-exclusion-2026-10-06.md):
+  prerequisite, не полная deletion permission.
 - [Independent authored floors](../deep-client-shared/docs/testing/s01-authored-counter-floors-2026-10-06.md):
-  Shared `e451c075ebd898ba83adb72ce6b93553b1001fc3`, full591/0/0 terminal0,
-  все25 final unit +11 connected results Passed, 14/14 frozen inputs matched.
-  Actual Production build0 warnings/errors; cleanup не реализован.
-  Этот receipt использует Protocol `4fa9f95989db38d1012bd65c0dd73326824b8b91`,
-  не будущие пересборки или установленный клиент.
+  не runtime cleanup.
+- [Held prefix API](../deep-client-shared/docs/testing/s01-compaction-plan-model-2026-10-06.md#current-coupled-full-gate--accepted-prefix-slice):
+  full678; SQL effects/recovery/abort, не scheduler cleanup.
+- [Outbox-only disposition](../deep-client-shared/docs/testing/s01-ordinary-outbox-disposition-2026-10-06.md#current-coupled-full-gate--accepted-outbox-only-slice):
+  full687; history/native custody/floors/asset keys сохранены.
+- [Closed unused Deposit retirement](../deep-client-shared/docs/testing/s01-closed-deposit-retirement-2026-10-06.md):
+  full706; не known/unresolved Retrieve deletion.
+- [Recipient receipt obligation](../deep-client-shared/docs/testing/s01-application-receipt-obligations-2026-10-06.md):
+  full726; atomic inbox/receipt work, не AppAck/scheduler.
+- Bounded retained producer/lookup/request/native custody slices qualified на
+  собственных inputs: [Protocol request](../deep-protocol/docs/testing/s01-retained-read-request-2026-10-07.md),
+  [Node lookup](../xnode/docs/testing/s01-retained-lookup-2026-10-07.md),
+  [route custody](../xnode/docs/testing/s01-retained-route-custody-2026-10-07.md),
+  [protected document](../xnode/docs/testing/s01-protected-retained-route-2026-10-07.md),
+  [two-store peer](../xnode/docs/testing/s01-retained-native-peer-2026-10-07.md).
+  Их PASS не переквалифицируют current coupled batch, shipping или devices.
 
-Contract-only commits: Shared `0b38a6dc895b38b833377355b9d80f41c8b6604b`
-(mapping), Protocol `90dbe5135c43be7977389ee148f5c92e0fee94f4`
-(только normative source-hash repin и derived registry identities).
-Strict registry/generator и все175 anchors проходят; allocations/inventory
-не менялись. Focused registry/parity12/0/0 terminal0, Protocol Release build0
-warnings/errors, root documentation174 и governance helper22/0/0.
-Эти contract-only receipts не доказывают реализованную owner API,
-fresh full Shared/package/device evidence или
-закрытие S01. Точные inputs/receipts остаются в связанных repo checkpoints.
+## Общая приёмка
 
-## Точная граница общей приёмки
+Полностью принятых этапов **1/14 (около7%)** — доля закрытых этапов, не измеренный
+процент написанного кода. Physical E2E **0/4**, релиз не готов.
+S00 принят как source baseline на своих frozen inputs:
+[Node](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#current-peer-https-setup-investigation--2026-10-05),
+[Registry](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md#current-source-baseline--2026-10-05).
+Source-cutover, uniformly Release shipping package graph, installed artifacts
+и физический сценарий — разные evidence boundaries.
+Matching source commits запушены в release-candidate: Shared `a5c6d7d`,
+Protocol `e48484c`, Node `2804023`; child trees чистые. Никакой Release/main merge
+этим не выполнен. Текущий следующий шаг этого batch — диагностика Registry FAIL,
+не переход к S02 и не повтор неизменённых Shared/Node full gates.
+Raw artifact scan ранее fail-closed на двух Android PNGs; selected source scan
+не квалифицирует их или полный release upload. FAIL receipts не удалять.
 
-Полностью принятых этапов **1/14 (около 7%)**, physical E2E **0/4**, релиз не готов.
-S00 source baseline принят на своих frozen inputs: Node1220/0/0,
-Registry348/0/7 + exact Linux7/0/0, original19 Node/31 Registry mappings,
-required isolated real-Xray smoke и root governance.
-[Node receipt](../xnode/docs/testing/s00-node-baseline-2026-10-03.md#current-peer-https-setup-investigation--2026-10-05),
-[Registry receipt](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md#current-source-baseline--2026-10-05).
-Node input `4ec06aedf5a65d29e00f4aa9945f2a4014179bb0`;
-Registry input `0f0a0dfc39dd496da47ecb6100ce950ea1aa9ff3` (runtimef47ca75).
-Registry Release solution строила внешние dependencies в Debug; это source
-baseline, не uniformly Release package matrix.
+Original dev-контур имеет retained expired offline XNA1 (наблюдавшийся
+expiry2026-10-06), readiness authority unavailable. Engine availability не
+обновляет подписанную authority. Signed renewal с сохранением genesis/keys/floors —
+S05, без нового genesis/reset/bypass. Isolated infrastructure smoke не доказывает
+readiness этого retained stack. macOS не собирать без явной команды пользователя.
+Seed-машины — production, не UAT; владелец разрешил тестировать production до
+появления пользователей. Секреты/production IP в public docs не включать.
+В текущем source batch production deploy/reset, Release и main merge не выполнялись.
 
-Последний full Protocol receipt2088/1/7 terminal1 сохраняет реальный MAU2
-actual-package/assembly blocker; native PMA1/PMR1 routing/genesis/recovery
-closure остаётся S08/релизом по DR-0095. Assertions и required gates не отменены.
-[Current Protocol receipt](../deep-protocol/docs/testing/s01-retained-route-contract-repin-2026-10-07.md),
-[native join scope](../deep-protocol/docs/testing/s00-contact-baseline-2026-10-03.md#mailbox-issuance-and-current-grant-adapter-retirement-2026-10-05).
-Normative repin не переквалифицирует Node/Registry/MAUI, signed shipping artifacts
-или physical delivery. MAUI `56065e0bf311f6b61aa22bf693792d6256951c03`,
-Windows/Android Debug и Clean95/Smoke119 относятся к прежней matrix,
-не installed/shipping evidence текущих dependencies.
-В текущей работе нет production deploy/reset, публикации Release или main merge.
-Completed chronology — в repo checkpoints, Git и [SPRINT-HISTORY](SPRINT-HISTORY.md).
-
-Текущий исходный local dev-контур после перезапуска engine не ready:
-publisher process running, ready marker absent, повторяется `ArgumentException`;
-Registry возвращает `did2-authority-unavailable`, privacy authority всех3 nodes
-unavailable. Read-only bounded public XNA1 diagnostic показывает expiry
-2026-10-06T14:07:38Z; host UTC уже позже. Это чтение поля, не fresh trusted-time
-или подписи qualification. Constructor operational successor запрещает окно за
-пределами XNA1; диагноз согласуется с истёкшей offline authority, не с engine.
-Signed authority/delegation renewal с сохранением genesis/keys/floors относится
-к S05. Никаких reset, volume deletion, authority bypass или нового dev genesis
-не сделано. Отдельный mandatory smoke текущего S01 increment был healthy;
-его PASS нельзя переносить на эти6 исходных retained dev containers.
 ## Этапы
 
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
@@ -474,7 +138,11 @@ Signed authority/delegation renewal с сохранением genesis/keys/floor
   ordering/late lower-cursor completion, cross-coordinator ownership, protected
   retirement и object horizon всё ещё обязательны.
 - **B3/S01/S04:** send512/grant128 не имеют полного sustained lifecycle.
-  Current codec/node default остаётся7-day, sender caps expiry by original grant.
+  Новый source increment согласует codec/node с product horizon и убирает
+  sender cap by original grant; current Shared/Node source matrices приняты,
+  matching Protocol matrix квалифицирована с сохранённым shipping FAIL;
+  Registry connected qualification ещё открыта.
+  Предыдущие29-case Shared и429/1 native receipts его не покрывают.
   Normative horizon закрывается вместе с replay/retained-route read/ACK; старый
   pending/unknown intent нельзя remint или evict для освобождения места.
 - **B4/S07:** network reconnect не draining outbox/inbox; offline logical queue
