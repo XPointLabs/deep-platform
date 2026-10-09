@@ -44,6 +44,19 @@ retirement, unused/unknown Retrieve closure, DCA/XUR/PMT rollover, sustained128/
 и current matching full остаются открыты; S01 не принят.
 Это не отдельная активация S04 или device E2E; подробности в
 [checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#retained-publication-polling-and-original-lost-ack).
+Shared `dcc0fff` добавляет disposition только для sole closed-unused Retrieve:
+lost issuer reply остаётся unknown; после original ceiling/native exclusion
+удаляется только неиспользованная acquisition, original publication/private
+Retrieve path и complete SQL/source/history сохраняются. Все5 handovers,
+cold recovery, phase1-only abandon/cancel и последующее owned чтение исходного
+пути прошли. Проверка нашла и исправила current-PMT2-only препятствие в retained
+ContactResolve courier: private loan existing DR-0100 exact request/time capability,
+без нового Protocol API/wire и без historical routing. Targeted20/0/0/native0
+за8.0869min, canonical exact20; первоначальные fixture SQL, product projection
+и fixture expired-PMA2 FAIL сохранены. Final build0/zero warnings/errors за5.06s.
+Это source-checkpoint S01, не приёмка этапа. Remaining acquisition/traversal/
+last-path closure, rollover, sustained128/512 и mandatory full ещё открыты.
+[Наблюдения](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#closed-unused-retrieve-and-retained-courier-projection).
 Новый grant, expiry, пустой poll, отсутствие SQL rows или capacity не разрешают
 удаление floor либо последнего retained read/ACK path. Безопасное освобождение
 slots не remint-ит pending/unknown request и не увеличивает128/512.
@@ -88,6 +101,10 @@ build/targeted проверки рискованных границ; полны�
 правки файла. Independent Shared methods используют existing bounded concurrency
 из repo AGENTS; single-method theories остаются последовательными, heavy repo
 gates не совмещаются. Partial checkpoints не означают принятие этапа.
+S01 остаётся единственной реализационной очередью до полного выполнения его
+критериев в implementation plan и matching gates; затем S02. Промежуточный
+source-checkpoint допустимо закоммитить без объявления этапа принятым. Нельзя
+подменять закрытие S01 завершением очередного узкого тестового slice.
 Известный failed run допускает остановку с сохранением ошибки, входов и aborted
 terminal; это не full PASS. Независимые heavy gates не совмещать.
 
