@@ -1536,6 +1536,16 @@ expires; the issuer never fabricates a next-epoch membership assertion from a
 current PMS2.
 Grant expiry is the minimum of XRR1, XRC1, PMT2, PMS2 and issuer validity.
 
+The issuer chooses the grant's NotBefore as the greater of the original signed
+XMG2 tag9 and the current role issuer's signed ValidFrom. The original request
+must still pass the complete current interval and 120-second acquisition bound;
+its timestamp is not a trusted-time source. Using a later network-only lower
+bound would incorrectly exclude part of the client's independently verified
+recipient/network interval. Lifetime is still measured from that NotBefore,
+all expiry ceilings and post-signature current checks remain mandatory, and no
+expired request is restored or renewed by this choice. If the role validity
+cannot cover the client's complete interval, the client still rejects.
+
 `XMC2`, version 1, suite `0x0201`, has exactly 8 fields:
 
 | Tag | Value | Size |
@@ -1723,6 +1733,9 @@ This is only a ceiling: it never extends an accepted object's own expiry.
 
 Grant expiry is the minimum of current network/policy/role lifetime and readUntil;
 its membership/epoch/selection input and placement bind the original route.
+NotBefore selection follows the bounded signed-request/role-validity rule in
+§3.7, with lifetime measured from that same start. Retained lookup does not make
+an expired XMG2 current or extend readUntil.
 Resolve original selected node IDs through current descriptors and keys. XMC2
 tag7 remains exact request tag11; its response deadline is the original XMG2
 deadline. The native permanent winner scope also binds the retained evidence

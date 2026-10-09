@@ -34,6 +34,11 @@ Freeze `IMailboxGrantIssuerSigner` (public key and asynchronous detached signing
 and `VerifiedDeepIdV2MailboxGrantIssuance.AuthorSuccessAsync(signer, ct)`.
 Only the PMA2 role key may sign; capture the key before awaiting, verify the
 returned signature, recheck full time/root/network/route bounds after signing.
+Current XMG2/MCG3 producer interval selection follows the sole
+[CONTACT-RESOLVER §3.7](../../architecture/CONTACT-RESOLVER-V1.md#37-privacy-routed-mailbox-grant-acquisition-xmg2--xmc2):
+preserve the original bounded signed request start subject to current role
+validity, not a later network-only lower bound. This changes neither wire nor
+signature domains and does not renew an expired request or weaken client checks.
 Grant generation is the current PMA2 minimum (at least one), serial is fresh
 independent random16, lifetime is bounded by PMA2 and every exact route/NET
 expiry including the two-store effective expiry. XMC expiry is exactly the

@@ -635,6 +635,17 @@ API for authenticating past exact Store commitments in the current projection.
 It creates no current grant/replay/dispatch authority and allocates no wire ID.
 Writer/path/prefix implementation and package activation remain separately gated.
 
+[DR-0106](../survival-program/decisions/DR-0106-retained-store-public-evidence.md)
+adds bounded public original Store replica evidence capture/verification. Its
+output is historical receipt-key metadata, never current routing/admission or
+deletion authority. It allocates no record, magic, suite or signature domain;
+independent Shared SQL/native outcome and retirement consumers remain gated.
+The same decision's initial-contact extension verifies original DCR/ADP and
+recipient-route identity facts against the protected DID2 credential. It returns
+parsed historical records, not directory freshness, floor advancement, a current
+route/holder capability or admission/deletion authority. No encoding changes;
+actual package/API qualification and downstream repin remain required.
+
 [DR-0099](../survival-program/decisions/DR-0099-retained-mailbox-read-selection.md)
 freezes additive retained-read replica facts and current MGR1/floor validation
 for a still-current Retrieve MCG3 naming a PMT2 step in the verified protected
