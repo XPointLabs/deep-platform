@@ -233,6 +233,20 @@ Store остаются точными без повторного ingress; ordin
 Подготовка signed successor использует controlled fixture: runtime renewal,
 sustained128/512, full, remaining S01 и physical/release этим не квалифицированы.
 
+Shared `121324c`: исправлен реальный индекс read-зависимостей — traversal
+сопоставляется с original installed mailbox scope, не с acquisition scope.
+Actual Store/receive/ACK подтвердил сохранение traversal/last-path после удаления
+idle floor; unpolled known/unknown acquisition не создаёт выдуманный traversal.
+Root-signed замена обоих issuer keys проверена для initial/ContactAccept Store,
+включая отказ при подстановке current policy в original evidence и cold recovery.
+Connected targeted12 завершился11/1/0: ACK setup остановился до новых assertions
+на existing30s post-dispatch fence. После bounded exact-retry correction только
+в fixture затронутый actual receive/ACK и prerequisites прошли7/0/0/native0;
+финальный build0/zero warnings. Original FAIL сохранён.
+[Exact evidence and scope](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#original-issuer-rotation-and-actual-traversal-dependency-index).
+Receipt-key rollover, remaining path/dependency closure, sustained/full,
+S01 acceptance и device/release остаются открыты. S02 не активирован.
+
 Во время этого запуска выполнен один EventPipe stack snapshot через официальный
 `dotnet-stack` версии `10.0.750501` из ignored artifacts, без memory dump. Наблюдались
 ordinary cold-recovery test в `SqliteDeepMailboxStore.InitializeSchema` и второй
@@ -379,8 +393,11 @@ Source-cutover, uniformly Release shipping package graph, installed artifacts
 и физический сценарий — разные evidence boundaries.
 Matching functional source commits ранее запушены в release-candidate: Shared
 `a5c6d7d`, Protocol `e48484c`, Node `f3477d1`, Registry `7587fa5`.
-Shared test-throughput follow-up `f45e4b8` и новый test-harness batch выше с
-соответствующими root pointers остаются локальными, без push; child trees чистые.
+Последующая source/test-harness работа уже запушена в release-candidate:
+Shared `121324c`, Protocol `93ef9bd`, Node `c000dc1`, Registry `0f4b06f`,
+DevOps `1aaa835`; локальных незапушенных commits в этих пяти repos нет.
+Исторические отметки «без push» выше относятся к моменту соответствующего run,
+не к текущему состоянию remote. Это не новая matching full qualification.
 Никакой Release/main merge этим не
 выполнен. Следующий функциональный шаг — known send/read floor retirement
 и dependency fences, не повтор уже принятой Registry Windows qualification,
