@@ -75,3 +75,12 @@ alone proves neither connected durable renewal nor Windows/Android delivery.
 
 Consumer rebuild/repin and final machine/API/evidence gates are mandatory at the
 business-batch boundary; there is no account reset or node-key replacement here.
+
+For actual native-committed contact reconstruction, the original XUR1 follows
+the historical-event distinction specified by CONTACT-AND-GROUP. The bounded
+retained Hello/Accept endpoint metadata readers validate its signature and
+creation interval under current endpoint proofs, without restoring rendezvous
+liveness. Exact committed native event and pending-Hello custody belong to
+Shared; parsed metadata yields no consent, receive/send or ACK authority.
+Current admission/authoring APIs remain strict. No wire, suite, journal
+generation, legacy reader or reset is allocated.

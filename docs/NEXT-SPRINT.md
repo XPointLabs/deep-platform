@@ -68,6 +68,17 @@ build0/zero warnings/errors; первоначальный23/17 passed/6 fixture-
 сохранён. Это source-checkpoint, S01 не закрыт: linked/remaining acquisition,
 traversal/last-path, rollover, sustained128/512 и current mandatory full открыты.
 [Evidence](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#explicit-owned-retrieve-renewal--2026-10-09).
+Shared `cbdf225` / Protocol `2df56b7` добавляют linked closed-unused Retrieve-tail
+disposition с сохранением выбранного original holder/read/ACK и native consent.
+Исправлены expired-XUR/old-PMT препятствия при реконструкции committed contacts;
+новые read-only facts не разрешают renewal из старого PMT. First ContactAccept
+send/receive проверяет live endpoints/XUR/full route до native mutation;
+exact committed replay после expiry сохраняет прежний floor. Final focused
+25/0/0/native0, build0/zero warnings/errors; canonical prior23 comparison0,
+first-run two new negatives остаются references для итогового full. Не приёмка
+S01: remaining acquisition/traversal/last-path, new-routing/authoring rollover,
+sustained128/512 и mandatory full открыты. Все FAIL сохранены в
+[checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#linked-closed-retrieve-and-committed-contact-history--2026-10-09).
 Новый grant, expiry, пустой poll, отсутствие SQL rows или capacity не разрешают
 удаление floor либо последнего retained read/ACK path. Безопасное освобождение
 slots не remint-ит pending/unknown request и не увеличивает128/512.

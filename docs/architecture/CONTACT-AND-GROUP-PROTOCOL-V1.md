@@ -1067,6 +1067,35 @@ may be materialized only for the exact authenticated pending Hello. These checks
 occur before any UI state or outbound acknowledgement; duplicate exact logical
 events are idempotent.
 
+For reconstruction of exact native-committed Hello/Accept, the bounded Protocol
+metadata readers `RequireRetainedContactHelloEndpointBindingsAsync` and
+`RequireRetainedContactAcceptEndpointBindingsAsync` check the original XUR1
+signature, exact endpoint/device/directory/relationship bindings and validity
+at event creation, not current XUR1 liveness. Both independently current DID2
+endpoint proofs, protected clock continuity and creation no later than the
+existing owned-author envelope (endpoint conservative upper bound plus1 second) remain
+mandatory. These read-only checks return no rendezvous, route, grant, admission,
+consent or ACK authority. Shared must independently prove actual committed
+event/pending-Hello custody and original route facts, then re-read native and
+protected commitments before returning a semantic handoff. Parsed bytes alone
+are insufficient. New event authoring, first admission and dispatch keep their
+existing current rendezvous/route checks; no expired descriptor becomes usable.
+This is the retained-event distinction of DR-0072, not a new wire generation
+or device/directory rollover join. Actual API/package and downstream consumer
+qualification remain mandatory at the business-batch boundary.
+
+Original route facts use the bounded read-only
+`DeepIdV2ContactRouteVerifier.RequireRetainedEventRouteFactsAsync`: the exact
+original PMT2 must be present in the current verified protected network lineage
+under the unchanged XNA authority. Original graph, device/delegation identity,
+PMT and route threshold signatures, XRA/XRR/XIR device signatures, original
+issue times and issuance-anchor agreement are independently checked. This
+returns no `VerifiedDeepIdV2ContactRoutePredecessor` and cannot feed route
+successor authoring; `VerifyPredecessorAsync` remains current-PMT-only. Missing
+retained projection, changed authority/device/delegation or forged history
+rejects. This permits reconstruction of already committed consent across a
+verified operational PMT successor, not PMT rollover for a new route or mutation.
+
 Receipt IDs are strictly lexicographically sorted and unique. Every target,
 activity, object and handshake nonce is nonzero. DeviceListUpdate requires an
 exact next-generation DMD1. DeviceRevocation requires an exact next DRS1 and
