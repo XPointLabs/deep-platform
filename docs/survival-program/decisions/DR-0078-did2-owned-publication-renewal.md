@@ -35,8 +35,23 @@ no caller can supply substitute history through a public service API.
 After verifying the current successor object, request, signed winner and BOTH
 replica receipts, recheck fresh authority and the held account lease. In ONE
 protected journal CAS, rebind the completed phase7 entry to the original intent,
-remove its pending locator and replace the exact old committed entry. Verify
-independent readback before returning. Never delete current custody first.
+retire its pending role and retain the exact old completed entry under that
+already reserved local pending locator. Only its local intent prefix changes;
+signed records, private route material and owner capability remain exact.
+Verify independent readback before returning. Never delete current custody first.
+This **2026-10-09 S01 clarification** closes the former destructive-promotion
+wording under the accepted dependency rule in
+[DR-0084](DR-0084-owned-delivery-settlement-and-retirement.md) and
+[TRANSPORT-NEUTRAL-MESSAGING §8.4.3](../../architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness):
+promotion/expiry is not permission to delete the last retained read/ACK path.
+The private bounded reader resumes active exact work on its original path;
+new one-page polls must not silently abandon retained publications. Current
+host/issuer/holder/time/replay checks remain required for each selected path.
+Path deletion needs its separate dependency-closed retirement proof, not an
+empty page, new publication or expired grant. No format, wire or public selector
+is added by this clarification; the current private implementation and source
+qualification belong to
+[Shared custody](../../../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md#owned-transitions-and-consumers).
 Journal revision is canonical phase-count framing, not a generation rollback
 floor; promotion may reduce it. Authenticated generation+1 lineage and whole-slot
 CAS are mandatory. Interrupted promotion must reopen its actual persisted winner.

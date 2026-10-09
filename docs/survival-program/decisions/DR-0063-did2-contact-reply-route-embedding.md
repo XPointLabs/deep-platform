@@ -28,6 +28,22 @@ they continue to grant only DR-0022's endpoint-metadata claim. Independently
 verify full current DCA signature/revocation, network and route/threshold via
 DR-0062 before Shared semantic handoff or transport use.
 
+**2026-10-09 S01 clarification — retained event versus live route.** For an
+actual native-committed Hello/Accept, semantic reconstruction authenticates its
+exact original route as historical facts under independently current account/
+device/network authority. Use the closed DR-0072 predecessor verification; it
+returns no live route or dispatch permission. The original native/protected
+scope, initial event hashes, exact committed Accept and explicit local acceptance
+winner (when applicable) remain mandatory and are rechecked before handoff.
+Expiry of that old return publication does not erase already authenticated
+contact history or require repeating an initial exchange. Parsed/raw caller
+packages are never such retained custody. PMT/device/delegation rollover not
+supported by that verifier still rejects; do not invent a historical bypass.
+DR-0062's current verifier remains unchanged for new transport use. Current
+grant/holder/route admission and retained-route Retrieve/ACK checks are separate
+from reconstructing semantic history. No wire, format, public authority flag or
+legacy reader is introduced.
+
 Outbound Shared authors use only actual phase-7 own publication under the
 held account lease with final exact custody readback. Inbound routes come
 only from actual retained authenticated Hello/Accept bound to the current

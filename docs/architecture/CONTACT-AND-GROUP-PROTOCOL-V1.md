@@ -1049,6 +1049,14 @@ requires one private reply package; old route-less payload/record has no reader.
 Package metadata matches the authenticated current sender; full independent
 route verification precedes semantic handoff or transport use.
 
+For actual native-committed Hello/Accept custody, semantic reconstruction verifies
+the original signed route as historical facts, as clarified in
+[DR-0063](../survival-program/decisions/DR-0063-did2-contact-reply-route-embedding.md).
+Original protected/native event commitments and independently current endpoint
+authority remain mandatory. Old route expiry is not loss of committed consent;
+historical verification yields no live route or dispatch authority. New transport
+admission and current retained Retrieve/ACK checks remain independent and strict.
+
 ContactHello's `initiatorDAB2Ref`, `initiatorDMD1Hash` and safety number must
 match the authenticated initiator endpoint and its verified directory closure.
 ContactAccept's corresponding values must match the authenticated responder;

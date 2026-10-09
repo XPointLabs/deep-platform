@@ -31,10 +31,19 @@ Shared `bda7f77` исправляет найденную S01 last-path зави�
 атомарно сохраняет прежнюю completed publication/private Retrieve custody,
 а активное чтение выбирает original route из protected cycle. Targeted9/0/0/native0
 за52.66s, build0/zero warnings; missing predecessor отвергается без callback или
-изменения read/grant roots. Idle polling всех retained publications, ACK через
-promotion, traversal/last-path retirement и matching full ещё не квалифицированы.
+изменения read/grant roots. Shared `30a645a` добавляет bounded
+idle polling current/retained publications и original ACK через promotion. Новый
+nonempty случай выявил ошибочный current admission старого XRA при реконструкции
+native-committed Hello/Accept; historical facts теперь проверяются DR-0072 под
+current endpoint authority, с final native readback. Nested-lease defect новой
+проверки исправлен existing held-lease recheck. Targeted10/0/0/native0 за14.341min,
+canonical exact10 mappings; исходные9/1 и7/3 FAIL сохранены. Protocol `8c83a83`:
+reviewed source/inventory repin, strict registry checks0,176 anchors unchanged.
+Final matching build0/zero warnings/errors за20.55s. Last-path/traversal
+retirement, unused/unknown Retrieve closure, DCA/XUR/PMT rollover, sustained128/512
+и current matching full остаются открыты; S01 не принят.
 Это не отдельная активация S04 или device E2E; подробности в
-[checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#publication-promotion-preserves-original-read-custody).
+[checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#retained-publication-polling-and-original-lost-ack).
 Новый grant, expiry, пустой poll, отсутствие SQL rows или capacity не разрешают
 удаление floor либо последнего retained read/ACK path. Безопасное освобождение
 slots не remint-ит pending/unknown request и не увеличивает128/512.
@@ -73,7 +82,12 @@ shipping packages или разрешением Release/main merge.
 
 Рабочий цикл: законченный функциональный пакет → build/targeted tests →
 пакет исправлений → mandatory full/connected gate → раздельные child commits
-и разрешённый push → root pointers. Не запускать full после каждой правки файла.
+и разрешённый push → root pointers. Во время реализации остаются короткие
+build/targeted проверки рискованных границ; полный этап проверяется после его
+связного завершения, до активации следующего. Не запускать full после каждой
+правки файла. Independent Shared methods используют existing bounded concurrency
+из repo AGENTS; single-method theories остаются последовательными, heavy repo
+gates не совмещаются. Partial checkpoints не означают принятие этапа.
 Известный failed run допускает остановку с сохранением ошибки, входов и aborted
 terminal; это не full PASS. Независимые heavy gates не совмещать.
 
@@ -418,7 +432,7 @@ Source-cutover, uniformly Release shipping package graph, installed artifacts
 Matching functional source commits ранее запушены в release-candidate: Shared
 `a5c6d7d`, Protocol `e48484c`, Node `f3477d1`, Registry `7587fa5`.
 Последующая source/test-harness работа уже запушена в release-candidate:
-Shared `f823f69`, Protocol `93ef9bd`, Node `c000dc1`, Registry `0f4b06f`,
+Shared `30a645a`, Protocol `8c83a83`, Node `c000dc1`, Registry `0f4b06f`,
 DevOps `1aaa835`; локальных незапушенных commits в этих пяти repos нет.
 Исторические отметки «без push» выше относятся к моменту соответствующего run,
 не к текущему состоянию remote. Это не новая matching full qualification.
