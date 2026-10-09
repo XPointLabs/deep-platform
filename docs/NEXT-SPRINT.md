@@ -215,11 +215,23 @@ installation window. Exact receipt/границы —
 private contract —
 [sole grant owner](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md#used-deposit-holder-retirement--s01-source-candidate).
 Это source increment S01, не переход к S02: matching mandatory full,
-multi-acquisition used owner/sustained128/512, независимый issuer/receipt-key
+sustained128/512, независимый issuer/receipt-key
 rollover и known Retrieve/traversal/last-path closure ещё открыты. Новые public
 wire/journal generations и legacy readers не добавлены. Runtime scheduler,
 physical Windows/Android, shipping и релиз не квалифицированы; production,
 account data, Releases и main не изменены.
+
+Дополнение того же S01 пакета: Shared `3124614`, actual used-chain owner
+targeted9/0/0/native0 (8m38s). Два Store под разными принятыми holders в одной
+цепочке: oldest-first отказ при неверном порядке, cold recovery после staging,
+сохранение successor и последующее освобождение обоих holders без удаления
+live objects/source/history/receipt custody. Lost reply нового Store сохраняет
+unknown send и запрещает удаление старой цепочки. Исходный шифротекст и cached
+Store остаются точными без повторного ingress; ordinary cleanup использует
+реального владельца scope в обоих направлениях.
+[Exact checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#used-deposit-chain--actual-owner-checkpoint).
+Подготовка signed successor использует controlled fixture: runtime renewal,
+sustained128/512, full, remaining S01 и physical/release этим не квалифицированы.
 
 Во время этого запуска выполнен один EventPipe stack snapshot через официальный
 `dotnet-stack` версии `10.0.750501` из ignored artifacts, без memory dump. Наблюдались
