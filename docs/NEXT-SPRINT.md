@@ -11,11 +11,11 @@ FAIL — в связанных repo-checkpoints и Git, не второй backlo
 
 ## Единственная текущая подзадача
 
-**S01 — known send/read floor retirement / dependency fences.**
+**S01 — known acquisition / traversal / last-path dependency closure.**
 
 Предыдущий accepted-object/retained-route batch квалифицирован на matching
-Windows source matrices ниже. Следующий единый пакет — deletion permission для
-known send/read floors: exact dependency index, irreversible namespace exclusion,
+Windows source matrices ниже. Текущий единый пакет связывает deletion permission
+для known send/read floors и acquisitions: exact dependency index, irreversible namespace exclusion,
 held account lease, protected roots/native SQL fence и complete application/native
 SQL readback по private owner DR-0105, включая crash recovery.
 Базовый capture зависимостей намеренно pin-ит каждый known grant/catalog и
@@ -23,6 +23,10 @@ SQL readback по private owner DR-0105, включая crash recovery.
 Отдельный used-Deposit source producer закрывает write-holder зависимости
 независимыми original Store/native joins и сохраняет live object/read custody;
 его targeted checkpoint ниже не закрывает весь lifecycle или activation.
+Shared `f823f69` добавляет superseded Retrieve-holder на том же original path:
+actual установленный преемник, завершённое чтение, сохранённые traversal/SQL/native
+и публикация/resolver custody. Targeted16/0/0/native0; remaining traversal/last-path
+closure и matching full ещё открыты. S02 не активирован.
 Новый grant, expiry, пустой poll, отсутствие SQL rows или capacity не разрешают
 удаление floor либо последнего retained read/ACK path. Безопасное освобождение
 slots не remint-ит pending/unknown request и не увеличивает128/512.
@@ -106,7 +110,7 @@ CI preflight wiring изменено, удалённое выполнение н
 Registry `0f4b06f`, DevOps `1aaa835`; root содержит общий механизм и matching
 pointers. Push/publish/deploy/Release/main merge не выполнялись.
 
-Теперь — **known send/read floor retirement/dependency fences**, не S02 или
+Теперь — **known acquisition/traversal/last-path dependency closure**, не S02 или
 параллельный feature batch. Sole retained read path нельзя удалять без закрытого
 receive/ACK или authenticated migration. Expiry, новый grant, cache miss и capacity
 не являются deletion permission. Runtime renewal/cleanup остаётся S04.
@@ -246,6 +250,18 @@ Connected targeted12 завершился11/1/0: ACK setup остановилс�
 [Exact evidence and scope](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#original-issuer-rotation-and-actual-traversal-dependency-index).
 Receipt-key rollover, remaining path/dependency closure, sustained/full,
 S01 acceptance и device/release остаются открыты. S02 не активирован.
+
+Shared `f823f69`: superseded Retrieve-holder удаляется только после excluded old
+namespace, idle-floor retirement и actual completed replacement read на exact
+original route. Current/sole holder, active/unknown read и отсутствующий completed
+преемник pin-ят удаление. Все5 cold handovers сохраняют application SQL/native/
+non-grant roots; повреждённая publication custody останавливает recovery.
+Current SQL readback теперь проверяет scope columns и canonical grant digest;
+три hostile-row tests не чинят SQL и не выделяют counters. Final build0/zero
+warnings, targeted16/0/0/native0; исходный9/1/0 FAIL сохранён.
+[Exact evidence and residual scope](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#superseded-retrieve-holder-and-retained-path-guard-checkpoint).
+Это same-path source transition, не unused/unknown acquisition, traversal/last-path
+retirement, autonomous S04 renewal, matching full, S01 acceptance или device/release.
 
 Во время этого запуска выполнен один EventPipe stack snapshot через официальный
 `dotnet-stack` версии `10.0.750501` из ignored artifacts, без memory dump. Наблюдались
@@ -394,13 +410,13 @@ Source-cutover, uniformly Release shipping package graph, installed artifacts
 Matching functional source commits ранее запушены в release-candidate: Shared
 `a5c6d7d`, Protocol `e48484c`, Node `f3477d1`, Registry `7587fa5`.
 Последующая source/test-harness работа уже запушена в release-candidate:
-Shared `121324c`, Protocol `93ef9bd`, Node `c000dc1`, Registry `0f4b06f`,
+Shared `f823f69`, Protocol `93ef9bd`, Node `c000dc1`, Registry `0f4b06f`,
 DevOps `1aaa835`; локальных незапушенных commits в этих пяти repos нет.
 Исторические отметки «без push» выше относятся к моменту соответствующего run,
 не к текущему состоянию remote. Это не новая matching full qualification.
 Никакой Release/main merge этим не
-выполнен. Следующий функциональный шаг — known send/read floor retirement
-и dependency fences, не повтор уже принятой Registry Windows qualification,
+выполнен. Следующий функциональный шаг — remaining known acquisition/traversal/
+last-path dependency closure, не повтор уже принятой Registry Windows qualification,
 не переход к S02 и не повтор неизменённых Shared/Node full gates.
 Raw artifact scan ранее fail-closed на двух Android PNGs; selected source scan
 не квалифицирует их или полный release upload. FAIL receipts не удалять.
@@ -419,7 +435,7 @@ Seed-машины — production, не UAT; владелец разрешил т
 | Этап | Статус | Оставшаяся приёмка / evidence owner |
 | --- | --- | --- |
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
-| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Prefix/outbox-only/unused Deposit/recipient obligation slices qualified на своих matrices. Accepted-object/retained-route matching Windows source batch квалифицирован выше; Protocol shipping FAIL сохранён по DR-0095. Следующий блок — known send/read floor retirement/dependency fences. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
+| S01 | Частично принят; единственный текущий этап | Semantics и prerequisites выше приняты. Prefix/outbox-only/unused Deposit/recipient obligation slices qualified на своих matrices. Accepted-object/retained-route matching Windows source batch квалифицирован выше; Protocol shipping FAIL сохранён по DR-0095. Known floors, used Deposit и superseded same-path Retrieve имеют source checkpoints; remaining traversal/last-path closure и matching full открыты. Runtime renewal/cleanup — S04, не объявлять реализованными по contract |
 | S02 | Current receiver/coordinator и guarded Program wiring реализованы; не принят | [Current Program](../xnode/docs/testing/s02-current-program-2026-10-04.md), [lifecycle](../xnode/docs/testing/s05-mgr1-lifecycle-2026-10-04.md). Current observer/provisioning, whole-host recovery, retained-route и real selected-entry boundaries |
 | S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
 | S04 | Заблокирован оставшимися S01 contracts | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
