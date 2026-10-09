@@ -57,6 +57,17 @@ ContactResolve courier: private loan existing DR-0100 exact request/time capabil
 Это source-checkpoint S01, не приёмка этапа. Remaining acquisition/traversal/
 last-path closure, rollover, sustained128/512 и mandatory full ещё открыты.
 [Наблюдения](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#closed-unused-retrieve-and-retained-courier-projection).
+Shared `01ca948` реализует explicit original Retrieve → pending successor →
+verified selected/SQL-installed successor через actual account owner, без
+автоматического S04 scheduler. Точный pending retry после обрыва/отмены и cold
+reopen не remint-ит запрос; stale selector после дальнейшего successor и closed
+unknown tail отвергаются. Старый holder/path/read/native custody сохраняется.
+Superseded-holder empty/nonempty fixtures теперь получают replacement через
+этот owner/courier, не прямой записью protected selection. Targeted24/0/0/native0,
+build0/zero warnings/errors; первоначальный23/17 passed/6 fixture-observer FAIL
+сохранён. Это source-checkpoint, S01 не закрыт: linked/remaining acquisition,
+traversal/last-path, rollover, sustained128/512 и current mandatory full открыты.
+[Evidence](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#explicit-owned-retrieve-renewal--2026-10-09).
 Новый grant, expiry, пустой poll, отсутствие SQL rows или capacity не разрешают
 удаление floor либо последнего retained read/ACK path. Безопасное освобождение
 slots не remint-ит pending/unknown request и не увеличивает128/512.
