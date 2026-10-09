@@ -27,6 +27,14 @@ Shared `f823f69` добавляет superseded Retrieve-holder на том же 
 actual установленный преемник, завершённое чтение, сохранённые traversal/SQL/native
 и публикация/resolver custody. Targeted16/0/0/native0; remaining traversal/last-path
 closure и matching full ещё открыты. S02 не активирован.
+Shared `bda7f77` исправляет найденную S01 last-path зависимость: renewal теперь
+атомарно сохраняет прежнюю completed publication/private Retrieve custody,
+а активное чтение выбирает original route из protected cycle. Targeted9/0/0/native0
+за52.66s, build0/zero warnings; missing predecessor отвергается без callback или
+изменения read/grant roots. Idle polling всех retained publications, ACK через
+promotion, traversal/last-path retirement и matching full ещё не квалифицированы.
+Это не отдельная активация S04 или device E2E; подробности в
+[checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#publication-promotion-preserves-original-read-custody).
 Новый grant, expiry, пустой poll, отсутствие SQL rows или capacity не разрешают
 удаление floor либо последнего retained read/ACK path. Безопасное освобождение
 slots не remint-ит pending/unknown request и не увеличивает128/512.
