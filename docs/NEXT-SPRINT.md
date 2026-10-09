@@ -18,8 +18,11 @@ Windows source matrices ниже. Следующий единый пакет —
 known send/read floors: exact dependency index, irreversible namespace exclusion,
 held account lease, protected roots/native SQL fence и complete application/native
 SQL readback по private owner DR-0105, включая crash recovery.
-Текущий owner намеренно pin-ит каждый known grant/catalog и каждый Retrieve;
-нельзя просто убрать эти запреты без доказанного закрытия зависимостей.
+Базовый capture зависимостей намеренно pin-ит каждый known grant/catalog и
+каждый Retrieve; наблюдаемые flags сами не дают deletion permission.
+Отдельный used-Deposit source producer закрывает write-holder зависимости
+независимыми original Store/native joins и сохраняет live object/read custody;
+его targeted checkpoint ниже не закрывает весь lifecycle или activation.
 Новый grant, expiry, пустой poll, отсутствие SQL rows или capacity не разрешают
 удаление floor либо последнего retained read/ACK path. Безопасное освобождение
 slots не remint-ит pending/unknown request и не увеличивает128/512.
@@ -199,6 +202,24 @@ Protocol `93ef9bd`; commits от `zhigubigule`/no-reply. Shared targeted71/0/0
 known acquisition/traversal/terminal receipt-object closure, mandatory full,
 shipping/package/platform и physical Windows/Android gates остаются открыты.
 Production, account data, Releases и main этим checkpoint не изменены.
+
+Следующий связный source checkpoint: Shared `f0a0a47`, used Deposit holder
+retirement. Реальный исходный Store для initial DPH2 и ContactAccept остаётся
+проверяемым после освобождения acquisition; live object, native/source/history,
+read paths и receipt work не удаляются. Пять cold handovers каждого пути,
+потеря SQL evidence до staging/при recovery и цепочка oldest-first проверены
+targeted65/0/0/native0 (Windows PowerShell5.1, SDK10.0.301,12m59s).
+Предшествующий exploratory61/1/0/native1 сохранён как FAIL, без ослабления30s
+installation window. Exact receipt/границы —
+[Shared checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#used-deposit-holder-retirement--targeted-source-checkpoint),
+private contract —
+[sole grant owner](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md#used-deposit-holder-retirement--s01-source-candidate).
+Это source increment S01, не переход к S02: matching mandatory full,
+multi-acquisition used owner/sustained128/512, независимый issuer/receipt-key
+rollover и known Retrieve/traversal/last-path closure ещё открыты. Новые public
+wire/journal generations и legacy readers не добавлены. Runtime scheduler,
+physical Windows/Android, shipping и релиз не квалифицированы; production,
+account data, Releases и main не изменены.
 
 Во время этого запуска выполнен один EventPipe stack snapshot через официальный
 `dotnet-stack` версии `10.0.750501` из ignored artifacts, без memory dump. Наблюдались
