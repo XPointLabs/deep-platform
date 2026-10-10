@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-10**. Branch: `release-candidate/prod-20260909`.
+Обновлено: **2026-10-11**. Branch: `release-candidate/prod-20260909`.
 Единственный DAG и критерии приёмки —
 [IMPLEMENTATION-PLAN-V1](architecture/IMPLEMENTATION-PLAN-V1.md).
 Основание: [аудит](architecture/ARCHITECTURE-AUDIT-2026-10-03.md),
@@ -11,50 +11,41 @@ FAIL — в связанных repo-checkpoints и Git, не второй backlo
 
 ## Единственная текущая подзадача
 
-**S03 — grant-bound peer replication и quorum.**
+**S04 — client grant/send/route lifecycle.**
 
 S01 принят как contract/API stage после
 [сверки всех блоков](S01-CONTRACT-REVIEW-2026-10-10.md), не как runtime/release.
 S02 принят как current-only native/configured node source/composition stage после
 [сверки критериев](S02-CURRENT-NODE-REVIEW-2026-10-10.md), не как production activation,
-shipping или physical delivery. Node `5c96043` закоммичен и запушен;
-remote SHA подтверждён, дерево Node чистое.
-S03 — единственный следующий активный этап:
+shipping или physical delivery. S03 принят как grant-bound peer node
+source/composition stage после [сверки критериев](S03-CURRENT-PEER-REVIEW-2026-10-11.md):
+matching full04 **1479/0/0**, exact1479 cases,2142 unchanged inputs,
+build/preflight/test/qualification0 и свежие external/no-mock transport gates.
+Все35 обязательных групп/83 случая присутствуют в matching full.
+Node `ddcf4b6` закоммичен и запушен; remote SHA подтверждён, дерево Node чистое.
+Store/read/ACK, lost response/cold exact retry, sole writer/prefix и независимая
+peer custody подтверждены локально; это не installed Windows/Android delivery.
 
-- сверить весь peer Store/read/ACK cycle с DR-0081 и фактическими HTTP
-  receiver/coordinator, independent native stores и current lease;
-- завершить недостающие связные runtime/fault cases: partial commit/lost response,
-  late completion/cross-coordinator ownership, retained ordering/horizon,
-  peer-wide loss/rollback, exact cold retry и отсутствие resurrection;
-- сначала закончить один связный S03 implementation package и целевые проверки,
-  затем matching build/full/transport, acceptance и отдельный commit/push.
-  Не расширять пакет задачами client scheduler или production provisioning.
+Точная история S02/S03, hashes и исходные FAIL находятся только в
+[S02 checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md) и
+[S03 checkpoint](../xnode/docs/testing/s03-peer-cycle-2026-10-10.md).
+Два исправленных S03 build-graph дефекта не скрыты новым PASS. Intermittent
+native MoveFileEx denial прежнего пакета остаётся с неустановленной причиной;
+новые PASS не объявляют его исправленным и не меняют retries/ACL.
 
-Завершённый S02 corrective пакет после `6cf28f6` проходит focused10/0/0:
-explicit native admission negative boundaries и retained client read/ACK после
-подписанной смены PMT, lost ACK/cold exact retry через настоящий peer HTTPS.
-Найден и исправлен product defect: ACK intent ошибочно брал membership commitment
-новой host projection вместо исходной projection проверенного Retrieve grant.
-Время, revocation, floors и selected replicas не ослаблены. Убраны stale MAU2
-status/parameter/test names без alias; codec остаётся MAU3. Release build0,
-zero warnings/errors, matching unit255/0/0/native0. Сверка сохраняет все255
-unit cases с одним reviewed MAU3 rename, остальные stable case keys без потерь.
-Matching canonical Node full принят:1441/0/0, exact1441 cases,
-2136 unchanged inputs, build/preflight/test/qualification exits0.
-Свежие external/no-mock smoke и three-node rehearsal завершены native0:
-runtime hard/soft failures0, warnings0; три distinct real Xray nodes,
-Registry count3 и reconciliation issues0. [Requirement-to-evidence review](S02-CURRENT-NODE-REVIEW-2026-10-10.md)
-сопоставляет критерии с actual composition и24 cases двенадцати named groups;
-Все24 cases присутствуют в принятом matching full. Exact evidence — в Node checkpoint ниже.
+S04 — единственный текущий этап после принятого и запушенного S03:
 
-Exact commands, hashes, старые source increments и сохранённые FAIL — только в
-[Node checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md).
-Предыдущий intermittent native `MoveFileEx` denial остаётся с неустановленной
-причиной; новые PASS не объявляют его исправленным и не меняют retries/ACL.
-Coordinated peer replay/mutation/blob loss остаётся S03; client floors его не закрывают.
-Configured/native integration и transport readiness не являются physical delivery.
-Не активировать параллельно S04 или device scheduler. GitHub Releases/main
-и production текущим пакетом не изменялись.
+- проверить actual Shared owner и принятые S01 settlement/renewal/retirement
+  contracts; выбрать один связный lifecycle package, не новый journal/wire;
+- сохранить exact ciphertext/request для Pending/unknown, protected replay floors
+  и original namespace; не remint, evict или увеличивать lifetime старого send;
+- реализовать нужные transitions/compaction целиком, затем целевые crash/cold/
+  backpressure проверки, исправления и matching обязательный full;
+- закрыть review, commit/push и только затем переходить к S05.
+
+Не открывать scheduler, production provisioning или device E2E параллельно S04.
+Физические contacts/messages/files/groups: **0/4 подтверждены**; релиз не готов.
+Production, GitHub Releases и main этим S03 пакетом не изменялись.
 
 ## Завершённый S01 source пакет и его evidence
 
@@ -185,8 +176,8 @@ production activation и release остаются последующими не�
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
 | S01 | Принят: contract/API stage, не runtime/release | [Requirement-to-evidence review](S01-CONTRACT-REVIEW-2026-10-10.md). Shared full03 принят; Protocol exact source qualification сохраняет actual package FAIL по DR-0095. Runtime renewal/cleanup — S04, receipt orchestration — S07; не объявлять реализованными по contract |
 | S02 | Принят: current-only native/configured node source/composition, не production/shipping/physical | [Requirement review](S02-CURRENT-NODE-REVIEW-2026-10-10.md), [current source checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md). Node5c96043, full1441/0/0/exact1441/2136 unchanged inputs и свежие transport gates |
-| S03 | Единственный текущий этап; native grant-bound peer/quorum/custody есть, этап не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon, peer-wide loss/rollback и полный peer cycle |
-| S04 | Не активирован; после S02/S03 в последовательной очереди | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
+| S03 | Принят: grant-bound peer node source/composition, не production/shipping/physical | [Requirement review](S03-CURRENT-PEER-REVIEW-2026-10-11.md), [checkpoint](../xnode/docs/testing/s03-peer-cycle-2026-10-10.md). Matching full1479/0/0/exact1479/2142 unchanged inputs,35 groups/83 cases и свежие transport gates |
+| S04 | Единственный текущий этап; следующий связный implementation package | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
 | S05 | Actual HTTPS issuer → configured native Store/Retrieve/ACK/cold reopen проверены локально; не принят | [Registry scope](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md#connected-private-grant-exchange-2026-10-05). Resolver/owned-client/complete Program/ONION, deployed shared443/proxy и signed successor provisioning |
 | S06 | Не пройден | Два independent current clients с actual authorization/owned E2EE через selected-entry и replica endpoints |
 | S07 | Read-only local history реализована; scheduler/receipts не закрыты | [History scope](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md). Offline logical queue, autonomous drain, AppAck/read и полный1:1 event/UI scope |
@@ -201,12 +192,12 @@ production activation и release остаются последующими не�
 
 - **B1/S02–S06:** old Node PMA1 providers/adapters удалены; current guarded
   composition и configured selected-entry/ONION source stage приняты в S02.
-  Remaining peer-wide recovery, deployed authority/provisioning и owned client
+  Peer-wide native recovery принят в S03; deployed authority/provisioning и owned client
   join не доказываются local Kestrel/fixture clocks или health200.
-- **B2/S02–S03:** distinct node ID/receipt key, signed writer, protected operation
-  root и native Store/Retrieve/ACK custody проверены локально. Полный retained
-  ordering/late lower-cursor completion, cross-coordinator ownership, protected
-  retirement и object horizon всё ещё обязательны.
+- **B2/S03–S09:** distinct node ID/receipt key, sole signed Store writer/prefix,
+  independent peer facts, retained route/horizon и either-replica ACK проверены
+  в S03 source stage. Owned retirement/compaction, sustained lifecycle и
+  connected/physical recovery по-прежнему обязательны; local PASS их не заменяет.
 - **B3/S04:** send512/grant128 не имеют полного sustained lifecycle.
   Новый source increment согласует codec/node с product horizon и убирает
   sender cap by original grant; current Shared/Node source matrices приняты,
