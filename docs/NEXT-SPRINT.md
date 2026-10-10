@@ -25,6 +25,12 @@ S02 — единственный активный этап. Следующий �
   обязательный matching Node full и отдельные external/no-mock smoke/rehearsal.
   Старый Node PASS не квалифицирует новый consumer input.
 
+Первая current-consumer проверка завершена: Node build с warnings-as-errors0,
+focused91/0/0/native0 и exact91 TRX mappings. Это не full/приёмка S02.
+Следующий implementation unit — whole-host native-state recovery/readiness,
+не повтор прежней DI registration. Scope, команда и SHA — в
+[S02 checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md).
+
 ## Завершённый S01 source пакет и его evidence
 
 Текущий
