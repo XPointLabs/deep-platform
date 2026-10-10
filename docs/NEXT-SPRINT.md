@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-09**. Branch: `release-candidate/prod-20260909`.
+Обновлено: **2026-10-10**. Branch: `release-candidate/prod-20260909`.
 Единственный DAG и критерии приёмки —
 [IMPLEMENTATION-PLAN-V1](architecture/IMPLEMENTATION-PLAN-V1.md).
 Основание: [аудит](architecture/ARCHITECTURE-AUDIT-2026-10-03.md),
@@ -13,72 +13,114 @@ FAIL — в связанных repo-checkpoints и Git, не второй backlo
 
 **S01 — known acquisition / traversal / last-path dependency closure.**
 
-Предыдущий accepted-object/retained-route batch квалифицирован на matching
-Windows source matrices ниже. Текущий единый пакет связывает deletion permission
-для known send/read floors и acquisitions: exact dependency index, irreversible namespace exclusion,
-held account lease, protected roots/native SQL fence и complete application/native
-SQL readback по private owner DR-0105, включая crash recovery.
-Базовый capture зависимостей намеренно pin-ит каждый known grant/catalog и
-каждый Retrieve; наблюдаемые flags сами не дают deletion permission.
-Отдельный used-Deposit source producer закрывает write-holder зависимости
-независимыми original Store/native joins и сохраняет live object/read custody;
-его targeted checkpoint ниже не закрывает весь lifecycle или activation.
-Shared `f823f69` добавляет superseded Retrieve-holder на том же original path:
-actual установленный преемник, завершённое чтение, сохранённые traversal/SQL/native
-и публикация/resolver custody. Targeted16/0/0/native0; remaining traversal/last-path
-closure и matching full ещё открыты. S02 не активирован.
-Shared `bda7f77` исправляет найденную S01 last-path зависимость: renewal теперь
-атомарно сохраняет прежнюю completed publication/private Retrieve custody,
-а активное чтение выбирает original route из protected cycle. Targeted9/0/0/native0
-за52.66s, build0/zero warnings; missing predecessor отвергается без callback или
-изменения read/grant roots. Shared `30a645a` добавляет bounded
-idle polling current/retained publications и original ACK через promotion. Новый
-nonempty случай выявил ошибочный current admission старого XRA при реконструкции
-native-committed Hello/Accept; historical facts теперь проверяются DR-0072 под
-current endpoint authority, с final native readback. Nested-lease defect новой
-проверки исправлен existing held-lease recheck. Targeted10/0/0/native0 за14.341min,
-canonical exact10 mappings; исходные9/1 и7/3 FAIL сохранены. Protocol `8c83a83`:
-reviewed source/inventory repin, strict registry checks0,176 anchors unchanged.
-Final matching build0/zero warnings/errors за20.55s. Last-path/traversal
-retirement, unused/unknown Retrieve closure, DCA/XUR/PMT rollover, sustained128/512
-и current matching full остаются открыты; S01 не принят.
-Это не отдельная активация S04 или device E2E; подробности в
-[checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#retained-publication-polling-and-original-lost-ack).
-Shared `dcc0fff` добавляет disposition только для sole closed-unused Retrieve:
-lost issuer reply остаётся unknown; после original ceiling/native exclusion
-удаляется только неиспользованная acquisition, original publication/private
-Retrieve path и complete SQL/source/history сохраняются. Все5 handovers,
-cold recovery, phase1-only abandon/cancel и последующее owned чтение исходного
-пути прошли. Проверка нашла и исправила current-PMT2-only препятствие в retained
-ContactResolve courier: private loan existing DR-0100 exact request/time capability,
-без нового Protocol API/wire и без historical routing. Targeted20/0/0/native0
-за8.0869min, canonical exact20; первоначальные fixture SQL, product projection
-и fixture expired-PMA2 FAIL сохранены. Final build0/zero warnings/errors за5.06s.
-Это source-checkpoint S01, не приёмка этапа. Remaining acquisition/traversal/
-last-path closure, rollover, sustained128/512 и mandatory full ещё открыты.
-[Наблюдения](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#closed-unused-retrieve-and-retained-courier-projection).
-Shared `01ca948` реализует explicit original Retrieve → pending successor →
-verified selected/SQL-installed successor через actual account owner, без
-автоматического S04 scheduler. Точный pending retry после обрыва/отмены и cold
-reopen не remint-ит запрос; stale selector после дальнейшего successor и closed
-unknown tail отвергаются. Старый holder/path/read/native custody сохраняется.
-Superseded-holder empty/nonempty fixtures теперь получают replacement через
-этот owner/courier, не прямой записью protected selection. Targeted24/0/0/native0,
-build0/zero warnings/errors; первоначальный23/17 passed/6 fixture-observer FAIL
-сохранён. Это source-checkpoint, S01 не закрыт: linked/remaining acquisition,
-traversal/last-path, rollover, sustained128/512 и current mandatory full открыты.
-[Evidence](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#explicit-owned-retrieve-renewal--2026-10-09).
-Shared `cbdf225` / Protocol `2df56b7` добавляют linked closed-unused Retrieve-tail
-disposition с сохранением выбранного original holder/read/ACK и native consent.
-Исправлены expired-XUR/old-PMT препятствия при реконструкции committed contacts;
-новые read-only facts не разрешают renewal из старого PMT. First ContactAccept
-send/receive проверяет live endpoints/XUR/full route до native mutation;
-exact committed replay после expiry сохраняет прежний floor. Final focused
-25/0/0/native0, build0/zero warnings/errors; canonical prior23 comparison0,
-first-run two new negatives остаются references для итогового full. Не приёмка
-S01: remaining acquisition/traversal/last-path, new-routing/authoring rollover,
-sustained128/512 и mandatory full открыты. Все FAIL сохранены в
-[checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md#linked-closed-retrieve-and-committed-contact-history--2026-10-09).
+S01 остаётся единственным активным этапом; S02 не активирован. Текущий
+проверенный source пакет закрывает joint archived-path disposition через exact
+dependency index, irreversible original namespace exclusion, held account lease,
+protected roots/native SQL fence и complete application SQL readback.
+Native consent/history, dedup, receipt work и последний current read/ACK path
+не удаляются ради освобождения slots.
+
+Текущая проверенная реализация и границы evidence:
+
+- Shared: archived-path matrix23/0/0/native0 проверяет empty/nonempty disposition,
+  все cold handovers, отмену/phase1-only abandon и hostile SQL/staging refusals
+  за actual object horizon с genuine signed XNA1/DTS1/head/view successors.
+  Это compiled inputs до последующего clock correction, не current full.
+- Shared: исправлена зависимость fresh dispatch от expired preparation clock.
+  Captured conservative upper floor теперь также растёт с elapsed; новая
+  matching regression15/0/0/native0 включает13 arithmetic cases и2 actual native
+  scenarios: exact Store retry/durable receipt и publication promotion/lost ACK.
+  Build0/zero warnings. Format, original expiry и replay/deletion rules не ослаблены.
+- Shared: actual new contact/Hello/Accept/text/lost-ACK проходит после original
+  PMA expiry на genuine same-key XNA/DTS renewal/current operational closure:
+  focused1/0/0/native0, build0/zero warnings. Genesis/history/advanced PMT epoch
+  сохранены; in-process signed services не являются device/production evidence.
+  Independent root/witness/issuer key rotation и DCA/XUR rollover ещё открыты.
+- Shared: новый actual-owner refusal scenario1/0/0/native0 доказывает отсутствие
+  разрешения на удаление при потере protected traversal/read replay floor/current
+  permanent path; SQL, damaged roots и idle plan сохраняются при повторном отказе.
+  Shared full01 намеренно остановлен перед необходимым согласованием входов:
+  build0/zero warnings, prerequisite6/0/0, partial711/1/0, actual test1 и
+  qualification1,712 из895 cases. До остановки найден устаревший отрицательный
+  assertion чтения retained IncomingRequest; он исправлен с сохранением native
+  floor и отдельного запрета нового dispatch. Focused повтор7/0/0/native0,
+  build0/zero warnings;
+  full PASS или приёмки S01 нет, исходный FAIL сохранён.
+  Свежий Shared full02 завершился native0:892/0/0, build0/zero warnings,
+  prerequisite6/0/0. Qualification1/FullAccepted=false: в заранее объявленной
+  union895 отсутствуют три ранее переименованных/расширенных cases. Отдельная
+  post-terminal проверка подтверждает1919 unchanged inputs; она не исправляет
+  missing-case FAIL. Добавлены самостоятельные current-only ContactAccept
+  expiry и initial/Accept used-Deposit guard fixtures под обязательными именами;
+  matching build0/zero warnings. Focused повтор3/0/0/native0 восстанавливает
+  все три exact original case IDs; отдельный compiled discovery0 содержит
+  ровно895 обязательных имён без missing/extra. Fresh matching full03 завершён:
+  895/0/0, build/preflight/test/qualification0, exact895 cases и1922 unchanged
+  inputs; FullAccepted=true. Это qualification текущего Shared source batch,
+  не автоматическое закрытие всего S01 или physical/release acceptance.
+- Protocol: verified-ancestor history и current-authority operational author по
+  DR-0107/0108 сохраняют полный protected history/journal и original namespace;
+  matching producer171/0/0/native0 сохраняет прежние125 cases и включает25 новых
+  operational cases. Новый full2196/1/7/native1 выполнен, но qualification1:
+  требуется восстановленный original witness-policy case,2204 из2205 cases.
+  Он проверяет сохранённые trust settings и rejects старый DTS, не legacy alias;
+  focused повтор11/0/0/native0 и build0/zero warnings. Свежий full02 завершён:
+  2197/1/7/native1, exact2205 cases, qualification0 и unchanged inputs;
+  build0/zero warnings. Единственный FAIL — прежний actual-package witness,
+  семь skips — шесть native-provider cases и operator-only predecessor capture.
+  FullAccepted=false сохранён: source matrix не является shipping/activation.
+- DevOps: обе caller сборки и5 synthetic FileSigner scenarios проходят.
+  Точный PowerShell7.5.4 witness подготовлен как проверенный официальный
+  portable binary; системный PATH не менялся. Это только prerequisite.
+- Root: status-reader теперь сравнивает exact UTC ticks вместо string/DateTime;
+  live start, mismatch на1 tick и malformed start проходят в общей matrix33/0
+  под PowerShell5.1 и7.5.4. Normative epoch-exclusion prose согласована с DR-0108;
+  только transport-neutral source hash repinned,176 anchors без изменений,
+  strict registry проходит. Эти проверки не заменяют финальные Shared/Protocol gates.
+
+Подробные команды, hashes, предыдущие commits и сохранённые FAIL:
+[Shared checkpoint](../deep-client-shared/docs/testing/s01-idle-mailbox-floors-2026-10-09.md),
+[Protocol checkpoint](../deep-protocol/docs/testing/s01-authority-horizon-2026-10-09.md).
+Пакет зафиксирован отдельными commits от zhigubigule/no-reply:
+Shared `5057069`, Protocol `9700e76`, DevOps `2a43ba3`.
+Более ранние target-only наблюдения относятся к своим inputs, не являются
+текущей приёмкой и не образуют отдельную очередь.
+
+Осталось до приёмки S01:
+
+- проверить полноту закрытых acquisition/traversal/last-path contracts и matching
+  local API/layout/fault fixtures за пределами archived-path матрицы; неизвестную
+  или неквалифицированную ветку не объявлять закрытой по соседнему PASS;
+
+Matching Shared full03 принят; Protocol full02 имеет exact source qualification0
+с сохранённым native1 / FullAccepted=false из-за прежнего actual-package witness
+(S08, DR-0095). Final diff и changed-source secret review пройдены:61 files,
+0 findings, четыре diff checks0. Не повторять эти неизменённые source gates и не
+объявлять shipping PASS; фиксация source package не подменяет whole-S01 review.
+
+Границы этапов сверены с [единым планом](architecture/IMPLEMENTATION-PLAN-V1.md#s01--закрыть-недостающие-контракты-без-нового-wire-по-умолчанию)
+и [DR-0084](survival-program/decisions/DR-0084-owned-delivery-settlement-and-retirement.md#implementation-boundary).
+Следующие требования **не выполнены и не отменены**, но не расширяют S01 до
+runtime/release qualification следующих этапов:
+
+- **S04:** activation client transition/compaction, sustained128/512 с distinct
+  scopes и pending/unknown/rejected/expired/cancelled work, backpressure,
+  сохранение replay protection после cleanup/cold restart и всех handovers;
+- **S04/S05:** полный current DCA/XUR/PMT/issuer/root rollover для actual new
+  routing/authoring, verified catch-up и воспроизводимый operational lifecycle.
+  Same-key source scenario выше не квалифицирует независимую key rotation;
+- **S09:** sustained delivery/recovery через реальные endpoints и сохранённые
+  identities; source fixtures не заменяют connected/physical evidence.
+
+S02 не активирован. До принятия S01 проверяются его contracts/API и обязательные
+source gates, а не добавляются новые runtime scheduler/rotation/stress batches.
+Готовность runtime, физического E2E и релиза остаётся отдельной незакрытой целью.
+
+Ни focused матрицы, ни source build не закрывают S01 или device E2E и не дают
+разрешения включить runtime cleanup. Physical contacts/messages/files/groups,
+production activation и release остаются последующими незакрытыми requirements
+единого DAG; GitHub Releases/main этим пакетом не изменялись.
+
 Новый grant, expiry, пустой poll, отсутствие SQL rows или capacity не разрешают
 удаление floor либо последнего retained read/ACK path. Безопасное освобождение
 slots не remint-ит pending/unknown request и не увеличивает128/512.
@@ -102,7 +144,7 @@ Sender, codecs, SQL inbox и native blob/tombstone retention согласова�
 normative object horizon. Store остаётся current-only; expired grant не разрешает
 новое admission. Это ещё не runtime activation или закрытие S01.
 
-| Проверка текущего batch | Наблюдаемое evidence / оставшаяся часть |
+| Предыдущая source-baseline qualification, не current inputs | Наблюдаемое evidence / оставшаяся часть |
 | --- | --- |
 | Shared | Functional batch `a5c6d7d` ранее квалифицирован736/0/0 и запушен. Test-throughput follow-up `f45e4b8` локальный, без push: full751/0/0 за37m53s, actual build/test/qualification0, exact prior736+new15 и1794 inputs unchanged. Два isolated methods, scoped crash hooks; assertions/crypto/deadlines сохранены. Не release acceptance. [Functional receipt](../deep-client-shared/docs/testing/s01-retained-owner-2026-10-07.md#current-full-source-qualification--2026-10-08), [test execution](../deep-client-shared/docs/ARCHITECTURE.md#production-test-execution) |
 | Node | Matching full1363/0/0, build/test/qualification0, exact required mappings/2191 inputs unchanged;9 new path-security cases included. Uncached Windows path-check оптимизация не убирает guards/deadlines. [Current terminal](../xnode/docs/testing/s01-native-store-path-safety-2026-10-08.md#matching-full-and-docker-terminal) |

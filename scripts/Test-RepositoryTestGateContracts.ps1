@@ -152,6 +152,23 @@ try {
     if ($result.Skipped -ne 2) { throw 'Skipped display-name collisions lost executions.' }
     $checks++
 
+    $ownProcess = Get-Process -Id $PID
+    $ownStarted = $ownProcess.StartTime.ToUniversalTime()
+    [pscustomobject]@{ RunnerProcessId = $PID; RunnerProcessStartedAt = $ownStarted.ToString('o') } |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $root 'running.json') -Encoding UTF8
+    $status = Get-TestGateStatus $root
+    if ($status.State -ne 'Running' -or $status.FullAccepted) { throw 'An exact live native start receipt was rejected.' }
+    $checks++
+    [pscustomobject]@{ RunnerProcessId = $PID; RunnerProcessStartedAt = $ownStarted.AddTicks(-1).ToString('o') } |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $root 'running.json') -Encoding UTF8
+    $status = Get-TestGateStatus $root
+    if ($status.State -ne 'Interrupted' -or $status.FullAccepted) { throw 'A reused PID or different process start was accepted.' }
+    $checks++
+    [pscustomobject]@{ RunnerProcessId = $PID; RunnerProcessStartedAt = 'invalid-start' } |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $root 'running.json') -Encoding UTF8
+    $status = Get-TestGateStatus $root
+    if ($status.State -ne 'Interrupted' -or $status.FullAccepted) { throw 'A malformed process start was accepted.' }
+    $checks++
     [pscustomobject]@{ RunnerProcessId = 2147483647; RunnerProcessStartedAt = '2000-01-01T00:00:00Z' } |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $root 'running.json') -Encoding UTF8
     $status = Get-TestGateStatus $root

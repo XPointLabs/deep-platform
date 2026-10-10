@@ -100,6 +100,17 @@ replayed before publication. The old DID1 head author cannot authorize a DID2
 admission; service cutover must select the V2-only path. ADP1 publication,
 freshness/DTT closure and clients remain separate release gates.
 
+For V2 head renewal, an exact protected predecessor MAY name an earlier member
+of the fully verified XNA1 lineage. Before any witness callback, the author MUST
+re-authenticate that head under its own exact ancestor authority, witness policy
+and threshold, retain the reader floor, and replay the complete V2 journal/map.
+The successor MUST consume the exact predecessor core and preserve the log/map
+unless its verified V2 transitions change them; its authority, witnesses and
+validity are those of the terminal current XNA1. Historical floor verification
+does not grant current proof issuance. DTS1 renewal changes the witness-policy
+hash projection even if the witness keys and their generation remain unchanged;
+neither hash equality nor a raw ancestor hash replaces verified lineage.
+
 The DID2 Registry admission service obtains the exact XNA1/DTS1 lineage from
 files verified against a separately pinned genesis authority core hash; it
 MUST NOT derive network authority from an ADA1 head or ADP1 V1 response. Its

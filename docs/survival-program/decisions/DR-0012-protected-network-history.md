@@ -44,9 +44,10 @@ must not replace durable monotonic verification after restart.
   are idempotent; rollback, omitted prior history, fork and cross-network tuples
   reject. Prior expiry is not a reason to erase this history, nor does the history
   grant permission to open expired traffic keys.
-- This initial full-history boundary requires an unchanged XNA1 authority
-  core reference. An authority rollover rejects rather than resetting the floor;
-  verified authority-ancestor inclusion is a separate future extension.
+- The initial full-history boundary required an unchanged XNA1 authority core.
+  Its verified-ancestor extension is now owned by
+  [DR-0107](DR-0107-protected-authority-lineage-continuity.md); it changes neither
+  capsule framing nor floor custody and never authorizes a history reset.
 - Only the terminal view uses the caller's newly acquired nonce-bound DID2/DTT1
   proof and monotonic deadline. Prior views are historical linkage evidence,
   never separately revived receive capabilities. A successful result carries

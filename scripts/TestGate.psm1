@@ -312,7 +312,21 @@ function Get-TestGateStatus {
     if (!(Test-Path -LiteralPath $runningPath)) { throw 'The run has no start receipt.' }
     $running = Get-Content -LiteralPath $runningPath -Raw -Encoding UTF8 | ConvertFrom-Json
     $process = Get-Process -Id $running.RunnerProcessId -ErrorAction SilentlyContinue
-    $active = $null -ne $process -and $process.StartTime.ToUniversalTime().ToString('o') -ceq $running.RunnerProcessStartedAt
+    # PowerShell7 parses an ISO JSON date as DateTime; 5.1 retains the string.
+    # Compare exact UTC ticks in both cases, retaining the process-start guard
+    # against PID reuse. A malformed/missing timestamp is never a live receipt.
+    $recordedStart = [DateTime]::MinValue
+    $validStart = $false
+    if ($running.RunnerProcessStartedAt -is [DateTime]) {
+        $recordedStart = $running.RunnerProcessStartedAt.ToUniversalTime()
+        $validStart = $true
+    } elseif ($running.RunnerProcessStartedAt -is [string]) {
+        $validStart = [DateTime]::TryParseExact($running.RunnerProcessStartedAt, 'o',
+            [Globalization.CultureInfo]::InvariantCulture,
+            [Globalization.DateTimeStyles]::RoundtripKind, [ref]$recordedStart)
+        if ($validStart) { $recordedStart = $recordedStart.ToUniversalTime() }
+    }
+    $active = $null -ne $process -and $validStart -and $process.StartTime.ToUniversalTime().Ticks -eq $recordedStart.Ticks
     [pscustomobject]@{ State = $(if ($active) { 'Running' } else { 'Interrupted' }); FullAccepted = $false }
 }
 

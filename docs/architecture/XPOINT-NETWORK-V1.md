@@ -496,6 +496,26 @@ Routine XND1/XNV1/XNH1/PMT2 renewal MAY retain exact live XVP1/PMA2 policies;
 root custody is offline. PMT2 MUST still bind the exact terminal XNV1 and its
 protected predecessor. See the separately frozen delegated producer contract
 [DR-0015](../survival-program/decisions/DR-0015-delegated-operational-renewal.md).
+The operational successor request takes terminal `VerifiedXPointNetworkAuthority`
+from the full paired authority chain. Routine same-key XNA1/DTS1 renewal uses
+the bounded offline `AuthorSameKeyRenewalAsync` producer under DR-0108; it
+reauthenticates all original policies before callbacks, preserves keys/policy
+and floors, requires overlapping signed windows and extends DTS within30days.
+Its output is authored bytes, not current authority; the full unchanged-genesis
+chain is verified again. Root/witness-key rotation is outside that routine API.
+The operational request then takes terminal authority
+from the complete genesis-pinned XNA1/DTS1 chain, not a generation-zero bootstrap
+([DR-0108](../survival-program/decisions/DR-0108-current-authority-operational-successor.md)).
+Before any signer callback, the exact protected predecessor and complete view-log
+prefix authenticate under each record's own verified ancestor, preserving its
+original keys, signed bounds and nondecreasing authority generation. The prefix
+must reconstruct the actual protected head root; its last view and head share
+the same authority. An offline root-authorized successor explicitly binds all
+new policy/view/head/PMA fields to terminal current authority and retains exact
+predecessor links and the placement epoch. Delegated renewal cannot carry an
+ancestor's policy/PMA into the current authority: both exact live delegations
+must already name the terminal authority. Historical authentication grants no
+current issuer, signing, exclusion or deletion capability.
 Revoked IDs are distinct and sorted. Service refs sort by `(magic,coreHash)` with no
 duplicate. XCB1 artifact refs sort bytewise and every binding target
 resolves to an XND1/XCD1 core committed by tags 12/16. Invalid or unresolved
@@ -796,6 +816,18 @@ signature, predecessor/checkpoint, network and minimum-reader verification plus 
 fresh nonce-bound DTT1 linking the current ADH1/XNV1. Cached artifact windows are
 validity bounds, not a current-time source.
 
+Under [DR-0107](../survival-program/decisions/DR-0107-protected-authority-lineage-continuity.md),
+complete network history MAY span the fully verified pinned XNA1/DTS1 lineage.
+Each historical XVP1 and XNV1/XNH1/PMT2 step MUST use its own exact authorizing
+ancestor's keys, thresholds, witness policy and enclosing authority interval;
+ordered policy/view authority generations MUST NOT decrease. The terminal
+closure and nonce-bound DTT1 remain current-authority/current-time only.
+Cold restoration MUST bind the actual protected prior authority to its included
+original policy/view/head and exact PMT, preserving predecessor, selection epoch
+and independent floor custody. Ancestor membership alone grants no issuance,
+traffic-key revival, epoch-exclusion or deletion permission; no reset or tuple-only
+checkpoint replaces that complete original lineage.
+
 The V1 control-plane partition horizon is exactly the 72-hour `StaleReadOnly`
 grace after the last verified XNV1 expires. During that horizon, the client may use
 its protected LKG only to reach previously authenticated entry/witness/acquisition
@@ -837,6 +869,21 @@ HTTP distribution uses the exact media types exposed by the Protocol codec;
 bounded transport and TLS checks remain consumer-owned.
 
 ## 9. Mailbox placement and storage swarms
+
+Original-namespace continuity follows
+[DR-0108](../survival-program/decisions/DR-0108-current-authority-operational-successor.md):
+the exact retained PMT artifact keeps its actual verified view-authority join,
+including across warm/cold root renewal. The closed current host metadata API
+reauthenticates the exact original profile2 PMA named by that PMT under its own
+ancestor's root/witness keys and policy bounds, rechecking current host/time.
+This returns no current issuer, expired grant, non-issuance or deletion authority.
+Owned epoch exclusion additionally requires exact original protected acquisition,
+independently anchored current history, a strictly later selection epoch and the
+original possible-issuance ceiling under one live account lease. The accepted
+object horizon and complete local dependency/cold-recovery proof remain mandatory
+for retirement; an ancestor hash, current keys or terminal-only reset cannot
+replace the original namespace. Committed historical contact route signatures
+use that same exact PMT's original authority, not current witness keys.
 
 Production generation 1 uses clean-break `PMA2/PMT2/PMS2` records. It ports the
 reviewed deterministic `Rendezvous-SHA256-v2` placement algorithm but rejects

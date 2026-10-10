@@ -533,8 +533,12 @@ Dispose, cancellation, expired proof, clock discontinuity, changed/missing root
 или anchor не разрешают effect. Crash уничтожает transient capability; после
 reopen новый producer независимо проверяет signed chain от actual retained DNH2
 и original custody. Bare digest, cached receipt и tuple-only checkpoint не
-восстанавливают authority. Unchanged authority lineage обязательна; rollover,
-reset или forward-only joins без сохранённого exact floor недоступны. Совместный
+восстанавливают authority. По [DR-0108](../survival-program/decisions/DR-0108-current-authority-operational-successor.md)
+original namespace проверяется под своим exact retained ancestor в полностью
+проверенной unchanged-genesis chain; current host/time и actual native floor
+проверяются независимо. Это historical fact, не current issuer/holder permission.
+Reset, отсутствующий predecessor или forward-only join без сохранённого exact
+floor недоступны. Совместный
 откат SQL и protected storage остаётся вне локальной гарантии DR-0012.
 
 Этот prerequisite исключает admission старого epoch, но **не** является полной
