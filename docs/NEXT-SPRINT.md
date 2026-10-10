@@ -25,7 +25,39 @@ S02 — единственный активный этап. Следующий �
   обязательный matching Node full и отдельные external/no-mock smoke/rehearsal.
   Старый Node PASS не квалифицирует новый consumer input.
 
-Текущий квалифицированный Node source — `31784a9`, зафиксирован и запушен.
+Текущий квалифицированный Node source — `6cf28f6`, зафиксирован и запушен.
+Завершённый связный source/transport пакет:
+actual public HTTPS/H2 entry → selected-exit → Store/read/ACK/cold exact retry;
+отказы malformed MHT/wrong entry/wrong Store exit без native mailbox effects;
+независимые client replay floors в существующем защищённом operation document.
+Это private-state clean-break, без нового wire, второго журнала и смены ключей нод.
+Focused34/0/0 и завершающий focused5/0/0 имеют native0; recovery-only30/0/0
+без сохранённого terminal exit не объявляется полным PASS. Matching full1429
+завершился native1:23 FAIL в fault-injection/recovery cases; пакет не принят.
+Сейчас один corrective batch: semantic intent/settlement crash seams, актуальная
+backup-точка Retrieve callback и отдельные raw replay-floor write failures;
+assertions сохранены. Corrective focused27/0/0/native0 прошёл все23 падения и
+два новых floor crash случая. Corrective matching full1431 завершился native1:
+Integration1069/0/0 и ProfileGenerator107/0/0 прошли, unit254/1/0 упал на native
+`MoveFileEx` / `Access is denied` в concurrent replay test. Причина отказа ещё
+не установлена. Шесть isolated current Release повторов и два unit255/0/0/native0
+не воспроизвели отказ. Проблемный тест усилен cold read-back всех51 claims и
+floor плюс безопасной диагностикой native error/attributes; runtime retries/ACL
+не менялись. Новый focused19/0/0 и unit255/0/0 имеют native0/build0.
+Matching full03 завершён native0:1431/0/0, exact1431 required cases,
+2137 unchanged inputs, все exits0, zero build warnings/errors, FullAccepted=true.
+Предыдущий FAIL не стирается и native denial не объявляется исправленным.
+Текущий пакет квалифицирован по source и отдельным external/no-mock transport:
+smoke/rehearsal завершились native0, real Xray, runtime failures/warnings0;
+три distinct router, Registry count3/reconciliation0 и ожидаемый503 без authority.
+Оба disposable стека удалены, шесть existing `deep-dev` контейнеров сохранены.
+Осталось сверить весь S02 с критериями
+этапа и замкнуть недоказанные producer/consumer negative boundaries одним пакетом.
+Отдельно проверить stale MAU2-названия neutral runtime status/tests: codec уже
+MAU3, но название не должно вводить в заблуждение или сохранять retired API alias.
+Retained original-epoch native-peer case проверен отдельно, не через
+configured public HTTP. Coordinated peer replay/mutation/blob loss не закрывается
+client floors и остаётся у S03. Доказательства и ограничения — в checkpoint ниже.
 На трёх actual configured Program-хостах проверены explicit enrollment → readiness
 → onion Store/Retrieve/ACK → cold restart/exact retry, настоящие peer HTTPS
 endpoints и native custody, без подмены endpoint/authority и удаления hosted
@@ -33,7 +65,8 @@ services. Исправлен реальный ID-as-key дефект HTTP onion 
 ключ берётся из verified XND1, а не из байтов RouterId. Native recovery/readiness
 и отказ new-host enrollment при existing custody сохранены.
 
-Matching focused49/0/0/native0 и canonical full1423/0/0: все exits0, zero build
+У предыдущего baseline `31784a9` matching focused49/0/0/native0 и canonical
+full1423/0/0: все exits0, zero build
 warnings/errors, exact1423 required cases и2129 unchanged inputs,
 FullAccepted=true; Desktop5.1.26100.9457/SDK10.0.301. Отдельные current
 external/no-mock smoke и трёхнодовый rehearsal завершены native0: real Xray,

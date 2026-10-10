@@ -9,11 +9,20 @@ mapping belong to [XNode custody](../../../xnode/docs/mailbox-operation-custody.
 No client wire, Protocol public API, account identity or cryptographic suite changes.
 This is not another operation journal or a legacy reader.
 
-An independent protected root anchors the exact existing schema-6 operation
+An independent protected root anchors the exact existing schema-7 operation
 document before its allocator is used. Missing or rolled-back data cannot be
 treated as an empty first run, even before any native mutation exists. Readers
 never enroll a scope. Explicit new-node provisioning must reject existing or
 interrupted custody before creating an empty document.
+
+The 2026-10-10 local-state amendment, implementing DR-0084's independent replay
+floor obligation, extends this same document with protected current client
+scope/counter/claim floors and completed outcome digests. The exact mapping and
+crash boundary remain solely in the XNode local contract above. Schema6 rejects;
+no migration, second journal, wire value or reader enrollment is added. Native
+client replay/outcome cold loss or rollback cannot be accepted as an empty scope
+while this independent operation root remains intact. Peer mutation/blob-wide
+anti-rollback and retention activation remain separate evidence requirements.
 
 Save uses the existing exact temporary document, then a protected bounded
 pending transition, then replacement/read-back, then protected root commit.

@@ -7,6 +7,7 @@ $currentPath = Join-Path $root 'current.trx'
 $referencePath = Join-Path $root 'reference.trx'
 $secondPath = Join-Path $root 'second.trx'
 $checks = 0
+$inventoryRoot = Join-Path $root 'inputs'
 
 function Receipt([string]$Name = 'Example.Case', [string]$Outcome = 'Passed',
     [int]$Executed = 1, [int]$Passed = 1, [int]$Failed = 0,
@@ -187,8 +188,41 @@ try {
         throw 'Native Git authority overrides were not isolated/restored.'
     }
     $checks++
+    $inventoryRepo = Join-Path $inventoryRoot 'node'
+    $fixtureOutput = Join-Path $inventoryRepo 'tests\Example.Tests\bin\Release\net10.0\Fixtures'
+    $null = New-Item -ItemType Directory -Path $fixtureOutput -Force
+    foreach ($relative in @('docs\architecture', 'docs\survival-program\decisions',
+        'docs\survival-program\releases\v3.0.0\specs', 'scripts')) {
+        $null = New-Item -ItemType Directory -Path (Join-Path $inventoryRoot $relative) -Force
+    }
+    & git -C $inventoryRepo init --quiet
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot initialize disposable input inventory fixture.' }
+    '<Solution><Project Path="tests/Example.Tests/Example.Tests.csproj" /></Solution>' |
+        Set-Content -LiteralPath (Join-Path $inventoryRepo 'Node.slnx') -Encoding UTF8
+    $helper = Join-Path $fixtureOutput 'configured-ingress.cjs'
+    'process.exit(0);' | Set-Content -LiteralPath $helper -Encoding UTF8
+    $capture = Get-TestGateInputs -WorkspaceRoot $inventoryRoot -Repositories @('node') `
+        -Configuration Release -BinaryRepository node -Solution Node.slnx
+    $helperRelative = 'node/tests/Example.Tests/bin/Release/net10.0/Fixtures/configured-ingress.cjs'
+    $helperInput = @($capture | Where-Object { $_.Path.Replace('\', '/') -ceq $helperRelative })
+    if ($helperInput.Count -ne 1) { throw 'Copied executable HTTP/2 helper escaped frozen binary inventory.' }
+    'process.exit(1);' | Set-Content -LiteralPath $helper -Encoding UTF8
+    $changedCapture = Get-TestGateInputs -WorkspaceRoot $inventoryRoot -Repositories @('node') `
+        -Configuration Release -BinaryRepository node -Solution Node.slnx
+    if ((ConvertTo-Json -InputObject $capture -Compress) -ceq (ConvertTo-Json -InputObject $changedCapture -Compress)) {
+        throw 'Executable helper byte substitution did not change captured inputs.'
+    }
+    $checks += 2
     Write-Output "Unified test-gate contracts passed: $checks"
 } finally {
+    if (Test-Path -LiteralPath $inventoryRoot) {
+        $resolvedInventory = [IO.Path]::GetFullPath($inventoryRoot)
+        $expectedInventory = [IO.Path]::GetFullPath((Join-Path $root 'inputs'))
+        if ($resolvedInventory -cne $expectedInventory -or
+            !$resolvedInventory.StartsWith([IO.Path]::GetFullPath($root) + [IO.Path]::DirectorySeparatorChar,
+                [StringComparison]::OrdinalIgnoreCase)) { throw 'Unexpected inventory cleanup target.' }
+        Remove-Item -LiteralPath $resolvedInventory -Recurse -Force
+    }
     foreach ($path in @($currentPath, $referencePath, $secondPath, (Join-Path $root 'running.json'), (Join-Path $root 'terminal.json'),
         (Join-Path $root 'native.txt'), (Join-Path $root 'native.txt.stderr'))) {
         if (Test-Path -LiteralPath $path) { Remove-Item -LiteralPath $path }

@@ -205,7 +205,7 @@ function Get-TestGateInputs {
                     foreach ($file in Get-ChildItem -LiteralPath $output -Recurse -File) {
                         $relativeOutput = $file.FullName.Substring($output.Length)
                         if ($relativeOutput -match '[\\/]artifacts[\\/]') { continue }
-                        if ($file.Extension -in @('.dll', '.exe', '.json', '.so', '.dylib', '.sql', '.config')) { $null = $paths.Add($file.FullName) }
+                        if ($file.Extension -in @('.dll', '.exe', '.json', '.so', '.dylib', '.sql', '.config', '.cjs')) { $null = $paths.Add($file.FullName) }
                     }
                 }
             }
