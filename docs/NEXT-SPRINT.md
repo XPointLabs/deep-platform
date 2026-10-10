@@ -25,20 +25,25 @@ S02 — единственный активный этап. Следующий �
   обязательный matching Node full и отдельные external/no-mock smoke/rehearsal.
   Старый Node PASS не квалифицирует новый consumer input.
 
-Первая current-consumer проверка завершена: Node build с warnings-as-errors0,
-focused91/0/0/native0 и exact91 TRX mappings. Это не full/приёмка S02.
-Реализован denial-only native recovery/readiness пакет: mutation/blob linkage,
-peer replay readback и completed client replay/outcome join. Matching focused
-52/0/0/native0; matching Node full1390/0/0, все exits0, exact1390 и2130 unchanged
-inputs, FullAccepted=true. External/no-mock smoke завершён native0:
-real Xray, external services, runtime gate без hard/soft failures.
-Обязательный трёхнодовый no-mock rehearsal завершён native0: три real-Xray
-routers, Registry registration/reconciliation и expected fail-closed503 без
-verified authority. Node source пакет зафиксирован/запушен как `1c38f45`;
-полный source PASS не означает приёмку S02. Следующий незакрытый unit —
-independent protected cold rollback/absence coverage и оставшиеся whole-host
-provisioning/retained-route/selected-exit boundaries, не повтор DI registration.
-Scope, команды, исходный fixture FAIL и SHA — в
+Текущий квалифицированный Node source — `540629b`, зафиксирован и запушен.
+Native recovery/readiness проверяет mutation/blob linkage, peer replay readback
+и completed client replay/outcome join. New-host enrollment отказывает при
+existing native custody; reader сохраняет interrupted files, не ремонтируя их.
+Matching focused187/0/0/native0 и full02:1414/0/0, все exits0, exact1414,
+2129 unchanged inputs, FullAccepted=true; Desktop5.1.26100.9457/SDK10.0.301.
+External/no-mock smoke и трёхнодовый rehearsal завершены native0: real Xray,
+runtime failures0, три distinct router, Registry count3/reconciliation0,
+expected fail-closed503 без authority. Оба временных стека удалены,
+существующий `deep-dev` сохранён. Это source/Development transport evidence,
+не physical delivery или приёмка S02. Исходный full01 FAIL initial Store в
+`CurrentRetrieveCannotSkipLivePendingCustodyBelowCrossReplicaContinuation(reopen: True)`
+не воспроизвёлся; причина не установлена, FAIL сохранён, assertions не ослаблены.
+
+Следующий связный пакет S02 — actual configured Program/provisioning/readiness
+с текущими proof/network sources и Store/Retrieve/ACK, retained-route/selected-exit
+и оставшаяся native-loss/rollback closure, не повтор DI registration.
+Существующий positive Program fixture подменяет endpoint и отключает hosted
+services; его PASS не закрывает эту границу. Scope, команды, исходные FAIL и SHA — в
 [S02 checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md).
 
 ## Завершённый S01 source пакет и его evidence
