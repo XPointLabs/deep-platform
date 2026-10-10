@@ -27,8 +27,18 @@ S02 — единственный активный этап. Следующий �
 
 Первая current-consumer проверка завершена: Node build с warnings-as-errors0,
 focused91/0/0/native0 и exact91 TRX mappings. Это не full/приёмка S02.
-Следующий implementation unit — whole-host native-state recovery/readiness,
-не повтор прежней DI registration. Scope, команда и SHA — в
+Реализован denial-only native recovery/readiness пакет: mutation/blob linkage,
+peer replay readback и completed client replay/outcome join. Matching focused
+52/0/0/native0; matching Node full1390/0/0, все exits0, exact1390 и2130 unchanged
+inputs, FullAccepted=true. External/no-mock smoke завершён native0:
+real Xray, external services, runtime gate без hard/soft failures.
+Обязательный трёхнодовый no-mock rehearsal завершён native0: три real-Xray
+routers, Registry registration/reconciliation и expected fail-closed503 без
+verified authority. Node source пакет зафиксирован/запушен как `1c38f45`;
+полный source PASS не означает приёмку S02. Следующий незакрытый unit —
+independent protected cold rollback/absence coverage и оставшиеся whole-host
+provisioning/retained-route/selected-exit boundaries, не повтор DI registration.
+Scope, команды, исходный fixture FAIL и SHA — в
 [S02 checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md).
 
 ## Завершённый S01 source пакет и его evidence
