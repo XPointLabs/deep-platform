@@ -11,82 +11,50 @@ FAIL — в связанных repo-checkpoints и Git, не второй backlo
 
 ## Единственная текущая подзадача
 
-**S02 — current XNode client admission / Program composition.**
+**S03 — grant-bound peer replication и quorum.**
 
 S01 принят как contract/API stage после
 [сверки всех блоков](S01-CONTRACT-REVIEW-2026-10-10.md), не как runtime/release.
-S02 — единственный активный этап. Следующий связный пакет:
+S02 принят как current-only native/configured node source/composition stage после
+[сверки критериев](S02-CURRENT-NODE-REVIEW-2026-10-10.md), не как production activation,
+shipping или physical delivery. Node `5c96043` закоммичен и запушен;
+remote SHA подтверждён, дерево Node чистое.
+S03 — единственный следующий активный этап:
 
-- проверить actual Program/DI, current source/role floors и Store/Retrieve/ACK
-  consumers на текущем Protocol producer, а не на старых compiled binaries;
-- замкнуть missing whole-host/retained-route/selected-exit boundaries внутри S02,
-  не добавляя scheduler, новый wire или второй native graph;
-- после реализации — focused current admission/composition matrix, затем
-  обязательный matching Node full и отдельные external/no-mock smoke/rehearsal.
-  Старый Node PASS не квалифицирует новый consumer input.
+- сверить весь peer Store/read/ACK cycle с DR-0081 и фактическими HTTP
+  receiver/coordinator, independent native stores и current lease;
+- завершить недостающие связные runtime/fault cases: partial commit/lost response,
+  late completion/cross-coordinator ownership, retained ordering/horizon,
+  peer-wide loss/rollback, exact cold retry и отсутствие resurrection;
+- сначала закончить один связный S03 implementation package и целевые проверки,
+  затем matching build/full/transport, acceptance и отдельный commit/push.
+  Не расширять пакет задачами client scheduler или production provisioning.
 
-Текущий квалифицированный Node source — `6cf28f6`, зафиксирован и запушен.
-Завершённый связный source/transport пакет:
-actual public HTTPS/H2 entry → selected-exit → Store/read/ACK/cold exact retry;
-отказы malformed MHT/wrong entry/wrong Store exit без native mailbox effects;
-независимые client replay floors в существующем защищённом operation document.
-Это private-state clean-break, без нового wire, второго журнала и смены ключей нод.
-Focused34/0/0 и завершающий focused5/0/0 имеют native0; recovery-only30/0/0
-без сохранённого terminal exit не объявляется полным PASS. Matching full1429
-завершился native1:23 FAIL в fault-injection/recovery cases; пакет не принят.
-Сейчас один corrective batch: semantic intent/settlement crash seams, актуальная
-backup-точка Retrieve callback и отдельные raw replay-floor write failures;
-assertions сохранены. Corrective focused27/0/0/native0 прошёл все23 падения и
-два новых floor crash случая. Corrective matching full1431 завершился native1:
-Integration1069/0/0 и ProfileGenerator107/0/0 прошли, unit254/1/0 упал на native
-`MoveFileEx` / `Access is denied` в concurrent replay test. Причина отказа ещё
-не установлена. Шесть isolated current Release повторов и два unit255/0/0/native0
-не воспроизвели отказ. Проблемный тест усилен cold read-back всех51 claims и
-floor плюс безопасной диагностикой native error/attributes; runtime retries/ACL
-не менялись. Новый focused19/0/0 и unit255/0/0 имеют native0/build0.
-Matching full03 завершён native0:1431/0/0, exact1431 required cases,
-2137 unchanged inputs, все exits0, zero build warnings/errors, FullAccepted=true.
-Предыдущий FAIL не стирается и native denial не объявляется исправленным.
-Текущий пакет квалифицирован по source и отдельным external/no-mock transport:
-smoke/rehearsal завершились native0, real Xray, runtime failures/warnings0;
-три distinct router, Registry count3/reconciliation0 и ожидаемый503 без authority.
-Оба disposable стека удалены, шесть existing `deep-dev` контейнеров сохранены.
-Осталось сверить весь S02 с критериями
-этапа и замкнуть недоказанные producer/consumer negative boundaries одним пакетом.
-Отдельно проверить stale MAU2-названия neutral runtime status/tests: codec уже
-MAU3, но название не должно вводить в заблуждение или сохранять retired API alias.
-Retained original-epoch native-peer case проверен отдельно, не через
-configured public HTTP. Coordinated peer replay/mutation/blob loss не закрывается
-client floors и остаётся у S03. Доказательства и ограничения — в checkpoint ниже.
-На трёх actual configured Program-хостах проверены explicit enrollment → readiness
-→ onion Store/Retrieve/ACK → cold restart/exact retry, настоящие peer HTTPS
-endpoints и native custody, без подмены endpoint/authority и удаления hosted
-services. Исправлен реальный ID-as-key дефект HTTP onion authentication:
-ключ берётся из verified XND1, а не из байтов RouterId. Native recovery/readiness
-и отказ new-host enrollment при existing custody сохранены.
+Завершённый S02 corrective пакет после `6cf28f6` проходит focused10/0/0:
+explicit native admission negative boundaries и retained client read/ACK после
+подписанной смены PMT, lost ACK/cold exact retry через настоящий peer HTTPS.
+Найден и исправлен product defect: ACK intent ошибочно брал membership commitment
+новой host projection вместо исходной projection проверенного Retrieve grant.
+Время, revocation, floors и selected replicas не ослаблены. Убраны stale MAU2
+status/parameter/test names без alias; codec остаётся MAU3. Release build0,
+zero warnings/errors, matching unit255/0/0/native0. Сверка сохраняет все255
+unit cases с одним reviewed MAU3 rename, остальные stable case keys без потерь.
+Matching canonical Node full принят:1441/0/0, exact1441 cases,
+2136 unchanged inputs, build/preflight/test/qualification exits0.
+Свежие external/no-mock smoke и three-node rehearsal завершены native0:
+runtime hard/soft failures0, warnings0; три distinct real Xray nodes,
+Registry count3 и reconciliation issues0. [Requirement-to-evidence review](S02-CURRENT-NODE-REVIEW-2026-10-10.md)
+сопоставляет критерии с actual composition и24 cases двенадцати named groups;
+Все24 cases присутствуют в принятом matching full. Exact evidence — в Node checkpoint ниже.
 
-У предыдущего baseline `31784a9` matching focused49/0/0/native0 и canonical
-full1423/0/0: все exits0, zero build
-warnings/errors, exact1423 required cases и2129 unchanged inputs,
-FullAccepted=true; Desktop5.1.26100.9457/SDK10.0.301. Отдельные current
-external/no-mock smoke и трёхнодовый rehearsal завершены native0: real Xray,
-runtime failures0, три distinct router, Registry count3/reconciliation0,
-expected fail-closed503 без authority. Оба временных стека удалены,
-существующий `deep-dev` сохранён. Source/configured loopback и Development
-transport не являются physical delivery или приёмкой всего S02. Тестовый clock,
-loopback TLS trust, отключённый Xray в configured fixture и вход через actual
-entry runtime вместо публичного client HTTPS endpoint ограничивают evidence.
-
-Следующий единый пакет S02: закрыть actual client-entry/selected-exit и
-retained-route boundaries, сверить оставшуюся native cold-loss/rollback closure
-с точными критериями этапа; cached-index readback не считать независимым anchor.
-До этой сверки S02 не принят. Не активировать параллельно S03/S04 или device
-scheduler. Весь связный пакет реализовать перед следующим broad gate; по ходу
-использовать только дешёвую компиляцию и узкие критичные проверки, затем
-пакетно исправить ошибки, пройти matching gates и зафиксировать результат.
-Scope, exact receipts/SHA, предыдущие increments и сохранённый необъяснённый
-full01 FAIL — в [S02 checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md).
-Assertions не ослаблялись; GitHub Releases/main и production этим пакетом не менялись.
+Exact commands, hashes, старые source increments и сохранённые FAIL — только в
+[Node checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md).
+Предыдущий intermittent native `MoveFileEx` denial остаётся с неустановленной
+причиной; новые PASS не объявляют его исправленным и не меняют retries/ACL.
+Coordinated peer replay/mutation/blob loss остаётся S03; client floors его не закрывают.
+Configured/native integration и transport readiness не являются physical delivery.
+Не активировать параллельно S04 или device scheduler. GitHub Releases/main
+и production текущим пакетом не изменялись.
 
 ## Завершённый S01 source пакет и его evidence
 
@@ -190,12 +158,12 @@ runtime/release qualification следующих этапов:
 - **S09:** sustained delivery/recovery через реальные endpoints и сохранённые
   identities; source fixtures не заменяют connected/physical evidence.
 
-S02 активирован только как следующий implementation stage. Runtime
-scheduler/rotation/stress batches остаются у своих этапов, не добавляются к S02.
+Runtime scheduler/rotation/stress batches остаются у своих последующих этапов;
+приёмка S01/S02 не активирует их автоматически.
 Готовность runtime, физического E2E и релиза остаётся отдельной незакрытой целью.
 
-Ни focused матрицы, ни source build не закрывают S01 или device E2E и не дают
-разрешения включить runtime cleanup. Physical contacts/messages/files/groups,
+Focused матрицы и source build сами по себе не заменяют contract review или
+device E2E и не дают разрешения включить runtime cleanup. Physical contacts/messages/files/groups,
 production activation и release остаются последующими незакрытыми requirements
 единого DAG; GitHub Releases/main этим пакетом не изменялись.
 
@@ -216,8 +184,8 @@ production activation и release остаются последующими не�
 | --- | --- | --- |
 | S00 | Принят: source baseline, не shipping qualification | [Node classification](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry classification](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). Node1220/0/0; Registry348/0/7 + exact Linux7/0/0; original19/31 mappings, required smoke и root governance проходят |
 | S01 | Принят: contract/API stage, не runtime/release | [Requirement-to-evidence review](S01-CONTRACT-REVIEW-2026-10-10.md). Shared full03 принят; Protocol exact source qualification сохраняет actual package FAIL по DR-0095. Runtime renewal/cleanup — S04, receipt orchestration — S07; не объявлять реализованными по contract |
-| S02 | Единственный текущий этап; configured Program/descriptor-key source квалифицирован, этап не принят | [Current source checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md). Actual client-entry/selected-exit, retained-route и оставшаяся native cold-loss/rollback closure; не подменять stage acceptance full count или in-process entry |
-| S03 | Native grant-bound peer/quorum/custody реализованы локально; не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon и connected shipping activation |
+| S02 | Принят: current-only native/configured node source/composition, не production/shipping/physical | [Requirement review](S02-CURRENT-NODE-REVIEW-2026-10-10.md), [current source checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md). Node5c96043, full1441/0/0/exact1441/2136 unchanged inputs и свежие transport gates |
+| S03 | Единственный текущий этап; native grant-bound peer/quorum/custody есть, этап не принят | [Operation custody](../xnode/docs/testing/s03-operation-custody-2026-10-04.md), [current ACK](../xnode/docs/testing/s03-current-ack-2026-10-04.md). Late completion, cross-coordinator ownership, retained-route/horizon, peer-wide loss/rollback и полный peer cycle |
 | S04 | Не активирован; после S02/S03 в последовательной очереди | Grant/send renewal, exact unknown settlement, safe retirement/compaction, bounded journals; не увеличивать128/512 вместо lifecycle |
 | S05 | Actual HTTPS issuer → configured native Store/Retrieve/ACK/cold reopen проверены локально; не принят | [Registry scope](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md#connected-private-grant-exchange-2026-10-05). Resolver/owned-client/complete Program/ONION, deployed shared443/proxy и signed successor provisioning |
 | S06 | Не пройден | Два independent current clients с actual authorization/owned E2EE через selected-entry и replica endpoints |
@@ -232,9 +200,9 @@ production activation и release остаются последующими не�
 ## Блокеры, которые нельзя потерять
 
 - **B1/S02–S06:** old Node PMA1 providers/adapters удалены; current guarded
-  composition уже реализована. Remaining whole-host/historical recovery,
-  actual authority/provisioning, selected-entry/ONION и owned client join
-  не доказываются local Kestrel/fixture clocks или health200.
+  composition и configured selected-entry/ONION source stage приняты в S02.
+  Remaining peer-wide recovery, deployed authority/provisioning и owned client
+  join не доказываются local Kestrel/fixture clocks или health200.
 - **B2/S02–S03:** distinct node ID/receipt key, signed writer, protected operation
   root и native Store/Retrieve/ACK custody проверены локально. Полный retained
   ordering/late lower-cursor completion, cross-coordinator ownership, protected
