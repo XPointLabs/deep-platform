@@ -197,6 +197,13 @@ not qualified. Node/Registry/Protocol source was unchanged by this operator
 package; source qualification and installed acceptance remain separate.
 Current Windows operator/probe package: DevOps `308fb02`; matching root submodule
 pointer retained. Original client/PKI/probe FAIL receipts are not shipping acceptance.
+
+Engine-resume follow-up: actual node-control GETs returned429 and initial smoke
+failed. Node candidate adds four-attempt429/503 retry inside the unchanged5s
+read deadline; focused26/0 passed. Retained local node upgrade and independent
+key/volume checks completed; post-upgrade smoke passed0 after39s. Canonical
+Node candidate `73e9905`: full is running, not accepted yet. This does not resolve the Windows signed
+endpoint boundary or open S06. [Exact source/runtime scope](../xnode/docs/testing/s05-control-read-backoff-2026-10-15.md).
 [Runtime scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-protected-mailbox-issuer-activation).
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
