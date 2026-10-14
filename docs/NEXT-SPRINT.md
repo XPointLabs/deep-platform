@@ -112,9 +112,20 @@ Protocol full2309/1/7,2317 exact mappings/1583 unchanged inputs, original packag
 FAIL preserved. DevOps candidate30 checks and topology11/0; actual NTS preparation
 emitted a signed full-history policy/PMA/traffic/TLS successor with staged private
 role keys. Latest candidate matches its predecessor; only current dev publisher
-is stopped pending coordinated activation. No actual import/private/config install
-or issuer acceptance yet. Continue that single S05 activation, then protected
+was stopped pending coordinated activation. A new sealed candidate has now been
+installed/imported with retained identities, volumes and genesis; delegated
+publication resumed. The180-second Registry/three-ONION acceptance failed:
+same-UTC-day root/DTS handover changes DTT1 epoch ID, and the retained nonce ledger
+correctly rejects the same-number fork. Coordinate policy ceremony with this
+issuance namespace; do not erase markers/floors or relax fork rejection. Readiness
+must perform a read-only ledger check, not return green while issuance fails.
+No issuer acceptance yet. Continue that single S05 boundary, then protected
 external signers and grant/MGR journals; do not claim readiness as messaging.
+Registry readiness fix qualified398/0/7,405 mappings/2839 unchanged inputs,
+all native stages0. Dev installation qualified35 checks and12 contracts, native0.
+Actual HTTP503 and three unavailable ONION capabilities confirm the residual
+epoch-coordination blocker; source PASS is not runtime/device acceptance.
+[Readiness receipt](../deep-registry-api/docs/testing/s05-epoch-readiness-2026-10-14.md).
 [Protocol scope](../deep-protocol/docs/testing/s05-mailbox-issuer-rollover-2026-10-14.md),
 [operational scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#offline-operational-roletraffictls-candidate).
 
