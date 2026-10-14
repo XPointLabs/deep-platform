@@ -206,6 +206,14 @@ Node candidate `73e9905`: full accepted1508/0/0, all native stages0 and2185
 unchanged inputs; mandatory no-mock smoke/rehearsal passed native0 with their
 infrastructure-only scope. This does not resolve the Windows signed
 endpoint boundary or open S06. [Exact source/runtime scope](../xnode/docs/testing/s05-control-read-backoff-2026-10-15.md).
+
+DR-0120 endpoint producer candidate реализован: focused59/0/0, default
+production-reference operator build0/zero warnings/errors и actual DLL API
+inspection passed. Wire allocations не изменились; reviewed repin двух source
+digests/anchors и strict generator passed. Runtime не менялся: следующий шаг —
+coordinated sealed SAN/CRL/ingress/peer candidate и retained publisher CAS;
+существующий PKI guard не обходить. Canonical full — после целого operator slice,
+не после каждой строки. [Точный scope](../deep-protocol/docs/testing/s05-origin-relocation-2026-10-15.md).
 [Runtime scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-protected-mailbox-issuer-activation).
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),

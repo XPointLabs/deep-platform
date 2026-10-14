@@ -414,6 +414,13 @@ jurisdiction:u16)`. Tag 37 signs canonical tags 1..36 under
 increments generation exactly and names the predecessor core. Heartbeat/liveness is
 not embedded, so a missing Registry cannot rewrite identity state.
 
+The supported exact-origin address/port successor producer follows
+[DR-0120](../survival-program/decisions/DR-0120-signed-operational-origin-relocation.md).
+It retains origin IDs/transport and immutable node lineage, authenticates all
+intents before signing, and requires separately qualified coordinated ingress,
+TLS/revocation and retained-runtime provisioning. It adds no wire allocation or
+client-side endpoint translation.
+
 ### 7.3 `XVP1` / `XNV1` — network policy and view
 
 `XVP1`, version 1, root suite `0x0001`, is the sole policy preimage accepted by
