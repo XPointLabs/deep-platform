@@ -95,6 +95,18 @@ Protocol `3b94c54` и root `266393d` запушены с exact remote SHA; dev o
 source package зафиксирован в DevOps `0e3b074`. Root pointer/checkpoint обновляются
 после child commit; main/GitHub Releases не менялись.
 
+Отдельный current-only `deep-dev-current` создан без изменения старого контура.
+После исправления retired config и штатной admission сохранённого observer:
+current Registry proof + три verified ONION capabilities; scoped restart20s
+offline →14s recovery →30s stable с прежними ключами/IDs/mounts. Real130
+admissions при offline nodes и catch-up через129 signed heads прошли native0,
+recovery10s без reset. Source22 checks и topology/observer10/0; это не выдача
+mailbox grants или physical delivery. Offline root pair prepared, не activated.
+Первый Init потерял mailbox issuer seeds; новый generator сохраняет их, но
+уже созданному контуру нужен signed role/PMA successor, не подмена ключа.
+Root/witness/role/traffic/TLS rotation и publisher CAS-import остаются S05.
+Scope/hashes — [runtime checkpoint](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#separate-current-only-runtime-qualification).
+
 Первый Store в полном Registry scope занял14930ms при deadline15s: nominal
 margin70ms остаётся риском. Seven native issuer cases имеют0 foreign TRX overlaps
 после explicit xUnit collection isolation; внутренние concurrent operations
