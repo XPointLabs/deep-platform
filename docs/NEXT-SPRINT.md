@@ -180,16 +180,23 @@ dev PKI/CRL provisioning, without relaxing HTTPS/online revocation. Final PKI58
 checks/Compose19 passed; same-candidate owner-corrected resume and Verify passed0
 after156s. Original PostgreSQL certificate-owner failure is preserved. Strict
 managed client09 completed AccountAdmission and CurrentNetwork, then failed
-PreKeyStage: approved ML-KEM assets exclude this Linux probe RID. Next:
-issuer→owned-client verify→node acceptance on supported Windows/Android; do not
-inject fake prekeys or expand shipping crypto approval just for a diagnostic.
+PreKeyStage: approved ML-KEM assets exclude that Linux probe RID. Supported
+Windows probe now passed AccountAdmission/CurrentNetwork/PreKeyStage using
+approved assets and strict app-scoped TLS. Its journaled DPAPI-protected state
+and exact inventory survive reopen; typed proof429 honors bounded Retry-After.
+Publication remains unknown after30-second ONION timeout: direct signed
+Docker bridge-IP TLS times out, whereas the published localhost endpoint passes
+strict H2. Next: supported reachable signed ingress/locators or matching deployed
+network, then issuer→owned-client verify→node acceptance; no sealed-endpoint
+translation, fake prekeys or Linux crypto-approval expansion. Final helper61/
+contracts20 passed. [Windows connected scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#windows-approved-provider-connected-attempt).
 [PKI/managed scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#same-key-dev-pki-and-strict-managed-admission).
 S05 remains the sole active stage; actual private grants/client verification/
 node acceptance, future role rollover and physical0/4 remain open. Release is
 not qualified. Node/Registry/Protocol source was unchanged by this operator
 package; source qualification and installed acceptance remain separate.
-Current operator/PKI package: DevOps `5a0f895`; matching root submodule pointer
-retained. Earlier client13/15 and PKI client09 FAIL are not shipping acceptance.
+Current Windows operator/probe package: DevOps `308fb02`; matching root submodule
+pointer retained. Original client/PKI/probe FAIL receipts are not shipping acceptance.
 [Runtime scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-protected-mailbox-issuer-activation).
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
