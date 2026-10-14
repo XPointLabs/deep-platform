@@ -43,17 +43,20 @@ retained-volume restart и bounded verified catch-up. S06 и device qualificatio
   runtime: [operator checkpoint](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md).
 
 Пакет reviewed/committed/pushed: Registry `2df4474`, Node `2de436d`, DevOps
-`9789123`; remote SHA всех трёх сверены. Повторный managed-external no-mock
+`c92a544` (source package `9789123` + read-only expiry diagnosis); remote SHA
+всех трёх сверены. Повторный managed-external no-mock
 smoke и three-node rehearsal завершились native0 и scoped cleanup; первый
 Docker-engine EOF/exit1 сохранён отдельно. Это инфраструктурные, не DID2
-delivery/device проверки; существующий dev health после перезапуска Docker
-остаётся unhealthy, без сброса его state/keys.
+delivery/device проверки; существующий dev health остаётся unhealthy: retained
+DTS1 истёк2026-10-06T14:07:38Z, Registry сообщает `policy-interval`. State/keys
+не сбрасывались; canonical decode не заменяет signature/current-authority check.
 [Точный scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#infrastructure-rehearsal-attempt).
 
 Оставшаяся приёмка S05, в порядке выполнения:
 
-1. Проверить причину unhealthy сохранённого dev-контура; закрыть supported
-   changed-root/witness/role ceremony и автоматический
+1. Восстановить сохранённый dev-контур через supported signed policy renewal,
+   не через Init/Provision/reset. Закрыть supported changed-root/witness/role
+   ceremony и автоматический
    head/view/key lifecycle с предупреждением offline-policy expiry. Реальная
    key rotation в source fixture не доказывает operational ceremony.
 2. Проверить process/retained-volume restart, interruption/rollback, signer/time
