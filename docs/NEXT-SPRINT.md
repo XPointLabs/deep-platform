@@ -139,8 +139,9 @@ Registry initial canonical full408/0/10,418 exact mappings/2844 unchanged inputs
 all native stages0 and zero Windows build warnings/errors. Linux-only skips are
 not device evidence; Linux build copy-retry warnings remain recorded. Separate
 role custody/UID/purpose checks are now deployed on current-dev with role-only
-mounts and explicit permanent grant/MGR roots. Next: native node floor enrollment
-and configured issuance→client verification→node acceptance. No new wire/journal generation or manual signature
+mounts and explicit permanent grant/MGR roots. Native first-time node floor
+enrollment now completed in current-dev; next is configured
+issuance→client verification→node acceptance. No new wire/journal generation or manual signature
 over current issuer state. [Exact source scope](../deep-registry-api/docs/testing/s05-protected-role-signer-2026-10-14.md).
 Source package pushed: Registry `625d7f1`, DevOps `47e5aa0`; remote SHAs checked.
 Docker-resumed current-dev smoke native0; unconfigured Linux signer CLI rejects
@@ -163,8 +164,18 @@ same Registry/node/role custody and mounts. Actual MGR history30 signed rows,
 15 sequential generations per role; no pending at read-back. Prior failed
 stability attempts08/12/15 remain failures. Pre-mailbox role rollover commands
 refuse this enabled contour until coordinated role-volume/journal updates exist.
-S05 remains the sole active stage; node floor enrollment, actual private grants,
-future role rollover and physical0/4 remain open, release is not qualified.
+All three current-dev nodes now have explicit native mailbox enrollment with
+the same retained identity/data roots and independent read-only protection-key
+volumes. Final operator48 checks, actual Compose15/0, strict Verify and resumed
+PowerShell5.1 smoke passed with captured native0. Existing-key reprovision
+rejected with exit2 and unchanged key bytes. The enrolled restart log reports
+153s recovery/30s stable but lacks its original native terminal after handoff;
+it remains diagnostic/unqualified, not accepted from final JSON alone.
+S05 remains the sole active stage; actual private grants/client verification/
+node acceptance, future role rollover and physical0/4 remain open, release is
+not qualified. [Enrollment scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-retained-node-mailbox-enrollment).
+Node enrollment package: DevOps `4b3bc91`; root records the matching submodule
+pointer, not a new source qualification for unchanged Node/Registry/Protocol.
 [Runtime scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-protected-mailbox-issuer-activation).
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
