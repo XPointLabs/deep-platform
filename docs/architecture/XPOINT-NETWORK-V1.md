@@ -530,6 +530,13 @@ predecessor links and the placement epoch. Delegated renewal cannot carry an
 ancestor's policy/PMA into the current authority: both exact live delegations
 must already name the terminal authority. Historical authentication grants no
 current issuer, signing, exclusion or deletion capability.
+Offline PMA2 issuer-key replacement follows
+[DR-0118](../survival-program/decisions/DR-0118-offline-mailbox-issuer-rollover.md):
+the sole successor request may carry a closed pair of fresh role keys and a
+strictly greater grant-generation floor. Root-threshold authoring authenticates
+the exact predecessor before callbacks; delegated renewal cannot change it.
+Network/mailbox IDs, placement epoch and retained histories/floors remain intact.
+Prepared bytes are not external signer custody or runtime activation.
 Revoked IDs are distinct and sorted. Service refs sort by `(magic,coreHash)` with no
 duplicate. XCB1 artifact refs sort bytewise and every binding target
 resolves to an XND1/XCD1 core committed by tags 12/16. Invalid or unresolved

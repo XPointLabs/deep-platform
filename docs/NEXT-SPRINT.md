@@ -107,6 +107,17 @@ mailbox grants или physical delivery. Offline root pair prepared, не activa
 Root/witness/role/traffic/TLS rotation и publisher CAS-import остаются S05.
 Scope/hashes — [runtime checkpoint](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#separate-current-only-runtime-qualification).
 
+DR-0118 offline issuer rollover source completed: matching119/0/0; canonical
+Protocol full2309/1/7,2317 exact mappings/1583 unchanged inputs, original package
+FAIL preserved. DevOps candidate30 checks and topology11/0; actual NTS preparation
+emitted a signed full-history policy/PMA/traffic/TLS successor with staged private
+role keys. Latest candidate matches its predecessor; only current dev publisher
+is stopped pending coordinated activation. No actual import/private/config install
+or issuer acceptance yet. Continue that single S05 activation, then protected
+external signers and grant/MGR journals; do not claim readiness as messaging.
+[Protocol scope](../deep-protocol/docs/testing/s05-mailbox-issuer-rollover-2026-10-14.md),
+[operational scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#offline-operational-roletraffictls-candidate).
+
 Первый Store в полном Registry scope занял14930ms при deadline15s: nominal
 margin70ms остаётся риском. Seven native issuer cases имеют0 foreign TRX overlaps
 после explicit xUnit collection isolation; внутренние concurrent operations
