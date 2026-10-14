@@ -54,9 +54,11 @@ DTS1 истёк2026-10-06T14:07:38Z, Registry сообщает `policy-interval`
 
 Оставшаяся приёмка S05, в порядке выполнения:
 
-1. Завершить DR-0116 source qualification и восстановить сохранённый dev-контур
-   через supported signed policy renewal,
-   не через Init/Provision/reset. Закрыть supported changed-root/witness/role
+1. DR-0116 matching source qualification выполнена с сохранённым S08 package FAIL.
+   Завершить current provisioning clean-break и supported signed policy renewal:
+   сохранённый dev содержит pre-cutover seven-chain NCP2, а не current eight-chain.
+   Не обходить отказ legacy-reader, Init/Provision/reset или ручной правкой signed
+   records/floors. Закрыть supported changed-root/witness/role
    ceremony и автоматический
    head/view/key lifecycle с предупреждением offline-policy expiry. Реальная
    key rotation в source fixture не доказывает operational ceremony.
@@ -81,6 +83,17 @@ blocker, не разрешение переименовать его или вы
 [Protocol checkpoint](../deep-protocol/docs/testing/s05-root-continuity-2026-10-14.md).
 Пакет не развёрнут; expiry сохранённого dev ещё не устранено. S04/S05 прежние
 full receipts относятся к своим прежним inputs, не к этому Protocol изменению.
+
+Dev offline `PrepareAuthority` реализован: real-signature/file fixture **20 checks**,
+native0 и build0/zero warnings/errors; source topology **7/0**. Это public-only
+paired-authority candidate, не online operational activation. Actual retained-dev
+attempt отверг pre-cutover seven-chain NCP2 до observation/signing (native2);
+610 retained views/heads/topologies не удалены, journal/floors/keys сохранены.
+Ранее указанное expiry — не единственная причина unhealthy. Точные scopes и
+сохранённые failures — [DevOps checkpoint](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#development-offline-paired-authority-preparation).
+Protocol `3b94c54` и root `266393d` запушены с exact remote SHA; dev offline
+source package зафиксирован в DevOps `0e3b074`. Root pointer/checkpoint обновляются
+после child commit; main/GitHub Releases не менялись.
 
 Первый Store в полном Registry scope занял14930ms при deadline15s: nominal
 margin70ms остаётся риском. Seven native issuer cases имеют0 foreign TRX overlaps
