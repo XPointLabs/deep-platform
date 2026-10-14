@@ -112,7 +112,7 @@
         "successor requires predecessor authorityGeneration < UINT64_MAX, authorityGeneration=predecessor+1 without overflow and tag3 equals the exact accepted predecessor authority core hash",
         "tag19 wire value is always 1..8 before resolver/signature callbacks; genesis then requires current tag6 <= tag19 <= current tag4 and resolves only current tag5 entries",
         "successor tag19 and tag20 resolve only against predecessor root entries/count/threshold, never successor tags4..6; rotations 1-of-1 to 2-of-3 and 5-of-8 to 1-of-1 therefore require respectively 1 and at least 5 predecessor receipts",
-        "a successor is issued while the predecessor authority is effective: predecessor.notBefore <= successor.issuedAt <= predecessor.expiresAt and successor.notBefore <= predecessor.expiresAt",
+        "offline root continuity under DR-0116 requires predecessor.issuedAt <= successor.issuedAt, predecessor.notBefore <= successor.issuedAt and predecessor.notBefore <= successor.notBefore; predecessor expiry does not authorize ordinary operations or prohibit exact root-signed succession",
         "tag13 equals the hash derived from exact tag12 DTS1 policy and tag14 does not exceed that policy uncertainty",
         "all IDs, public keys, failure-domain hashes and signatures are nonzero"
       ],

@@ -54,7 +54,8 @@ DTS1 истёк2026-10-06T14:07:38Z, Registry сообщает `policy-interval`
 
 Оставшаяся приёмка S05, в порядке выполнения:
 
-1. Восстановить сохранённый dev-контур через supported signed policy renewal,
+1. Завершить DR-0116 source qualification и восстановить сохранённый dev-контур
+   через supported signed policy renewal,
    не через Init/Provision/reset. Закрыть supported changed-root/witness/role
    ceremony и автоматический
    head/view/key lifecycle с предупреждением offline-policy expiry. Реальная
@@ -64,6 +65,19 @@ DTS1 истёк2026-10-06T14:07:38Z, Registry сообщает `policy-interval`
    без ручной правки signed bytes, floors, genesis или registered identities.
 3. Проверить связный issuer/node/client renewal и bounded verified catch-up;
    offline CLI, fixture clocks и cold object reopen не заменяют runtime evidence.
+
+DR-0116 source candidate устраняет overlap-only dead end после root expiry и
+разделяет offline XVP1/PMA2 horizon с коротким operational view. Protocol matching
+**61/0/0**, operator executable native0 (69-view scope сохранён), publisher
+Release build0/zero warnings/errors. Canonical Protocol preflight прошёл с1580
+captured inputs; **full не запускался, FullAccepted=false**. Два прежних negative
+case identities `root-gap`/`dts-gap` семантически заменены signed-gap positives и
+rollback negatives: нужно explicit retirement в общей exact-reference matrix,
+без редактирования исторического TRX или ослабления mapping. Точный текущий scope
+и исходные failures —
+[Protocol checkpoint](../deep-protocol/docs/testing/s05-root-continuity-2026-10-14.md).
+Пакет не развёрнут; expiry сохранённого dev ещё не устранено. S04/S05 прежние
+full receipts относятся к своим прежним inputs, не к этому Protocol изменению.
 
 Первый Store в полном Registry scope занял14930ms при deadline15s: nominal
 margin70ms остаётся риском. Seven native issuer cases имеют0 foreign TRX overlaps

@@ -75,7 +75,7 @@
       "fieldCount": 20,
       "minBytes": 829,
       "maxBytes": 5021,
-      "requiredPositiveCases": ["genesis-minimum-threshold", "successor-predecessor-threshold", "receipt-subset-aggregation", "maximum-root-witness-signature-counts", "rotation-1of1-to-2of3-uses-one-predecessor-receipt", "rotation-5of8-to-1of1-uses-five-predecessor-receipts"]
+      "requiredPositiveCases": ["genesis-minimum-threshold", "successor-predecessor-threshold", "receipt-subset-aggregation", "maximum-root-witness-signature-counts", "rotation-1of1-to-2of3-uses-one-predecessor-receipt", "rotation-5of8-to-1of1-uses-five-predecessor-receipts", "offline-root-continuity-after-expiry-without-operational-grace"]
     },
     {
       "magic": "XVP1",

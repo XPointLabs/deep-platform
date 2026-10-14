@@ -4,6 +4,10 @@ Status: accepted S01 clean-break producer API; connected/runtime activation pend
 Date: 2026-10-09
 Decision owner: Mr. X (explicitly delegated architecture authority)
 
+The overlapping-window requirement below is superseded by
+[DR-0116](DR-0116-offline-root-continuity-after-expiry.md) for offline root
+continuity only. Current operational verification remains unchanged.
+
 ## Exact API change and sole owner
 
 `XPointNetworkOperationalSuccessorRequest` replaces its constructor's

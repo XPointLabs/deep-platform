@@ -349,6 +349,16 @@ authorize themselves. Consequently a `1-of-1 -> 2-of-3` rotation carries one val
 predecessor receipt, while a `5-of-8 -> 1-of-1` rotation still carries at least five.
 Applying the new threshold early or the old threshold after acceptance rejects.
 
+Offline root succession is continuity evidence, not operational freshness.
+Under [DR-0116](../survival-program/decisions/DR-0116-offline-root-continuity-after-expiry.md),
+the exact signed next XNA1 may follow an expired predecessor without overlapping
+windows. Its issued-at must not precede predecessor issued-at/not-before and its
+not-before must not precede predecessor not-before. Original-genesis chain,
+exact predecessor generation/core and predecessor root threshold are mandatory.
+No backdating, current-operation grace, floor reset or new-key self-authorization
+is permitted. Every ordinary proof/role/issuance consumer still requires current
+terminal authority; the availability gap remains unavailable.
+
 The directory-witness policy is the canonical encoding of XNA1 tags 7..14.
 `directoryWitnessPolicyHash32 = SHA256-D("Deep/XPoint/V1/directory-witness-policy",
 exactXNA1Tags7Through14)`. ADH1, XNV1, XNH1 and DTT1 carry the exact XNA
@@ -500,7 +510,11 @@ The operational successor request takes terminal `VerifiedXPointNetworkAuthority
 from the full paired authority chain. Routine same-key XNA1/DTS1 renewal uses
 the bounded offline `AuthorSameKeyRenewalAsync` producer under DR-0108; it
 reauthenticates all original policies before callbacks, preserves keys/policy
-and floors, requires overlapping signed windows and extends DTS within30days.
+and floors, requires non-regressing signed windows and extends DTS within30days.
+DR-0116 also separates a successor's optional offline XVP1/PMA2 expiry from
+its short XND1/XNV1/XNH1/PMT2 interval, as already done by the genesis producer.
+Only an offline root flight may choose that bounded delegation horizon;
+delegated renewal never changes policy/PMA bytes or chooses a new root expiry.
 Its output is authored bytes, not current authority; the full unchanged-genesis
 chain is verified again. Root/witness-key rotation is outside that routine API.
 The operational request then takes terminal authority
