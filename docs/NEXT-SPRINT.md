@@ -142,6 +142,12 @@ role custody/UID/purpose checks are implemented, not yet deployed. Next: role-on
 mounts and explicit permanent grant/MGR roots, then configured issuance→client
 verification→node acceptance. No new wire/journal generation or manual signature
 over current issuer state. [Exact source scope](../deep-registry-api/docs/testing/s05-protected-role-signer-2026-10-14.md).
+Source package pushed: Registry `625d7f1`, DevOps `47e5aa0`; remote SHAs checked.
+Docker-resumed current-dev smoke native0; unconfigured Linux signer CLI rejects
+with exact exit2, without mounts/network/HTTP startup. Release-gate contracts
+passed51 commands using synthetic evidence; actual production-readiness status
+remains blocked by10 missing evidence inputs. Synthetic contract PASS is not GA
+or device acceptance. Physical contacts/messages/attachments/groups remain0/4.
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
 [Dev runtime](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#same-day-lineage-aware-recovery).
