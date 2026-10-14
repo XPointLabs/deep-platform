@@ -210,10 +210,21 @@ endpoint boundary or open S06. [Exact source/runtime scope](../xnode/docs/testin
 DR-0120 endpoint producer candidate реализован: focused59/0/0, default
 production-reference operator build0/zero warnings/errors и actual DLL API
 inspection passed. Wire allocations не изменились; reviewed repin двух source
-digests/anchors и strict generator passed. Runtime не менялся: следующий шаг —
-coordinated sealed SAN/CRL/ingress/peer candidate и retained publisher CAS;
-существующий PKI guard не обходить. Canonical full — после целого operator slice,
-не после каждой строки. [Точный scope](../deep-protocol/docs/testing/s05-origin-relocation-2026-10-15.md).
+digests/anchors и strict generator passed. Local current-dev sealed SAN/CRL/
+ingress/peer candidate активирован через retained publisher CAS без изменения
+исходных ключей, CA, genesis/floors и без обхода PKI guard. Windows strict TLS/H2
+прошёл на трёх signed LAN origins; после engine recovery operator84 и contracts22
+прошли, Registry/три ONION готовы. Это не device delivery. Сохранённый Windows
+probe дошёл до PreKeyPublication и выявил `prekey-placement-changed`: immutable
+XPP1 против current view/PMT placement после renewal. Следующий шаг — согласовать
+и исправить этот lifecycle, сохранив exact inventory/unknown intent; не сбрасывать
+аккаунт, не re-sign и не ослаблять current authority. Android ADB пока0 устройств.
+Итоговый canonical Protocol full завершён2327/1/7,2335 exact mappings,
+1587 unchanged inputs; build/preflight/qualification0, test1/FullAccepted=false.
+Единственный FAIL — прежний S08 retired-MAU2 package graph; skips не waived.
+S06 не открыт,
+physical0/4. [Operator/runtime evidence](../deep-devops/docs/S05-PHYSICAL-INGRESS-2026-10-15.md).
+[Protocol scope](../deep-protocol/docs/testing/s05-origin-relocation-2026-10-15.md).
 [Runtime scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-protected-mailbox-issuer-activation).
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
