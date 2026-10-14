@@ -1,7 +1,7 @@
 # S04 client lifecycle: requirement-to-evidence review
 
 Updated: 2026-10-14. Owner: Mr. X.
-Status: **source reviewed and qualified; local repo commits recorded, branch push pending**.
+Status: **S04 source accepted; repo commits pushed and remote SHA verified**.
 The sole execution order remains
 [IMPLEMENTATION-PLAN](architecture/IMPLEMENTATION-PLAN-V1.md#s04--завершить-client-grantsendroute-lifecycle).
 This document maps acceptance evidence; it allocates no protocol or deletion authority.
@@ -23,10 +23,11 @@ Local release-candidate commits (all by zhigubigule, GitHub no-reply email):
 - MAUI: `02a1ea1` — owned new text command versus exact retry.
 - DevOps: `ee55b90` — awaited source-expression classification; matching25 tests passed.
 
-All four repository working trees are clean. Branch push is still pending;
-the ordinary Protocol push is waiting in Git Credential Manager. Root pointers
-and this stage checkpoint form the separate superproject commit. No Release/main mutation
-or physical result is implied.
+All four repository working trees are clean. Their release-candidate branches
+were pushed and actual remote SHA matched each local HEAD. Root pointers and
+the stage checkpoint were separately committed and pushed as `659bb9d`;
+its remote SHA was also verified. S04 source acceptance is complete; S05 is next.
+No Release/main mutation or physical result is implied.
 
 ## Current requirement mapping
 
@@ -59,9 +60,9 @@ The common receipt reader independently checked the exact mappings and actual
 and both mixed-route cases: all passed. The canonical final input comparison
 completed before qualification0/FullAccepted=true; this is not the earlier
 interim comparison. MAUI95/smoke119 and platform compiler evidence below remain
-current because no source changes followed those builds. Final source/API/
-frozen/provider/diff review and separate repo commits/push still precede stage
-acceptance. This proves no deployed, installed, physical or release outcome.
+current because no runtime source changes followed those builds. Final source/API/
+frozen/provider/diff review and separate repo commits/push completed the S04
+source stage. This proves no deployed, installed, physical or release outcome.
 
 One post-full source edit removes an extra empty EOF line in the newly tracked
 Did2MessagingPageCacheTests.cs, discovered by the staged diff check. No C#

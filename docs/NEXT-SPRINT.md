@@ -12,9 +12,18 @@
 [Предыдущая редакция целиком](NEXT-SPRINT-CHECKPOINTS-2026-10-13.md) сохранена
 как история; её промежуточные статусы не являются заданиями на повторную реализацию.
 
-## Единственный текущий этап: S04
+## Единственный текущий этап: S05
 
-**Client grant/send/route lifecycle — source проверен; push веток не завершён.**
+**S04 принят на source уровне и запушен; S05 — current issuer и operational lifecycle.**
+Следующая работа ограничена критериями
+[S05](architecture/IMPLEMENTATION-PLAN-V1.md#s05--current-issuer-и-автоматический-lifecycle-управляющего-контура):
+current issuance/readiness/CAS, signed successor provisioning, автоматическое renewal,
+retained-volume restart и bounded verified catch-up. S06 и device qualification
+ещё не открыты; принятый S04 не повторять без изменения его входов.
+
+## Принятый source checkpoint S04
+
+**Client grant/send/route lifecycle — source принят; пять веток сверены с origin.**
 Нормативные критерии и dependency boundaries принадлежат
 [этапу S04](architecture/IMPLEMENTATION-PLAN-V1.md#s04--завершить-client-grantsendroute-lifecycle)
 и [transport-neutral owner](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
@@ -45,7 +54,7 @@ Local layouts/generations определяет producer Shared, не эта оч
   validation и independent history/object keys не изменены.
   Release build0/zero warnings/errors; matching **141/0/0**, native/wrapper0,
   1981 unchanged inputs. Этот исторический scope закрыт; актуальные follow-up
-  и canonical full указаны ниже. Final review и commits ещё не завершены.
+  и canonical full указаны ниже. Review, commits и push текущего пакета завершены.
 - Shared current canonical **full-05:1424/0/0**,1424 exact case keys,
   build/preflight/native/qualification0 и1984 unchanged inputs,
   **FullAccepted=true**. Обязательные513-send,129-grant,128-grant backpressure,
@@ -65,7 +74,7 @@ Local layouts/generations определяет producer Shared, не эта оч
   Android follow-up Debug также прошёл0/zero warnings/errors.
   Эти builds не являются installed/physical delivery evidence.
 
-Далее строго в этом же этапе:
+Закрытие S04:
 
 1. Matching141-case scope, MAUI consumer и Windows/Android compiler checks
    предыдущего пакета прошли. Full-04 прерван после подтверждённого пропуска
@@ -86,15 +95,15 @@ Local layouts/generations определяет producer Shared, не эта оч
    Не превращать partial evidence или известный package FAIL в общий PASS.
 5. Локальные repo commits созданы: Protocol f6cd57f, Shared599edf2,
    MAUI02a1ea1, DevOps ee55b90; все четыре child trees чистые.
-   Root pointers/checkpoint входят в отдельный superproject commit.
-   Обычный Protocol push ожидает Git Credential Manager. Завершить push веток.
-   Закрыть S04 только по его критериям; после этого переходить к S05.
+   Root pointers/checkpoint:659bb9d. Все пять release-candidate веток запушены;
+   точные remote SHA совпали с локальными HEAD. S04 source принят по его критериям;
+   следующий и единственный активный этап — S05.
 
 Для отладки использовать короткий connected outcome scenario; genuine513-send
 и128/129-grant crossing остаются обязательной итоговой проверкой.
 Одна цельная функциональная часть → build/focused → связный пакет исправлений →
 matching rerun → required final gates/review/commit. Не запускать full после каждой
-промежуточной правки и не открывать scheduler/provisioning/device этапы параллельно S04.
+промежуточной правки и не открывать следующие этапы параллельно текущему.
 
 Attachment outbox-only key cleanup не доказывает independent asset-key retirement:
 live DAM1/history/object/upload/download/resume obligations нельзя удалять ради
@@ -110,8 +119,8 @@ remote BLOB/local cache expiry и installed media flow — S10. Границу �
 | S01 | Принят contract/API stage, не runtime/release. [Review](S01-CONTRACT-REVIEW-2026-10-10.md); original Protocol package FAIL остаётся S08 по DR-0095. |
 | S02 | Принят current-only native/configured node source/composition, не deployed/physical. [Review](S02-CURRENT-NODE-REVIEW-2026-10-10.md), [checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md). |
 | S03 | Принят grant-bound peer node source/composition, не deployed/physical. [Review](S03-CURRENT-PEER-REVIEW-2026-10-11.md), [checkpoint](../xnode/docs/testing/s03-peer-cycle-2026-10-10.md); full1479/0/0, Node ddcf4b6 pushed. Intermittent native MoveFileEx denial не объявлен исправленным. |
-| S04 | Единственный активный этап; matching201, MAUI95/smoke119, Windows/Android compiler checks и canonical full-05:1424/0/0 прошли; source review и local commits записаны, push веток ещё не завершён. |
-| S05 | Следующий после S04: current issuer, signed successor provisioning и автоматический operational lifecycle. [Локальный issuer scope](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md#connected-private-grant-exchange-2026-10-05) не квалифицирует полный Program/ONION, proxy/deployed443 или independent key rotation. |
+| S04 | Принят source lifecycle: matching201, MAUI95/smoke119, Windows/Android compiler checks и canonical full-05:1424/0/0; review/commits/push завершены. Не installed/release acceptance. |
+| S05 | Единственный активный этап: current issuer, signed successor provisioning и автоматический operational lifecycle. [Локальный issuer scope](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md#connected-private-grant-exchange-2026-10-05) не квалифицирует полный Program/ONION, proxy/deployed443 или independent key rotation. |
 | S06 | Не пройден: два настоящих owned clients, publication/resolve/claim/consent/text через selected-entry и separate replica endpoints; offline/duplicate/lost-response/restart. |
 | S07 | [Local history](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md) реализована; offline logical queue, autonomous scheduler/drain, AppAck/read и полный1:1 event/UI scope не закрыты. |
 | S08 | Shipping composition отсутствует; actual package graph FAIL. Supported native owner/clean-break, package/API/resource closure, composition без diagnostic flag, installed Android/Windows text/receipt. |
@@ -130,7 +139,7 @@ remote BLOB/local cache expiry и installed media flow — S10. Границу �
   independent peer facts и either-replica ACK приняты на source уровне.
   Connected/physical retained-route/horizon/retirement/recovery ещё обязательны.
 - **B3/S04:** current source full подтвердил sustained512/128 и exhausted-PQ
-  recovery; source review и local commits записаны, push веток ещё не завершён;
+  recovery; source review, commits и push завершены;
   installed acceptance отсутствует.
   Original pending/unknown requests/ciphertexts/floors сохраняются;
   не повышать bounds, не remint/evict и не подменять recovery fake freshness.
