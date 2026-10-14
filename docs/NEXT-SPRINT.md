@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-14**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-15**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -20,6 +20,19 @@
 current issuance/readiness/CAS, signed successor provisioning, автоматическое renewal,
 retained-volume restart и bounded verified catch-up. S06 и device qualification
 ещё не открыты; принятый S04 не повторять без изменения его входов.
+
+Текущая контрольная точка: [prekey lifecycle и реальный Windows owner](../deep-devops/docs/S05-PREKEY-LIFECYCLE-2026-10-15.md).
+По DR-0121 prekey publication завершилась с двумя проверенными XIC1; после cold
+reopen защищённая пара повторно проверена без изменения байтов. Исправлены
+public/peer H2 ingress и TLS session-resumption на signed-entry пути, без ослабления
+проверок сертификата. Matching Shared28/0/0, Node118/0/0, Protocol155/0/0;
+Protocol canonical2330/1/7 сохраняет известный S08 MAU2 package FAIL.
+Node/Shared full для новых inputs ещё не квалифицированы. Следующая задача S05 —
+разобрать сохранённую незавершённую contact publication: сначала ответ не прошёл
+durable-commit verifier, позднее retained XRA отвергнут current-scope verifier.
+Исходная причина ответа пока не установлена; не заменять неизвестный исход новым
+аккаунтом, intent или ослабленной authority. Owned grant/node read и physical0/4
+по-прежнему не подтверждены. Подробности ниже относятся к своим исходным receipts.
 
 Текущий пакет и evidence:
 

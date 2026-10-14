@@ -23,6 +23,12 @@ XND1 addresses/ports change only through identity-signed successors and complete
 verified history; layouts/domains are unchanged. Coordinated TLS/runtime and
 physical activation remain separately gated; no client locator translation.
 
+[DR-0121](../survival-program/decisions/DR-0121-prekey-publication-placement-lifecycle.md)
+separates immutable DID2 prekey-publication assignment from current fragment
+carriage views. It changes the publication placement derivation only; existing
+layouts/API remain, old view-bound publication values fail closed without a
+compatibility reader. Coordinated replica/client and physical qualification remain.
+
 [DR-0101](../survival-program/decisions/DR-0101-retained-mailbox-route-custody.md)
 freezes independent bounded private node read-route custody and typed lookup.
 It adds no protocol allocation or Current-route evidence and cannot authorize

@@ -237,6 +237,22 @@ exact tag-3 XNVCoreRef38, PMT2 is current under trusted time, and its node
 projection/replication factor is revalidated against that XNV1 before either
 hash can be emitted.
 
+For DID2 `PublishPreKeyInventory` only, the above placement commitment is replaced
+by [DR-0121](../survival-program/decisions/DR-0121-prekey-publication-placement-lifecycle.md):
+
+```text
+placementHash32 = SHA256-D(
+  "Deep/ContactResolver/V2/prekey-publication-placement",
+  networkId16 || PMT2.selectionEpoch:u64be || serviceClass:u8(2) || shardKey32 ||
+  servicePlacementInput32 || replicaCount:u8 || rankedReplicaNodeIds[32 * replicaCount])
+```
+
+This binds the logical inventory assignment, not a transient carriage envelope.
+Ranking and independent current XNV/PMT/time verification are unchanged. Other
+request kinds, including XPK1 claim, retain the view/PMT-bound formula above.
+Current fragment view binding remains independently mandatory. Old view-bound
+publication values do not authorize this clean-break path; no fallback exists.
+
 For V1, every node admitted to PMT2 is required to host all three contact-service
 classes. The candidate set is therefore exactly PMT2 tag 9: local health,
 latency, carrier reachability, Registry answers and request fields cannot add,
@@ -939,13 +955,22 @@ empty tag 12. Tag 7 is within the aggregate's closed size, tag 8 equals its
 ceiling division by 65,536 and is at most 128, and every bounded record is at
 most 65,861 bytes. The fragment request hash is
 `SHA256-D("Deep/ContactResolver/V2/xpp1-fragment", exact bounded record)`.
-Every phase binds the same network, operation, view, placement, aggregate
+Every phase binds the same network, operation, publication placement, aggregate
 hash/length, chunk count and descriptor hash. The manifest XPI1 hash and
 service capability must bind the exact reassembled aggregate. Missing,
 changed, duplicated or conflicting parts fail closed; exact replay is stable
 across restart. Only a fully reassembled, independently verified exact
 aggregate may reach durable commit and produce the final XIC1. Stage
 acknowledgements are never XIC1 publication receipts.
+Under DR-0121, each incoming phase additionally binds its independently verified
+current view in tag4. Ordinary view renewal may change only tag4 while retaining
+the exact logical aggregate, operation, public support, descriptors and chunks.
+Durable staging retains original exact fragments; its logical replay comparison
+excludes only tag4, and it never treats stored historical view metadata as current
+authority. Every incoming tag4 is verified before mutation. A rejected stale view
+does not fork-latch otherwise valid logical inventory; changed immutable fields
+still conflict. Final commit, receipt verification and claim independently enforce
+current authority, the same selected replicas and signed inventory validity.
 At an ONION ContactResolve exit, only the bounded V2 twelve-tag fragment is
 admitted as XPP1; the retired V1 bounded request and the five-tag aggregate
 are rejected. A successful Manifest or Chunk result is exactly one byte:
