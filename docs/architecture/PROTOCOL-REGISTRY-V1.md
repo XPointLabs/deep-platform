@@ -459,6 +459,14 @@ These records are mandatory freshness inputs to first contact and group member
 directory verification. A valid old DMD1 signature without a current ADP1/ADH1
 proof cannot authorize a new prekey claim or group commit.
 
+[DR-0119](../survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md)
+adds the read-only `AccountDirectoryDtt1IssuanceEpoch.ReplayNamespaceIds` producer
+property for negative nonce checks across a verified same-day XNA1/DTS1 handover.
+Current DTT1 bytes/ID remain unchanged; ancestor IDs never authorize current
+proofs. Exact day-wide quota, nonce retention and rejection rules are owned by
+[ACCOUNT-DIRECTORY](ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md). Source/API and retained
+runtime activation remain separately gated.
+
 ### 6.5 XPoint network and contact reachability records
 
 Owner: exact codecs/vectors in `deep-protocol`; publishers and runtimes as noted.

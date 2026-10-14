@@ -731,17 +731,24 @@ Tag 13 is exactly `SHA256-D("Deep/AccountDirectory/V1/DTT1/issuance-epoch",
 XNAAuthorityCoreRef38 || DTS1PolicyCoreRef38 || U64BE(epochNumber))`. Therefore
 an XNA1 or DTS1 policy change creates a different replay namespace even inside
 the same UTC day. The predecessor of epoch `E>0` is deterministically `E-1`;
-a durable issuer may advance over missed days, but it MUST only increase the
-stored epoch number and MUST reject same-number changed IDs, rollback, or a
-future marker observed while recovering an older state.
+a durable issuer may advance over missed days and MUST reject day-number rollback
+or a future marker observed while recovering an older state. Same-number changed
+IDs reject unless [DR-0119](../survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md)
+authenticates the stored namespace as an exact paired ancestor of the current
+authority. This exception preserves one-use nonce and aggregate quota across the
+whole UTC day; it never makes an ancestor proof/currentness capability current.
 
 The one-use issuer ledger keys each marker by
 `HMAC-SHA256(ledgerKey, networkId16 || U64BE(epochNumber) || epochId32 ||
 nonce32)`, authenticates the epoch number and ID in every marker and quota
 state, and durably consumes it before witness access. On monotonic epoch
 advance it verifies every bounded old marker before deleting it; corruption,
-fork, rollback, incomplete scan or capacity exhaustion fails closed. A nonce
-may be admitted again only in a strictly later authenticated epoch, where the
+fork, rollback, incomplete scan or capacity exhaustion fails closed. During an
+authenticated same-day authority handover, probe all protocol-minted overlapping
+ancestor/current namespace paths before reservation; retain all same-day markers
+and the aggregate quota. At most64 paired namespaces may overlap a UTC day.
+Unknown/sibling/future namespaces still reject; readiness cannot consume or
+compact them. A nonce may be admitted again only in a strictly later UTC day, where the
 signed DTT1 core and every receipt are necessarily different. Pre-clean-break
 DTT1 bytes with the old 14-field layout are rejected; there is no dual reader.
 

@@ -123,8 +123,19 @@ No issuer acceptance yet. Continue that single S05 boundary, then protected
 external signers and grant/MGR journals; do not claim readiness as messaging.
 Registry readiness fix qualified398/0/7,405 mappings/2839 unchanged inputs,
 all native stages0. Dev installation qualified35 checks and12 contracts, native0.
-Actual HTTP503 and three unavailable ONION capabilities confirm the residual
-epoch-coordination blocker; source PASS is not runtime/device acceptance.
+The original HTTP503/three unavailable ONION evidence remains in that receipt.
+DR-0119 now resolves this specific collision without reopening nonce or quota:
+use exact verified same-day paired replay ancestry for negative nonce checks,
+while signatures/currentness remain bound only to current authority. Protocol
+matching20/0/0; full2312/1/7 preserves the original S08 package FAIL. Registry
+matching84/0/0 and final57/0/0; canonical full401/0/7,408 mappings/2842 unchanged
+inputs, all native stages0. Actual retained current-dev proof/three ONION recovered
+21s; scoped restart20s offline→18s recovery→30s stable, same custody/mounts.
+Epoch recovery is verified; protected grant signers/journals, remaining S05
+rotation/issuer/node/client gates and device qualification are still open.
+[Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
+[Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
+[Dev runtime](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#same-day-lineage-aware-recovery).
 [Readiness receipt](../deep-registry-api/docs/testing/s05-epoch-readiness-2026-10-14.md).
 [Protocol scope](../deep-protocol/docs/testing/s05-mailbox-issuer-rollover-2026-10-14.md),
 [operational scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#offline-operational-roletraffictls-candidate).
