@@ -135,12 +135,12 @@ Epoch recovery is verified; protected grant signers/journals, remaining S05
 rotation/issuer/node/client gates and device qualification are still open.
 
 Protected external role-signer source now qualified: actual Linux ARM6421/0/0;
-Registry canonical full408/0/10,418 exact mappings/2844 unchanged inputs,
+Registry initial canonical full408/0/10,418 exact mappings/2844 unchanged inputs,
 all native stages0 and zero Windows build warnings/errors. Linux-only skips are
 not device evidence; Linux build copy-retry warnings remain recorded. Separate
-role custody/UID/purpose checks are implemented, not yet deployed. Next: role-only
-mounts and explicit permanent grant/MGR roots, then configured issuance→client
-verification→node acceptance. No new wire/journal generation or manual signature
+role custody/UID/purpose checks are now deployed on current-dev with role-only
+mounts and explicit permanent grant/MGR roots. Next: native node floor enrollment
+and configured issuance→client verification→node acceptance. No new wire/journal generation or manual signature
 over current issuer state. [Exact source scope](../deep-registry-api/docs/testing/s05-protected-role-signer-2026-10-14.md).
 Source package pushed: Registry `625d7f1`, DevOps `47e5aa0`; remote SHAs checked.
 Docker-resumed current-dev smoke native0; unconfigured Linux signer CLI rejects
@@ -148,6 +148,24 @@ with exact exit2, without mounts/network/HTTP startup. Release-gate contracts
 passed51 commands using synthetic evidence; actual production-readiness status
 remains blocked by10 missing evidence inputs. Synthetic contract PASS is not GA
 or device acceptance. Physical contacts/messages/attachments/groups remain0/4.
+
+Actual current-dev issuer now has eight services: two networkless external role
+processes and Registry without their seeds. Existing keys, original secret volume,
+genesis and independent floors retained. Four canonical journal tables and the
+network/two role roots were explicitly committed once; runtime executes no DDL.
+Readiness contention and per-read database-pool churn fixed without weakening
+signatures/currentness/pending/read-back fences. Final focused19/0/0 and Registry
+canonical full409/0/10,419 exact mappings/2844 unchanged inputs, all native0 and
+zero build warnings/errors. Original full407/2/10 fixture-owner FAIL preserved;
+returned live owner now belongs to its caller, not the returning helper.
+Eight-service retained restart passed20s offline→38s recovery→30s stable with
+same Registry/node/role custody and mounts. Actual MGR history30 signed rows,
+15 sequential generations per role; no pending at read-back. Prior failed
+stability attempts08/12/15 remain failures. Pre-mailbox role rollover commands
+refuse this enabled contour until coordinated role-volume/journal updates exist.
+S05 remains the sole active stage; node floor enrollment, actual private grants,
+future role rollover and physical0/4 remain open, release is not qualified.
+[Runtime scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-protected-mailbox-issuer-activation).
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
 [Dev runtime](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#same-day-lineage-aware-recovery).
