@@ -8,6 +8,8 @@ param(
     [string[]]$AllowedSkippedCases = @(),
     [string[]]$AllowedFailedCases = @(),
     [string]$WitnessPowerShellPath = '',
+    [hashtable]$RetiredCaseReplacements = @{},
+    [string]$RetirementDecisionPath = '',
     [switch]$PreflightOnly
 )
 $ErrorActionPreference = 'Stop'
@@ -24,5 +26,6 @@ $exit = Invoke-RepositoryTestGate -WorkspaceRoot $workspace -Repository $Reposit
     -BuildProperties $profile.Properties -InputRepositories $profile.Inputs -RunDirectory $RunDirectory `
     -ReferencePaths $ReferencePaths -Configuration $Configuration -Interpreter $Interpreter `
     -AllowedSkippedCases $AllowedSkippedCases -AllowedFailedCases $AllowedFailedCases -PreflightOnly:$PreflightOnly `
-    -WitnessPowerShellPath $WitnessPowerShellPath
+    -WitnessPowerShellPath $WitnessPowerShellPath -RetiredCaseReplacements $RetiredCaseReplacements `
+    -RetirementDecisionPath $RetirementDecisionPath
 exit $exit

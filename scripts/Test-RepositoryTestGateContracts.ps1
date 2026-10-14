@@ -6,6 +6,7 @@ $null = New-Item -ItemType Directory -Path $root
 $currentPath = Join-Path $root 'current.trx'
 $referencePath = Join-Path $root 'reference.trx'
 $secondPath = Join-Path $root 'second.trx'
+$decisionPath = Join-Path $root 'accepted-retirement.md'
 $checks = 0
 $inventoryRoot = Join-Path $root 'inputs'
 
@@ -41,6 +42,43 @@ try {
     $result = & $verifier -ReceiptPaths $currentPath -ReferencePaths $referencePath -NativeExitCode 0
     if ($result.Passed -ne 1 -or !$result.ExactCaseMapping) { throw 'Valid receipt rejected.' }
     $checks++
+
+    Receipt -Name 'Example.OldCase' | Set-Content -LiteralPath $referencePath -Encoding UTF8
+    Receipt -Name 'Example.NewCase' | Set-Content -LiteralPath $currentPath -Encoding UTF8
+    Receipt -Name 'Example.NewCase' | Set-Content -LiteralPath $secondPath -Encoding UTF8
+    "Status: accepted semantic change`nExample.OldCase -> Example.NewCase" |
+        Set-Content -LiteralPath $decisionPath -Encoding UTF8
+    $transition = @{ 'Example.OldCase' = @('Example.NewCase') }
+    $transitionArguments = @{
+        ReceiptPaths = @($currentPath); ReferencePaths = @($referencePath, $secondPath)
+        NativeExitCode = 0; RetiredCaseReplacements = $transition; RetirementDecisionPath = $decisionPath
+    }
+    $result = & $verifier @transitionArguments
+    if ($result.Required -ne 1 -or $result.CaseRetirements.Count -ne 1 -or !$result.FullAccepted -or
+        $result.RetirementDecisionSha256 -cne (Get-FileHash -LiteralPath $decisionPath -Algorithm SHA256).Hash) {
+        throw 'Explicit semantic retirement was not exactly recorded.'
+    }
+    $checks++
+    Require-Rejection { & $verifier -ReceiptPaths $currentPath -ReferencePaths @($referencePath, $secondPath) -NativeExitCode 0 } 'union differs'
+    Require-Rejection { & $verifier -ReceiptPaths $currentPath -ReferencePaths @($referencePath, $secondPath) -NativeExitCode 0 -RetiredCaseReplacements $transition } 'accepted decision'
+    'Status: draft Example.OldCase Example.NewCase' | Set-Content -LiteralPath $decisionPath -Encoding UTF8
+    Require-Rejection { & $verifier @transitionArguments } 'not accepted'
+    "Status: accepted semantic change`nExample.OldCase -> Example.NewCase" | Set-Content -LiteralPath $decisionPath -Encoding UTF8
+    $badTransition = @{ 'Example.UnknownCase' = @('Example.NewCase') }
+    Require-Rejection { & $verifier -ReceiptPaths $currentPath -ReferencePaths @($referencePath, $secondPath) -NativeExitCode 0 -RetiredCaseReplacements $badTransition -RetirementDecisionPath $decisionPath } 'not declared'
+    $badTransition = @{ 'Example.OldCase' = @('Example.MissingCase') }
+    Require-Rejection { & $verifier -ReceiptPaths $currentPath -ReferencePaths @($referencePath, $secondPath) -NativeExitCode 0 -RetiredCaseReplacements $badTransition -RetirementDecisionPath $decisionPath } 'distinct declared'
+    Receipt -Name 'Example.NewCase' -Outcome Failed -Passed 0 -Failed 1 | Set-Content -LiteralPath $currentPath -Encoding UTF8
+    $transitionArguments.NativeExitCode = 1
+    Require-Rejection { & $verifier @transitionArguments -AllowedFailedCases 'Example.NewCase' } 'must actually pass'
+    Receipt -Name 'Example.NewCase' | Set-Content -LiteralPath $currentPath -Encoding UTF8
+    $transitionArguments.NativeExitCode = 0
+    $transitionArguments.ReceiptPaths = @($referencePath)
+    Require-Rejection { & $verifier @transitionArguments } 'union differs'
+    $transitionArguments.ReceiptPaths = @($currentPath)
+    (Receipt -Name 'Example.NewCase' -Outcome NotExecuted -Executed 0 -Passed 0).Replace('notExecuted="0"', 'notExecuted="1"') |
+        Set-Content -LiteralPath $currentPath -Encoding UTF8
+    Require-Rejection { & $verifier @transitionArguments -AllowedSkippedCases 'Example.NewCase' } 'must actually pass'
 
     Receipt -Name 'Example.Case(value: 2)' -DefinedName 'Example.Case' |
         Set-Content -LiteralPath $currentPath -Encoding UTF8
@@ -240,7 +278,7 @@ try {
                 [StringComparison]::OrdinalIgnoreCase)) { throw 'Unexpected inventory cleanup target.' }
         Remove-Item -LiteralPath $resolvedInventory -Recurse -Force
     }
-    foreach ($path in @($currentPath, $referencePath, $secondPath, (Join-Path $root 'running.json'), (Join-Path $root 'terminal.json'),
+    foreach ($path in @($currentPath, $referencePath, $secondPath, $decisionPath, (Join-Path $root 'running.json'), (Join-Path $root 'terminal.json'),
         (Join-Path $root 'native.txt'), (Join-Path $root 'native.txt.stderr'))) {
         if (Test-Path -LiteralPath $path) { Remove-Item -LiteralPath $path }
     }

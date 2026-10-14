@@ -83,3 +83,36 @@ retained process/volume restart and independently verified node/client catch-up
 remain mandatory. Frozen registry/schema/vector obligations and all Protocol
 consumers must be repinned together. No source gate qualifies installed/dev/
 production activation or physical messaging; S05 remains open.
+
+## Explicit source-case transition
+
+The common exact-mapping gate may retire only these prior negative identities,
+with the replacement cases actually present and passed. This is not a native
+FAIL/skip waiver. Retired cases must be absent from the current full, original
+reference TRX remain unchanged, and the accepted decision hash plus exact
+old-method/new-case mapping must appear in qualification evidence.
+
+Retired:
+`Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "root-gap")`
+
+Required replacements:
+`Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "root-time-rollback")`
+and
+`Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_OfflineRootContinuityAcrossExpiryDoesNotReviveOldPolicy(issuedAt: 1001)`.
+
+Retired:
+`Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "dts-gap")`
+
+Required replacements:
+`Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "dts-before-root")`
+and
+`Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_OfflineRootContinuityAcrossExpiryDoesNotReviveOldPolicy(issuedAt: 10001)`.
+
+Exact gate bindings (old display name -> replacement display name):
+
+```text
+Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "root-gap") -> Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "root-time-rollback")
+Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "root-gap") -> Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_OfflineRootContinuityAcrossExpiryDoesNotReviveOldPolicy(issuedAt: 1001)
+Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "dts-gap") -> Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "dts-before-root")
+Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_SameKeyRenewalRejectsHostileInputsBeforeSigning(fault: "dts-gap") -> Deep.Protocol.Tests.XPointNetworkV1.XPointOnionCapabilityProducerTests.OperationalRollover_OfflineRootContinuityAcrossExpiryDoesNotReviveOldPolicy(issuedAt: 10001)
+```

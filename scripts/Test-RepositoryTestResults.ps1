@@ -4,7 +4,9 @@ param(
     [Parameter(Mandatory = $true)][string[]]$ReferencePaths,
     [Parameter(Mandatory = $true)][ValidateNotNull()][Nullable[int]]$NativeExitCode,
     [string[]]$AllowedSkippedCases = @(),
-    [string[]]$AllowedFailedCases = @()
+    [string[]]$AllowedFailedCases = @(),
+    [hashtable]$RetiredCaseReplacements = @{},
+    [string]$RetirementDecisionPath = ''
 )
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'TestGate.psm1') -Force

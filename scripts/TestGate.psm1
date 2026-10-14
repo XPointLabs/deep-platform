@@ -116,7 +116,9 @@ function Test-TestGateResults {
         [Parameter(Mandatory = $true)][string[]]$ReferencePaths,
         [Parameter(Mandatory = $true)][ValidateNotNull()][Nullable[int]]$NativeExitCode,
         [string[]]$AllowedSkippedCases = @(),
-        [string[]]$AllowedFailedCases = @()
+        [string[]]$AllowedFailedCases = @(),
+        [hashtable]$RetiredCaseReplacements = @{},
+        [string]$RetirementDecisionPath = ''
     )
     if ($NativeExitCode -notin @(0, 1)) { throw 'The actual native test exit is missing or interrupted.' }
     if (!$ReceiptPaths.Count -or !$ReferencePaths.Count) { throw 'Current receipts and a predeclared reference matrix are required.' }
@@ -133,6 +135,45 @@ function Test-TestGateResults {
         }
     }
     if (!$required.Count) { throw 'An empty reference matrix cannot qualify a run.' }
+    $retirements = @()
+    if ($RetiredCaseReplacements.Count) {
+        if ($RetiredCaseReplacements.Count -gt 64 -or [string]::IsNullOrWhiteSpace($RetirementDecisionPath) -or
+            !(Test-Path -LiteralPath $RetirementDecisionPath -PathType Leaf)) {
+            throw 'Case retirement requires a bounded mapping and its accepted decision.'
+        }
+        if ((Get-Item -LiteralPath $RetirementDecisionPath).Length -gt 131072) {
+            throw 'Case retirement decision is not accepted or bounded.'
+        }
+        $decision = [IO.File]::ReadAllText($RetirementDecisionPath)
+        if ($decision.Length -gt 131072 -or $decision -cnotmatch '(?m)^Status: accepted\b') {
+            throw 'Case retirement decision is not accepted or bounded.'
+        }
+        foreach ($old in $RetiredCaseReplacements.Keys) {
+            if ($old -isnot [string] -or [string]::IsNullOrWhiteSpace($old) -or
+                $decision.IndexOf($old, [StringComparison]::Ordinal) -lt 0) {
+                throw 'A retired case is not declared by the accepted decision.'
+            }
+            $oldKeys = @($required | Where-Object { ($_ -split [char]31, 2)[1] -ceq $old })
+            $replacements = @($RetiredCaseReplacements[$old])
+            if ($oldKeys.Count -ne 1 -or !$replacements.Count -or $replacements.Count -gt 64) {
+                throw 'A retired case must identify one reference binding and nonempty replacements.'
+            }
+            $seenReplacements = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+            foreach ($replacement in $replacements) {
+                if ($replacement -isnot [string] -or [string]::IsNullOrWhiteSpace($replacement) -or
+                    !$seenReplacements.Add($replacement) -or $RetiredCaseReplacements.ContainsKey($replacement) -or
+                    $decision.IndexOf($old + ' -> ' + $replacement, [StringComparison]::Ordinal) -lt 0 -or
+                    @($required | Where-Object { ($_ -split [char]31, 2)[1] -ceq $replacement }).Count -ne 1) {
+                    throw 'Retirement replacements must be distinct declared reference bindings, never other retired cases.'
+                }
+            }
+            $null = $required.Remove($oldKeys[0])
+            $retirements += [pscustomobject]@{ RetiredCase = $old; ReferenceMethod = $referenceMethods[$oldKeys[0]]; Replacements = $replacements }
+        }
+        if (!$required.Count) { throw 'Retirement cannot empty the required matrix.' }
+    } elseif ($RetirementDecisionPath) {
+        throw 'A retirement decision without case replacements is not a qualification input.'
+    }
     $names = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $ids = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $executions = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
@@ -165,6 +206,13 @@ function Test-TestGateResults {
         $failedCount += $current.FailedCount; $skippedCount += $current.SkippedCount
     }
     if (!$required.SetEquals($names)) { throw 'The predeclared full/focused case union differs from actual executions.' }
+    foreach ($retirement in $retirements) {
+        foreach ($replacement in $retirement.Replacements) {
+            if ($failures.Contains($replacement) -or $skips.Contains($replacement)) {
+                throw 'Every retirement replacement must actually pass; outcome exceptions cannot waive it.'
+            }
+        }
+    }
     if (!$allowedSkips.SetEquals($skips) -or !$allowedFailures.IsSupersetOf($failures)) {
         throw 'Current production qualification requires every unclassified execution to pass.'
     }
@@ -176,6 +224,8 @@ function Test-TestGateResults {
         Required = $required.Count; ExactCaseMapping = $true; MatrixQualified = $true
         FullAccepted = ($NativeExitCode -eq 0 -and !$failures.Count)
         EmptyReceipts = $emptyReceipts; ReceiptSha256 = $hashes
+        CaseRetirements = $retirements
+        RetirementDecisionSha256 = $(if ($retirements.Count) { (Get-FileHash -LiteralPath $RetirementDecisionPath -Algorithm SHA256).Hash } else { $null })
     }
 }
 
@@ -335,7 +385,8 @@ function Invoke-RepositoryTestGate {
         [string]$WorkspaceRoot, [string]$Repository, [string]$Solution, [string[]]$BuildProperties,
         [string[]]$InputRepositories, [string]$RunDirectory, [string[]]$ReferencePaths,
         [string]$Configuration, [string]$Interpreter, [string[]]$AllowedSkippedCases,
-        [string[]]$AllowedFailedCases, [switch]$PreflightOnly, [string]$WitnessPowerShellPath = ''
+        [string[]]$AllowedFailedCases, [switch]$PreflightOnly, [string]$WitnessPowerShellPath = '',
+        [hashtable]$RetiredCaseReplacements = @{}, [string]$RetirementDecisionPath = ''
     )
     Assert-TestGateInterpreter $Interpreter
     $repoRoot = Join-Path $WorkspaceRoot $Repository
@@ -354,12 +405,32 @@ function Invoke-RepositoryTestGate {
     if ($Repository -eq 'deep-protocol') {
         if (!$WitnessPowerShellPath) {
             $command = Get-Command pwsh -ErrorAction SilentlyContinue
-            if ($null -eq $command) { throw 'Protocol requires explicitly available PowerShell7.5.4 witnesses before full.' }
+            if ($null -eq $command) { throw 'Protocol requires explicitly available PowerShell7.6.5/.NET10 witnesses before full.' }
             $WitnessPowerShellPath = $command.Source
         }
         $witnessVersion = @(& $WitnessPowerShellPath -NoProfile -Command '$PSVersionTable.PSVersion.ToString()')
-        if ($LASTEXITCODE -ne 0 -or $witnessVersion.Count -ne 1 -or $witnessVersion[0] -cne '7.5.4') {
-            throw 'Protocol witness interpreter must be PowerShell7.5.4.'
+        if ($LASTEXITCODE -ne 0 -or $witnessVersion.Count -ne 1 -or $witnessVersion[0] -cne '7.6.5') {
+            throw 'Protocol witness interpreter must be PowerShell7.6.5/.NET10.'
+        }
+        $sdkRoots = @(& $dotnet --list-sdks | Where-Object { $_ -match '^10\.0\.301 \[(.+)\]$' } |
+            ForEach-Object { [void]($_ -match '^10\.0\.301 \[(.+)\]$'); Join-Path $Matches[1] '10.0.301' })
+        if ($LASTEXITCODE -ne 0 -or $sdkRoots.Count -ne 1) {
+            throw 'Selected SDK witness assembly location is ambiguous or absent.'
+        }
+        $frameworkAssembly = (Join-Path $sdkRoots[0] 'Microsoft.Build.Framework.dll').Replace("'", "''")
+        $buildAssembly = (Join-Path $sdkRoots[0] 'Microsoft.Build.dll').Replace("'", "''")
+        $probe = '$ErrorActionPreference="Stop"; [void][Reflection.Assembly]::LoadFrom(''' + $frameworkAssembly + '''); ' +
+            '[void][Reflection.Assembly]::LoadFrom(''' + $buildAssembly + ''').GetType("Microsoft.Build.Logging.BinaryLogReplayEventSource",$true); ' +
+            '[pscustomobject]@{Runtime=[Runtime.InteropServices.RuntimeInformation]::FrameworkDescription;Architecture=[Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()} | ConvertTo-Json -Compress'
+        $encodedProbe = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($probe))
+        $witnessProbe = @(& $WitnessPowerShellPath -NoProfile -EncodedCommand $encodedProbe 2>$null)
+        if ($LASTEXITCODE -ne 0 -or $witnessProbe.Count -ne 1) {
+            throw 'Selected witness cannot load SDK10 MSBuild types; full was not launched.'
+        }
+        $witnessContract = $witnessProbe[0] | ConvertFrom-Json
+        if ($witnessContract.Runtime -notmatch '^\.NET 10\.' -or
+            $witnessContract.Architecture -cnotin @('X64', 'Arm64', 'X86')) {
+            throw 'Selected witness has an unsupported runtime or architecture.'
         }
         $witnessDirectory = Split-Path -Parent ([IO.Path]::GetFullPath($WitnessPowerShellPath))
     }
@@ -386,6 +457,7 @@ function Invoke-RepositoryTestGate {
         $buildExit = $build.ExitCode
         if ($buildExit -ne 0) { throw 'The current solution build failed; full was not launched.' }
         $extra = @($ReferencePaths) + @($vectorPath, (Join-Path $WorkspaceRoot 'scripts\Invoke-RepositoryTestGate.ps1'), $script:TestGateModulePath)
+        if ($RetirementDecisionPath) { $extra += $RetirementDecisionPath }
         $inputs = Get-TestGateInputs $WorkspaceRoot $InputRepositories $Configuration $extra $Repository $Solution
         [pscustomobject]@{ CapturedAt = [DateTime]::UtcNow.ToString('o'); Inputs = $inputs } |
             ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $runRoot 'inputs.json') -Encoding UTF8
@@ -440,7 +512,8 @@ function Invoke-RepositoryTestGate {
             $testExit = $test.ExitCode
             $receipts = @(Get-ChildItem -LiteralPath $fullRoot -Filter '*.trx' -File | ForEach-Object { $_.FullName })
             $qualified = Test-TestGateResults -ReceiptPaths $receipts -ReferencePaths $ReferencePaths -NativeExitCode $testExit `
-                -AllowedSkippedCases $AllowedSkippedCases -AllowedFailedCases $AllowedFailedCases
+                -AllowedSkippedCases $AllowedSkippedCases -AllowedFailedCases $AllowedFailedCases `
+                -RetiredCaseReplacements $RetiredCaseReplacements -RetirementDecisionPath $RetirementDecisionPath
             $qualified | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $runRoot 'qualification.json') -Encoding UTF8
         }
         $currentInputs = Get-TestGateInputs $WorkspaceRoot $InputRepositories $Configuration $extra $Repository $Solution
@@ -458,7 +531,9 @@ function Invoke-RepositoryTestGate {
             State = $(if ($qualificationExit -eq 0) { 'Completed' } else { 'FailedOrBlocked' })
             StartedAt = $started.ToString('o'); FinishedAt = [DateTime]::UtcNow.ToString('o')
             Interpreter = $Interpreter; PowerShellVersion = $PSVersionTable.PSVersion.ToString(); SdkVersion = $sdk[0]
-            WitnessPowerShellVersion = $(if ($witnessDirectory) { '7.5.4' } else { $null })
+            WitnessPowerShellVersion = $(if ($witnessDirectory) { $witnessVersion[0] } else { $null })
+            WitnessRuntime = $(if ($witnessDirectory) { $witnessContract.Runtime } else { $null })
+            WitnessArchitecture = $(if ($witnessDirectory) { $witnessContract.Architecture } else { $null })
             BuildExitCode = $buildExit; PreflightExitCode = $preflightExit; TestExitCode = $testExit
             QualificationExitCode = $qualificationExit; PreflightSeconds = $preflightTime
             CapturedInputs = $inputs.Count; FailureType = $failure; PreflightOnly = [bool]$PreflightOnly

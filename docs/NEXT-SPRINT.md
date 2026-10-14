@@ -69,11 +69,14 @@ DTS1 истёк2026-10-06T14:07:38Z, Registry сообщает `policy-interval`
 DR-0116 source candidate устраняет overlap-only dead end после root expiry и
 разделяет offline XVP1/PMA2 horizon с коротким operational view. Protocol matching
 **61/0/0**, operator executable native0 (69-view scope сохранён), publisher
-Release build0/zero warnings/errors. Canonical Protocol preflight прошёл с1580
-captured inputs; **full не запускался, FullAccepted=false**. Два прежних negative
-case identities `root-gap`/`dts-gap` семантически заменены signed-gap positives и
-rollback negatives: нужно explicit retirement в общей exact-reference matrix,
-без редактирования исторического TRX или ослабления mapping. Точный текущий scope
+Release build0/zero warnings/errors. Current matching scope **107/0/0**; common
+gate contracts **46/0**. Canonical Protocol full03 завершён **2297/1/7**,2305
+exact mappings,1581 unchanged inputs и explicit retirement двух superseded
+`root-gap`/`dts-gap` identities без правки старых TRX. **FullAccepted=false**:
+настоящий package graph отвергает retired MAU2 в старом PMA1 producer. Это S08
+blocker, не разрешение переименовать его или выключить guard. Witness contract
+согласован с SDK10.0.301 по DR-0117:7.6.5/.NET10/compatible architecture,
+проверка MSBuild types до full. Точный текущий scope
 и исходные failures —
 [Protocol checkpoint](../deep-protocol/docs/testing/s05-root-continuity-2026-10-14.md).
 Пакет не развёрнут; expiry сохранённого dev ещё не устранено. S04/S05 прежние

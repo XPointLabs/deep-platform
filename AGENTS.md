@@ -61,7 +61,8 @@ contains public user/operator behavior, not a second protocol specification.
   repository command from that shell; PowerShell 7 callers must explicitly
   select `-Interpreter PowerShell7`. The terminal records the actual edition,
   version and SDK10.0.301. Do not guess an interpreter for historical scripts.
-- Protocol's executable witnesses separately require PowerShell7.5.4:
+- Protocol's executable witnesses separately require PowerShell7.6.5/.NET10
+  under DR-0117, compatible with the selected SDK architecture:
   resolve `pwsh` or pass `-WitnessPowerShellPath` explicitly. Absence/wrong
   version rejects before full; the gate records the witness version and scopes
   its PATH addition to native children. It does not install interpreters.
@@ -84,6 +85,12 @@ contains public user/operator behavior, not a second protocol specification.
   copy new per-run validators into artifacts. Empty filtered-project receipts
   require exact zero counters; shared theory definitions/display-name collisions
   are mapped by stable test identity plus exact case name and unique execution.
+  An accepted semantic clean break may declare exact old-case -> replacement
+  bindings with `-RetiredCaseReplacements` and `-RetirementDecisionPath`.
+  Original reference TRX stay unchanged; current retired cases must be absent,
+  all replacements must actually pass (never waived FAIL/skip), and qualification
+  records old method bindings plus decision SHA256. Unrelated missing/new cases
+  still reject. The decision is a captured input, not a per-run validator.
   Named historical FAIL/skips must be declared explicitly; classification cannot
   turn a nonzero native exit, interruption or lost terminal into full PASS.
 - The canonical gates hold one workspace-wide lease. Run heavy gates serially.
