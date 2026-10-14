@@ -175,18 +175,21 @@ Current-dev resolver enrollment on all three retained nodes and explicit
 permanent route/publication journal provisioning now completed. Actual contact
 and threshold-coordination activation/Verify plus final PowerShell5.1 smoke
 passed native0; operator54 checks and Compose18/0 passed. The actual public-input
-owned-client probe fails at AccountAdmission: TLS SecureConnectionError /
-AuthenticationException. Read-only same-leaf/root chain inspection reports
-Online RevocationStatusUnknown and absent CRL Distribution Point, despite curl
-HTTPS/H2 readiness200. Next: supported signed dev CRL/certificate provisioning,
-then retry issuer→owned-client verify→node acceptance; never disable online
-revocation or substitute handmade grants. [Connected scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#contact-consumers-and-owned-client-issuance-attempt).
+owned-client probe's TLS admission blocker is now resolved by supported same-key
+dev PKI/CRL provisioning, without relaxing HTTPS/online revocation. Final PKI58
+checks/Compose19 passed; same-candidate owner-corrected resume and Verify passed0
+after156s. Original PostgreSQL certificate-owner failure is preserved. Strict
+managed client09 completed AccountAdmission and CurrentNetwork, then failed
+PreKeyStage: approved ML-KEM assets exclude this Linux probe RID. Next:
+issuer→owned-client verify→node acceptance on supported Windows/Android; do not
+inject fake prekeys or expand shipping crypto approval just for a diagnostic.
+[PKI/managed scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#same-key-dev-pki-and-strict-managed-admission).
 S05 remains the sole active stage; actual private grants/client verification/
 node acceptance, future role rollover and physical0/4 remain open. Release is
 not qualified. Node/Registry/Protocol source was unchanged by this operator
 package; source qualification and installed acceptance remain separate.
-Contact operator/owned-probe package: DevOps `b76d59b`; matching root submodule
-pointer retained. Failed client13/15 receipts are not shipping acceptance.
+Current operator/PKI package: DevOps `5a0f895`; matching root submodule pointer
+retained. Earlier client13/15 and PKI client09 FAIL are not shipping acceptance.
 [Runtime scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-protected-mailbox-issuer-activation).
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
