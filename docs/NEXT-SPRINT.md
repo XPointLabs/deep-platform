@@ -21,6 +21,55 @@ current issuance/readiness/CAS, signed successor provisioning, автомати�
 retained-volume restart и bounded verified catch-up. S06 и device qualification
 ещё не открыты; принятый S04 не повторять без изменения его входов.
 
+Текущий пакет и evidence:
+
+- Registry canonical full07 принят: **395/0/7**,402 exact mappings, все native
+  stages0 и2834 unchanged inputs. Source реализует bounded renewal, immediate
+  authority handover и exact prepared ADA2/CAS recovery по
+  [DR-0115](survival-program/decisions/DR-0115-did2-prepared-directory-commit.md).
+  Actual HTTP client/node catch-up прошёл69 signed heads через64+5 с обрывом
+  и cold reopen. Readiness остаётся read-only. Scope, hashes и сохранённые FAIL —
+  [Registry checkpoint](../deep-registry-api/docs/testing/s05-head-renewal-budget-2026-10-14.md).
+- Node matching пакет: **139/0/0**, native0; Program/current/retained TLS-native
+  scope: **3/0/0**. Исправлены no-write replay fault, повторные Windows link
+  queries и bounded same-file replacement. Authority/floor/revocation fences и
+  peer/ingress deadlines не расширены. **Node full принят1499/0/0**, все native
+  stages0,1499 exact mappings и2180 unchanged inputs;
+  [node checkpoint](../xnode/docs/testing/s05-observation-context-reuse-2026-10-14.md)
+  содержит исходные failures и точные текущие scopes.
+- Operator CLI сохраняет полные signed chains и три node identities, готовит
+  same-key authority renewal и complete immutable bundle/NCP2. Matching69-view
+  executable и wrapper contracts14/0 прошли. Это offline candidate, не fresh
+  runtime: [operator checkpoint](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md).
+
+Пакет reviewed/committed/pushed: Registry `2df4474`, Node `2de436d`, DevOps
+`9789123`; remote SHA всех трёх сверены. Повторный managed-external no-mock
+smoke и three-node rehearsal завершились native0 и scoped cleanup; первый
+Docker-engine EOF/exit1 сохранён отдельно. Это инфраструктурные, не DID2
+delivery/device проверки; существующий dev health после перезапуска Docker
+остаётся unhealthy, без сброса его state/keys.
+[Точный scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#infrastructure-rehearsal-attempt).
+
+Оставшаяся приёмка S05, в порядке выполнения:
+
+1. Проверить причину unhealthy сохранённого dev-контура; закрыть supported
+   changed-root/witness/role ceremony и автоматический
+   head/view/key lifecycle с предупреждением offline-policy expiry. Реальная
+   key rotation в source fixture не доказывает operational ceremony.
+2. Проверить process/retained-volume restart, interruption/rollback, signer/time
+   outage, competing generations и несколько ротаций на воспроизводимом контуре
+   без ручной правки signed bytes, floors, genesis или registered identities.
+3. Проверить связный issuer/node/client renewal и bounded verified catch-up;
+   offline CLI, fixture clocks и cold object reopen не заменяют runtime evidence.
+
+Первый Store в полном Registry scope занял14930ms при deadline15s: nominal
+margin70ms остаётся риском. Seven native issuer cases имеют0 foreign TRX overlaps
+после explicit xUnit collection isolation; внутренние concurrent operations
+сохранены. Это source qualification, **не stable-performance или S09 load PASS**.
+Семь Unix-socket skips требуют Linux lane. Shipping/provider/device gates,
+S06 и остальные критерии S05 не закрыты; новый full не повторять без изменения
+его входов или конкретной verification цели.
+
 ## Принятый source checkpoint S04
 
 **Client grant/send/route lifecycle — source принят; пять веток сверены с origin.**

@@ -978,6 +978,15 @@ ADF1 procedure. This restores account/control trust, not old contacts or content
    fresh monotonic proof.
 9. 10,000-contact lookup/load and proof-size bounds on the weakest Android target.
 
+## Registry prepared directory commit
+
+Registry's internal prepared-commit lifecycle is frozen by
+[DR-0115](../survival-program/decisions/DR-0115-did2-prepared-directory-commit.md).
+It retains exact signed ADA2 intent before external floor CAS and completes it
+only through the mutation owner, without replacing genesis, reconstructing a
+lost floor or repairing corrupt primary custody. Readiness and proof/history
+reads remain read-only and unavailable while that intent is unfinished.
+
 ## Historical DID2 catch-up (DR-0014 candidate freeze)
 
 An expired reader-2 ADH1 is authenticated history, not current authority. A
