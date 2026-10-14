@@ -171,11 +171,22 @@ PowerShell5.1 smoke passed with captured native0. Existing-key reprovision
 rejected with exit2 and unchanged key bytes. The enrolled restart log reports
 153s recovery/30s stable but lacks its original native terminal after handoff;
 it remains diagnostic/unqualified, not accepted from final JSON alone.
+Current-dev resolver enrollment on all three retained nodes and explicit
+permanent route/publication journal provisioning now completed. Actual contact
+and threshold-coordination activation/Verify plus final PowerShell5.1 smoke
+passed native0; operator54 checks and Compose18/0 passed. The actual public-input
+owned-client probe fails at AccountAdmission: TLS SecureConnectionError /
+AuthenticationException. Read-only same-leaf/root chain inspection reports
+Online RevocationStatusUnknown and absent CRL Distribution Point, despite curl
+HTTPS/H2 readiness200. Next: supported signed dev CRL/certificate provisioning,
+then retry issuer→owned-client verify→node acceptance; never disable online
+revocation or substitute handmade grants. [Connected scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#contact-consumers-and-owned-client-issuance-attempt).
 S05 remains the sole active stage; actual private grants/client verification/
-node acceptance, future role rollover and physical0/4 remain open, release is
-not qualified. [Enrollment scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-retained-node-mailbox-enrollment).
-Node enrollment package: DevOps `4b3bc91`; root records the matching submodule
-pointer, not a new source qualification for unchanged Node/Registry/Protocol.
+node acceptance, future role rollover and physical0/4 remain open. Release is
+not qualified. Node/Registry/Protocol source was unchanged by this operator
+package; source qualification and installed acceptance remain separate.
+Contact operator/owned-probe package: DevOps `b76d59b`; matching root submodule
+pointer retained. Failed client13/15 receipts are not shipping acceptance.
 [Runtime scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-protected-mailbox-issuer-activation).
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
