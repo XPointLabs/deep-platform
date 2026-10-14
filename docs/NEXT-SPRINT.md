@@ -133,6 +133,15 @@ inputs, all native stages0. Actual retained current-dev proof/three ONION recove
 21s; scoped restart20s offline→18s recovery→30s stable, same custody/mounts.
 Epoch recovery is verified; protected grant signers/journals, remaining S05
 rotation/issuer/node/client gates and device qualification are still open.
+
+Protected external role-signer source now qualified: actual Linux ARM6421/0/0;
+Registry canonical full408/0/10,418 exact mappings/2844 unchanged inputs,
+all native stages0 and zero Windows build warnings/errors. Linux-only skips are
+not device evidence; Linux build copy-retry warnings remain recorded. Separate
+role custody/UID/purpose checks are implemented, not yet deployed. Next: role-only
+mounts and explicit permanent grant/MGR roots, then configured issuance→client
+verification→node acceptance. No new wire/journal generation or manual signature
+over current issuer state. [Exact source scope](../deep-registry-api/docs/testing/s05-protected-role-signer-2026-10-14.md).
 [Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
 [Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
 [Dev runtime](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#same-day-lineage-aware-recovery).
