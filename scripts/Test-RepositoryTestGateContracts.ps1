@@ -213,6 +213,23 @@ try {
         throw 'Executable helper byte substitution did not change captured inputs.'
     }
     $checks += 2
+    $registryDirectory = Join-Path $inventoryRepo 'registry'
+    $null = New-Item -ItemType Directory -Path $registryDirectory
+    $registryPath = Join-Path $registryDirectory 'current.registry.json'
+    '{"generation":1}' | Set-Content -LiteralPath $registryPath -Encoding UTF8
+    $registryCapture = Get-TestGateInputs -WorkspaceRoot $inventoryRoot -Repositories @('node') `
+        -Configuration Release -BinaryRepository node -Solution Node.slnx
+    $registryRelative = 'node/registry/current.registry.json'
+    $registryInput = @($registryCapture | Where-Object { $_.Path.Replace('\', '/') -ceq $registryRelative })
+    if ($registryInput.Count -ne 1) { throw 'Repository normative registry escaped frozen input inventory.' }
+    '{"generation":2}' | Set-Content -LiteralPath $registryPath -Encoding UTF8
+    $changedRegistryCapture = Get-TestGateInputs -WorkspaceRoot $inventoryRoot -Repositories @('node') `
+        -Configuration Release -BinaryRepository node -Solution Node.slnx
+    $changedRegistryInput = @($changedRegistryCapture | Where-Object { $_.Path.Replace('\', '/') -ceq $registryRelative })
+    if ($changedRegistryInput.Count -ne 1 -or $changedRegistryInput[0].Sha256 -ceq $registryInput[0].Sha256) {
+        throw 'Repository normative registry substitution did not change captured inputs.'
+    }
+    $checks += 2
     Write-Output "Unified test-gate contracts passed: $checks"
 } finally {
     if (Test-Path -LiteralPath $inventoryRoot) {

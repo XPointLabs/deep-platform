@@ -57,6 +57,19 @@ invent an unsigned historical-reader switch.
 
 ## Implementation boundary
 
+The 2026-10-11 S04 clarification adds the exact current-client signed-lifetime
+refresh trigger only in its sole transition owner, section8.4.2 linked above.
+It uses existing adopted acquisition/current/pending custody and allocates no
+wire, verification capability, lifetime extension or deletion authority.
+
+The 2026-10-13 S04 clarification separates owner-generated command creation
+from retained-operation retry, in the same sole transition owner section8.4.3.
+The caller-operation create-or-retry path must be removed with its application
+consumers. It adds no network authority or wire allocation and does not make
+diagnostic audit expiry a replay-namespace retirement proof. Matching Shared
+producer, API/composer consumers, terminal cleanup and crash/reopen evidence
+remain one connected implementation package before activation.
+
 S01 still requires the complete node/peer admission and application-receipt
 contracts and any necessary local format/API freeze. This decision does not
 close S01 or authorize skipping to shipping/device qualification. S04 implements

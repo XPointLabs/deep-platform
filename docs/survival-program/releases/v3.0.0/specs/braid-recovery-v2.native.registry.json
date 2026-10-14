@@ -1,0 +1,45 @@
+{
+  "$schema": "braid-recovery-v2.native.registry.schema.json",
+  "decision": "DR-0112",
+  "status": "FROZEN_INTERNAL_COMPONENT_NOT_ACTIVE",
+  "productionActive": false,
+  "controlKdf": {
+    "hash": "SHA-512",
+    "saltHex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "length": 32,
+    "rootDomain": "Deep/MSG-V2/braid-control-root",
+    "rootRule": "HKDF-512(actualSPQRRoot32, zeroSalt64, UTF8(rootDomain)||zero:u8||suite:u16be||linkEpoch:u64be,32)",
+    "directionDomain": "Deep/MSG-V2/braid-control-direction",
+    "directionRule": "HKDF-512(retainedControlRoot32,zeroSalt64,UTF8(directionDomain)||zero:u8||suite:u16be||network16||session32||senderDevice32||recipientDevice32||linkEpoch:u64be,32)",
+    "macRule": "HMAC-SHA-256(directionKey32,DBR2.GetAuthenticationInput); constant-time comparison before committed or candidate Braid mutation",
+    "linkEpochRule": "DBR2.braidEpoch-1; retain with actual SPQR link; install only on genuine Braid output"
+  },
+  "controlSlots": {
+    "Header": 1,
+    "Ciphertext1": 1,
+    "EncapsulationKeyWithCiphertext1Ack": 2,
+    "Ciphertext2": 2,
+    "rule": "fixed slots, no contiguous-first-slot requirement when data already carried an earlier flight; send-slot reuse rejects; exact received full-frame hash replays without mutation; changed slot or cross-slot operation reuse rejects"
+  },
+  "privateState": {
+    "magic": "TRC1",
+    "generation": 2,
+    "prefixBytes": 1060,
+    "unchangedPrefixBytes": 400,
+    "linkOffset": 400,
+    "linkCountMaximum": 2,
+    "linkBytes": 328,
+    "braidLengthOffset": 1056,
+    "linkLayout": "existingDataLink96||controlRoot32||sendSlotMask:u8||receiveSlotMask:u8||reservedZero6||sendOperations64||receiveOperations64||receiveFrameSHA256s64",
+    "slotLayout": "two ascending slot entries, each32; mask bits0/1; present operation/hash nonzero32; absent all-zero32; no repeated operation across retained send/receive slots",
+    "rule": "no generation1 reader; unused whole link all zero; roots/operations/hashes wiped on retirement/disposal; masks have no other bits"
+  },
+  "internalApi": [
+    "TripleRatchetState.PrepareBraidRecoverySend",
+    "TripleRatchetState.PrepareBraidRecoveryReceive",
+    "TripleRatchetBraidRecoveryCandidate"
+  ],
+  "candidateRule": "only verified current internal state/binding and owner network scope; no public raw-key author/verifier or durable receipt; preserve outer data cursors/frontiers/evidence/skipped keys/freshness counters; storageGeneration+1 only for fresh control; exact replay has no successor",
+  "vectors": "braid-recovery-v2.native.vectors.json",
+  "activationRule": "internal component candidate only; durable SQL/floor/unknown/crash/cancel, transport/ACK, public API/package and device activation remain gated"
+}

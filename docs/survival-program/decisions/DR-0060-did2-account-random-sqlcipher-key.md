@@ -25,6 +25,10 @@ key; separate application/device/prekey databases retain their key interpretatio
 This replaces DR27's earlier account-only non-change statement, not its other
 contracts or the network crypto/identity suite.
 
+Device-key interpretation is subsequently superseded by
+[DR-0109](DR-0109-device-sqlcipher-random-key.md); that current device-only local
+clean break does not change DSV2/DSK2 or DMS2 generations specified here.
+
 The isolated same-provider measurement on the current Windows machine found
 five authenticated reopens: password-key mode3429.3ms, raw-key mode12.3ms; the
 opposite key interpretation rejected in both directions. This measures only

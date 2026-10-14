@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deep:braid-recovery:v2:registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "decision", "package", "status", "productionActive", "magic", "version", "suite", "totalBytes", "fieldCount", "framing", "fields", "payloadKinds", "authenticationInput", "publicApi", "vectors", "activationRule"],
+  "properties": {
+    "$schema": { "const": "braid-recovery-v2.registry.schema.json" },
+    "schemaVersion": { "const": "3.0.0" },
+    "decision": { "const": "DR-0111" },
+    "package": { "const": "E2EE-01" },
+    "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
+    "productionActive": { "const": false },
+    "magic": { "const": "DBR2" },
+    "version": { "const": 1 },
+    "suite": { "const": 513 },
+    "totalBytes": { "const": 4112 },
+    "fieldCount": { "const": 11 },
+    "framing": { "const": "deep-crypto-v1.registry.json#canonicalGrammar" },
+    "fields": { "type": "array", "minItems": 11, "maxItems": 11, "items": { "$ref": "#/$defs/field" } },
+    "payloadKinds": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/payloadKind" } },
+    "authenticationInput": {
+      "type": "object", "additionalProperties": false,
+      "required": ["domain", "rule", "projectionBytes", "keyDerivation"],
+      "properties": {
+        "domain": { "const": "Deep/MSG-V2/braid-recovery-auth" },
+        "rule": { "type": "string", "minLength": 1 },
+        "projectionBytes": { "const": 4072 },
+        "keyDerivation": { "type": "string", "minLength": 1 }
+      }
+    },
+    "publicApi": { "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "vectors": { "const": "braid-recovery-v2.vectors.json" },
+    "activationRule": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "field": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tag", "name", "bytes", "rule"],
+      "properties": {
+        "tag": { "type": "integer", "minimum": 1, "maximum": 11 },
+        "name": { "type": "string", "minLength": 1 },
+        "bytes": { "type": "integer", "minimum": -1, "maximum": 1152 },
+        "rule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "payloadKind": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "name", "bytes"],
+      "properties": {
+        "kind": { "enum": [1, 3, 5, 6] },
+        "name": { "type": "string", "minLength": 1 },
+        "bytes": { "enum": [96, 1152, 960, 160] }
+      }
+    }
+  }
+}

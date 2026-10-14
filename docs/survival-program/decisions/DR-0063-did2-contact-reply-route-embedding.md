@@ -61,14 +61,76 @@ require their own freeze; this makes no larger-topology first-contact claim.
 
 ## Protected acceptance clean break
 
-The existing protected accept slot accepts **version2 only**. Keep92-byte
-scope header, count/revision and lexicographic ordering. Entries become
-`LP32(entry)` with the existing468-byte operation/scope/Hello-hash prefix
-and exact variable Accept; bounds6,667..25,819. Cardinality stays128, total
-encoded root is bounded at the existing1MiB secure-storage limit. Check
-actual bytes before allocation/CAS; never silently evict an exact winner.
-Old/missing/corrupt journal or incompatible contacts require explicit isolated
+**2026-10-12 S04 local retention clean break.** The existing protected accept
+slot accepts **generation5 only**, including empty state. This is private local
+framing, not a new DMC2/network protocol or cryptographic suite. Keep92-byte
+scope header, count and lexicographic operation ordering; revision is at least
+count+1 and advances on payload retirement; an empty root has revision1 exactly
+(winners are not removed by retention). Each `LP32(entry)` has operation32,
+responder scope404, SHA256(exact Hello)32, SHA256(exact Accept)32, payload phase:u8
+at500, stop reason:u8 at501, audit disposition:u8 at502, native stop mode:u8 at503
+and stoppedAtUpper:u64be at504, firstSuccessfulStoreUpper:u64be at512:520 bytes before any payload. Phase1 appends the exact
+canonical variable Accept (entry bounds6,719..25,871); phase2 is exactly520 bytes
+and contains no working payload. Both preserve the same independent explicit
+consent commitment and uniqueness constraints. Phase, hash or parsed metadata
+alone is never consent, native-event, route or deletion authority. Cardinality
+stays128, total encoded root remains bounded at the existing1MiB secure-storage
+limit. Check actual bytes before allocation/CAS; never silently evict a winner.
+
+The held owner may retire working payload only after actual directional native
+and semantic acceptance, every original send attempt's authenticated Store/
+holder/public-policy/quorum/coordinator and dependency closure. The existing
+protected plan owns ordered exact send/consent successors and independent
+guards; crash recovery verifies deterministic successors and exact readback.
+Before commit, abandonment requires all exact predecessors and complete staged
+successors. After commit, only completion is allowed. Unknown work stays pinned.
+Readers join the consent commitment to the actual native hash and canonical
+semantic event. Cached replay may return a temporary verified history copy,
+never restore working custody or first-encrypt a missing operation. These
+plaintext-derived consent/history commitments MUST NOT enter the metadata-only
+outbox audit. Initial, cancel/expiry, object-only-key and independent audit
+retention remain separate obligations under the sole retention owner.
+Generations1/2/3/4, missing/corrupt journal or incompatible contacts require explicit isolated
 QA reset, not regeneration, migration or dual parsing.
+
+Control stop reason is0 Active,1 UserCancelled or2 RetryExpired. Unfinished active
+work has zero terminal times/audit. Verified successful Store retains the first
+authenticated upper time separately, with stop reason/native stop mode/stoppedAt
+all zero. A stopped working entry retains authenticated final upper
+time and audit disposition0; it cannot dispatch, claim, reauthor or encrypt.
+Stopped payload-retired state requires separate audit disposition1 retained
+(same time) or2 expired (time cleared). These are private structural metadata,
+not serialized permission. Only actual owned native/semantic custody or explicit
+unencrypted-draft absence checks and current authenticated time may produce a
+stop. Only authenticated lower time proves expiry; upper crossing merely denies
+work. Unknown original request/holder/ciphertext and outcomes stay independently
+pinned; cancel is not recall or proof of BeforeForward. Audit/payload deletion
+requires its own qualified joint transition, not just this fence.
+
+Successful and stopped terminal states are mutually exclusive and monotonic:
+late Store after a stop does not rewrite that first stop; late cancel/expiry after
+verified success only reauthenticates the original Store. Success payload cleanup
+uses the existing ten-root Application control-audit plan, leaves original
+send/holder/replay/native/history guarded, and atomically installs a content-free
+reason3 SQL audit under the existing opaque control audit ID. Independent send
+cleanup follows its own exact original-Store/dependency plan.
+Its already-retired consent successor advances only the protected revision:
+the existing non-guard adoption remains a genuine ordered transition, without
+recreating an expired audit or working payload. Successful working
+state has audit0 and a positive firstSuccessfulStoreUpper; payload-retired state
+has audit1 with the same time or audit2 with that time zero. At audit1, signed own
+lower time must prove first upper plus the retention owner's audit duration.
+Audit expiry and local crash/abort recovery use the same closed control-audit
+profile and complete SQL/root guards; no new slot, table, wire or public API.
+Audit rows contain no consent/history hash, scope, event or key. The retained
+consent/history commitments remain independent and are not recreated by retry.
+
+Native stop mode is0 for active work,1 for a native-committed stop and2 for a
+stop proven before first encryption. Modes1/2 remain pinned after working-payload
+and audit retirement. They are not native authority: actual tip, original event,
+semantic history, send custody and audit completeness still require independent
+readback. Mode1 cannot excuse native loss; mode2 rejects a subsequently present
+native operation. Missing payload must never be regenerated to infer either mode.
 
 Update handoff/native bounds, parity tests, machine payload bounds/vectors and
 anchor together. Reverse Accept Store/Retrieve, retry/fork/clock negatives,

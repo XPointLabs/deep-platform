@@ -19,6 +19,10 @@ release evidence, а не ещё одна очередь реализации.
   на согласованной матрице всех потребителей. Сначала producer, затем consumer.
 - Каждый запуск берёт одну незавершённую подзадачу, читает её normative owner,
   реальные callers/composition и тесты. Не переизобретать wire по тексту плана.
+- По умолчанию активен один Sxx: следующий этап начинается после приёмки,
+  review и фиксации текущего. Внутри этапа сначала собрать связный бизнес-сценарий
+  producer/consumer/recovery, затем проверять его, а не открывать независимые
+  незавершённые сценарии. Разрешённая DAG-параллельность не обязательна.
 - Новая криптография/wire требует отдельного принятого DR, machine schema/vector
   freeze и проверки всех consumers. DR-0081 — текущий mailbox target.
 - Нельзя ослаблять expiry, replay, quorum, TLS, revocation или protected floors,
@@ -27,6 +31,10 @@ release evidence, а не ещё одна очередь реализации.
   ветку. Исправить fixture, сохранив исходный timeout/tamper/crash invariant.
 - Новый или исправленный slice проверять focused tests, затем обязательными
   gates repo и connected path. Не удалять остальные failures ради green report.
+  Во время реализации использовать короткую сборку и целевые проверки опасных
+  границ; найденные дефекты исправлять пакетом. Дорогой full запускать на
+  согласованном пакете, а не после каждого файла. Повторять проверки по
+  изменённым входам/риску; прежний PASS не квалифицирует новые входы.
 - Коммиты локальные и раздельные, submodule pointers — после child commits.
   Production/reset/push/publish не следуют из этого плана автоматически.
 
@@ -170,6 +178,11 @@ request для unknown outcome, не увеличивать ему lifetime и �
 к тому же logical message и допускается только по принятому transition contract.
 Route renewal должен начинаться с нормативным запасом до expiry и отдельно
 обрабатывать incomplete successor и profile/service rollover.
+
+В этом же этапе закрыть already-exhausted PQ recovery; отдельно разрешённый
+parser-only Protocol target и оставшиеся authentication/native/transport условия
+принадлежат [DR-0111](../survival-program/decisions/DR-0111-bounded-braid-recovery-control.md).
+Это подзадача S04, не открытие следующего этапа и не увеличение data bound.
 
 **Выход:** длительно работающие bounded journals без account reset.
 **Gate:** пересечение прежних 512 send entries и 128 grant scopes; исчерпание

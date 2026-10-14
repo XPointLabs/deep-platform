@@ -43,7 +43,12 @@ Mandatory `deep.store.v2.contact-start-journal`, initialized in the same
 protected batch as the account instance key. Missing/foreign/old/corrupt root
 requires explicit isolated QA reset, never repair or migration.
 
-Header92: version1, reserved0, count:u16be, revision:u64be=count+1,
+**2026-10-13 S04 retention clean break:** sole generation5 reader; generations1/2/3/4
+rejects, including empty state. No migration or second slot. This changes private
+local custody only, not DMC2/DPH2 wire, padding or cryptographic constructions.
+Header92: generation5, reserved0, count:u16be, revision:u64be at least count+1
+(advancing on payload retirement; empty root revision is exactly1 because winners
+are not removed by retention),
 network16, account32, instance32. Up to128 entries, sorted by unique intent,
 total encoded root at most1MiB. Each entry is `LP32(body)`:
 
@@ -58,12 +63,27 @@ total encoded root at most1MiB. Each entry is `LP32(body)`:
 | 192 | SHA256(exact peer DCR1 V2)32 |
 | 224 | own DAB2 hash32 |
 | 256 | own DMD1 hash32 |
-| 288 | Init length:u32be |
-| 292 | Hello length:u32be |
-| 296 | exact Init then exact Hello |
+| 288 | SHA256(exact Init)32 |
+| 320 | SHA256(exact Hello)32 |
+| 352 | conversation32 |
+| 384 | local author device32 |
+| 416 | Hello creation:u64be |
+| 424 | shared expiry:u64be |
+| 432 | phase:u8:1 working,2 payload-retired |
+| 433 | stop reason:u8:0 Active,1 UserCancelled,2 RetryExpired |
+| 434 | audit disposition:u8:0 none,1 retained,2 expired |
+| 435 | native stop mode:u8:0 active,1 committed native work,2 pre-session stop |
+| 436 | four zero reserved bytes |
+| 440 | Init length:u32be |
+| 444 | Hello length:u32be |
+| 448 | stoppedAtUpper:u64be |
+| 456 | firstSuccessfulStoreUpper:u64be |
+| 464 | phase1: exact Init then exact Hello; phase2: no payload |
 
 Init bounds780..1830; Hello uses DR-0063 bounds6199..25351, subject to the
-joined preflight. Hence supported body bounds7275..16221. Reject unknown
+joined preflight. Working body bounds7443..16389; retired body is exactly464
+bytes with both declared lengths zero. Retained hashes/projection must match
+the actual canonical events before any native/semantic/Store use. Reject unknown
 framing, hostile lengths/counts, zero metadata, unordered/duplicate intents,
 wrong network/author/device/sequence/conversation/DMD/DAB, same logical IDs,
 inconsistent creation intervals and trailing bytes before return or CAS.
@@ -72,6 +92,64 @@ within one hour of Init creation. Init advertises TextCore+DeviceControl only
 until the separate authenticated BLOB composition is activated.
 Decoding is structural, not proof/route authority. Check actual byte capacity
 before allocation/CAS, never evict a winner or silently repurpose an intent.
+
+The actual held owner may retire a working Initial only after completed native
+source transfer/key retirement, exact Init/Hello joins and independently verified
+original Store/public/holder/quorum/coordinator plus every attempt's dependency
+closure. The same protected plan as ContactAccept adopts exact send and selected
+draft successors in order, preserving source/native/history/replay/receipt facts.
+Its domain-separated complete-state guard excludes only the independently changed
+draft root; all other sources stay guarded. Before commit, exact unchanged
+predecessors and staged successors permit abandon; after commit, only completion
+is allowed. Missing/unknown work does not authorize deletion or reconstruction.
+These plaintext-derived history commitments are not content-free outbox audit.
+
+Retired readers use actual transferred sender source and protected native initial
+events, never marker hashes as authority. A temporary owned history view may
+support exact reads; it cannot restore working custody or authorize a new claim.
+Public completed-contact replay still returns the original independently verified
+Store without consuming a prekey, reissuing a request or re-encrypting Initial.
+Terminal cancel/expiry, object-only keys and independent audit remain separate
+retention obligations; this decision does not claim physical delivery.
+
+Control stop uses the same closed reason/audit/time semantics as
+[DR-0063](DR-0063-did2-contact-reply-route-embedding.md#protected-acceptance-clean-break).
+This includes mutually exclusive first successful Store time and stop time,
+content-free reason3 audit cleanup/expiry through the existing ten-root control
+profile, without changing initial wire buckets or native/claim/source authority.
+The admitted native Initial must retain its actual transferred source and
+canonical events before stop CAS. Native/source loss is not cancelled work.
+Stopping preserves original possible-forwarding requests, holder/counter and
+history, and rejects further claim/dispatch under the old intent. Audit/payload
+cleanup remains a separate qualified transition. Preclaim intent cancellation
+without an admitted native scope must separately close before shipping; this
+admitted-control fence is not that broader completion claim.
+
+Pre-session stop must independently read the actual draft, protected preclaim,
+claim-request custody, completed sender source and registered catalog/native
+floors under the account lease. An exception or a caller-supplied absence flag
+is not proof of non-import. Mode2 permanently prevents a new claim, completion
+or import under that intent; mode1 cannot excuse missing native history. An
+already committed import is locally reconciled and follows the existing native
+stop, never pre-session deletion. An actual reserved but empty native store is
+not an imported ratchet and must remain empty. Source key destruction on mode2
+uses the independently checked cancellation owner in the existing DR-0027 key
+journal, not a forged transfer receipt. Public claim requests/results, burn,
+source-chain and replay facts remain; no recall/non-delivery claim is implied.
+Payload/audit cleanup must join that completed deletion and exact complete local
+state, with local crash recovery; no fabricated messaging scope or restored seed.
+Source grammar, producer, consumer and negative/handovers must cut over together
+before this pre-session path can be accepted. No new network record is allocated.
+
+User cancellation and proven retry expiry select the same owned intent path.
+For an active working draft, expiry is checked before provisioning Application
+state or changing stop/key custody: authenticated lower UTC must reach the exact
+event expiry, not merely cross it with the upper bound. Millisecond expiry maps
+to its ceiling second for this lower-bound proof; conservative upper-time
+admission remains a separate check. A stopped intent keeps its original reason
+and audit time even when a later caller selects the other terminal command.
+Local completion of staged key/audit destruction requires no fresh network proof
+and cannot introduce a new expiry decision or recreate the claim.
 
 ## Connected consequences
 

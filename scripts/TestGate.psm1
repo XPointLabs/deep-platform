@@ -189,7 +189,7 @@ function Get-TestGateInputs {
         if ($LASTEXITCODE -ne 0) { throw 'Cannot inventory gate inputs.' }
         foreach ($relative in $inventory) {
             if ($relative -notmatch '(^|/)(bin|obj|artifacts)/' -and
-                ($relative -match '^(src|tests|eng|native|scripts)/' -or $relative -match '^[^/]+\.(slnx|props|targets|json|config)$' -or $relative -ceq 'AGENTS.md')) {
+                ($relative -match '^(src|tests|eng|native|scripts|registry)/' -or $relative -match '^[^/]+\.(slnx|props|targets|json|config)$' -or $relative -ceq 'AGENTS.md')) {
                 $path = Join-Path $root $relative.Replace('/', '\')
                 if (Test-Path -LiteralPath $path -PathType Leaf) { $null = $paths.Add($path) }
             }

@@ -124,7 +124,7 @@ commitment; only status2 permits that shape. Stable has no pending fields.
 Pending/cleanup retain a nonzero pending commitment and exact minimal part
 count. The floor slot is `deep.store.v2.messaging.floor.<scopeHashHex>`.
 
-Pending payload has a 608-byte header: `MSP2`, version1, kind1
+Pending payload has a 672-byte header: `MSP2`, version2, kind1
 (import1/ratchet2/activate3/latch4), direction1 (none0/send1/receive2),
 successor status1, exact stable predecessor floor188, successor ratchet
 generation-u64, commitment32 and exact TRS1 SHA25632, operation32,
@@ -133,6 +133,31 @@ deletion manifest32, message-key deletion32, replay evidence32, deduplication
 mutation commitment32, PQ fence32, terminal commitment32, then five u32 lengths (next TRS1, envelope, DMC2,
 SessionInit, Hello). Concatenate those five bodies in that order. Metadata
 is the header only; old/next TRS1 never occurs in retained journal metadata.
+The separately frozen control-kind extension and current-only SQL generation
+belong to [DR-0113](DR-0113-owned-braid-durable-boundary.md); controls are not
+ordinary ratchet events and carry no message-key/DMC2 evidence.
+The five body lengths retain offsets588..607. Bytes608..671 are the exact
+64-byte route-processing outcome: classification-u8 (absent0/accepted1/rejected2),
+reserved-zero7, protected lower/upper UTC milliseconds-u64 each, monotonic
+sample-u64, SHA256(protected boot identifier)32. Absent means all64 bytes zero.
+Only a received ratchet ContactRouteUpdate has a nonzero outcome; every other
+event/import/control/send requires the absent encoding. Bounds require nonzero
+lower<=upper and boot hash; the sample may be zero. Scope, operation, event,
+native predecessor and sealed receive evidence bind it through the same header.
+The real owner derives classification only after native authentication and
+independent current peer route/consent verification, with final protected
+endpoint/time continuity. Neither raw bytes nor a caller Boolean authorizes it.
+The outcome commits atomically with the ratchet/event through existing recovery,
+and protected-prefix hashing includes the entire672-byte metadata. Exact replay
+uses the original outcome; expiry never retrospectively changes it. A rejected
+route outcome preserves the live ratchet and fences only that peer route's new
+sends. It is not the destructive kind4 owned-send latch. See DR-0110.
+The mandatory existing304-byte protected history root uses generation2 only,
+including its empty registration. Its layout, scope/revision/prefix-floor/
+initial-header hash/projection digest/count remain unchanged; projection hashing
+now covers exact672-byte native headers. Generation1 roots and DMS2 schema3
+reject even when empty. This is one clean break of the existing custody path,
+not another journal, migration, ordinal or recovery reader.
 No prior TRS1 copy is needed in pending: its SHA256 and protected predecessor
 are sufficient for exact SQL CAS/recovery of a Protocol-sealed successor.
 
@@ -156,8 +181,8 @@ is caller-authorized by these parsed bytes.
 
 Journal ordinal increments once per mutation, including import/activation/
 latch. Journal head is SHA256(ASCII `Deep/STORE-V2/messaging-journal` || zero ||
-scopeHash32 || ordinal-u64 || predecessorHead32 || SHA256(exact608-byte header)).
-Pending payload is bounded by 608+2097152+65536+33082+65536 bytes; exact kind
+scopeHash32 || ordinal-u64 || predecessorHead32 || SHA256(exact672-byte header)).
+Pending payload is bounded by 672+2097152+65536+33082+65536 bytes; exact kind
 limits are stricter. Protected payload parts are at most128KiB each, at most18,
 with only the last part shorter; slots append `.pending.<index>` to the floor
 slot. Stage parts atomically before pending-floor CAS. After SQL commit CAS
@@ -170,7 +195,7 @@ historical private-key snapshot remains recoverable after a released mutation.
 
 SQLCipher uses a dedicated current DID2 message-session schema, full synchronous
 commits, secure deletion and no plaintext/WAL compatibility mode. Its journal
-retains only ordinal/predecessor/head and the exact608-byte header; one row
+retains only ordinal/predecessor/head and the exact672-byte header; one row
 holds the latest TRS1, pending outbox/inbox hold ciphertext or authenticated
 DMC2 with their journal binding, and a separate initial-event row holds the
 two authenticated events for semantic handoff. Public send/receive activation
@@ -195,17 +220,24 @@ materialization or ACK; crypto custody grants no such authority.
 ### Dedicated SQL journal schema
 
 The per-session SQLCipher database uses application ID `0x444D5332` (`DMS2`),
-schema version2, and exactly five tables, without migrations or old readers:
+the current-only schema generation defined by [DR-0113](DR-0113-owned-braid-durable-boundary.md),
+and exactly five tables, without migrations or old readers:
 
 - `scope`: singleton integer1 primary key, exact404-byte scope;
-- `journal`: ordinal integer primary key1..4096, predecessor32, head32,
-  exact608-byte metadata header;
+- `journal`: positive signed-64-bit lifetime ordinal primary key, predecessor32, head32,
+  exact672-byte metadata header;
 - `ratchet`: singleton integer1 primary key, exact TRS1 blob1..2097152;
 - `initial_events`: singleton integer1 primary key, initial DPH2 blob1..65536,
-  SessionInit blob1..32768, Hello blob1..32768; only the import inserts it;
-- `events`: operation32 primary key, journal ordinal unique foreign key,
+  SessionInit blob1..32768, Hello blob1..32768 and exact672-byte import metadata;
+  only the import inserts it;
+- `events`: operation32 primary key, unique positive signed-64-bit lifetime ordinal,
   direction integer1(send)/2(receive), exact DPE2 blob1..65536, plaintext
-  NULL for send or canonical DMC2 blob1..33082 for receive.
+  NULL for send or canonical DMC2 blob1..33082 for receive, exact672-byte metadata.
+  Independently protected retained-prefix metadata permits the original working
+  journal row to be removed; a foreign key to that removed row is forbidden.
+  Working journal capacity remains4096, independently of the lifetime ordinal.
+  Additional control directions and their exact no-plaintext shape are owned by
+  DR-0113, not by the ordinary DPE2/DMC2 grammar above.
 
 Journal headers authenticate each event's operation, event/envelope commitments,
 scope-bound predecessor and successor. No other row or schema object is allowed.
@@ -257,9 +289,9 @@ A stable retirement with resurrected live state always rejects before release.
 
 The account-owned retirement journal slot is
 `deep.store.v2.initial-key-retirements`, initialized atomically with the account
-SQL key before publication. Header92 is version1, reserved-zero1, count-u16,
+SQL key before publication. Header92 is version2, reserved-zero1, count-u16,
 revision-u64, network16/account32/account-database-instance32. It holds at most
-256 sorted unique236-byte entries: role1 (sender1/receiver2), phase1
+256 sorted unique236-byte entries: role1 (sender-transfer1/receiver-transfer2/pre-session-cancellation3), phase1
 (pending1/stable2), reserved-zero2, source instance32, source ordinal-u64,
 source record hash32, mutable scope hash32, initial basis hash32, TRS hash32,
 logical intent32(sender)/claim operation32(receiver), preclaim blob hash32
@@ -278,18 +310,46 @@ transaction -> protected stable retirement. Receiver skips preclaim tombstone.
 Pending resumes exact deletion; stable never repairs a resurrected key. Only
 then may a closed source-retirement receipt authorize mutable activation.
 
-Preclaim journal version2/header92 replaces insert-only version1. Sorted
-entries have header136: intent32, status1(live1/retired2), reserved-zero3,
+Preclaim journal version3/header92 replaces prior generations1/2. Sorted
+entries have header136: intent32, status1(live1/transferred2/cancelled3), reserved-zero3,
 sealed-blob SHA25632, source basis32, mutable scope32, blob length-u32, then
 blob bytes only for live status (exact Protocol canonical byte count). Live
 basis/scope are zero, retired basis/scope nonzero and blob length0. All blob
-hashes nonzero. Revision is1+entry count+retired count. A tombstone keeps the
+hashes nonzero for statuses1/2. Revision is1+entry count+transferred count+cancelled count. A tombstone keeps the
 original sealed-blob digest and exact source/mutable binding; no retirement
 deletes an intent or lets it generate a new claim. Completed retry reads
 authenticated source custody before restoring any preclaim. Existing QA
 source/persistence generations require explicit reset, never migration.
 This local format has no previously activated reader or persisted production
 generation to retain.
+
+**S04 pre-session cancellation clean break.** Retirement role3 is not a transfer
+receipt and cannot activate a mutable ratchet. Its source instance is the actual
+sender-store instance, intent remains nonzero, and the field formerly naming a
+mutable scope contains SHA256(exact Initial draft bytes0..431), stable across
+stop/payload/audit transitions. Source ordinal0 means independently proved absence:
+record hash, basis and TRS hash are all zero. A present source has ordinal1..128
+and nonzero original record/basis/TRS hashes plus original sealed-preclaim hash.
+The preclaim hash may be zero only for a genuinely absent preclaim with no source.
+Role3 coordinates sort by role/source-instance/intent, not a fabricated source
+ordinal. An intent/source cannot simultaneously have cancellation and transfer
+owners. Duplicate nonzero bases/scopes/source coordinates reject; absent zero
+bases do not reserve a fictitious source. Pending1/stable2 retain the existing
+revision rule and count bound; stopped Initial intents already share the same
+bounded sender inventory, not an additional work allowance.
+
+Preclaim status3 has no blob, a possibly zero original blob hash at36, the exact
+draft binding at68 and zero field100 (no mutable scope). Its intent is permanently
+reserved. It must match role3 of the independent key journal; stable cancellation
+rejects resurrected keys/blobs rather than repairing them. Pending cancellation
+can resume only its exact original deletion. Draft mode2, actual source chain and
+catalog/native absence are independently rechecked; reserved native storage, if
+present, must have an exact empty floor/history and no native import. A lost or
+substituted native import cannot be relabelled as pre-session cancellation.
+Unknown public claim request/result and device-agreement burn facts remain.
+Generations1 of key-retirement,1/2 of preclaim and1/2/3 of Initial draft reject;
+all current producers/consumers/recovery must cut over together before acceptance.
+No network magic, crypto suite, extra journal or compatibility reader is added.
 
 Both source connections use full synchronous secure deletion and DELETE
 journaling on every open. An encrypted WAL is still recoverable with its
@@ -420,7 +480,7 @@ Final source/SQL/protected verification and freshness rechecks precede return.
 
 ### Random DMS2 SQLCipher key encoding
 
-The dedicated DMS2 schema generation2 uses its independently generated
+The dedicated current DMS2 schema uses its independently generated
 256-bit catalog key through SQLCipher4's supported raw-key encoding: exactly
 67 ASCII bytes `x'` + 64 lowercase hexadecimal digits + `'`, passed to
 `sqlite3_key` with explicit byte length. Construct only owned wipeable byte
@@ -436,8 +496,8 @@ This avoids treating an already high-entropy secret as a human password and
 performing the password KDF on every reopen. It does not lower password-KDF
 iterations or introduce an unencrypted/custom cipher. See the provider's
 [random-key guidance](https://www.zetetic.net/blog/2019/06/07/technical-guidance-using-random-values-as-sqlcipher-keys/).
-Generation1/password-keyed DMS2 is an unpublished diagnostic generation and
-is not opened, rekeyed or migrated; incompatible key/schema requires explicit
+Previous DMS2 generations are unpublished and are not opened, rekeyed or
+migrated; incompatible key/schema requires explicit
 local reset. This change touches only new DMS2 session files. The later
 [DR-0060](DR-0060-did2-account-random-sqlcipher-key.md) separately replaces the
 DSV2 account key interpretation/generation; other source databases retain theirs.
@@ -457,7 +517,7 @@ Replay retention policy1 retains every ratchet event in the bounded journal.
 Its commitment is SHA256 of ASCII `Deep/STORE-V2/messaging-replay-retention`,
 zero, policy-u64(1), scopeHash32, exact stable floor188, retained-event-count-u64,
 then for each ratchet journal entry in ascending ordinal: ordinal-u64 and
-exact metadata608. All integers are big-endian. Compute it only after full
+exact metadata672. All integers are big-endian. Compute it only after full
 SQL event/body verification against the protected floor. The context derives
 generation/commitment/ordinal/head from that same verified floor; exact replay
 requires the actual retained receive row with byte-identical envelope.

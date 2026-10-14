@@ -468,6 +468,21 @@ current time/network/issuer successors не может требовать пре
 успеха expired data-plane attempt. Distribution bytes остаются untrusted до
 independent verification; bootstrap не переносит recipient metadata на Registry.
 
+**S04 current-client refresh trigger.** Для exact adopted MCG3 owner использует
+подписанные `notBefore` и `expiresAt`: deadline = `expiresAt - ceil((expiresAt -
+notBefore) / 5)`. Independently current authenticated upper time, достигшее этой
+границы, запускает отдельный successor acquisition. Это conservative scheduling
+по подписанному lifetime, не новая authority, продление grant или разрешение на
+использование expired issuer/route. Существующий pending successor возобновляется
+exact прежде создания другого; closed-unresolved/late tail не remint.
+Автоматический выбор применяется только к новой send attempt или новому read
+cycle; outstanding Store/Retrieve/ACK сохраняют original grant/request. Новый
+winner допускается только после полной current проверки, protected read-back и
+promotion; incomplete successor не подменяет current. Full bounds запрещают
+новый acquisition до issuer callback, а известное исчерпание send/grant floors
+проверяется до нового authored/ratchet work. Никакие интервалы, journal limits,
+wire values или replay/deletion permission этим trigger не изменяются.
+
 **Expired/unknown acquisition: исходная граница возможной выдачи.** До первого
 issuer callback owner MUST защищённо сохранить exact original XMG2, holder
 custody и immutable evidence для conservative upper bound возможного MCG3.
@@ -541,6 +556,22 @@ Reset, отсутствующий predecessor или forward-only join без с
 floor недоступны. Совместный
 откат SQL и protected storage остаётся вне локальной гарантии DR-0012.
 
+Для DR-0104 retained Retrieve captured issuance PMA2 может отличаться от PMA2,
+на которую ссылается original route PMT2. Consumer MUST проверить два exact
+historical joins: issuance PMA2 с retained PMT2, реально называющей её core,
+и original route PMT2 с её собственной named PMA2. Оба проходят существующий
+strict DR-0108 verifier под текущим host/history; raw public records служат только
+bounded lookup inputs, не authority или verification cache. Deposit сохраняет
+единственный original policy/projection join. Missing/substituted metadata не
+разрешает cleanup. Captured issuance ceiling, native epoch/floor, actual lease,
+dependencies и completed replacement read остаются независимыми условиями.
+Когда actual issuance policy совпадает с named policy original projection,
+одна и та же strict pair даёт оба факта без лишнего distribution lookup. Это
+не compatibility path и не обход verifier. New-work scheduling MUST учитывать
+также существующее transport retry window: unusable short grant не становится
+пригодным только потому, что proportional refresh margin ещё не достигнут.
+Это не продлевает admission, grant, retry deadline или active original request.
+
 Этот prerequisite исключает admission старого epoch, но **не** является полной
 retirement/deletion permission и не доказывает non-issuance или non-delivery.
 S04 consumer всё ещё обязан закрыть exact dependencies и защитить/read-back
@@ -550,6 +581,27 @@ handover/provisioning остаётся S05 activation gate; обычный opera
 с тем же epoch не заменяет эту церемонию или physical evidence.
 
 #### 8.4.3 Compaction and boundedness
+
+**Creation is not retry.** New ordinary work is created only by the account
+owner under its actual lease, with an owner-generated random command operation
+and logical event identity. It durably reserves the canonical command before
+returning its operation to the caller. An interrupted creation resumes the
+existing pending reservation through owned recovery; UI recovery discovers that
+reservation rather than submitting a replacement command. Caller-supplied
+operation IDs are retry selectors, never permission to author an absent command.
+Retry requires actual retained command custody or independently authenticated
+original completion/history. Missing, stopped, expired or retired work cannot
+fall through to new authoring. After a diagnostic audit expires, absence may
+report unavailable retained work, never prove non-delivery or authorize a send.
+
+The application API and composer must cut over together: remove the combined
+create-or-retry path, with no legacy overload, text-matching idempotency alias or
+permanent unbounded random-ID deny-list. This local creation/retry separation
+does not settle unknown attempts, retire replay namespaces, change wire bytes,
+or authorize deletion by itself. The dependency-closed terminal owner below
+still selects and guards every removed working entry; independent authored and
+replay floors remain. Exact local API/layout belongs to Shared custody; current
+source and consumer qualification remain S04 obligations, not activation claims.
 
 Перед освобождением working-set slot owner MUST сохранить отдельные protected
 floors: next authored sequence для `(conversation, author device)` и highest
@@ -640,6 +692,72 @@ activating the retention claim. Current-only epoch credentials are not historic
 read permission; unavailable old ciphertext is surfaced as a retention gap,
 never a successful empty catch-up. No generic trust flag or expired-route bypass
 is introduced by this section.
+
+#### 8.4.5 Owned Braid mailbox lifecycle
+
+Принято [DR-0114](../survival-program/decisions/DR-0114-owned-braid-mailbox-lifecycle.md).
+DBR2 is a recovery control, not a logical user message. Its native commit, mailbox
+Store, authenticated peer receive, tombstone and completed Braid purpose are
+distinct facts. Keep existing exact control/native custody and existing transport
+attempt/read journals; never synthesize DMC2, a user receipt or another journal.
+
+Outgoing transport selects only the original verified kind5/direction3 frame
+under the actual account lease. Its existing attempt owns exact route/grant/body/
+MAU/counter and original windows. Unknown/lost/cancelled Store retains those bytes
+and uncertainty; a local commit or Stored fact is not peer delivery. Permitted
+replacement transport attempts keep the same control, never a re-authored slot.
+Control purpose is native epoch progress, not an authored DMC2 lifetime; no
+ordinary authored event/deadline/stop marker may be fabricated for it. Original
+attempt deadlines remain immutable and admission/retention remain §8.4.1–8.4.4.
+
+An independently verified durable outcome for EVERY attempt of a control's owned
+chain may retire only its redundant protected send commitments through the
+existing protected-only Audit plan. Preserve native exact controls/history,
+original SQL MAU/quorums/public-policy evidence, grant/holder/object/read/ACK
+dependencies and all replay floors. Stored does not complete native purpose;
+peer progress alone cannot retire unknown transport work. Resume the same staged
+plan after crash/cancellation, never recreate a missing send registration.
+
+Receive/ACK has two explicit, non-interchangeable dispositions:
+
+- **Authenticated control:** current native authentication/commit or the exact
+  originally authenticated direction4 row verified against current protected
+  SQL/history custody. Only this disposition claims authenticated receive.
+- **Obsolete purpose, unaccepted first control:** an actual authenticated data
+  receive from this same session/peer/device with SCKA sending epoch at least the
+  control's Braid epoch proves that peer installed the corresponding SPQR output.
+  Verify that receive from protected native history, not a supplied header,
+  epoch, flag or transport Store. If such peer data has not yet arrived, the
+  closed Protocol owner may instead prove that the recipient already installed
+  that epoch's actual SPQR output AND authenticate the whole exact control with
+  its still-retained original control root. This read-only proof permits disposal
+  of that MAC-authenticated obsolete object, not validation of its old inner
+  Braid flight or a native receive. It never calls Braid Receive, advances state
+  or bypasses active Header/Ct2 authentication. Recorded-slot conflicts or native
+  replay without durable history still reject. A missing original root cannot
+  supply this alternative; use protected peer-data proof or reject. Neither
+  disposition requires a later page item to be processed to invent current proof.
+  The old Braid purpose is irreversibly obsolete
+  under that monotonic custody. This disposition claims neither authentication
+  nor delivery/non-delivery of the exact DBR2 operation, and writes no native
+  receive row, generation, message, deletion claim or application receipt.
+
+The latter proof may end that control's native-key dependency; existing data
+frontiers still pin their links under DR-0112. Exact original control/request
+and independent transport dependencies remain retained. It is not permission to
+erase an unknown attempt, signer/holder, grant floor or accepted mailbox object.
+
+The recipient may tombstone a captured obsolete control only under its actual
+owned current mailbox/endpoint authority, with exact captured object binding and
+that protected same-peer proof rederived before signing. This is disposal of an
+irreversibly excluded control purpose, not a fake authenticated receive or AppAck.
+Fresh/unknown controls without either disposition reject without ACK. Wrong
+scope/direction, changed exact replay, data/control operation collision, missing
+or rolled-back custody reject; normal data/group/unknown frames receive no new
+fallback. Codec parsing alone never authorizes either disposition or tombstone.
+
+Transport activation remains false until the entire connected producer/consumer,
+unknown/crash/cancel/retirement, package/full and physical requirements pass.
 
 ## 9. Selection, routing and decentralization
 

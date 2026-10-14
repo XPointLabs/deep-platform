@@ -1040,6 +1040,15 @@ XSS1/PMT2 and PMS2 hash; XRC1 and XSS1 must bind the same XRA1/PMT2/PMS2
 components, and PMS2 must bind the embedded PMT2. Every closure record's network
 ID must equal DMC2 tag 1.
 
+For the DID2 owned relationship, the original native-committed peer Hello/Accept
+is the initial route head. The first successor names SHA256 of that exact DMC2;
+later successors name SHA256 of the exact preceding native-committed DMC2/14.
+Each advances the retained XRR generation exactly once. A generation0 announcement
+cannot replace the established head. Current route verification and historical
+native custody remain separate under
+[DR-0110](../survival-program/decisions/DR-0110-did2-private-route-update-custody.md);
+no invitation is synthesized from the six-record update.
+
 Under [DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md),
 the Hello/Accept contact reference is exactly `ASCII(DAB2) || u16be(2) ||
 exactDab2RecordHash32`, not an application type/length/hash ArtifactRef.

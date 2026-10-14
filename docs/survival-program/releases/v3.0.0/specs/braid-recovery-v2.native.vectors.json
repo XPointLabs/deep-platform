@@ -1,0 +1,21 @@
+{
+  "$schema": "braid-recovery-v2.native.vectors.schema.json",
+  "decision": "DR-0112",
+  "scope": "synthetic KDF/MAC only; public fields use structural Header witness; no authentic native Braid output or recovery evidence",
+  "vectors": [
+    {
+      "name": "synthetic-link-0",
+      "linkEpoch": 0,
+      "spqrRootHex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "controlRootHex": "E89A1D9F2C665A340DEE9B75A23E82AEEECDA9F731ACEA7E94515D37FFB6351F",
+      "authenticatorHex": "B6C1A8F32AF8630B00C3BB6F3AD646A7449C9307E42BD0CF2F6079D4AF39B4CD"
+    },
+    {
+      "name": "synthetic-link-1",
+      "linkEpoch": 1,
+      "spqrRootHex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "controlRootHex": "36EF929D21462DE800A39FD85DDEC2FB51CECD689EC8FE778BBC8276BC5DA905",
+      "authenticatorHex": "D09D39002231CEF5A61935610298D520C3773D5C2F681AEF2EC2ED0DC17B49B2"
+    }
+  ]
+}

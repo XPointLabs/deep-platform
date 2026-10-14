@@ -34,6 +34,14 @@ Reject hostile BLOB size/type before allocation. Dispose parsed DAM1; never
 return its key/read capability through this UI projection. These are historical
 offer entries, not current offer/cancel state or download authority. A later
 download consumer must independently reconcile those authorities.
+Disposing the parsed DAM1 also erases its codec-owned key-bearing typed-payload,
+parent DMC2 canonical and parent payload buffers; those secret-bearing getters
+then reject. Previously exported defensive copies are caller-owned and must be
+erased by that caller. Ordinary non-attachment records remain independently
+readable. Authoring temporaries and failed key-bearing decode copies are erased;
+registration/disposal cannot leave an owned buffer readable after disposal.
+This is internal lifetime enforcement, not a wire/API/crypto construction change
+or authority to delete independent persisted assets/history.
 codec support or a retained local offer grants no upload/download/remote receipt
 permission or semantic ACK. AttachmentCancel, authenticated BLOB-01 upload,
 download/resume, receiver key lifecycle and actual file/image integrity on

@@ -1,0 +1,42 @@
+{
+  "$schema": "braid-recovery-v2.registry.schema.json",
+  "schemaVersion": "3.0.0",
+  "decision": "DR-0111",
+  "package": "E2EE-01",
+  "status": "FROZEN_TARGET_NOT_ACTIVE",
+  "productionActive": false,
+  "magic": "DBR2",
+  "version": 1,
+  "suite": 513,
+  "totalBytes": 4112,
+  "fieldCount": 11,
+  "framing": "deep-crypto-v1.registry.json#canonicalGrammar",
+  "fields": [
+    { "tag": 1, "name": "network", "bytes": 16, "rule": "nonzero" },
+    { "tag": 2, "name": "session", "bytes": 32, "rule": "nonzero" },
+    { "tag": 3, "name": "senderDevice", "bytes": 32, "rule": "nonzero; differs from recipient" },
+    { "tag": 4, "name": "recipientDevice", "bytes": 32, "rule": "nonzero; differs from sender" },
+    { "tag": 5, "name": "operation", "bytes": 32, "rule": "nonzero" },
+    { "tag": 6, "name": "braidEpoch", "bytes": 8, "rule": "u64be 1..18446744073709551614; control key epoch is braidEpoch-1" },
+    { "tag": 7, "name": "controlCounter", "bytes": 1, "rule": "u8 1 or 2; exact owned counter/replay binding is not supplied by parsing" },
+    { "tag": 8, "name": "braidKind", "bytes": 1, "rule": "u8 1,3,5,6 only" },
+    { "tag": 9, "name": "publicBraidPayload", "bytes": -1, "rule": "exact kind length from payloadKinds; existing DTR2 logical payload, not a DTR2 record" },
+    { "tag": 10, "name": "padding", "bytes": -1, "rule": "all zero; length 3826-publicBraidPayload.length" },
+    { "tag": 11, "name": "authenticator", "bytes": 32, "rule": "unverified HMAC-SHA-256 tag; parsing never authenticates it" }
+  ],
+  "payloadKinds": [
+    { "kind": 1, "name": "Header", "bytes": 96 },
+    { "kind": 3, "name": "EncapsulationKeyWithCiphertext1Ack", "bytes": 1152 },
+    { "kind": 5, "name": "Ciphertext1", "bytes": 960 },
+    { "kind": 6, "name": "Ciphertext2", "bytes": 160 }
+  ],
+  "authenticationInput": {
+    "domain": "Deep/MSG-V2/braid-recovery-auth",
+    "rule": "UTF8(domain) || zero:u8 || canonical DBR2 projection of tags1..10; rebuild fieldCount=10, retain exact padding, omit tag11 without placeholder",
+    "projectionBytes": 4072,
+    "keyDerivation": "braid-recovery-v2.native.registry.json#controlKdf; internal component candidate, not durable/transport activation"
+  },
+  "publicApi": ["UnverifiedDbr2Record", "Dbr2Codec.Decode", "Dbr2Codec.Encode", "Dbr2Codec.GetAuthenticationInput"],
+  "vectors": "braid-recovery-v2.vectors.json",
+  "activationRule": "codec only; no authority, author/verifier, native mutation, control dispatch/ACK or runtime activation"
+}

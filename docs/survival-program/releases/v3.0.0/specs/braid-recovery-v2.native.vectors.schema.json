@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["$schema", "decision", "scope", "vectors"],
+  "properties": {
+    "$schema": {"const": "braid-recovery-v2.native.vectors.schema.json"}, "decision": {"const": "DR-0112"},
+    "scope": {"const": "synthetic KDF/MAC only; public fields use structural Header witness; no authentic native Braid output or recovery evidence"},
+    "vectors": {
+      "type": "array", "minItems": 2, "maxItems": 2,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["name", "linkEpoch", "spqrRootHex", "controlRootHex", "authenticatorHex"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1}, "linkEpoch": {"enum": [0, 1]},
+          "spqrRootHex": {"type": "string", "pattern": "^[0-9A-F]{64}$"},
+          "controlRootHex": {"type": "string", "pattern": "^[0-9A-F]{64}$"},
+          "authenticatorHex": {"type": "string", "pattern": "^[0-9A-F]{64}$"}
+        }
+      }
+    }
+  }
+}

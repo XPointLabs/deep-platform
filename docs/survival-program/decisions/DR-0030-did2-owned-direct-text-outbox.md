@@ -13,6 +13,12 @@ floor and local reader are superseded by [DR-0098](DR-0098-owned-authored-counte
 Original-event ownership, SQL
 integrity and contiguous sequence requirements remain in force.
 
+The creation/retry boundary is superseded by
+[TRANSPORT-NEUTRAL-MESSAGING §8.4.3](../../architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness):
+the account owner allocates new command operations; a supplied operation selects
+only retained retry work. The caller-generated create-or-retry behavior below
+is not an additional supported application path after the S04 cutover.
+
 The account owner, under its actual lease and current DR-0027 endpoint/retirement
 checks, authors each ordinary text command once. Caller operation32 identifies
 one UI command, never an event or authorization; it must be generated once by

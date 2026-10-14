@@ -14,6 +14,10 @@ The exact private layout/API belongs to
 This supersedes only DR-0030/0067's prior local reader and count-derived revision;
 original event ownership, role baseline, typed-event namespace, SQL integrity,
 Store-vs-delivery distinction and independent endpoint/consent checks remain.
+The current dependency-closed terminal cleanup retains independent floors while
+removing selected working rows. Their surviving positions need not form a
+contiguous suffix; the exact current reader rules belong only to Shared custody.
+This does not allow arbitrary row deletion, counter reset or missing pending work.
 No wire, protocol generation, suite, signature domain, public verification API
 or network authority is allocated. Prior local text roots reject; no migration
 or automatic account reset is authorized.

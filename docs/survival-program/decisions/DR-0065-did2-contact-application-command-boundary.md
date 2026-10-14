@@ -38,12 +38,15 @@ Normative business owner remains CONTACT-AND-GROUP-PROTOCOL and CONTACT-CLIENT-0
   The owner must be the pending recipient. Retain the existing explicit Accept
   winner; send its actual returned operation/bytes; Store via authenticated
   Hello private route. Repeat retains the original winner, not the new input ID.
-- Text consumes handle, stable operation32, text and source. Require actual
-  local/peer acceptance according to initiator/responder role before authoring.
-  Retain the exact owned text outbox event, send through current ratchet custody,
-  then Store via the authenticated private route. Retry cannot change the text,
-  event, operation or ciphertext. Message list exposes only actual authenticated
-  semantic SQL rows; no caller materialization flag or raw envelope.
+- Text creation/retry semantics belong to
+  [TRANSPORT-NEUTRAL-MESSAGING §8.4.3](../../architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
+  Shared maps creation to QueueTextAsync(handle, text, source), returning the
+  owner's durably reserved operation. RetryTextAsync(handle, operation, text,
+  source) resumes only that retained command or reads independently authenticated
+  original completion. The former SendTextAsync create-or-retry overload is
+  removed, not retained as an alias. Both boundaries independently require
+  actual role-specific contact acceptance. Message list exposes only actual
+  authenticated semantic SQL rows; no caller materialization flag or raw envelope.
 - Synchronize is the existing bounded owned page/semantic-before-ACK command.
   UI may explicitly poll or schedule bounded cancellation-aware polling, but
   must not construct ACK items, treat socket write as delivery or auto-accept.

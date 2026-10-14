@@ -4,6 +4,14 @@
 Актуальный статус: [NEXT-SPRINT](NEXT-SPRINT.md); порядок реализации:
 [единый план](architecture/IMPLEMENTATION-PLAN-V1.md).
 
+## 2026-10-13 — консолидация текущей очереди S04
+
+Предыдущая полная редакция NEXT-SPRINT сохранена в
+[датированной редакции](NEXT-SPRINT-CHECKPOINTS-2026-10-13.md).
+Все исходные FAIL/receipts и требования остаются; active очередь отделена
+от исторических «следующий шаг». S04, physical E2E и release не приняты.
+Консолидация не меняет protocol/runtime inputs или production состояние.
+
 ## 2026-10-03 — S00: mailbox ingress operation binding
 
 - XNode `529a10301862a15dbc5d0e1e31e4ede693c1d0fa`: bounded exact request capture,

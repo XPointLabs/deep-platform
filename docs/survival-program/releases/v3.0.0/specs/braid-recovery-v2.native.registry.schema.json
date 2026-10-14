@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["$schema", "decision", "status", "productionActive", "controlKdf", "controlSlots", "privateState", "internalApi", "candidateRule", "vectors", "activationRule"],
+  "properties": {
+    "$schema": {"const": "braid-recovery-v2.native.registry.schema.json"},
+    "decision": {"const": "DR-0112"}, "status": {"const": "FROZEN_INTERNAL_COMPONENT_NOT_ACTIVE"},
+    "productionActive": {"const": false},
+    "controlKdf": {
+      "type": "object", "additionalProperties": false,
+      "required": ["hash", "saltHex", "length", "rootDomain", "rootRule", "directionDomain", "directionRule", "macRule", "linkEpochRule"],
+      "properties": {
+        "hash": {"const": "SHA-512"}, "saltHex": {"type": "string", "pattern": "^0{128}$"}, "length": {"const": 32},
+        "rootDomain": {"type": "string", "minLength": 1}, "rootRule": {"type": "string", "minLength": 1},
+        "directionDomain": {"type": "string", "minLength": 1}, "directionRule": {"type": "string", "minLength": 1},
+        "macRule": {"type": "string", "minLength": 1}, "linkEpochRule": {"type": "string", "minLength": 1}
+      }
+    },
+    "controlSlots": {
+      "type": "object", "additionalProperties": false,
+      "required": ["Header", "Ciphertext1", "EncapsulationKeyWithCiphertext1Ack", "Ciphertext2", "rule"],
+      "properties": {
+        "Header": {"const": 1}, "Ciphertext1": {"const": 1}, "EncapsulationKeyWithCiphertext1Ack": {"const": 2}, "Ciphertext2": {"const": 2},
+        "rule": {"type": "string", "minLength": 1}
+      }
+    },
+    "privateState": {
+      "type": "object", "additionalProperties": false,
+      "required": ["magic", "generation", "prefixBytes", "unchangedPrefixBytes", "linkOffset", "linkCountMaximum", "linkBytes", "braidLengthOffset", "linkLayout", "slotLayout", "rule"],
+      "properties": {
+        "magic": {"const": "TRC1"}, "generation": {"const": 2}, "prefixBytes": {"const": 1060},
+        "unchangedPrefixBytes": {"const": 400}, "linkOffset": {"const": 400}, "linkCountMaximum": {"const": 2},
+        "linkBytes": {"const": 328}, "braidLengthOffset": {"const": 1056}, "linkLayout": {"type": "string", "minLength": 1},
+        "slotLayout": {"type": "string", "minLength": 1}, "rule": {"type": "string", "minLength": 1}
+      }
+    },
+    "internalApi": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "candidateRule": {"type": "string", "minLength": 1}, "vectors": {"const": "braid-recovery-v2.native.vectors.json"},
+    "activationRule": {"type": "string", "minLength": 1}
+  }
+}

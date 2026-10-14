@@ -313,6 +313,7 @@ Owners: exact codecs/vectors in `deep-protocol`; portable state machines in
 | `DPH2` | complete hybrid asynchronous initiation with XPC1 claim binding, actual ML-KEM ciphertext in tag 17 and separate transcript/full-replay hashes. | `TARGET_UNFROZEN`; [DR-0008](../survival-program/decisions/DR-0008-did2-dph2-wire-clean-break.md) selects one DID2-only version-2 target; [DR-0017](../survival-program/decisions/DR-0017-did2-initial-claim-promotion.md) freezes the single V2 encrypted-prefix/current responder promotion and neutral handoff. [DR-0018](../survival-program/decisions/DR-0018-did2-initiator-completion.md) freezes the V2-only asynchronous sender completion with exact recovery fixtures. Protected pending custody, shipping composition, durable live claim/session/MSG composition, complete machine/vector closure and device delivery remain gates; old event-only and DID1 paths are not release compatibility |
 | `DTR2` | embedded-only canonical Double-Ratchet + SPQR/ML-KEM-Braid header carried only in DPE2 tag 6. | `FROZEN_TARGET_NOT_ACTIVE`; exact canonical record sizes 189/285/349/1,149/1,341 |
 | `DPE2` | established Triple-Ratchet device envelope with exact DTR2, authenticated counters and per-envelope dedup operation ID. | `FROZEN_TARGET_NOT_ACTIVE`; twenty exact canonical record sizes 4,513..50,705 |
+| `DBR2` | bounded public Braid-only recovery frame; not application data or data-counter reset. | `FROZEN_TARGET_NOT_ACTIVE`; [DR-0111](../survival-program/decisions/DR-0111-bounded-braid-recovery-control.md) authorizes the parser target, [DR-0112](../survival-program/decisions/DR-0112-owned-braid-control-component.md) the internal native component, [DR-0113](../survival-program/decisions/DR-0113-owned-braid-durable-boundary.md) the closed durable Protocol boundary, [DR-0114](../survival-program/decisions/DR-0114-owned-braid-mailbox-lifecycle.md) connected control transport/obsolete-object disposal and its closed read-only API. SQL ownership, transport/ACK, API/package and physical activation remain gated. |
 | `MBA1` | local managed ML-KEM-Braid profile plaintext state before protected-store sealing. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
 | `MBM1` | local managed ML-KEM-Braid state-machine snapshot. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
 | `TRC1` | local managed Triple-Ratchet component-provider snapshot. | `FROZEN_TARGET_NOT_ACTIVE`; never accepted from the network |
@@ -645,6 +646,13 @@ recipient-route identity facts against the protected DID2 credential. It returns
 parsed historical records, not directory freshness, floor advancement, a current
 route/holder capability or admission/deletion authority. No encoding changes;
 actual package/API qualification and downstream repin remain required.
+
+[DR-0110](../survival-program/decisions/DR-0110-did2-private-route-update-custody.md)
+freezes a closed current mailbox-delivery route boundary and independently
+verified DMC2/14 successor/historical facts. Publication retains its stricter
+invite-bearing type; a received update cannot mint or renew XIR1. No encoding,
+domain or native wire changes. Actual native head/conflict custody, linked-send
+consumers, matching API/package gates and consumer repins remain open in S04.
 
 [DR-0099](../survival-program/decisions/DR-0099-retained-mailbox-read-selection.md)
 freezes additive retained-read replica facts and current MGR1/floor validation

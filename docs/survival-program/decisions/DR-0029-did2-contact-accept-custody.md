@@ -4,10 +4,11 @@ Status: **accepted local contract; Active/dispatch/ACK still gated**
 Date: 2026-10-01
 Decision owner: **Mr. X** (delegated architecture authority)
 
-The version1 fixed journal grammar below is superseded by
-[DR-0063](DR-0063-did2-contact-reply-route-embedding.md)'s version2-only
-LP32 entries and byte capacity. It is not an alternate reader or migration
-target. Explicit consent, exact winner and authenticated handoff claims remain.
+The sole protected journal grammar and byte capacity belong to
+[DR-0063](DR-0063-did2-contact-reply-route-embedding.md#protected-acceptance-clean-break),
+including its S04 consent-preserving payload retirement. Earlier generations
+are rejected, not alternate readers or migration targets. Explicit consent,
+exact winner and authenticated handoff claims remain.
 
 ## Explicit local command, not inferred consent
 
@@ -17,14 +18,11 @@ DR-0027 session and recheck DR-0022 current endpoint metadata under the actual
 account lease. Do not accept caller Hello, responder scope conversion, a
 boolean consent flag or a fetched request as this command's evidence.
 
-Before returning authored bytes, retain the exact Accept and operation in the
+Before returning newly authored bytes, retain the exact Accept and operation in the
 required protected `deep.store.v2.contact-accept-journal`, initialized atomically
 with the account SQL key. Missing/foreign/old records require explicit reset.
-The key-free journal uses version1/reserved-zero1/count:u16be/revision:u64be,
-network16/account32/instance32 (92-byte header). Revision equals count+1.
-At most128 entries, lexicographically sorted by operation32; each entry is
-operation32, exact DR-0027 responder scope404, SHA256(exact Hello)32,
-exact canonical ContactAccept960 (1428 bytes). Operation, scope and local
+The key-free journal has one current bounded reader defined by DR-0063.
+Operation, scope and local
 conversation/device positions are unique. The Accept binds network, local
 account/device, relationship/conversation, exact Hello hash and sequence3.
 Its logical ID is SHA256 of ASCII `Deep/STORE-V2/contact-accept-logical`, zero,
@@ -36,6 +34,11 @@ rendezvous or custody. Recheck its expiry against the final bounded Accept
 creation interval before authoring; require a new Hello, not an extended one.
 Current verification still applies to retained bytes. This command grants no
 transport route, delivered status or mailbox ACK.
+After separately verified terminal Store closure, the protected explicit-consent
+commitment and actual native/semantic event remain independently mandatory;
+retirement may remove only the redundant working payload. Exact cached replay
+uses that native event and cannot restore working custody or first-encrypt a
+missing operation. Consent/history is not a content-free outbox audit tombstone.
 
 ## Authenticated Accept handoff
 

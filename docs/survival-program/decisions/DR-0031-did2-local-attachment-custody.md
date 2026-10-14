@@ -50,6 +50,19 @@ and grant no transport authority. The same actual owner remains required
 after restart, account reset and scope changes; local capacity exhaustion
 requires a verified lifecycle, not journal pruning or silent reset.
 
+The S04 outbox dependency read is strictly read-only: it cannot use asset
+reconciliation to discard an unadopted candidate before its outbox plan exists.
+If such a candidate is present, selection rejects without changing SQL; the
+actual asset owner must separately reconcile it under this decision's rules.
+Registered DAM1/chunks and history are independent assets, not outbox-only keys.
+Retiring an AttachmentOffer removes its key-bearing working DMC2 copies from
+both protected ordinary custody and application outbox SQL, while guarding the
+registered asset and any committed history. Neither its audit row nor successful
+audit membership carries DAM1, object key, ciphertext or plaintext digest.
+This distinction does not waive asset/upload/download/resume expiry, local cache
+deletion or remote retained-object lifecycle: those remain separately required
+for BLOB-01/S10 and cannot be inferred from an outbox Store/cancel/expiry.
+
 Local whole-file materialization first performs that actual-owner protected/SQL
 readback. Decode the closed manifest and check complete chunk geometry before
 allocating bounded output. Verify every ciphertext commitment and actual AEAD,
