@@ -33,6 +33,12 @@ production-code owner завершил prekey publication, contact commit, owned
 authenticated empty mailbox read, native0. Это не installed MAUI или доставка
 между устройствами. Production этим пакетом не изменялся.
 
+Подготовлен изолированный MAUI HTTPS diagnostic `a551f84`: явный public dev-CA
+с DER pin и network-scoped custody без TLS bypass или Release opt-in.
+Clean124/0/0 и Smoke119/0/0 прошли; Windows ARM64 publish завершён из clean commit.
+Это ещё не installed/device evidence; полный цикл контактов/текста/файлов/групп
+по-прежнему не принят. [Конфигурация](../deep-client-maui/docs/ARCHITECTURE.md).
+
 Повтор того же владельца на view58 сохранил byte-identical prekey receipt pair,
 но contact renewal отклонён exact-PMT predicate в `RequirePredecessorBindings`.
 View57/contact generation0 native0 не доказывает changed-view renewal. Не сбрасывать
@@ -110,6 +116,12 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    full02 принят1513/0/0,1513 exact mappings/2191 unchanged inputs, все native
    stages0, FullAccepted=true. Это source checkpoint до следующего lifecycle-среза;
    новый Shared full не квалифицирован.
+   Новый DR-0123 `publication-lease-full-01` завершён1516/1/0, native test1 и
+   FullAccepted=false: closed-metadata witness отверг schema с двумя required
+   полями через `allOf` вместо единого closed списка. Schema приведена к
+   эквивалентному единому `required`, без изменения wire/const fields или теста;
+   повтор всех11 OneTimePublication tests прошёл. Исходный FAIL сохранён;
+   новый full на исправленной schema пока не выполнен.
    Текущий Protocol canonical2330/1/7:2338 exact mappings,1587 unchanged inputs;
    build/preflight/qualification0, native test1/FullAccepted=false. Сохранены
    один настоящий S08 MAU2 package FAIL и семь explicit skips.

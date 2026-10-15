@@ -3,8 +3,7 @@
   "title": "CONTACT-PUBLICATION-04 closed metadata",
   "type": "object",
   "additionalProperties": false,
-  "allOf": [{ "required": ["retainedIntentDecision", "retainedIntentApis"] }],
-  "required": ["package", "decision", "status", "runtimeActivation", "envelopeVersion", "endpoint", "requestMediaType", "responseMediaType", "minimumRequestBytes", "maximumRequestBytes", "minimumResponseBytes", "maximumResponseBytes", "publicLocatorBytes", "publicLocatorPosition", "kinds", "registryEnvelopeVersion", "registryGenerationFenceVersion", "registryScope", "reusableRouteJournalVersion", "reusableRouteJournalMaximumEntryBytes", "clientOneTimeCustodyImplemented", "forbiddenWitnessInputs", "publisherSigningDomain", "witnessAndNodeRecordVersions"],
+  "required": ["package", "decision", "retainedIntentDecision", "retainedIntentApis", "status", "runtimeActivation", "envelopeVersion", "endpoint", "requestMediaType", "responseMediaType", "minimumRequestBytes", "maximumRequestBytes", "minimumResponseBytes", "maximumResponseBytes", "publicLocatorBytes", "publicLocatorPosition", "kinds", "registryEnvelopeVersion", "registryGenerationFenceVersion", "registryScope", "reusableRouteJournalVersion", "reusableRouteJournalMaximumEntryBytes", "clientOneTimeCustodyImplemented", "forbiddenWitnessInputs", "publisherSigningDomain", "witnessAndNodeRecordVersions"],
   "properties": {
     "package": { "const": "CONTACT-PUBLICATION-04" },
     "decision": { "const": "DR-0089" },
