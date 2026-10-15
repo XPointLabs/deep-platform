@@ -17,9 +17,9 @@
 **S00–S04 приняты в своих source scopes; S05 не принят. S06/device ещё не открыты.**
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
-Source checkpoint: Protocol `1b5afe6`, Shared `64477cb`, Node `3c4252f`,
-DevOps `9d16dae`. Commits фиксируют транспортные исправления и открытые границы,
-не final source/release acceptance; новые Node/Shared full остаются незакрытыми.
+Source checkpoint: Protocol `1b5afe6`, Shared `64477cb`, Node `7bd9b68`
+(source `3c4252f`), DevOps `04389f2`. Commits фиксируют транспортные исправления и открытые границы,
+не S05/release acceptance; Node full02 принят, новый Shared full не квалифицирован.
 
 Текущий checkpoint — [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
 На отдельном локальном current-dev с тремя сохранёнными нодами настоящий Windows
@@ -56,7 +56,9 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    full после каждой строки. Node full01 выполнил1513/0/0/native0, но final
    qualification1: DR-0121 не содержал exact arrow binding. Декларация исправлена;
    общий gate проверяет её до build и в конце (49 contracts/native0). Fresh Node
-   full ещё требуется; новый Shared full не квалифицирован.
+   full02 принят1513/0/0,1513 exact mappings/2191 unchanged inputs, все native
+   stages0, FullAccepted=true. Это source checkpoint до следующего lifecycle-среза;
+   новый Shared full не квалифицирован.
    Текущий Protocol canonical2330/1/7:2338 exact mappings,1587 unchanged inputs;
    build/preflight/qualification0, native test1/FullAccepted=false. Сохранены
    один настоящий S08 MAU2 package FAIL и семь explicit skips.
