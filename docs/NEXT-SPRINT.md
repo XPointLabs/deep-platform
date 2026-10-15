@@ -14,233 +14,74 @@
 
 ## Единственный активный этап: S05
 
-**S00–S04 приняты в своих source scopes; S05 не принят. S06/device ещё не открыты.**
+**S00–S04 приняты в своих source scopes; S05 не принят. S06/device acceptance
+не получена.** Diagnostic device runs внутри S05 не открывают параллельные этапы.
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
-Предыдущая source-база: Protocol `1b5afe6`, Shared `64477cb`, Node `7bd9b68`
-(source `3c4252f`), DevOps `04389f2`. Commits фиксируют транспортные исправления и открытые границы,
-не S05/release acceptance; Node full02 принят, новый Shared full не квалифицирован.
+Matched device source: Protocol `0f295cd`, Shared `72a86c5`, MAUI `9304da3`,
+Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`. Все candidate refs
+проверены на GitHub. MAUI docs-only successor `65358dd` не меняет APK; его
+candidate push проверяется отдельно. Это не Releases/main или release acceptance.
+Source/runtime evidence:
+[contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
+[grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
+[физический checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 
-DR-0122 candidate checkpoint: Protocol `1588361`, Shared `70b2830`,
-Registry `ba61334`, Node `4bc720d`, DevOps `bffa6a1`. Source builds без warnings/errors,
-focused Shared50/0/0, Protocol114/0/0, Node19/0/0; более ранние Node287/0/0 и
-Registry7/0/0 покрывают свой срез. Это сохранённый coherent candidate, не final
-full qualification, S05 acceptance или физический E2E. GitHub Releases/main не менялись.
-
-Текущий checkpoint — [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
-На отдельном локальном current-dev с тремя сохранёнными нодами настоящий Windows
-production-code owner завершил prekey publication, contact commit, owned grant и
-authenticated empty mailbox read, native0. Это не installed MAUI или доставка
-между устройствами. Production этим пакетом не изменялся.
-
-Изолированный MAUI HTTPS diagnostic `020496d` / Shared `c2adc50` собран для
-Windows ARM64 и Android ARM64. Явный public dev-CA с DER pin, exact-host CRL
-policy и network-scoped custody не включают TLS bypass или Release opt-in.
-Android обновлён без reset, три protected packages не изменились; сохранённые
-аккаунт и recovery повторно наблюдались без copy/reveal фразы. Новый Windows
-QA-аккаунт создан через UI после подтверждения, рабочий экран и stored recovery
-наблюдались. Оба клиента прошли первоначальную TLS/ADH1-history границу и
-остановились на `ContactPublication / OnionCompletionUnknown`. В закрытых логах
-current-dev видны backend `http-rate-limited`/`http-unavailable` и peer504;
-точное соответствие отдельному клиентскому запросу не установлено. Не считать
-неизвестный исход отсутствием commit; сохранять original intent, аккаунты и floors.
-Clean133/0/0 прошёл. Smoke118/1/0: runner-binding scenario упал; отдельный повтор
-того же теста на стабильном HEAD прошёл1/0/0. Причина первого FAIL не доказана,
-полный повтор ещё не квалифицирован. Receipts: MAUI
-`artifacts/s05-local-device-20261015/{android-build-05,android-install-05,android-network-prep-04,android-inspect-10,windows-build-02,authority-bootstrap-tests-01,authority-bootstrap-smoke-01,runner-binding-focused-01}`.
-Shared focused7/0/0 покрывает closed TLS errors и fail-closed name/root rejection.
-Отдельный same-owner CLI прошёл Registry/prekey/contact stages, но итоговый
-OwnedGrantNodeRead получил remote-outcome-unknown/native1. Это не полный runtime
-или S05/S06 acceptance: physical contacts/text/files/groups остаются0/4.
-[Конфигурация](../deep-client-maui/docs/ARCHITECTURE.md).
-
-Повтор того же владельца на view58 сохранил byte-identical prekey receipt pair,
-но contact renewal отклонён exact-PMT predicate в `RequirePredecessorBindings`.
-View57/contact generation0 native0 не доказывает changed-view renewal. Не сбрасывать
-аккаунт, не убирать guard и не превращать retained-event facts в current authority.
+Текущие испытания — только retained локальный current-dev, девять сервисов /
+три ноды. Production этим срезом не изменён. Аккаунты, recovery, originals,
+permanent fences, native replay floors, registered node keys и volumes сохранены.
 
 ### Оставшаяся работа S05 — по порядку
 
-1. **Logical assignment / current carriage по DR-0122.** Один согласованный срез
-   Protocol → owned client → issuer → node/peer: сохранять exact original PMT/PMS
-   assignment и проверять его current eligibility отдельно от короткого view.
-   Не менять ranking или перепубликовывать контакт на каждый view: это копит
-   архивные read paths, которые pinned до original expiry + object TTL. Не удалять
-   их и не повышать bounds ради зелёного теста. Resource lifetime, issuance facts,
-   committed-XPO restore и live grant/Store проверяются независимо. Новых wire/
-   journal versions нет; epoch/cohort/device/delegation handover остаётся отдельным.
-   [Контракт](survival-program/decisions/DR-0122-logical-mailbox-assignment-carriage.md)
-   принят. Current-only implementation candidate подключён к Protocol, owned
-   client, Registry и node/peer; четыре source-cutover solution builds прошли
-   без warnings/errors. Focused Shared50/0/0 включает неизменный committed journal
-   после cold reopen/смены view, original-XPO restore, свежие grants и route expiry;
-   Protocol114/0/0 сохраняет changed-epoch/expired-grant rejection и запрещает
-   отсутствующий original snapshot после forward checkpoint. Node targeted287/0/0
-   и Registry7/0/0 с disposable PostgreSQL прошли; scoped cleanup выполнен.
-   Actual opaque-consumer regression19/0/0 дополнительно проверяет reusable
-   successor → два durable store → reopen/exact replay → resolve generation1;
-   one-time остаётся genesis-only, подмена generation/receipt отвергается.
-   Убраны два оставшихся genesis-only ограничения в XPA consumer/resolve.
-   Final full qualification и same-owner current-dev/device activation ещё не
-   завершены. Это не приёмка S05 или release.
-2. **Незавершённые original intents — DR-0125.**
-   [Контракт](survival-program/decisions/DR-0125-current-publication-submission.md)
-   принят: один current publisher-signed submission над exact original request
-   для reusable phase5/6, без backdating, нового journal generation, сброса
-   аккаунта, освобождения permanent fence или direct Registry fallback.
-   Missing/pending/completed используют тот же permanent GetOrIssue; completed
-   XPA не подписывается повторно. XPL1 остаётся единственным reusable mutation
-   envelope. Targets3/4 и их API/endpoints удалены из нового source candidate;
-   target2 остаётся только для strict-current one-time genesis.
-   Согласованный Protocol/Shared/Registry/Node source candidate скомпилирован
-   без warnings/errors. Shared focused26/0/0 проверяет encrypted cold reopen,
-   исходные slots, lost response/Store, phase5/6 recovery и phase7 без callbacks,
-   включая продление контакта. Registry focused36/0/0 и concurrency3/0/0
-   с настоящей временной PostgreSQL проверяют missing/pending/completed,
-   actual-current approval, permanent winner/count и двух независимых issuers.
-   Node focused23/0/0 проверяет forwarding/authentication/pairing/gateway;
-   synthetic replica receipts и TestServer не являются физической доставкой.
-   Receipts: Shared `artifacts/s05-current-publication-20261015/owned-focused-02`;
-   Registry `artifacts/s00/s05-current-publication-02-85680a051fa6409a83ceccab1a35f23d`
-   и `s05-current-concurrency-01-47b301deb146457290eb8e14cd323edc`;
-   Node `artifacts/s05-current-publication-20261015/node-focused-02`.
-   Первые FAIL сохранены: неверный conservative-clock шаг/точный тип rejection
-   в Shared; пустой unknown-original аргумент synthetic replica в Registry;
-   предположение об одинаковом gateway в Node. Исправлены fixture composition
-   и ожидания, не production guards. Первый Shared runner не сохранил native
-   exit из-за PowerShell stderr handling; повтор завершился native0.
-   Protocol focused/API/ONION17/0/0 и строгий machine registry gate прошли.
-   Receipt: Protocol `artifacts/s05-current-publication-20261015/protocol-focused-01`.
-   Source checkpoint: Protocol `f0ef288`, Shared `e8a1178`, Registry `13678dc`,
-   Node `01d86d5`. Selected source security:17/24/12/9/6 файлов,0 findings;
-   changed Markdown9/317 local links и public documentation174 checks прошли.
-   Все пять checkpoint refs проверены на GitHub; push verification завершён.
-   Первый новый Protocol full:2297/35/7, build/preflight0, test/qualification1,
-   FullAccepted=false.33 случая отклонены общей retained-read fixture с исходным
-   XRC issuance вне PMT window; ещё один — закрытым signer inventory, не
-   включавшим новый typed current-submission signer. Production guards не
-   изменены; исправленный полный набор этих двух классов прошёл94/0/0.
-   Receipt: Protocol `artifacts/s05-current-publication-20261015/regression-focused-02`.
-   Исходный full FAIL сохранён. Повтор Protocol full02 завершён2331/1/7:
-   build/preflight/qualification0, native test1,2339 exact mappings и1611
-   unchanged inputs, MatrixQualified=true, FullAccepted=false. Receipt:
-   Protocol `artifacts/s05-current-publication-20261015/full-02`.
-   Оставшийся package FAIL — фактический retired `MAU2` token в старом
-   production mailbox-authority codec/model, не waiver или причина переименовать
-   старый transport в current. Его clean-break closure остаётся S08 blocker.
-   Node canonical full01 принят1519/0/0: build/preflight/test/qualification0,
-   1519 exact mappings,2212 unchanged inputs, FullAccepted=true. Exact DR-0125
-   case replacement квалифицирован; повтор этого неизменного gate не нужен.
-   Receipt: Node `artifacts/s05-current-publication-20261015/full-01`.
-   **Осталось:** package и Shared/Registry final full qualification,
-   matched Android/Windows activation и same-owner recovery. Physical0/4
-   этим кодом ещё не квалифицированы. Expired inner resources и epoch/cohort/device handover
-   остаются отдельными lifecycle requirements.
-   Новый DR-0125 retained current-dev активирован: Protocol `f0ef288`,
-   Shared `e8a1178`, Registry `13678dc`, Node `01d86d5`, MAUI `95ef514`,
-   DevOps `1bba9f3`. Supported Build/Up/Verify/CacheWindowsDevCrl native0;
-   verified Registry и три onion-ноды, readiness recovery30s. Receipt:
-   DevOps `artifacts/s05-current-publication-20261015/runtime-01`.
-   Android APK обновлён на том же аккаунте, encrypted recovery сохранён,
-   три protected packages неизменны. Windows ARM64 candidate собран и после
-   нового разрешения пользователя запущен на сохранённом профиле без reset.
-   MAUI receipts: `artifacts/s05-current-publication-20261015/`
-   `android-build-02`, `android-install-01`, `android-settings-01`,
-   `windows-build-01`. Это compiler/install/readiness evidence, не доставка.
-   Две serial Android Verify на сохранённом профиле завершились
-   ContactPublication/OnionCompletionUnknown; closed server observations
-   повторяют Admission/busy и Backend/http-unavailable, без доказательства
-   noncommit. Registry admission candidate сохраняет один active permit и
-   допускает максимум одного current-issuer waiter в исходном30s deadline;
-   public fetch/background renewal не ставятся в очередь. Focused51/0/0,
-   provider/native0, покрывает bounded queue/cancellation/permit ownership,
-   current HTTP recovery, permanent journal и independent-issuer race.
-   Receipt: Registry `artifacts/s00/s05-current-admission-01-77334276858b4e8892b6c59d80d6b7cd`.
-   Исправление Registry `6eb84ee` запушено и remote SHA проверен. Supported
-   runtime02 Build/Up/Verify/CacheWindowsDevCrl native0, recovery60s,
-   Registry и три onion-ноды verified. Same-account Android Verify03 завершён
-   verified-publication: actual proof, two-replica prekey и permanent-contact
-   pipeline прошли; Inspect09 сохранил recovery и три protected packages.
-   Windows однократная UI Verify также завершена verified-publication;
-   encrypted recovery сохранён, manual observation `windows-observation-01.json`
-   не является release receipt. Это physical account/publication diagnostic, не peer contact exchange,
-   доставка сообщений или full qualification. Android cold-reopen Verify04
-   завершён ContactPublication/TransportIo; этот FAIL и аккаунт сохранены,
-   стабильное восстановление после restart не заявляется. MAUI harness-only
-   `7199f67` добавляет guarded HTTPS Contacts/Accept/Text phases без изменения
-   compiled app; Clean135/0/0/native0, selected security5/0 findings. Старый APK
-   допустим только через exact ancestor/changed-path guard, не как новый build.
-   Smoke119/0/0/native0 на стабильном checkpoint завершён; исходный старый
-   runner-binding FAIL сохранён. После cold-reopen TransportIo один serial
-   same-account Verify05 завершён verified-publication (Inspect14), без reset
-   или изменения APK/runtime. Причина первого IO не доказана; это bounded
-   recovery observation, не доказательство стабильной сети/peer delivery.
-   Следующий actual UX blocker: после verified-publication contact action
-   оставался disabled, Windows показывал offline-history hint. Запрос контакта
-   и сообщение не отправлены. MAUI `4fafe7d` объединяет manual Verify/contact
-   recheck с единственным reconnect pipeline; periodic refresh сохраняет только
-   advisory UI readiness, а фактические failure/offline/account invalidation
-   снимают её. Все криптографические проверки выполняются заново в операциях;
-   RetryAfter и исходный2m attempt budget не менялись. Clean140/0/0/native0,
-   selected security6/0 findings. Matched Windows build02 и signed Android
-   build03 завершены; Android install02 обновил только HTTPS QA package,
-   сохранил account/recovery и три protected packages. Новый Windows UI Verify
-   завершён verified-publication, тот же public QA address подтверждён;
-   offline-history hint на contact page больше не наблюдался. Android Verify06
-   также завершён verified-publication (Inspect17), но следующий peer input02
-   снова снял readiness до отправки запроса; после DismissKeyboard02 Add остался
-   disabled. Это не delivery и не доказательство точной причины focus/IO.
-   Новый Smoke119/0/0/native0 завершён на стабильном `4fafe7d` checkpoint.
-   MAUI `661d318` исправляет дополнительную source-ошибку lifecycle:
-   Stopped/Resumed вместо отмены на каждом Deactivated; activation idempotent,
-   в диагностике виден только closed reconnect enum. Clean142/0/0/native0,
-   selected source security9/0 findings. Matched Windows build03 и signed Android
-   build04/install04 теперь запущены на сохранённых профилях; Smoke119/0/0/native0.
-   Android Verify07/Inspect20 завершён verified-publication/Verified; peer input03
-   и DismissKeyboard03 сохранили Add enabled. Один AddContact исполнен, Inspect22
-   завершён messagingErrorPresent без contactRequestStored; исходный unknown
-   request не повторён и не сброшен. Windows mailbox refresh дважды завершён
-   ошибкой; второй защищённый отказ локализован bounded QA-process exception
-   trace: RequireRetainedRequestWindow → RestoreRetainedReadRequestAsync → owned
-   retained grant acquisition → SynchronizeOwnMailboxAsync. Это отказ current
-   window pending Retrieve, не доказательство bad signature или пустого mailbox.
-   **Следующий узкий slice:** проверить композицию существующего DR-0084
-   closed-unresolved/late-result/namespace settlement в business path. Internal
-   CloseExpiredMailboxAcquisitionsAsync существует, ordinary namespace maintenance
-   его не вызывает; простое закрытие не даёт non-issuance или права reissue/retire.
-   Не удлинять120s, не освобождать originals/floors и не вводить reset как recovery.
-   Причина ошибки Android этим Windows trace не доказана. Physical peer exchange
-   остаётся0/4; текст, файлы и группы не переданы.
-   DR-0084 closure уже скомпонован под удержанной lease, без изменения originals.
-   Matched Shared `d2ef134` Windows build04 / Android build06/install06 сохранили
-   аккаунты, но оба mailbox refresh завершились ошибкой; Windows trace локализовал
-   следующий отказ в `AcquisitionForNewWork` после actual closure. Smoke119 прошёл.
+1. **Logical assignment / current carriage — окончательная квалификация.**
+   [DR-0122](survival-program/decisions/DR-0122-logical-mailbox-assignment-carriage.md)
+   реализован согласованным current-only Protocol → owned client → issuer →
+   node/peer candidate. Не менять ranking и не перепубликовывать контакт на каждый
+   view, не удалять pinned archived paths или повышать bounds. Завершить current
+   source qualification и same-owner device/recovery для новых inputs. Resource
+   expiry и epoch/cohort/device/delegation handover проверяются независимо;
+   historical focused/build receipts не являются S05/release acceptance.
+2. **Retained original intents и первый physical contact/text.**
+   [DR-0125](survival-program/decisions/DR-0125-current-publication-submission.md)
+   активирован в current-dev: actual current submission над immutable original,
+   permanent winner journal, без backdating/reset/legacy targets3/4. Registry
+   bounded admission сохранён в исходном30s budget. Android и Windows прошли
+   verified-publication на retained profiles. Совпадающие source и runtime refs
+   и исходные FAIL находятся в linked checkpoints; generic aggregate counters
+   не доказывают noncommit конкретного client intent.
+
    [DR-0126](survival-program/decisions/DR-0126-independent-grant-after-unresolved-acquisition.md)
-   исправляет смешение retained uncertainty с запретом независимой authorization:
-   новый owned holder/request для новой работы допустим, exact old request и
-   active Store/Retrieve/ACK не заменяются. Current issuer/route/time, CAS,
-   pending exact replay и128-entry bound сохранены; layout/wire/limits не менялись.
-   Focused16/0/0 и affected regression58/0/0/native0 проверяют оба направления,
-   lost reply, SQL/CAS/cold handover, late-original non-overwrite и full-bound
-   refusal до issuer/read callback. Receipts: Shared
-   `artifacts/s05-current-publication-20261015/independent-grant-focused-03`
-   и `independent-grant-regression-01`; исходный compiler FAIL02 сохранён.
-   **Следующее:** matched device build/retest на тех же аккаунтах, bounded
-   mixed closed/adopted predecessor retirement и canonical full. Старые6/48
-   receipts не квалифицируют новую семантику; exact3 retired-case replacements
-   объявлены в DR-0126, без waiver FAIL/skip. Security7/0 findings прошёл;
-   normative source hash repinned ровно для transport-neutral-v1, strict registry
-   PASS44/247/10/5/4/11. Это не physical delivery или S05/release acceptance.
-   Отдельная проверяемая гипотеза issuer:
-   grant ScopeHash содержит hash current network-history; retry того же XMG2
-   через новый view может получить immutable-scope conflict. Нужен actual Registry
-   regression, не удаление старых reservations или ослабление scope guard.
-   Предыдущие DR-0124 Android phase5 unknown и closed `Winner/winner-missing` сохранены в
-   [contact checkpoint](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
-   Агрегаты publication6/completed6/pending0 не устанавливают принадлежность
-   клиенту и не доказывают noncommit. Аккаунты, recovery, floors и node keys
-   сохраняются. Windows UI возобновлён только после нового явного разрешения
-   пользователя. Production этим source-срезом не изменён.
+   исправляет новый доступ после authenticated closure unknown grant:
+   независимый owned holder/request, exact pending replay, сохранённые originals
+   и active Store/Retrieve/ACK. Layout/wire/generations/lifetimes/128-entry bound
+   не менялись. Focused16 и affected regression58 прошли без FAIL/skip/native
+   errors; MAUI Smoke119 также прошёл. Exact3 source-case replacements объявлены
+   в decision, исходные TRX не изменены. Strict registry PASS44/247/10/5/4/11,
+   security12/0 findings, strict UTF-8/local links5/75.
+
+   Matched Windows build05 впервые завершил actual mailbox synchronization без
+   ошибки на том же аккаунте, background Verified; это empty-read observation,
+   не contact delivery. Android build07/install07 сохранил account/recovery и
+   три protected packages; Verify08/Inspect26 — verified-publication/Verified,
+   но mailbox refresh02/Inspect28 — terminal incomplete-redacted, затем фоновый
+   reconnect Rejected и Contacts.Add disabled. Второй contact send не исполнялся.
+   **Текущий следующий шаг:** локализовать этот Android отказ, восстановить тот же
+   logical contact intent и проверить явное принятие / A↔B text без reset.
+   Windows trace не доказывает Android причину; состояние кнопки не delivery.
+
+   **Открытые source/lifecycle границы:** dependency-closed retirement смешанной
+   closed/adopted predecessor history (сейчас такие ancestors остаются pinned);
+   actual Registry regression для гипотезы cross-view immutable ScopeHash conflict
+   на exact XMG retry. Не удалять reservations, не ослаблять scope guard и не
+   использовать expiry как non-issuance. Canonical full и installed cross-device
+   acceptance остаются обязательными. Текст, файлы и группы ещё не переданы.
+   Receipts: Shared `artifacts/s05-current-publication-20261015/`
+   `independent-grant-focused-03`, `independent-grant-regression-01`;
+   MAUI тот же prefix: `independent-grant-maui-smoke-01`, `windows-build-05`,
+   `windows-observation-02.json` (manual, не release receipt), `android-build-07`,
+   `android-install-07`, `android-verify-08`, `android-inspect-26`,
+   `android-refresh-02`, `android-inspect-28`. Compiler/preflight FAIL02/05 и
+   прочие исходные неуспешные попытки сохранены; они не превращены в PASS.
 3. **Operational ceremony после активации roles.** Root/witness/role/traffic/TLS
    rotation, автоматический head/view/key lifecycle и предупреждение offline-policy
    expiry. Pre-mailbox Prepare/Apply отказывают на enabled contour: нужен supported
@@ -251,10 +92,12 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    renewal и bounded verified catch-up. Уже пройденные 129-head catch-up и
    retained restart scopes не заменяют всю эту матрицу.
 5. **Final source qualification/review/commit/push coherent slice.** Не запускать
-   full после каждой строки. Текущий DR-0125 Node full принят1519/0/0;
+   full после каждой строки. DR-0125 Node full принят1519/0/0 на своих inputs;
    Protocol full2331/1/7 квалифицирован по matrix, но не принят из-за реального
-   S08 package FAIL, семь explicit skips не сняты. Exact receipts и source scopes
-   приведены в п.2; прошлые FAIL и исправления сохраняются в Git/артефактах,
+   S08 package FAIL, семь explicit skips не сняты. Exact receipts:
+   Node `artifacts/s05-current-publication-20261015/full-01`, Protocol тот же
+   prefix `full-02`; новые DR-0126 metadata hashes не переиспользуют старый
+   unchanged-input PASS. Прошлые FAIL и исправления сохраняются в Git/артефактах,
    не заменяют текущую приёмку. Shared/Registry final full на текущих входах
    ещё требуются; focused51 и device diagnostics не заменяют их. После закрытия
    текущего business slice выполнить требуемую квалификацию и зафиксировать
