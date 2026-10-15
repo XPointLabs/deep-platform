@@ -636,6 +636,17 @@ and issuer are authenticated from exact verified history under DR-0122. This
 read-only restore cannot redispatch an expired/stale XPU. New writes still bind
 the current service placement; the unsigned XPO clock cannot grant freshness.
 
+For an uncompleted original publication,
+[DR-0123](../survival-program/decisions/DR-0123-retained-publication-intent.md)
+separates a closed authenticated intent from dispatch or commit authority.
+The owner verifier additionally requires authenticated decrypted object custody;
+the issuer verifier never claims decryption. Both retain exact request/XPU bytes
+and require independently live current identity, assignment, route and object.
+An expired envelope may establish only that read-only intent: it cannot free a
+permanent generation fence, prove noncommit, authorize a new write or become a
+synthetic XPO. Fresh lease, expired-resource settlement and two-replica adoption
+remain separate connected recovery requirements.
+
 The DID2 descriptor bootstrap and current permanent-read boundary follow
 [DR-0041](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md).
 With the reusable successors from

@@ -71,6 +71,16 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    до сохранённого запроса и отказывает с закрытым `request-window`: его исходное
    короткое окно истекло. Нужен отдельный bounded reconciliation contract, а не
    ослабление XPA/currentness или освобождение permanent generation fence.
+   [DR-0123](survival-program/decisions/DR-0123-retained-publication-intent.md)
+   отделяет owner/issuer read-only original intent от commit и mutation lease.
+   Candidate скомпилирован в consumer solutions без warnings/errors; focused
+   intent/successor11/0/0 и PostgreSQL journal2/0/0 прошли. Read-only winner lookup
+   сохраняет permanent fence/count и не вызывает signer; неверный scope, pending,
+   повреждение и отмена отвергаются. Это API prerequisite, не разрешение повторной
+   записи; fresh lease и реальная
+   reconciliation/adoption того же сохранённого pending ещё не подключены.
+   Source checkpoint: Protocol `314dbd0`, Shared `a8d4169`, Registry `da2c9e0`;
+   Protocol focused114/0/0 также сохранён, полный qualification не заявлен.
 3. **Operational ceremony после активации roles.** Root/witness/role/traffic/TLS
    rotation, автоматический head/view/key lifecycle и предупреждение offline-policy
    expiry. Pre-mailbox Prepare/Apply отказывают на enabled contour: нужен supported

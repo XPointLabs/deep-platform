@@ -1,6 +1,8 @@
 {
   "package": "CONTACT-PUBLICATION-04",
   "decision": "DR-0089",
+  "retainedIntentDecision": "DR-0123",
+  "retainedIntentApis": ["VerifyOwnedRetainedIntentAsync", "VerifyIssuerRetainedIntentAsync"],
   "status": "FROZEN_TARGET_NOT_ACTIVE",
   "runtimeActivation": false,
   "envelopeVersion": 4,

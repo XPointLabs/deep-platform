@@ -35,6 +35,12 @@ contact/mailbox records and current grant profile. It allocates no new wire,
 suite, ranking algorithm or journal generation. Matched current-only source,
 issuer/node/peer activation and retained-account/device qualification remain open.
 
+[DR-0123](../survival-program/decisions/DR-0123-retained-publication-intent.md)
+adds separate closed owner/issuer original-publication-intent verification.
+It allocates no wire, signing domain, mutation lease or journal generation.
+Those read-only facts cannot release an issuer fence, prove noncommit or
+authorize redispatch; connected expired-intent recovery remains open.
+
 [DR-0101](../survival-program/decisions/DR-0101-retained-mailbox-route-custody.md)
 freezes independent bounded private node read-route custody and typed lookup.
 It adds no protocol allocation or Current-route evidence and cannot authorize
