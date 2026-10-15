@@ -22,11 +22,13 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `0293453` | `23fbca3` | `605090b` | build11 |
-| Android | `f6e57b7` | `cb7893c` | `605090b` | APK19/install19 |
+| Windows | `229c3da` | `09f5c1d` | `605090b` | build14 |
+| Android | `229c3da` | `09f5c1d` | `605090b` | APK21/install21 |
 
-Windows build12 (`f6e57b7`/`cb7893c`) собран, но ещё не запущен и не является
-installed evidence. Runtime code: Registry `a4805bf`, Node `01d86d5`, DevOps `7b2799f`.
+Windows build12 не запускался и не является installed evidence. Source `229c3da`
+исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
+Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
+Typed429/503 recovery физически не инъецировался. Runtime code: Registry `a4805bf`, Node `01d86d5`, DevOps `7b2799f`.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Source/runtime evidence:
@@ -73,8 +75,8 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    `RequireCurrentIssuer / XurWindow` (IL104), без contactRequestStored. Это
    доказанный отказ полного authenticated time window XUR, не доказательство
    конкретной стороны interval и не повод ослаблять guard. Шестого send нет.
-   **Текущий следующий шаг:** проверить terminal explicit stop текущего запроса,
-   затем отдельный explicit Add и первый Store/приём/A↔B text без reset.
+   **Текущий следующий шаг:** на сохранённом intent устранить доказанный отказ
+   current ContactResolve placement и дойти до первого Store/приём/A↔B text без reset.
    Stop не доказывает non-delivery/recall и не remint старого intent.
    Foreground network work и background verify используют одну существующую
    process queue; local history остаётся вне неё. QA-only diagnostics ограничены
@@ -109,9 +111,20 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    не доказана. Independent readonly audit подтвердил29 declared pre-existing
    named volumes и25 scoped binds без reset. Нужен повтор retained-upgrade gate
    с сохранёнными canonical inputs; первый FAIL не переклассифицировать в PASS.
-   Exact Android Add17 запущен на том же intent, terminal пока не получен;
-   один hierarchy read unavailable, следующий Inspect79 снова видит busy UI.
-   Не повторять send по отсутствующему наблюдению. Final Registry full остаётся.
+   Exact Android Add17 на том же intent завершился без Store: Inspect80 видит
+   error, новый closed timestamp указывает `RequireClaimContactTimeAsync / IL509`.
+   Это combined clock/boot/request-window guard; отдельный expiry predicate ещё
+   не доказан. Новый source candidate убирает повторную подготовку draft внутри
+   одной команды, сохраняя protected/current claim checks, и разделяет только
+   diagnostic reasons четырёх predicates. Shared `09f5c1d`: focused10 и actual
+   owned application2 прошли0fail/skip/native0. MAUI `a2bc906`: Clean190 и Smoke119
+   прошли; matching APK20 установлен с retained account/protected packages.
+   Cold Add18 восстановил retry choice без dispatch. Exact Add19 на том же intent
+   завершён error/no Store (Inspect84): новый trace указывает PermanentContactResolveVerifier
+   VerifyAsync/IL1039 — combined current view/placement hash/request lifetime guard,
+   не доказательство одной конкретной стороны. Дубль draft preparation уже убран,
+   но этот отказ предшествует ему; ускорение не подтверждено. Original сохранён,
+   нового intent нет. Final Registry full и physical contact/text остаются.
 
    QA-only optimized JIT сохраняет Debug/isolation/trust/Release guards и
    исходные временные окна. Source `f6e57b7`: Clean186/0/0 и Smoke119/0/0/native0
@@ -131,6 +144,23 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    PrivacyManagedIngressHttpTransport.ForwardAsync / line304 IL1509`; это не
    noncommit или contact delivery. Current-dev Verify восстановил Registry и
    три ONION capabilities за43s без reset, но не доказывает device delivery.
+   После нового явного resume один Chats refresh на том же build11/account
+   завершил синхронизацию без visible error, список пуст. Это не contact delivery
+   и не отмена предыдущего unknown outcome. Аккаунт не сбрасывался.
+   Windows build13 сохранил profile/recovery; первый refresh завершён
+   OutcomeUnknown/ForwardAsync/IL1509. Background ReadBootstrap выявил отдельный
+   баг wrapper: BootstrapAuthority отсутствовал в closed stage list, из-за чего
+   I/O failure заменялся ArgumentException, терял typed cause и мог останавливать
+   reconnect как Rejected. Source `229c3da` добавляет только уже используемый этап.
+   Regression red2/native1 сохранён; после fix Clean193 и Smoke119 прошли0fail/
+   skip/native0. Реальная scheduling regression сохраняет429/503 cause и RetryAfter;
+   generic I/O/crypto/floor rejection не получают retry authority. Windows14
+   запущен без reset: background Verified, затем один Chats sync без visible error.
+   Это не fault-injected429/503 recovery или contact delivery. Settings sentence
+   «ещё не проверена» пока не синхронизируется с background Verified — UI issue.
+   APK21 установлен/запущен с retained workspace/protected packages (Inspect85),
+   нового contact retry ещё нет. Security50/0findings, strict UTF-8/local links остаются
+   отдельными checks, а не release acceptance.
    Более ранние source/device FAIL остаются в linked checkpoint и receipts;
    ни один старый PASS не квалифицирует изменившиеся Shared inputs.
 
