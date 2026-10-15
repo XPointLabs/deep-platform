@@ -17,9 +17,15 @@
 **S00–S04 приняты в своих source scopes; S05 не принят. S06/device ещё не открыты.**
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
-Source checkpoint: Protocol `1b5afe6`, Shared `64477cb`, Node `7bd9b68`
+Предыдущая source-база: Protocol `1b5afe6`, Shared `64477cb`, Node `7bd9b68`
 (source `3c4252f`), DevOps `04389f2`. Commits фиксируют транспортные исправления и открытые границы,
 не S05/release acceptance; Node full02 принят, новый Shared full не квалифицирован.
+
+DR-0122 candidate checkpoint: Protocol `1588361`, Shared `70b2830`,
+Registry `ba61334`, Node `4bc720d`, DevOps `bffa6a1`. Source builds без warnings/errors,
+focused Shared50/0/0, Protocol114/0/0, Node19/0/0; более ранние Node287/0/0 и
+Registry7/0/0 покрывают свой срез. Это сохранённый coherent candidate, не final
+full qualification, S05 acceptance или физический E2E. GitHub Releases/main не менялись.
 
 Текущий checkpoint — [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
 На отдельном локальном current-dev с тремя сохранёнными нодами настоящий Windows
@@ -34,15 +40,37 @@ View57/contact generation0 native0 не доказывает changed-view renewa
 
 ### Оставшаяся работа S05 — по порядку
 
-1. **Связный PMT/view successor для уже committed contact.** Согласовать bounded
-   переход client authoring → threshold issuer → protected pending custody →
-   publication → independent replica/node verification. Обычный publisher меняет
-   PMT с view; существующие DR-0071/0072/0078 намеренно не разрешают такой rollover.
-   Epoch/replica/device/service handover не выводить из одного same-key случая.
+1. **Logical assignment / current carriage по DR-0122.** Один согласованный срез
+   Protocol → owned client → issuer → node/peer: сохранять exact original PMT/PMS
+   assignment и проверять его current eligibility отдельно от короткого view.
+   Не менять ranking или перепубликовывать контакт на каждый view: это копит
+   архивные read paths, которые pinned до original expiry + object TTL. Не удалять
+   их и не повышать bounds ради зелёного теста. Resource lifetime, issuance facts,
+   committed-XPO restore и live grant/Store проверяются независимо. Новых wire/
+   journal versions нет; epoch/cohort/device/delegation handover остаётся отдельным.
+   [Контракт](survival-program/decisions/DR-0122-logical-mailbox-assignment-carriage.md)
+   принят. Current-only implementation candidate подключён к Protocol, owned
+   client, Registry и node/peer; четыре source-cutover solution builds прошли
+   без warnings/errors. Focused Shared50/0/0 включает неизменный committed journal
+   после cold reopen/смены view, original-XPO restore, свежие grants и route expiry;
+   Protocol114/0/0 сохраняет changed-epoch/expired-grant rejection и запрещает
+   отсутствующий original snapshot после forward checkpoint. Node targeted287/0/0
+   и Registry7/0/0 с disposable PostgreSQL прошли; scoped cleanup выполнен.
+   Actual opaque-consumer regression19/0/0 дополнительно проверяет reusable
+   successor → два durable store → reopen/exact replay → resolve generation1;
+   one-time остаётся genesis-only, подмена generation/receipt отвергается.
+   Убраны два оставшихся genesis-only ограничения в XPA consumer/resolve.
+   Final full qualification и same-owner current-dev/device activation ещё не
+   завершены. Это не приёмка S05 или release.
 2. **Незавершённые original intents.** Primary/diagnostic/replication owners
    сохранены; их PMT/expiry/unknown-outcome reconciliation не закрывается новым
    успешным acceptance-owner. Не remint, не менять exact pending bytes и не
    повторять мутацию с неизвестным завершением как новую.
+   На том же acceptance-owner current-dev view71 повторно подтвердил strict TLS,
+   byte-identical prekey pair и current network. Contact renewal теперь доходит
+   до сохранённого запроса и отказывает с закрытым `request-window`: его исходное
+   короткое окно истекло. Нужен отдельный bounded reconciliation contract, а не
+   ослабление XPA/currentness или освобождение permanent generation fence.
 3. **Operational ceremony после активации roles.** Root/witness/role/traffic/TLS
    rotation, автоматический head/view/key lifecycle и предупреждение offline-policy
    expiry. Pre-mailbox Prepare/Apply отказывают на enabled contour: нужен supported

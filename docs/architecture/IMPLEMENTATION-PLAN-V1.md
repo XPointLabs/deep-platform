@@ -203,6 +203,12 @@ issuance→client verify→node acceptance. Подготовить поддер�
 атомарное согласование signed PMA2 profile 2 / PMT2 successors с установленными
 ключами. Без копирования root online, правки signed records, genesis/floor reset.
 
+По [DR-0122](../survival-program/decisions/DR-0122-logical-mailbox-assignment-carriage.md)
+разделить logical mailbox assignment/resource lifetime и короткий operational
+carriage. Routine view/TLS/traffic-key renewal не должен перевыпускать каждый
+контакт и накапливать retained read paths. Все текущие issuer/time/revocation/
+holder/node checks сохраняются; changed epoch/cohort требует отдельного handover.
+
 Развязать health/readiness и nonce-consuming issuance; refresh single-flight,
 с backoff/jitter и ресурсным бюджетом. Автоматизировать operational head/view/key
 rotation и предупредить об expiry policy, требующем offline ceremony. Проверить

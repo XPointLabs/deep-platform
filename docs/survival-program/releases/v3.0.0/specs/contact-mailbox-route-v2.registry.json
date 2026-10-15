@@ -1,6 +1,7 @@
 {
   "package": "CONTACT-CLIENT-01/private-mailbox-route",
   "decision": "DR-0062",
+  "logicalAssignmentDecision": "DR-0122",
   "status": "FROZEN_TARGET_NOT_ACTIVE",
   "runtimeActivation": false,
   "standaloneServiceRecord": false,

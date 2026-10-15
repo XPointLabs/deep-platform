@@ -631,11 +631,21 @@ after checking both distinct selected-node receipts and owned publisher/body
 binding. Account-owned orchestration durably CAS/readbacks terminal phase 7
 before return. A retained commit is historical evidence, not renewed XPA
 dispatch authority, consent, mailbox authority or message delivery. Exact
-current object/route/directory/placement remain mandatory; the unsigned XPO
-server clock cannot grant freshness.
+current object/route/directory remain mandatory; original publication placement
+and issuer are authenticated from exact verified history under DR-0122. This
+read-only restore cannot redispatch an expired/stale XPU. New writes still bind
+the current service placement; the unsigned XPO clock cannot grant freshness.
 
 The DID2 descriptor bootstrap and current permanent-read boundary follow
 [DR-0041](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md).
+With the reusable successors from
+[DR-0076](../survival-program/decisions/DR-0076-did2-contact-publication-successors.md),
+the query's requested generation zero selects the latest publication; it does
+not restrict the returned signed publication to genesis. Require the returned
+generation to match the exact signed DCB/XIR lineage and both selected-node
+resolve receipts. Nonzero generations do not relax current identity, route,
+placement, time, ciphertext or signature verification. One-time invitations
+remain a separate genesis-only operation.
 Capability-bound AEAD opening yields only a parsed candidate; promotion requires
 an independently fetched nonce-bound current peer proof and the actual two-node
 neutral resolve-read receipts. No unsigned server clock, structural parse or
@@ -1297,6 +1307,32 @@ serialized into XPU1/XIQ1/XPK1/XUW1 service requests except as an opaque hash or
 the already-authorized random service capability. References below are exact
 `ArtifactRef38`, unless a `CoreRef38` is explicitly stated.
 
+Under [DR-0122](../survival-program/decisions/DR-0122-logical-mailbox-assignment-carriage.md),
+the exact PMT2/PMS2 closure identifies a logical assignment, not the latest
+transport frame. Current use requires that snapshot in verified retained history
+and an independently live current projection with the same network, epoch,
+replication factor and complete eligible node-ID cohort. A terminal-only
+checkpoint, changed cohort/epoch or stale current authority cannot supply this
+permission. Snapshot origin/SPKI/key metadata is never current dial authority.
+All live descriptor, role, grant, revocation, holder and protected-time checks
+remain independent. The existing ranking/domain and record layouts do not change.
+
+`VerifiedOnionNetworkContext.RequireCurrentMailboxAssignment` is a closed
+eligibility check for that exact reference and verified authority, not a route,
+grant or dispatch capability. Owned coordination/grant path preparation and the
+gateway use this check without replacing the original reference. Their service
+placement and transport lease remain current. A route proposal's signed resource
+expiry is not the gateway's short carriage deadline; publication mutation expiry
+continues to be bounded by that current carriage deadline.
+
+Genesis selects the actual current snapshot and issues inside its creation
+window. A same-assignment successor requires authenticated predecessor custody.
+Signed logical-resource expiry is not capped by a short network view/head lease;
+canonical, subject/device/delegation and issuing-witness limits remain binding.
+Each mutation/grant/dispatch still obtains and rechecks fresh current authority.
+An expired logical route is not made current by this rule. Existing retained
+reads after route expiry remain a separate settlement-only authority.
+
 `XUR1` is exactly 538 bytes. Tag 5 is ZERO32 iff generation is zero. Tag 10 is
 the closed nonzero mask `0x0001..0x0007`; a ContactHello/Accept embedded XUR1
 requires exactly `0x0007`. Tags 11/12 have `issuedAt < expiresAt` and a maximum
@@ -1413,7 +1449,10 @@ networkId16 || PMT2ArtifactRef38 || selectionEpoch:u64be ||
 randomPlacementInput32 || nodeId32)`; ascending unsigned hash bytes, then
 ascending node ID bytes, is the sole tie-break order. Tag 7 equals
 `SHA256-D("Deep/XPoint/V1/PMS2/selection", exact tags 1..6)`. Tags 8/9 are
-inside the named PMT2 window and expire no later than its selection epoch.
+the signed selection-receipt window and expire no later than its selection epoch.
+Genesis issuance is inside the named PMT2 creation window. Renewing an already
+authenticated assignment uses current eligibility and issuing-witness authority,
+not an extension of the snapshot's old window (DR-0122).
 Witnesses sign tags 1..9 under `SIGINPUT("Deep/XPoint/V1/PMS2", 0x0201,
 projection)`. The PMS2 exact hash is `SHA256(exactPMS2)`. Selection projection
 and timed-envelope renewal/fork rules follow
@@ -1430,9 +1469,12 @@ receipt refresh never permits changing `(PMT2,placementInput,epoch)` or ranking.
 `17=notBefore:u64be`, `18=expiresAt:u64be`, `19=ADH1CoreRef38`,
 `20=directoryWitnessCount:u8`, `21=sortedWitnessReceipts` exactly `96*tag20`.
 It is `620 + 64*N + 96*W` bytes, N=`2..5`, W=threshold..32. Tags 5..13 equal
-the named XRA1/PMT2/PMS2/XNV1/XNH1 closure exactly; tag 15 names exactly PMS2's
-ranked replicas and no others. It has a maximum 24-hour lifetime, wholly inside
-the XRA1/PMT2/XNV/XNH/key validity intersection. Witnesses sign tags 1..19 under
+the named XRA1/PMT2/PMS2 closure and authenticated issuance XNV1/XNH1/key facts
+exactly; tag 15 names exactly PMS2's ranked replicas and no others. The issuance
+view may differ from the assignment snapshot's original view. Its maximum
+24-hour lifetime is inside XRA1 and issuing-witness scope; current operational
+carriage is checked independently under DR-0122, not borrowed from that lifetime.
+Witnesses sign tags 1..19 under
 `SIGINPUT("Deep/XPoint/V1/XRC1", 0x0201, projection)`. Its core is
 `SHA256-D("Deep/XPoint/V1/XRC1/core", projection)`. Only the random tag-10/tag-15
 capabilities go to storage nodes; account/device/Deep-ID material never does.
@@ -1551,7 +1593,8 @@ secret and is never interpreted as the placement identifier.
 For the grant, `PlacementCommitment` is exactly
 `MailboxPlacementCommitment.Compute(BlindedPlacementId(XRR1.tag10))`,
 `MembershipCommitment` is exactly SHA-256 of the independently authenticated
-current PMT2 canonical bytes (see
+logical-assignment PMT2 canonical bytes, with separately verified current
+eligibility under DR-0122 (see
 [DR-0052](../survival-program/decisions/DR-0052-did2-mailbox-authority-distribution.md)),
 `SelectionInput` is exactly the verified `PMS2.tag3`, independently random and
 distinct from deposit placement; the issuer signature covers it under DR-0081.
@@ -1559,7 +1602,10 @@ The current epoch must equal both that topology
 epoch and `PMS2.tag4`. A client refreshes the grant before the current epoch
 expires; the issuer never fabricates a next-epoch membership assertion from a
 current PMS2.
-Grant expiry is the minimum of XRR1, XRC1, PMT2, PMS2 and issuer validity.
+Grant expiry is bounded by XRR1, XRC1, PMS2 and CURRENT issuer/network validity.
+The original assignment snapshot is not a replacement current lease. Store,
+Retrieve and both peer proofs must bind that same exact assignment and grant;
+no expired grant or historical issuer/profile is promoted to permission.
 
 The issuer chooses the grant's NotBefore as the greater of the original signed
 XMG2 tag9 and the current role issuer's signed ValidFrom. The original request

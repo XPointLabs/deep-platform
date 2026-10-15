@@ -29,6 +29,12 @@ carriage views. It changes the publication placement derivation only; existing
 layouts/API remain, old view-bound publication values fail closed without a
 compatibility reader. Coordinated replica/client and physical qualification remain.
 
+[DR-0122](../survival-program/decisions/DR-0122-logical-mailbox-assignment-carriage.md)
+freezes logical-assignment versus current-carriage semantics for the existing
+contact/mailbox records and current grant profile. It allocates no new wire,
+suite, ranking algorithm or journal generation. Matched current-only source,
+issuer/node/peer activation and retained-account/device qualification remain open.
+
 [DR-0101](../survival-program/decisions/DR-0101-retained-mailbox-route-custody.md)
 freezes independent bounded private node read-route custody and typed lookup.
 It adds no protocol allocation or Current-route evidence and cannot authorize

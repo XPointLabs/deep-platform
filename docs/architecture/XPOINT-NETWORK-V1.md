@@ -950,6 +950,14 @@ Current selector-bound authorization and the peer proof profile follow
 Historical PMA2 profile1 cannot authorize new mailbox operations.
 No field may be resolved from an unsigned Registry response.
 
+[DR-0122](../survival-program/decisions/DR-0122-logical-mailbox-assignment-carriage.md)
+separates a logical route's exact assignment snapshot from current operational
+carriage. Its sole semantics owner is CONTACT-RESOLVER section3.6. Routine view,
+TLS and traffic-key renewal must not force per-client contact publication or
+retained-path accumulation. Current descriptor/role/issuer/revocation/time checks
+still gate every operation; snapshot transport metadata never selects an origin.
+Changed selection epoch or eligible cohort still requires explicit handover.
+
 Current peer dispatch uses descriptor-bound transport facts from the same closed
 host and selected replica, as frozen in
 [DR-0085](../survival-program/decisions/DR-0085-current-mailbox-replica-transport-facts.md).

@@ -7,6 +7,7 @@
   "newMagic": ["MCG3", "MCP3", "MAU3", "XMC2", "XMG2"],
   "retiredReject": ["MCG2", "MCP2", "MAU2", "XMC1", "XMG1"],
   "requestBindingDecision": "DR-0102",
+  "logicalAssignmentDecision": "DR-0122",
   "acquisitionRequest": {
     "magic": "XMG2",
     "version": 1,
@@ -60,7 +61,7 @@
       "Retrieve": "444545502d4d4347332d524554000000"
     },
     "selectionSource": "exact independently verified PMS2 tag3",
-    "membershipSource": "SHA256 of exact current canonical PMT2",
+    "membershipSource": "SHA256 of exact authenticated logical-assignment PMT2; independently current eligibility, issuer, time and revocation are required",
     "placementSource": "existing MailboxPlacementCommitment of XRR1 tag10",
     "currentLifecycle": "Active"
   },
