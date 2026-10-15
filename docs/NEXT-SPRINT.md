@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-15**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-16**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -18,8 +18,15 @@
 не получена.** Diagnostic device runs внутри S05 не открывают параллельные этапы.
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
-Installed diagnostic source: Protocol `0f295cd`, Shared `23fbca3`, MAUI Windows /
-Android `73ee487`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
+Installed diagnostic source:
+
+| Device | MAUI | Shared | Protocol | Artifact |
+| --- | --- | --- | --- | --- |
+| Windows | `0293453` | `23fbca3` | `605090b` | build11 |
+| Android | `f6e57b7` | `cb7893c` | `605090b` | APK19/install19 |
+
+Windows build12 (`f6e57b7`/`cb7893c`) собран, но ещё не запущен и не является
+installed evidence. Runtime code: Registry `a4805bf`, Node `01d86d5`, DevOps `7b2799f`.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Source/runtime evidence:
@@ -66,9 +73,9 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    `RequireCurrentIssuer / XurWindow` (IL104), без contactRequestStored. Это
    доказанный отказ полного authenticated time window XUR, не доказательство
    конкретной стороны interval и не повод ослаблять guard. Шестого send нет.
-   **Текущий следующий шаг:** optimized-JIT Android comparison на том же новом
-   сохранённом intent, затем явное принятие / A↔B text без reset. Старый запрос
-   уже остановлен; stop не доказывает non-delivery/recall.
+   **Текущий следующий шаг:** проверить terminal explicit stop текущего запроса,
+   затем отдельный explicit Add и первый Store/приём/A↔B text без reset.
+   Stop не доказывает non-delivery/recall и не remint старого intent.
    Foreground network work и background verify используют одну существующую
    process queue; local history остаётся вне неё. QA-only diagnostics ограничены
    closed category/check/static method/IL, без произвольного exception text/IDs/
@@ -82,32 +89,50 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    `contact-stop-maui-smoke-01`); это
    source evidence, не installed stop или contact delivery. Final full остаются.
 
-   APK13/install13 и Windows build09 сохранили аккаунты. Android AddContact08
-   показал actual retry choice без dispatch. StopContact01 → independent
-   Inspect52 подтвердил terminal «повторы остановлены», без account reset.
-   Отдельный AddContact09 создал новый intent, но завершён `ProtectedState /
-   DeepIdV2PermanentContactResolveVerifier.RequireTime / IL118` (Inspect55),
-   без contactRequestStored; его original сохраняется, не remint. Во время
-   работы sampled QA CPU96%, actual SDK Debug evaluation: оба interpreter
-   flags=true, Optimize=false. Optimized-JIT source profile ограничен Android
-   HTTPS QA, сохраняет Debug/isolation/trust/Release guards и исходные временные
-   окна. Evaluation=false/false/true; actual MSBuild guard допускает профиль и
-   отклоняет три override cases (native0/1/1/1 как ожидалось). Clean177 прошёл
-   (`optimized-jit-clean-02`), текущий MAUI Smoke119 также прошёл0fail/skip/native0
-   (`optimized-jit-maui-smoke-01`). APK14/install14 + Windows build10 запущены;
-   retained intent восстановлен AddContact10, exact retry11 завершён UI
-   protected-state-rejected (Inspect59), без Store. Приватный run-as log недоступен;
-   sandbox не обходится. Новые QA события используют только bounded code metadata
-   в exact-process/tag logcat. Permanent time guard разделён на шесть фиксированных
-   причин с тем же predicate/type/windows: Protocol focused7 (4802-boundary grid),
-   MAUI Clean183 прошли0fail/skip/native0 (`permanent-time-guard-focused-01`,
-   `permanent-guard-logcat-clean-01`). Новый APK/guard observation ещё обязательны;
-   прежний Smoke119 не квалифицирует новые inputs.
-   Новый command очищает прошлый success status до await. Supported current-dev
-   Verify: Registry ready/три ONION capabilities, не delivery. Windows build07
-   read OutcomeUnknown и прежние Android FAIL сохранены; bounded NetworkFailure
-   observer не меняет original exceptions, scheduling или authority. Current
-   final full и E2E acceptance остаются обязательными.
+   Первый intent остановлен через actual Stop01/Inspect52. Следующий original
+   сохранён: exact retry13 завершён `XurWindow / RequireCurrentIssuer / IL87`,
+   без Store. Cold Add14/Contacts20 восстановил его retry choice без dispatch.
+   Stop03 на APK18 доказал отдельный `ArithmeticOverflow /
+   StopInitialContactIntentAsync / IL4274`. Shared `cb7893c` проецирует checked elapsed, затем checked Unix
+   result, вместо сложения абсолютного monotonic counter. Focused13 прошёл:
+   десять pure boundary cases и три actual native/SQLCipher cold-reopen cases
+   (`pre-session-stop-time-01`). Matching APK19/install19 сохранил account и
+   original; Stop04 -> independent Inspect75 подтвердил stopped retries без
+   ошибки и без StopRetry control. Только последующий отдельный Add16 создал
+   новый intent: он завершён network-closure read `Io / FetchCurrentAsync / IL453`
+   на exhausted eight429 attempts, не Store. Original не заменяется на retry.
+   Registry candidate даёт один bounded public waiter рядом с прежним issuer
+   waiter, при одном active frame/operation и том же30s whole-operation budget.
+   Focused15 прошёл0fail/skip/native0 (`public-read-admission-focused-01`);
+   matching current-dev Build/Up выполнен, Registry/три ONION verified за14s.
+   Raw mount-hash guard после Up завершился FAIL; исходная before/after equality
+   не доказана. Independent readonly audit подтвердил29 declared pre-existing
+   named volumes и25 scoped binds без reset. Нужен повтор retained-upgrade gate
+   с сохранёнными canonical inputs; первый FAIL не переклассифицировать в PASS.
+   Exact Android Add17 запущен на том же intent, terminal пока не получен;
+   один hierarchy read unavailable, следующий Inspect79 снова видит busy UI.
+   Не повторять send по отсутствующему наблюдению. Final Registry full остаётся.
+
+   QA-only optimized JIT сохраняет Debug/isolation/trust/Release guards и
+   исходные временные окна. Source `f6e57b7`: Clean186/0/0 и Smoke119/0/0/native0
+   (`android-qa-isolation-clean-01`, `android-qa-isolation-smoke-02`). Первый
+   smoke01 прерван с FAIL после смены HEAD во время strict harness; на неподвижном
+   source matching focused1 и smoke02 прошли, старый запуск не квалифицирован.
+   Actual resource evaluation: QA0/defaultDebug1 Google Services items; Release
+   без external config отвергнут прежним guard, не suppressed warning.
+   Supported nonincremental APK18 собран0warnings/errors и запущен на сохранённом
+   профиле (Install18/Inspect69), без ручного cache reset. APK15 JNI startup FAIL
+   и recoverable generated-only cache сохранены. Не ослаблять sandbox/run-as.
+   Новые события — только bounded exact-process/tag code metadata. Protocol
+   permanent guard/public-surface focused15 прошёл с прежними predicates/windows.
+
+   Windows UI возобновлён явно владельцем; build11 сохранил account/recovery и
+   background Verified. Один mailbox refresh завершён `OutcomeUnknown /
+   PrivacyManagedIngressHttpTransport.ForwardAsync / line304 IL1509`; это не
+   noncommit или contact delivery. Current-dev Verify восстановил Registry и
+   три ONION capabilities за43s без reset, но не доказывает device delivery.
+   Более ранние source/device FAIL остаются в linked checkpoint и receipts;
+   ни один старый PASS не квалифицирует изменившиеся Shared inputs.
 
    **Открытые source/lifecycle границы:** dependency-closed retirement смешанной
    closed/adopted predecessor history (сейчас такие ancestors остаются pinned);
