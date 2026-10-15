@@ -33,18 +33,26 @@ production-code owner завершил prekey publication, contact commit, owned
 authenticated empty mailbox read, native0. Это не installed MAUI или доставка
 между устройствами. Production этим пакетом не изменялся.
 
-Подготовлен изолированный MAUI HTTPS diagnostic `4e086b7` / Shared `c2adc50`: явный public dev-CA
-с DER pin и network-scoped custody без TLS bypass или Release opt-in.
-Clean131/0/0 и Smoke119/0/0 прошли. Windows ARM64 publish выполнен для `a551f84`,
-не для последнего среза. Android `dbc6cb2` собран без warnings/errors, подписан,
-установлен с неизменными тремя protected packages; welcome и one-click account
-со stored recovery подтверждены физически, без reset/copy/reveal фразы.
-Сеть этого аккаунта пока отвергается: public-origin-only diagnostic маскировал
-TLS rejection. `4e086b7` сохраняет закрытую причину; новый APK ещё проверяется.
-Shared focused7/0/0 покрывает closed errors и fail-closed name/root rejection;
-actual same-owner Registry/prekey/contact native stages прошли, но итоговый
+Изолированный MAUI HTTPS diagnostic `020496d` / Shared `c2adc50` собран для
+Windows ARM64 и Android ARM64. Явный public dev-CA с DER pin, exact-host CRL
+policy и network-scoped custody не включают TLS bypass или Release opt-in.
+Android обновлён без reset, три protected packages не изменились; сохранённые
+аккаунт и recovery повторно наблюдались без copy/reveal фразы. Новый Windows
+QA-аккаунт создан через UI после подтверждения, рабочий экран и stored recovery
+наблюдались. Оба клиента прошли первоначальную TLS/ADH1-history границу и
+остановились на `ContactPublication / OnionCompletionUnknown`. В закрытых логах
+current-dev видны backend `http-rate-limited`/`http-unavailable` и peer504;
+точное соответствие отдельному клиентскому запросу не установлено. Не считать
+неизвестный исход отсутствием commit; сохранять original intent, аккаунты и floors.
+Clean133/0/0 прошёл. Smoke118/1/0: runner-binding scenario упал; отдельный повтор
+того же теста на стабильном HEAD прошёл1/0/0. Причина первого FAIL не доказана,
+полный повтор ещё не квалифицирован. Receipts: MAUI
+`artifacts/s05-local-device-20261015/{android-build-05,android-install-05,android-network-prep-04,android-inspect-10,windows-build-02,authority-bootstrap-tests-01,authority-bootstrap-smoke-01,runner-binding-focused-01}`.
+Shared focused7/0/0 покрывает closed TLS errors и fail-closed name/root rejection.
+Отдельный same-owner CLI прошёл Registry/prekey/contact stages, но итоговый
 OwnedGrantNodeRead получил remote-outcome-unknown/native1. Это не полный runtime
-или S05/S06/device messaging acceptance. [Конфигурация](../deep-client-maui/docs/ARCHITECTURE.md).
+или S05/S06 acceptance: physical contacts/text/files/groups остаются0/4.
+[Конфигурация](../deep-client-maui/docs/ARCHITECTURE.md).
 
 Повтор того же владельца на view58 сохранил byte-identical prekey receipt pair,
 но contact renewal отклонён exact-PMT predicate в `RequirePredecessorBindings`.
@@ -107,6 +115,17 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    Connected candidate: Protocol `e822814`, Shared `92648b3`, Registry `8a6a95c`,
    Node `eaa0278`, DevOps `4550ea4`. Final focused Shared26/0/0 повторён после
    диагностического изменения; полный qualification не заявлен.
+   Физический Android `020496d` после первого unknown получил при повторном
+   открытии `Publication request is not exact current owned DID2 lineage`.
+   Read-only SQL current-dev: publication6/completed6/pending0 и
+   route7/completed7/pending0; эти агрегаты не устанавливают принадлежность
+   конкретному клиенту. Нужно закрыть phase5 lost-response read-back completed
+   original winner: текущий XPL-путь начинается с уже сохранённого XPU/phase6 и
+   не восстанавливает отсутствующий ответ. Read-back не должен выдавать новую
+   публикацию, освобождать fence, изменять nonce/request или принимать expired
+   request как current mutation. Registry `160d56a` добавляет только bounded
+   payload-free route-issuer phase diagnostics; focused HTTP24/0/0, не исправление
+   восстановления. Сохранённые аккаунты не сбрасывать ради успешного прогона.
 3. **Operational ceremony после активации roles.** Root/witness/role/traffic/TLS
    rotation, автоматический head/view/key lifecycle и предупреждение offline-policy
    expiry. Pre-mailbox Prepare/Apply отказывают на enabled contour: нужен supported
