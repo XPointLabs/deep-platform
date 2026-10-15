@@ -170,6 +170,11 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    `7199f67` добавляет guarded HTTPS Contacts/Accept/Text phases без изменения
    compiled app; Clean135/0/0/native0, selected security5/0 findings. Старый APK
    допустим только через exact ancestor/changed-path guard, не как новый build.
+   Smoke119/0/0/native0 на стабильном checkpoint завершён; исходный старый
+   runner-binding FAIL сохранён. После cold-reopen TransportIo один serial
+   same-account Verify05 завершён verified-publication (Inspect14), без reset
+   или изменения APK/runtime. Причина первого IO не доказана; это bounded
+   recovery observation, не доказательство стабильной сети/peer delivery.
    Предыдущие DR-0124 Android phase5 unknown и closed `Winner/winner-missing` сохранены в
    [contact checkpoint](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
    Агрегаты publication6/completed6/pending0 не устанавливают принадлежность
