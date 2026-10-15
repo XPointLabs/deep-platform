@@ -19,7 +19,7 @@
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
 Installed diagnostic source: Protocol `0f295cd`, Shared `23fbca3`, MAUI Windows /
-Android `e3e38fc`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
+Android `d429322`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Source/runtime evidence:
@@ -66,9 +66,9 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    `RequireCurrentIssuer / XurWindow` (IL104), без contactRequestStored. Это
    доказанный отказ полного authenticated time window XUR, не доказательство
    конкретной стороны interval и не повод ослаблять guard. Шестого send нет.
-   **Текущий следующий шаг:** завершить explicit stop старого contact intent
-   через существующий owned producer, затем отдельное создание нового запроса
-   и явное принятие / A↔B text без reset. Stop не доказывает non-delivery/recall.
+   **Текущий следующий шаг:** optimized-JIT Android comparison на том же новом
+   сохранённом intent, затем явное принятие / A↔B text без reset. Старый запрос
+   уже остановлен; stop не доказывает non-delivery/recall.
    Foreground network work и background verify используют одну существующую
    process queue; local history остаётся вне неё. QA-only diagnostics ограничены
    closed category/check/static method/IL, без произвольного exception text/IDs/
@@ -82,23 +82,24 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    `contact-stop-maui-smoke-01`); это
    source evidence, не installed stop или contact delivery. Final full остаются.
 
-   Matched APK11/install11 и Windows build07 сохранили аккаунты; оба достигали
-   Verified, но current Windows read завершён `OutcomeUnknown` на ingress,
-   а Android UI AddContact06 отменён ещё в GetAccounts до transport dispatch
-   при потере фоновой проверки. Stop ещё не выполнен. Последующий MAUI fix
-   выносит local discovery за network lane и не выделяет новый intent до её
-   actual ownership/current verification. Clean176 прошёл0fail/skip/native0
-   (`contact-stop-clean-02`, включая occupied-background/offline case).
-   APK12/install12 и Windows build08 запущены с теми же аккаунтами. Android
-   AddContact07 прочитал прежний intent: StopRetry видим, ошибки/Busy нет;
-   текст выбора вне viewport не объявлен observed. Stop пока disabled во время
-   длительного Reconnecting, не выполнен; нового contact dispatch нет.
-   Supported current-dev Verify прошёл: Registry ready/три ONION capabilities,
-   не message/device evidence. Для точного background отказа к существующему
-   bounded QA observer подключён `Did2.NetworkFailure`, с сохранением original
-   exception и всех scheduling/authority checks. Новый APK retest и installed
-   stop обязательны. Smoke119 не квалифицирует изменённые inputs. Никаких
-   account reset или original contact redispatch после AddContact05 не было.
+   APK13/install13 и Windows build09 сохранили аккаунты. Android AddContact08
+   показал actual retry choice без dispatch. StopContact01 → independent
+   Inspect52 подтвердил terminal «повторы остановлены», без account reset.
+   Отдельный AddContact09 создал новый intent, но завершён `ProtectedState /
+   DeepIdV2PermanentContactResolveVerifier.RequireTime / IL118` (Inspect55),
+   без contactRequestStored; его original сохраняется, не remint. Во время
+   работы sampled QA CPU96%, actual SDK Debug evaluation: оба interpreter
+   flags=true, Optimize=false. Optimized-JIT source profile ограничен Android
+   HTTPS QA, сохраняет Debug/isolation/trust/Release guards и исходные временные
+   окна. Evaluation=false/false/true; actual MSBuild guard допускает профиль и
+   отклоняет три override cases (native0/1/1/1 как ожидалось). Clean177 прошёл
+   (`optimized-jit-clean-02`), текущий MAUI Smoke119 также прошёл0fail/skip/native0
+   (`optimized-jit-maui-smoke-01`); physical speed/correctness comparison ещё нужен.
+   Новый command очищает прошлый success status до await. Supported current-dev
+   Verify: Registry ready/три ONION capabilities, не delivery. Windows build07
+   read OutcomeUnknown и прежние Android FAIL сохранены; bounded NetworkFailure
+   observer не меняет original exceptions, scheduling или authority. Current
+   final full и E2E acceptance остаются обязательными.
 
    **Открытые source/lifecycle границы:** dependency-closed retirement смешанной
    closed/adopted predecessor history (сейчас такие ancestors остаются pinned);
