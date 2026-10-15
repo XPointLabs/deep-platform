@@ -137,8 +137,30 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    прошли проверки. Сохранены ранние FAIL: fixture re-entered held account lease,
    затем два несовпадения точных типов rejection и xUnit expected/actual analyzer.
    Они исправлены в тестовой композиции/ожиданиях без ослабления guards.
-   Runtime rebuild и повтор сохранённых физических профилей ещё обязательны;
-   focused PASS не означает S05/S06/full source qualification или delivery.
+   Retained runtime02 завершил Build/Up/Verify/CacheWindowsDevCrl native0;
+   девять сервисов healthy, ключи/floors/volumes сохранены. Предыдущий runtime01
+   остановлен private-ingress preflight с CryptographicException/unclassified;
+   повтор прошёл, но причина первого отказа не доказана и FAIL не удалён.
+   APK06 установлен без reset и с unchanged protected packages; аккаунт/recovery
+   сохранены, повтор ContactPublication всё ещё получил OnionCompletionUnknown.
+   Windows build03 запущен с тем же профилем; проверка получила ProofRateLimited.
+   Это реальные отказы, не доказательство noncommit или доставки. Registry
+   `c177549` добавляет только bounded reader phase/category; focused3/0/0
+   с PostgreSQL прошёл. Runtime03 Build/Up/Verify/CacheWindowsDevCrl native0,
+   recovery59s. Проверки не ослаблены, новых аккаунтов не требуется. Focused PASS не означает
+   S05/S06/full source qualification или delivery.
+   Registry `32c390a` различает closed winner-missing/kind/directory/digest;
+   focused3/0/0 и security4files/0 прошли. Runtime04 Build/Up/Verify/CRL native0,
+   recovery30s. Android после cold restart сохранил профиль/recovery и снова
+   получил ContactPublication/OnionCompletionUnknown; в последовательном прогоне
+   наблюдался Winner/winner-missing. Публичные диагностические строки не содержат
+   request identity: это не криптографическое доказательство noncommit. Агрегаты
+   publication6/completed6/pending0 не изменились. DR-0124 не выдаёт XPU для
+   отсутствующей записи. Следующий связанный срез обязан закрыть phase5
+   missing/pending/completed под новой current owner authority, без backdating,
+   сброса аккаунта, ослабления expiry или освобождения permanent fence. Прежде
+   реализации требуется согласованный lifecycle contract, не повтор того же UI
+   запроса. Windows UI остановлен пользователем Esc, повторных действий не было.
    Candidate: Protocol `f244168`, Shared `317a323`, Registry `2613605`, Node
    `8360744`, MAUI `95ef514`, DevOps `efcebd5`. Production этим срезом не изменён.
 3. **Operational ceremony после активации roles.** Root/witness/role/traffic/TLS
