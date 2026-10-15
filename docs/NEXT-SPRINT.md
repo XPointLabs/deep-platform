@@ -18,8 +18,8 @@
 не получена.** Diagnostic device runs внутри S05 не открывают параллельные этапы.
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
-Installed diagnostic source: Protocol `0f295cd`, Shared `72a86c5`, MAUI Windows
-`845a666` / Android `31fe23b`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
+Installed diagnostic source: Protocol `0f295cd`, Shared `23fbca3`, MAUI Windows /
+Android `6651f20`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Source/runtime evidence:
@@ -81,6 +81,17 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    прошли0fail/0skip/native0 (`contact-stop-projection-01`, `contact-stop-clean-01`,
    `contact-stop-maui-smoke-01`); это
    source evidence, не installed stop или contact delivery. Final full остаются.
+
+   Matched APK11/install11 и Windows build07 сохранили аккаунты; оба достигали
+   Verified, но current Windows read завершён `OutcomeUnknown` на ingress,
+   а Android UI AddContact06 отменён ещё в GetAccounts до transport dispatch
+   при потере фоновой проверки. Stop ещё не выполнен. Последующий MAUI fix
+   выносит local discovery за network lane и не выделяет новый intent до её
+   actual ownership/current verification. Clean176 прошёл0fail/skip/native0
+   (`contact-stop-clean-02`, включая occupied-background/offline case).
+   APK12/новый matched Windows и installed stop ещё обязательны; предыдущий
+   Smoke119 не квалифицирует изменённые inputs. Никаких account reset или
+   оригинальных contact redispatch после AddContact05 не было.
 
    **Открытые source/lifecycle границы:** dependency-closed retirement смешанной
    closed/adopted predecessor history (сейчас такие ancestors остаются pinned);
