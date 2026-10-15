@@ -211,6 +211,19 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    Не удлинять120s, не освобождать originals/floors и не вводить reset как recovery.
    Причина ошибки Android этим Windows trace не доказана. Physical peer exchange
    остаётся0/4; текст, файлы и группы не переданы.
+   Shared source candidate теперь вызывает тот же DR-0084 closure из ordinary
+   new-work maintenance под уже удержанной lease; active read/ACK bypass сохранён.
+   Original request/holder/policy/route/possible-grant ceiling не меняются.
+   Focused6/0/0 и affected regression48/0/0/native0 проверяют sole expiry refusal,
+   complete epoch exclusion → retirement → original-path read, faults и cold reopen.
+   Receipts: Shared `artifacts/s05-current-publication-20261015/`
+   `pending-maintenance-focused-01`, `pending-maintenance-regression-01`.
+   Security4/0 findings и25 local doc links прошли. Journal/wire/expiry/limits
+   не менялись; canonical full и matched device retest ещё требуются. Это не
+   разрешение reissue по closed outcome. Отдельная проверяемая гипотеза issuer:
+   grant ScopeHash содержит hash current network-history; retry того же XMG2
+   через новый view может получить immutable-scope conflict. Нужен actual Registry
+   regression, не удаление старых reservations или ослабление scope guard.
    Предыдущие DR-0124 Android phase5 unknown и closed `Winner/winner-missing` сохранены в
    [contact checkpoint](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
    Агрегаты publication6/completed6/pending0 не устанавливают принадлежность
