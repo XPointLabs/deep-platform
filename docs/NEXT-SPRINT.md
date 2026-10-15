@@ -64,10 +64,18 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    не contact delivery. Android build07/install07 сохранил account/recovery и
    три protected packages; Verify08/Inspect26 — verified-publication/Verified,
    но mailbox refresh02/Inspect28 — terminal incomplete-redacted, затем фоновый
-   reconnect Rejected и Contacts.Add disabled. Второй contact send не исполнялся.
+   reconnect Rejected и Contacts.Add disabled. Verify09/Inspect30 восстановил
+   verified-publication/Verified; один AddContact02 retry того же intent завершён
+   operation-cancelled (Inspect32), без contactRequestStored. Третьего send нет.
    **Текущий следующий шаг:** локализовать этот Android отказ, восстановить тот же
    logical contact intent и проверить явное принятие / A↔B text без reset.
    Windows trace не доказывает Android причину; состояние кнопки не delivery.
+   MAUI-only candidate объединяет foreground network work и background verify
+   существующей process queue; local history остаётся вне неё. Source scheduling
+   tests не доказывают точную Android причину; новый matched device retest обязателен.
+   Focused35 и полный MAUI Clean150 прошли без FAIL/skip/native errors;
+   security17/0 findings, strict UTF-8/local links6/97. Receipts: MAUI тот же
+   prefix `foreground-pipeline-focused-02`, `foreground-pipeline-clean-01`.
 
    **Открытые source/lifecycle границы:** dependency-closed retirement смешанной
    closed/adopted predecessor history (сейчас такие ancestors остаются pinned);
