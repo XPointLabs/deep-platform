@@ -126,6 +126,21 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    request как current mutation. Registry `160d56a` добавляет только bounded
    payload-free route-issuer phase diagnostics; focused HTTP24/0/0, не исправление
    восстановления. Сохранённые аккаунты не сбрасывать ради успешного прогона.
+   [DR-0124](survival-program/decisions/DR-0124-publication-winner-readback.md)
+   фиксирует отдельный current owner-authenticated target4 READ completed winner.
+   Связанный source-срез Protocol/Shared/Registry/gateway реализован без journal
+   generation или смены исходных bytes. Focused Shared5/0/0 включает encrypted
+   cold reopen, nonce/response tampering, lost read reply, исходные scalars и
+   phase5→6→7. Registry3/0/0 с disposable PostgreSQL включает настоящий private
+   HTTP read-back, unchanged permanent count/signers и pending/corrupt scope
+   rejection. Node23/0/0 и Protocol19/0/0 прошли; registry/schema и документация
+   прошли проверки. Сохранены ранние FAIL: fixture re-entered held account lease,
+   затем два несовпадения точных типов rejection и xUnit expected/actual analyzer.
+   Они исправлены в тестовой композиции/ожиданиях без ослабления guards.
+   Runtime rebuild и повтор сохранённых физических профилей ещё обязательны;
+   focused PASS не означает S05/S06/full source qualification или delivery.
+   Candidate: Protocol `f244168`, Shared `317a323`, Registry `2613605`, Node
+   `8360744`, MAUI `95ef514`, DevOps `efcebd5`. Production этим срезом не изменён.
 3. **Operational ceremony после активации roles.** Root/witness/role/traffic/TLS
    rotation, автоматический head/view/key lifecycle и предупреждение offline-policy
    expiry. Pre-mailbox Prepare/Apply отказывают на enabled contour: нужен supported

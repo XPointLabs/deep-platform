@@ -35,6 +35,14 @@ contact/mailbox records and current grant profile. It allocates no new wire,
 suite, ranking algorithm or journal generation. Matched current-only source,
 issuer/node/peer activation and retained-account/device qualification remain open.
 
+[DR-0124](../survival-program/decisions/DR-0124-publication-winner-readback.md)
+freezes target4 PublicationWinnerRead for lost phase5 responses. This is a fresh
+publisher-authenticated read of a completed original winner, not issuance,
+mutation permission or fence settlement. Exact sizes/domains/APIs belong to
+[its machine registry](../survival-program/releases/v3.0.0/specs/contact-publication-winner-read-v1.registry.json).
+The existing journal format and original requests remain unchanged; connected
+and physical activation require separate evidence.
+
 [DR-0123](../survival-program/decisions/DR-0123-retained-publication-intent.md)
 adds separate closed owner/issuer original-publication-intent verification.
 Those read-only facts cannot release an issuer fence, prove noncommit or

@@ -1,0 +1,30 @@
+{
+  "package": "CONTACT-PUBLICATION-WINNER-READ-01",
+  "decision": "DR-0124",
+  "runtimeActivation": false,
+  "owner": "deep-client-shared/tests/Deep.Client.Shared.Production.Tests/DeepIdV2ContactPathAuthoritySourceTests.PublicationWinnerRead.cs",
+  "positive": "Did2PublicationWinnerRead_ExpiredLostReplyColdReopenKeepsOriginalIntent",
+  "hostile": [
+    "fresh-nonce-substitution",
+    "original-response-substitution",
+    "lost-read-response",
+    "publisher-signature-substitution",
+    "unknown-version",
+    "reserved",
+    "truncated",
+    "trailing",
+    "hostile-size",
+    "wrong-network",
+    "wrong-original-request-hash",
+    "future-or-expired-current-read",
+    "clock-discontinuity",
+    "cancelled"
+  ],
+  "registryOwner": "deep-registry-api/tests/Deep.Registry.Api.Tests/DeepIdV2RouteThresholdIssuerTests.cs",
+  "registryPositive": "PublicationWinnerReadPrivateHttpRecoversExpiredPhase5WithoutIssuingAgain",
+  "notEvidence": [
+    "compile-only is not activation",
+    "in-process replica signatures are not live two-store evidence",
+    "aggregate journal counts do not identify an owner"
+  ]
+}

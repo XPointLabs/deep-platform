@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DR-0124 contact-publication-winner-read-v1.registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "package",
+    "decision",
+    "status",
+    "runtimeActivation",
+    "coordinationTarget",
+    "outerOnionOperation",
+    "placementRequestKind",
+    "placementServiceClass",
+    "suite",
+    "requestVersion",
+    "requestBytes",
+    "unsignedRequestBytes",
+    "requestHeaderBytes",
+    "requestFieldBytes",
+    "maximumRequestSeconds",
+    "requestSigningDomain",
+    "gatewayShardDomain",
+    "originalRequestHashDomain",
+    "originalRequestHashInput",
+    "responseVersion",
+    "responseOverheadBytes",
+    "responseMinimumBytes",
+    "responseMaximumBytes",
+    "originalResponseMinimumBytes",
+    "originalResponseMaximumBytes",
+    "endpoint",
+    "requestMediaType",
+    "responseMediaType",
+    "publicApis",
+    "privateJournalChange",
+    "readOnly",
+    "missingOrPending",
+    "activation"
+  ],
+  "properties": {
+    "package": {
+      "const": "CONTACT-PUBLICATION-WINNER-READ-01"
+    },
+    "decision": {
+      "const": "DR-0124"
+    },
+    "status": {
+      "const": "FROZEN_TARGET_NOT_ACTIVE"
+    },
+    "runtimeActivation": {
+      "const": false
+    },
+    "coordinationTarget": {
+      "const": 4
+    },
+    "outerOnionOperation": {
+      "const": 4
+    },
+    "placementRequestKind": {
+      "const": 8
+    },
+    "placementServiceClass": {
+      "const": 1
+    },
+    "suite": {
+      "const": 769
+    },
+    "requestVersion": {
+      "const": 1
+    },
+    "requestBytes": {
+      "const": 304
+    },
+    "unsignedRequestBytes": {
+      "const": 240
+    },
+    "requestHeaderBytes": {
+      "const": 8
+    },
+    "requestFieldBytes": {
+      "const": [
+        16,
+        32,
+        32,
+        32,
+        8,
+        32,
+        32,
+        32,
+        8,
+        8,
+        64
+      ]
+    },
+    "maximumRequestSeconds": {
+      "const": 120
+    },
+    "requestSigningDomain": {
+      "const": "Deep/ContactResolver/V2/publication-winner-read-request"
+    },
+    "gatewayShardDomain": {
+      "const": "Deep/ContactResolver/V2/publication-winner-read-gateway"
+    },
+    "originalRequestHashDomain": {
+      "const": "Deep/ContactResolver/V2/publication-winner-original-request"
+    },
+    "originalRequestHashInput": {
+      "const": "exact complete signed canonical V4 publication-authority request; not XPU hash"
+    },
+    "responseVersion": {
+      "const": 1
+    },
+    "responseOverheadBytes": {
+      "const": 60
+    },
+    "responseMinimumBytes": {
+      "const": 14742
+    },
+    "responseMaximumBytes": {
+      "const": 93152
+    },
+    "originalResponseMinimumBytes": {
+      "const": 14682
+    },
+    "originalResponseMaximumBytes": {
+      "const": 93092
+    },
+    "endpoint": {
+      "const": "/api/v2/contact-publication-winner"
+    },
+    "requestMediaType": {
+      "const": "application/vnd.deep.contact-publication-winner-request.v1+octet-stream"
+    },
+    "responseMediaType": {
+      "const": "application/vnd.deep.contact-publication-winner-response.v1+octet-stream"
+    },
+    "publicApis": {
+      "const": [
+        "PublicationWinnerReadWireRequest",
+        "DeepIdV2PublicationWinnerReadWireCodec",
+        "DeepIdV2PublicationWinnerReadAuthor.AuthorRequestAsync",
+        "DeepIdV2PublicationWinnerReadAuthor.VerifyIssuerRequestAsync",
+        "DeepIdV2PublicationWinnerReadAuthor.VerifyOwnedResponseAsync"
+      ]
+    },
+    "privateJournalChange": {
+      "const": false
+    },
+    "readOnly": {
+      "const": true
+    },
+    "missingOrPending": {
+      "const": "REJECT_WITHOUT_SIGNING_RESERVATION_OR_REPAIR"
+    },
+    "activation": {
+      "const": [
+        "exact original request preserved",
+        "fresh publisher proof/signature",
+        "permanent completed winner",
+        "no signer callback or count change",
+        "independent owner intent verification",
+        "phase5-to-phase6 atomic response adoption",
+        "existing XPL and both XPO receipts",
+        "retained Windows/Android"
+      ]
+    }
+  }
+}

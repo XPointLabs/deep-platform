@@ -658,6 +658,15 @@ reusable XPU is not the connected target's second mutation path. The separate
 one-time genesis operation retains its strict current window. No journal reset,
 generation bump or compatibility reader is authorized.
 
+For a lost issuer response in phase5, before the original XPU is known,
+[DR-0124](../survival-program/decisions/DR-0124-publication-winner-readback.md)
+defines an explicit current publisher-authenticated read of an already completed
+original winner. It cannot call issuance/signers, release a fence, repair pending
+state or prove noncommit. The owner independently verifies original intent and
+CAS/readbacks the existing response slot before entering the DR-0123 lease path.
+Neither an expired original request nor a read response grants mutation authority;
+original operation/request/nonce/ciphertext and the journal format remain unchanged.
+
 The DID2 descriptor bootstrap and current permanent-read boundary follow
 [DR-0041](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md).
 With the reusable successors from
