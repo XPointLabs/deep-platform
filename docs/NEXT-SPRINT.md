@@ -19,7 +19,7 @@
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
 Installed diagnostic source: Protocol `0f295cd`, Shared `23fbca3`, MAUI Windows /
-Android `d429322`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
+Android `73ee487`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Source/runtime evidence:
@@ -94,7 +94,15 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    окна. Evaluation=false/false/true; actual MSBuild guard допускает профиль и
    отклоняет три override cases (native0/1/1/1 как ожидалось). Clean177 прошёл
    (`optimized-jit-clean-02`), текущий MAUI Smoke119 также прошёл0fail/skip/native0
-   (`optimized-jit-maui-smoke-01`); physical speed/correctness comparison ещё нужен.
+   (`optimized-jit-maui-smoke-01`). APK14/install14 + Windows build10 запущены;
+   retained intent восстановлен AddContact10, exact retry11 завершён UI
+   protected-state-rejected (Inspect59), без Store. Приватный run-as log недоступен;
+   sandbox не обходится. Новые QA события используют только bounded code metadata
+   в exact-process/tag logcat. Permanent time guard разделён на шесть фиксированных
+   причин с тем же predicate/type/windows: Protocol focused7 (4802-boundary grid),
+   MAUI Clean183 прошли0fail/skip/native0 (`permanent-time-guard-focused-01`,
+   `permanent-guard-logcat-clean-01`). Новый APK/guard observation ещё обязательны;
+   прежний Smoke119 не квалифицирует новые inputs.
    Новый command очищает прошлый success status до await. Supported current-dev
    Verify: Registry ready/три ONION capabilities, не delivery. Windows build07
    read OutcomeUnknown и прежние Android FAIL сохранены; bounded NetworkFailure
