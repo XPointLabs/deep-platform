@@ -80,19 +80,19 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    записи. Connected candidate теперь проводит свежий XPL1 lease через owned
    client → private target3 issuer → node/peer; standalone reusable XPU отвергается.
    Исходные XPU/request/op/hash и journal slots не меняются. Focused Shared26/0/0,
-   Node57/0/0 и Registry24/0/0 (с реальной временной PostgreSQL) прошли; Registry
+   Node124/0/0 и Registry24/0/0 (с реальной временной PostgreSQL) прошли; Registry
    включает истёкший phase6, потерю ответа и exact adoption без новой reservation.
    Protocol focused138/0/0 и operator static26/0/0 прошли. Реальный same-owner
    current-dev runtime05 завершился native0: byte-identical prekey pair,
    committed contact generation1, current owned grant и authenticated empty page.
    Runtime04 сохранил первоначальный unknown grant outcome; runtime05 восстановил
    тот же phase7 без новой публикации. Внешний DID2 dispatcher также переведён на
-   XPL; прежний raw-XPU parser давал MalformedRequest до мутации. Node57 включает
+   XPL; прежний raw-XPU parser давал MalformedRequest до мутации. Node124 включает
    полную композицию двух stores и authenticated peer HTTP/TLS, не только facade.
    Это не S05/full qualification, S06 или физическая доставка. Reserved-without-winner и expired inner
    resources остаются отдельными settlement/handover, не «решены» новым lease.
    Connected candidate: Protocol `e822814`, Shared `92648b3`, Registry `8a6a95c`,
-   Node `a61fca1`, DevOps `4550ea4`. Final focused Shared26/0/0 повторён после
+   Node `eaa0278`, DevOps `4550ea4`. Final focused Shared26/0/0 повторён после
    диагностического изменения; полный qualification не заявлен.
 3. **Operational ceremony после активации roles.** Root/witness/role/traffic/TLS
    rotation, автоматический head/view/key lifecycle и предупреждение offline-policy
