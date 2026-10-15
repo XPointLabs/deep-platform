@@ -194,8 +194,23 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    MAUI `661d318` исправляет дополнительную source-ошибку lifecycle:
    Stopped/Resumed вместо отмены на каждом Deactivated; activation idempotent,
    в диагностике виден только closed reconnect enum. Clean142/0/0/native0,
-   selected source security9/0 findings; matched builds/retest ещё требуются.
-   Physical peer exchange остаётся0/4; запрос контакта и текст не отправлены.
+   selected source security9/0 findings. Matched Windows build03 и signed Android
+   build04/install04 теперь запущены на сохранённых профилях; Smoke119/0/0/native0.
+   Android Verify07/Inspect20 завершён verified-publication/Verified; peer input03
+   и DismissKeyboard03 сохранили Add enabled. Один AddContact исполнен, Inspect22
+   завершён messagingErrorPresent без contactRequestStored; исходный unknown
+   request не повторён и не сброшен. Windows mailbox refresh дважды завершён
+   ошибкой; второй защищённый отказ локализован bounded QA-process exception
+   trace: RequireRetainedRequestWindow → RestoreRetainedReadRequestAsync → owned
+   retained grant acquisition → SynchronizeOwnMailboxAsync. Это отказ current
+   window pending Retrieve, не доказательство bad signature или пустого mailbox.
+   **Следующий узкий slice:** проверить композицию существующего DR-0084
+   closed-unresolved/late-result/namespace settlement в business path. Internal
+   CloseExpiredMailboxAcquisitionsAsync существует, ordinary namespace maintenance
+   его не вызывает; простое закрытие не даёт non-issuance или права reissue/retire.
+   Не удлинять120s, не освобождать originals/floors и не вводить reset как recovery.
+   Причина ошибки Android этим Windows trace не доказана. Physical peer exchange
+   остаётся0/4; текст, файлы и группы не переданы.
    Предыдущие DR-0124 Android phase5 unknown и closed `Winner/winner-missing` сохранены в
    [contact checkpoint](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
    Агрегаты publication6/completed6/pending0 не устанавливают принадлежность
