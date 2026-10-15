@@ -175,6 +175,15 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    same-account Verify05 завершён verified-publication (Inspect14), без reset
    или изменения APK/runtime. Причина первого IO не доказана; это bounded
    recovery observation, не доказательство стабильной сети/peer delivery.
+   Следующий actual UX blocker: после verified-publication contact action
+   оставался disabled, Windows показывал offline-history hint. Запрос контакта
+   и сообщение не отправлены. MAUI `4fafe7d` объединяет manual Verify/contact
+   recheck с единственным reconnect pipeline; periodic refresh сохраняет только
+   advisory UI readiness, а фактические failure/offline/account invalidation
+   снимают её. Все криптографические проверки выполняются заново в операциях;
+   RetryAfter и исходный2m attempt budget не менялись. Clean140/0/0/native0,
+   selected security6/0 findings. Требуются новые matched builds/install и
+   physical recheck; текущий старый APK не квалифицирует compiled correction.
    Предыдущие DR-0124 Android phase5 unknown и closed `Winner/winner-missing` сохранены в
    [contact checkpoint](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
    Агрегаты publication6/completed6/pending0 не устанавливают принадлежность
