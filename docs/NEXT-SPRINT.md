@@ -182,8 +182,20 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    advisory UI readiness, а фактические failure/offline/account invalidation
    снимают её. Все криптографические проверки выполняются заново в операциях;
    RetryAfter и исходный2m attempt budget не менялись. Clean140/0/0/native0,
-   selected security6/0 findings. Требуются новые matched builds/install и
-   physical recheck; текущий старый APK не квалифицирует compiled correction.
+   selected security6/0 findings. Matched Windows build02 и signed Android
+   build03 завершены; Android install02 обновил только HTTPS QA package,
+   сохранил account/recovery и три protected packages. Новый Windows UI Verify
+   завершён verified-publication, тот же public QA address подтверждён;
+   offline-history hint на contact page больше не наблюдался. Android Verify06
+   также завершён verified-publication (Inspect17), но следующий peer input02
+   снова снял readiness до отправки запроса; после DismissKeyboard02 Add остался
+   disabled. Это не delivery и не доказательство точной причины focus/IO.
+   Новый Smoke119/0/0/native0 завершён на стабильном `4fafe7d` checkpoint.
+   MAUI `661d318` исправляет дополнительную source-ошибку lifecycle:
+   Stopped/Resumed вместо отмены на каждом Deactivated; activation idempotent,
+   в диагностике виден только closed reconnect enum. Clean142/0/0/native0,
+   selected source security9/0 findings; matched builds/retest ещё требуются.
+   Physical peer exchange остаётся0/4; запрос контакта и текст не отправлены.
    Предыдущие DR-0124 Android phase5 unknown и closed `Winner/winner-missing` сохранены в
    [contact checkpoint](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
    Агрегаты publication6/completed6/pending0 не устанавливают принадлежность
