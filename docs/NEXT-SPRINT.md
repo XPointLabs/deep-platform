@@ -19,7 +19,7 @@
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
 Installed diagnostic source: Protocol `0f295cd`, Shared `23fbca3`, MAUI Windows /
-Android `6651f20`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
+Android `e3e38fc`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Source/runtime evidence:
@@ -89,9 +89,16 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    выносит local discovery за network lane и не выделяет новый intent до её
    actual ownership/current verification. Clean176 прошёл0fail/skip/native0
    (`contact-stop-clean-02`, включая occupied-background/offline case).
-   APK12/новый matched Windows и installed stop ещё обязательны; предыдущий
-   Smoke119 не квалифицирует изменённые inputs. Никаких account reset или
-   оригинальных contact redispatch после AddContact05 не было.
+   APK12/install12 и Windows build08 запущены с теми же аккаунтами. Android
+   AddContact07 прочитал прежний intent: StopRetry видим, ошибки/Busy нет;
+   текст выбора вне viewport не объявлен observed. Stop пока disabled во время
+   длительного Reconnecting, не выполнен; нового contact dispatch нет.
+   Supported current-dev Verify прошёл: Registry ready/три ONION capabilities,
+   не message/device evidence. Для точного background отказа к существующему
+   bounded QA observer подключён `Did2.NetworkFailure`, с сохранением original
+   exception и всех scheduling/authority checks. Новый APK retest и installed
+   stop обязательны. Smoke119 не квалифицирует изменённые inputs. Никаких
+   account reset или original contact redispatch после AddContact05 не было.
 
    **Открытые source/lifecycle границы:** dependency-closed retirement смешанной
    closed/adopted predecessor history (сейчас такие ancestors остаются pinned);
