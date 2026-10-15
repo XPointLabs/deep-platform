@@ -84,6 +84,11 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    без exception text/IDs/paths; Clean160 и Windows compiler-check0 warnings/errors
    прошли (`business-diagnostics-clean-02`, `business-diagnostics-windows-compile-01`).
    Это не installed/release qualification. Не менять crypto/expiry по догадке.
+   Android metadata APK09 локализовал AddContact04/Inspect37 protected-state
+   rejection в `RequireContactHelloEndpointBindingsAsync` при восстановлении
+   initial draft. PDB line недоступна; уточняется closed guard/IL offset, без
+   изменения разрешающих проверок. Пятого send нет. Отдельный Windows read снова
+   завершён пустой синхронизацией; это не доказательство remote noncommit.
 
    **Открытые source/lifecycle границы:** dependency-closed retirement смешанной
    closed/adopted predecessor history (сейчас такие ancestors остаются pinned);
