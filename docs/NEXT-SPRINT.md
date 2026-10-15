@@ -76,6 +76,14 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    Focused35 и полный MAUI Clean150 прошли без FAIL/skip/native errors;
    security17/0 findings, strict UTF-8/local links6/97. Receipts: MAUI тот же
    prefix `foreground-pipeline-focused-02`, `foreground-pipeline-clean-01`.
+   Matched Windows build06 снова завершил actual empty mailbox synchronization;
+   Android build08/install08 автоматически достиг Verified. AddContact03 retry
+   того же intent завершён protected-state-rejected (Inspect35), без подтверждения
+   сохранения. Четвёртого send нет. Smoke119 прошёл; точный Android source guard
+   ещё не установлен. QA-only bounded category/method/line observer квалифицируется
+   без exception text/IDs/paths; Clean160 и Windows compiler-check0 warnings/errors
+   прошли (`business-diagnostics-clean-02`, `business-diagnostics-windows-compile-01`).
+   Это не installed/release qualification. Не менять crypto/expiry по догадке.
 
    **Открытые source/lifecycle границы:** dependency-closed retirement смешанной
    closed/adopted predecessor history (сейчас такие ancestors остаются pinned);
