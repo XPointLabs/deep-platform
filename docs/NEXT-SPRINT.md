@@ -114,8 +114,17 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    Source checkpoint: Protocol `3ed77a4`, Shared `e8a1178`, Registry `13678dc`,
    Node `01d86d5`. Selected source security:17/24/12/9/6 файлов,0 findings;
    changed Markdown9/317 local links и public documentation174 checks прошли.
+   Все пять checkpoint refs проверены на GitHub; push verification завершён.
+   Первый новый Protocol full:2297/35/7, build/preflight0, test/qualification1,
+   FullAccepted=false.33 случая отклонены общей retained-read fixture с исходным
+   XRC issuance вне PMT window; ещё один — закрытым signer inventory, не
+   включавшим новый typed current-submission signer. Production guards не
+   изменены; исправленный полный набор этих двух классов прошёл94/0/0.
+   Receipt: Protocol `artifacts/s05-current-publication-20261015/regression-focused-02`.
+   Исходный full FAIL сохранён; повтор полного gate требуется. Оставшийся
+   package FAIL — фактический retired `MAU2` token в assembly, не waiver.
    **Осталось:** package и final full qualification,
-   checkpoint push verification, затем matched retained current-dev и Android/Windows
+   затем matched retained current-dev и Android/Windows
    activation на тех же аккаунтах. Ни новый runtime, ни physical0/4 этим кодом
    ещё не квалифицированы. Expired inner resources и epoch/cohort/device handover
    остаются отдельными lifecycle requirements.

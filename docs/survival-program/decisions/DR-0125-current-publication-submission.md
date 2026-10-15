@@ -147,3 +147,15 @@ bounds, retired targets, callback mutation, signer failure, cancelled/deadline,
 clock rollback and changed proof/head/view/epoch/cohort/resource rejection.
 Actual native source/package gates and same retained Windows/Android profiles
 remain required. Component PASS cannot satisfy S05/S06, delivery or release.
+
+## Exact source-qualification case retirement
+
+The separate lease-request gateway case is replaced by the current-submission
+case. Both verify genuine selected gateway, private peer authentication, exact
+response pairing and wrong-view rejection; the removed target3 is not retained
+as a positive path. Qualification must require the replacement to pass and keep
+all unrelated cases. This declaration does not waive any failure or skip.
+
+```text
+XNode.IntegrationTests.Runtime.ContactCoordinationOnionDispatcherTests.FreshPublicationLeaseUsesCurrentViewGatewayAndAuthenticatedPairedPrivateTarget -> XNode.IntegrationTests.Runtime.ContactCoordinationOnionDispatcherTests.CurrentPublicationUsesCurrentViewGatewayAndAuthenticatedPairedPrivateTarget
+```
