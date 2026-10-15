@@ -33,11 +33,18 @@ production-code owner завершил prekey publication, contact commit, owned
 authenticated empty mailbox read, native0. Это не installed MAUI или доставка
 между устройствами. Production этим пакетом не изменялся.
 
-Подготовлен изолированный MAUI HTTPS diagnostic `a551f84`: явный public dev-CA
+Подготовлен изолированный MAUI HTTPS diagnostic `4e086b7` / Shared `c2adc50`: явный public dev-CA
 с DER pin и network-scoped custody без TLS bypass или Release opt-in.
-Clean124/0/0 и Smoke119/0/0 прошли; Windows ARM64 publish завершён из clean commit.
-Это ещё не installed/device evidence; полный цикл контактов/текста/файлов/групп
-по-прежнему не принят. [Конфигурация](../deep-client-maui/docs/ARCHITECTURE.md).
+Clean131/0/0 и Smoke119/0/0 прошли. Windows ARM64 publish выполнен для `a551f84`,
+не для последнего среза. Android `dbc6cb2` собран без warnings/errors, подписан,
+установлен с неизменными тремя protected packages; welcome и one-click account
+со stored recovery подтверждены физически, без reset/copy/reveal фразы.
+Сеть этого аккаунта пока отвергается: public-origin-only diagnostic маскировал
+TLS rejection. `4e086b7` сохраняет закрытую причину; новый APK ещё проверяется.
+Shared focused7/0/0 покрывает closed errors и fail-closed name/root rejection;
+actual same-owner Registry/prekey/contact native stages прошли, но итоговый
+OwnedGrantNodeRead получил remote-outcome-unknown/native1. Это не полный runtime
+или S05/S06/device messaging acceptance. [Конфигурация](../deep-client-maui/docs/ARCHITECTURE.md).
 
 Повтор того же владельца на view58 сохранил byte-identical prekey receipt pair,
 но contact renewal отклонён exact-PMT predicate в `RequirePredecessorBindings`.
