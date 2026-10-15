@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DR-0125 current publication executable vector obligations",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["package","decision","runtimeActivation","owner","positive","hostile","registryOwner","registryObligations","notEvidence"],
+  "properties": {
+    "package": {"const":"CONTACT-PUBLICATION-CURRENT-01"},
+    "decision": {"const":"DR-0125"},
+    "runtimeActivation": {"const":false},
+    "owner": {"const":"deep-client-shared/tests/Deep.Client.Shared.Production.Tests/DeepIdV2ContactPathAuthoritySourceTests.PublicationCurrent.cs"},
+    "positive": {"const":["initial-current-issuance","never-sent-original-after-expiry","reserved-pending-after-expiry","completed-lost-response","encrypted-cold-reopen-phase5-and-phase6","lost-store-response-exact-phase7"]},
+    "hostile": {"const":["publisher-device-substitution","original-body-or-nonce-substitution","predecessor-substitution","future-or-expired-current-submission","expired-inner-resource","unknown-version","reserved","truncated","trailing","hostile-size","retired-target3-or-target4","callback-input-mutation","signer-failure","cancelled","clock-discontinuity","changed-head-view-epoch-cohort"]},
+    "registryOwner": {"const":"deep-registry-api/tests/Deep.Registry.Api.Tests/DeepIdV2RouteThresholdIssuerTests.cs"},
+    "registryObligations": {"const":["real-postgresql-and-signatures","one-original-reservation-and-approval","actual-current-approval-time-not-original-time","concurrent-current-submissions-one-exact-winner","completed-read-does-not-reissue-XPA","fresh-XPL-remains-required","corrupt-fence-rejects-without-repair"]},
+    "notEvidence": {"const":["metadata is not executable vector evidence","compile-only is not activation","TestServer or synthetic replica receipts are not physical E2E"]}
+  }
+}

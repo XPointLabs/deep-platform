@@ -1,6 +1,9 @@
 # DR-0124 — read back a completed original publication winner
 
-Status: accepted clean-break target; connected/physical activation open
+Status: superseded by [DR-0125](DR-0125-current-publication-submission.md)
+The completed-only reader and its endpoint are retired, not an active fallback.
+The following records the original defect and decision; it does not authorize
+restoring removed APIs or treating missing/pending state as noncommit.
 Date: 2026-10-15
 Decision owner: Mr. X (delegated architecture authority)
 

@@ -1,0 +1,11 @@
+{
+  "package": "CONTACT-PUBLICATION-CURRENT-01",
+  "decision": "DR-0125",
+  "runtimeActivation": false,
+  "owner": "deep-client-shared/tests/Deep.Client.Shared.Production.Tests/DeepIdV2ContactPathAuthoritySourceTests.PublicationCurrent.cs",
+  "positive": ["initial-current-issuance","never-sent-original-after-expiry","reserved-pending-after-expiry","completed-lost-response","encrypted-cold-reopen-phase5-and-phase6","lost-store-response-exact-phase7"],
+  "hostile": ["publisher-device-substitution","original-body-or-nonce-substitution","predecessor-substitution","future-or-expired-current-submission","expired-inner-resource","unknown-version","reserved","truncated","trailing","hostile-size","retired-target3-or-target4","callback-input-mutation","signer-failure","cancelled","clock-discontinuity","changed-head-view-epoch-cohort"],
+  "registryOwner": "deep-registry-api/tests/Deep.Registry.Api.Tests/DeepIdV2RouteThresholdIssuerTests.cs",
+  "registryObligations": ["real-postgresql-and-signatures","one-original-reservation-and-approval","actual-current-approval-time-not-original-time","concurrent-current-submissions-one-exact-winner","completed-read-does-not-reissue-XPA","fresh-XPL-remains-required","corrupt-fence-rejects-without-repair"],
+  "notEvidence": ["metadata is not executable vector evidence","compile-only is not activation","TestServer or synthetic replica receipts are not physical E2E"]
+}

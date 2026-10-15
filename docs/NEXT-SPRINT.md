@@ -83,86 +83,51 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    Убраны два оставшихся genesis-only ограничения в XPA consumer/resolve.
    Final full qualification и same-owner current-dev/device activation ещё не
    завершены. Это не приёмка S05 или release.
-2. **Незавершённые original intents.** Primary/diagnostic/replication owners
-   сохранены; их PMT/expiry/unknown-outcome reconciliation не закрывается новым
-   успешным acceptance-owner. Не remint, не менять exact pending bytes и не
-   повторять мутацию с неизвестным завершением как новую.
-   На том же acceptance-owner current-dev view71 повторно подтвердил strict TLS,
-   byte-identical prekey pair и current network. Contact renewal теперь доходит
-   до сохранённого запроса и отказывает с закрытым `request-window`: его исходное
-   короткое окно истекло. Нужен отдельный bounded reconciliation contract, а не
-   ослабление XPA/currentness или освобождение permanent generation fence.
-   [DR-0123](survival-program/decisions/DR-0123-retained-publication-intent.md)
-   отделяет owner/issuer read-only original intent от commit и mutation lease.
-   Candidate скомпилирован в consumer solutions без warnings/errors; focused
-   intent/successor11/0/0 и PostgreSQL journal2/0/0 прошли. Read-only winner lookup
-   сохраняет permanent fence/count и не вызывает signer; неверный scope, pending,
-   повреждение и отмена отвергаются. Это API prerequisite, не разрешение повторной
-   записи. Connected candidate теперь проводит свежий XPL1 lease через owned
-   client → private target3 issuer → node/peer; standalone reusable XPU отвергается.
-   Исходные XPU/request/op/hash и journal slots не меняются. Focused Shared26/0/0,
-   Node124/0/0 и Registry24/0/0 (с реальной временной PostgreSQL) прошли; Registry
-   включает истёкший phase6, потерю ответа и exact adoption без новой reservation.
-   Protocol focused138/0/0 и operator static26/0/0 прошли. Реальный same-owner
-   current-dev runtime05 завершился native0: byte-identical prekey pair,
-   committed contact generation1, current owned grant и authenticated empty page.
-   Runtime04 сохранил первоначальный unknown grant outcome; runtime05 восстановил
-   тот же phase7 без новой публикации. Внешний DID2 dispatcher также переведён на
-   XPL; прежний raw-XPU parser давал MalformedRequest до мутации. Node124 включает
-   полную композицию двух stores и authenticated peer HTTP/TLS, не только facade.
-   Это не S05/full qualification, S06 или физическая доставка. Reserved-without-winner и expired inner
-   resources остаются отдельными settlement/handover, не «решены» новым lease.
-   Connected candidate: Protocol `e822814`, Shared `92648b3`, Registry `8a6a95c`,
-   Node `eaa0278`, DevOps `4550ea4`. Final focused Shared26/0/0 повторён после
-   диагностического изменения; полный qualification не заявлен.
-   Физический Android `020496d` после первого unknown получил при повторном
-   открытии `Publication request is not exact current owned DID2 lineage`.
-   Read-only SQL current-dev: publication6/completed6/pending0 и
-   route7/completed7/pending0; эти агрегаты не устанавливают принадлежность
-   конкретному клиенту. Нужно закрыть phase5 lost-response read-back completed
-   original winner: текущий XPL-путь начинается с уже сохранённого XPU/phase6 и
-   не восстанавливает отсутствующий ответ. Read-back не должен выдавать новую
-   публикацию, освобождать fence, изменять nonce/request или принимать expired
-   request как current mutation. Registry `160d56a` добавляет только bounded
-   payload-free route-issuer phase diagnostics; focused HTTP24/0/0, не исправление
-   восстановления. Сохранённые аккаунты не сбрасывать ради успешного прогона.
-   [DR-0124](survival-program/decisions/DR-0124-publication-winner-readback.md)
-   фиксирует отдельный current owner-authenticated target4 READ completed winner.
-   Связанный source-срез Protocol/Shared/Registry/gateway реализован без journal
-   generation или смены исходных bytes. Focused Shared5/0/0 включает encrypted
-   cold reopen, nonce/response tampering, lost read reply, исходные scalars и
-   phase5→6→7. Registry3/0/0 с disposable PostgreSQL включает настоящий private
-   HTTP read-back, unchanged permanent count/signers и pending/corrupt scope
-   rejection. Node23/0/0 и Protocol19/0/0 прошли; registry/schema и документация
-   прошли проверки. Сохранены ранние FAIL: fixture re-entered held account lease,
-   затем два несовпадения точных типов rejection и xUnit expected/actual analyzer.
-   Они исправлены в тестовой композиции/ожиданиях без ослабления guards.
-   Retained runtime02 завершил Build/Up/Verify/CacheWindowsDevCrl native0;
-   девять сервисов healthy, ключи/floors/volumes сохранены. Предыдущий runtime01
-   остановлен private-ingress preflight с CryptographicException/unclassified;
-   повтор прошёл, но причина первого отказа не доказана и FAIL не удалён.
-   APK06 установлен без reset и с unchanged protected packages; аккаунт/recovery
-   сохранены, повтор ContactPublication всё ещё получил OnionCompletionUnknown.
-   Windows build03 запущен с тем же профилем; проверка получила ProofRateLimited.
-   Это реальные отказы, не доказательство noncommit или доставки. Registry
-   `c177549` добавляет только bounded reader phase/category; focused3/0/0
-   с PostgreSQL прошёл. Runtime03 Build/Up/Verify/CacheWindowsDevCrl native0,
-   recovery59s. Проверки не ослаблены, новых аккаунтов не требуется. Focused PASS не означает
-   S05/S06/full source qualification или delivery.
-   Registry `32c390a` различает closed winner-missing/kind/directory/digest;
-   focused3/0/0 и security4files/0 прошли. Runtime04 Build/Up/Verify/CRL native0,
-   recovery30s. Android после cold restart сохранил профиль/recovery и снова
-   получил ContactPublication/OnionCompletionUnknown; в последовательном прогоне
-   наблюдался Winner/winner-missing. Публичные диагностические строки не содержат
-   request identity: это не криптографическое доказательство noncommit. Агрегаты
-   publication6/completed6/pending0 не изменились. DR-0124 не выдаёт XPU для
-   отсутствующей записи. Следующий связанный срез обязан закрыть phase5
-   missing/pending/completed под новой current owner authority, без backdating,
-   сброса аккаунта, ослабления expiry или освобождения permanent fence. Прежде
-   реализации требуется согласованный lifecycle contract, не повтор того же UI
-   запроса. Windows UI остановлен пользователем Esc, повторных действий не было.
-   Candidate: Protocol `f244168`, Shared `317a323`, Registry `2613605`, Node
-   `8360744`, MAUI `95ef514`, DevOps `efcebd5`. Production этим срезом не изменён.
+2. **Незавершённые original intents — DR-0125.**
+   [Контракт](survival-program/decisions/DR-0125-current-publication-submission.md)
+   принят: один current publisher-signed submission над exact original request
+   для reusable phase5/6, без backdating, нового journal generation, сброса
+   аккаунта, освобождения permanent fence или direct Registry fallback.
+   Missing/pending/completed используют тот же permanent GetOrIssue; completed
+   XPA не подписывается повторно. XPL1 остаётся единственным reusable mutation
+   envelope. Targets3/4 и их API/endpoints удалены из нового source candidate;
+   target2 остаётся только для strict-current one-time genesis.
+   Согласованный Protocol/Shared/Registry/Node source candidate скомпилирован
+   без warnings/errors. Shared focused26/0/0 проверяет encrypted cold reopen,
+   исходные slots, lost response/Store, phase5/6 recovery и phase7 без callbacks,
+   включая продление контакта. Registry focused36/0/0 и concurrency3/0/0
+   с настоящей временной PostgreSQL проверяют missing/pending/completed,
+   actual-current approval, permanent winner/count и двух независимых issuers.
+   Node focused23/0/0 проверяет forwarding/authentication/pairing/gateway;
+   synthetic replica receipts и TestServer не являются физической доставкой.
+   Receipts: Shared `artifacts/s05-current-publication-20261015/owned-focused-02`;
+   Registry `artifacts/s00/s05-current-publication-02-85680a051fa6409a83ceccab1a35f23d`
+   и `s05-current-concurrency-01-47b301deb146457290eb8e14cd323edc`;
+   Node `artifacts/s05-current-publication-20261015/node-focused-02`.
+   Первые FAIL сохранены: неверный conservative-clock шаг/точный тип rejection
+   в Shared; пустой unknown-original аргумент synthetic replica в Registry;
+   предположение об одинаковом gateway в Node. Исправлены fixture composition
+   и ожидания, не production guards. Первый Shared runner не сохранил native
+   exit из-за PowerShell stderr handling; повтор завершился native0.
+   Protocol focused/API/ONION17/0/0 и строгий machine registry gate прошли.
+   Receipt: Protocol `artifacts/s05-current-publication-20261015/protocol-focused-01`.
+   Source checkpoint: Protocol `3ed77a4`, Shared `e8a1178`, Registry `13678dc`,
+   Node `01d86d5`. Selected source security:17/24/12/9/6 файлов,0 findings;
+   changed Markdown9/317 local links и public documentation174 checks прошли.
+   **Осталось:** package и final full qualification,
+   checkpoint push verification, затем matched retained current-dev и Android/Windows
+   activation на тех же аккаунтах. Ни новый runtime, ни physical0/4 этим кодом
+   ещё не квалифицированы. Expired inner resources и epoch/cohort/device handover
+   остаются отдельными lifecycle requirements.
+   Последний активированный runtime — DR-0124 checkpoint:
+   Protocol `f244168`, Shared `317a323`, Registry `32c390a`, Node `8360744`,
+   MAUI `95ef514`, DevOps `1bba9f3`. Его Android phase5 unknown и closed
+   `Winner/winner-missing` сохранены в
+   [contact checkpoint](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
+   Агрегаты publication6/completed6/pending0 не устанавливают принадлежность
+   клиенту и не доказывают noncommit. Аккаунты, recovery, floors и node keys
+   сохраняются. Windows UI ранее остановлен пользователем Esc; до нового
+   разрешения UI не возобновлять. Production этим source-срезом не изменён.
 3. **Operational ceremony после активации roles.** Root/witness/role/traffic/TLS
    rotation, автоматический head/view/key lifecycle и предупреждение offline-policy
    expiry. Pre-mailbox Prepare/Apply отказывают на enabled contour: нужен supported

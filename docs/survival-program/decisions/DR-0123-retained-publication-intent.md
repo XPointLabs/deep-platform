@@ -1,6 +1,9 @@
 # DR-0123 — retained publication intent and fresh mutation lease
 
 Status: accepted connected clean-break target; runtime/reconciliation activation open
+Superseded request/API scope: [DR-0125](DR-0125-current-publication-submission.md)
+removes the separate lease-request protocol. XPL1 and authenticated-intent
+separation remain; the following describes the original decision, not a fallback.
 Date: 2026-10-15
 Decision owner: Mr. X (delegated architecture authority)
 

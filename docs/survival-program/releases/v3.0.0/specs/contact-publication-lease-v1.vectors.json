@@ -1,10 +1,10 @@
 {
   "package": "CONTACT-PUBLICATION-LEASE-01",
-  "decision": "DR-0123",
+  "decision": "DR-0125",
   "runtimeActivation": false,
   "input": "actual PQ-root account/device/directory/NET plus exact original XPU and current witness signatures; no fabricated authority",
-  "owner": "deep-client-shared/tests/Deep.Client.Shared.Production.Tests/DeepIdV2ContactPathAuthoritySourceTests.PublicationLease.cs",
-  "positive": "Did2PublicationLease_ReauthorizesExactExpiredIntentWithCurrentOwnerAndWitnesses",
+  "owner": "deep-client-shared/tests/Deep.Client.Shared.Production.Tests/DeepIdV2ContactPathAuthoritySourceTests.PublicationCurrentCrypto.cs",
+  "positive": "Did2PublicationCurrent_UsesCurrentApprovalAndImmutableBody",
   "hostile": ["unknown-version","wrong-suite","reserved","tag-order","truncated","trailing","oversized","wrong-original-hash","changed-original-xpu","one-time-kind","duplicate-witness","unsorted-witness","wrong-publisher","wrong-witness","wrong-view","wrong-placement","wrong-head","future-issue","expired-lease","expired-inner-resource","callback-mutation","cancellation","clock-discontinuity"],
   "consumer": ["standalone-xpu-rejected-before-mutation","same-original-saga-and-op","both-peers-reverify-current-lease","old-request-hash-receipts","retained-phase6-exact-adoption","lost-response-reconciliation"]
 }

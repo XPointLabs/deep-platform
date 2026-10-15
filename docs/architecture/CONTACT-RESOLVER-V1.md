@@ -637,8 +637,19 @@ read-only restore cannot redispatch an expired/stale XPU. New writes still bind
 the current service placement; the unsigned XPO clock cannot grant freshness.
 
 For an uncompleted original publication,
+[DR-0125](../survival-program/decisions/DR-0125-current-publication-submission.md)
+supersedes separate reusable lease-request/read-back protocols with one current
+publisher-signed submission over the unchanged original intent. Actual approval
+time is independent of immutable intent time; missing/pending/completed outcomes
+share the existing permanent journal/fence. XPL1 remains the sole current reusable
+mutation envelope. Target3/4 are retired at matched cutover, target2 becomes
+one-time only, and account/journal generations do not change. Exact new wire,
+time semantics and producer/consumer activation obligations belong to that
+decision and its machine contract; implementation/activation remain open.
+
+The authenticated-intent boundary introduced by
 [DR-0123](../survival-program/decisions/DR-0123-retained-publication-intent.md)
-separates a closed authenticated intent from dispatch or commit authority.
+still separates a closed authenticated intent from dispatch or commit authority.
 The owner verifier additionally requires authenticated decrypted object custody;
 the issuer verifier never claims decryption. Both retain exact request/XPU bytes
 and require independently live current identity, assignment, route and object.
@@ -647,7 +658,7 @@ permanent generation fence, prove noncommit, authorize a new write or become a
 synthetic XPO. Fresh lease, expired-resource settlement and two-replica adoption
 remain separate connected recovery requirements.
 
-The connected DR-0123 target uses XPL1 as the sole reusable publication mutation envelope,
+The current target preserves XPL1 as the sole reusable publication mutation envelope,
 with exact grammar/domains/limits in
 [contact-publication-lease-v1.registry.json](../survival-program/releases/v3.0.0/specs/contact-publication-lease-v1.registry.json).
 The embedded original XPU is never rewritten or used as a fresh operation lease.
@@ -658,14 +669,13 @@ reusable XPU is not the connected target's second mutation path. The separate
 one-time genesis operation retains its strict current window. No journal reset,
 generation bump or compatibility reader is authorized.
 
-For a lost issuer response in phase5, before the original XPU is known,
+The completed-only reader from
 [DR-0124](../survival-program/decisions/DR-0124-publication-winner-readback.md)
-defines an explicit current publisher-authenticated read of an already completed
-original winner. It cannot call issuance/signers, release a fence, repair pending
-state or prove noncommit. The owner independently verifies original intent and
-CAS/readbacks the existing response slot before entering the DR-0123 lease path.
-Neither an expired original request nor a read response grants mutation authority;
-original operation/request/nonce/ciphertext and the journal format remain unchanged.
+is superseded by DR-0125, not an additional recovery path. One current submission
+handles original requests that never arrived, pending reservations and completed
+winners through the same permanent transaction. Completed winners are not signed
+again. Independent verification and CAS/readback precede replica dispatch; neither
+an expired original request nor parsing the response grants mutation authority.
 
 The DID2 descriptor bootstrap and current permanent-read boundary follow
 [DR-0041](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md).

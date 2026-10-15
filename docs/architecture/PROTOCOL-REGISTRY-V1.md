@@ -35,13 +35,15 @@ contact/mailbox records and current grant profile. It allocates no new wire,
 suite, ranking algorithm or journal generation. Matched current-only source,
 issuer/node/peer activation and retained-account/device qualification remain open.
 
-[DR-0124](../survival-program/decisions/DR-0124-publication-winner-readback.md)
-freezes target4 PublicationWinnerRead for lost phase5 responses. This is a fresh
-publisher-authenticated read of a completed original winner, not issuance,
-mutation permission or fence settlement. Exact sizes/domains/APIs belong to
-[its machine registry](../survival-program/releases/v3.0.0/specs/contact-publication-winner-read-v1.registry.json).
-The existing journal format and original requests remain unchanged; connected
-and physical activation require separate evidence.
+[DR-0125](../survival-program/decisions/DR-0125-current-publication-submission.md)
+freezes target5 PublicationCurrent as the one reusable current-submission path,
+covering missing/pending/completed original intents under the existing permanent
+fence. Targets3/4 and their request/read-back APIs are retired at matched cutover;
+XPL1 itself remains the sole reusable mutation envelope, and target2 is one-time
+only. Actual approval time is independent of immutable intent time, never
+backdated. Exact bytes/domains belong to
+[its machine registry](../survival-program/releases/v3.0.0/specs/contact-publication-current-v1.registry.json).
+No journal generation or account reset; source/runtime/device activation is open.
 
 [DR-0123](../survival-program/decisions/DR-0123-retained-publication-intent.md)
 adds separate closed owner/issuer original-publication-intent verification.
