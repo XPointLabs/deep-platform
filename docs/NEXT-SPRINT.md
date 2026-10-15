@@ -54,6 +54,14 @@ upgrade check does not replace the older FAIL. Node focused27/3/0/native1 and
 the subsequent interrupted run remain unaccepted; a separate hash-bound binary
 diagnostic also failed the original10s Store deadline after peer response capture.
 Fix/qualify source performance and current-authority recovery, not larger windows.
+Post-Up diagnostics also show `check-deadline` and `revocation-context`; no floor
+reset is authorized by these labels. The existing configured-Program fixture
+reproduced readiness failure without external NTS, then the focused timing run
+reached Store504 at15.6s. Its inclusive observations place repeated source/floor
+file work ahead of network/host crypto reconstruction; exact counts and failed
+receipts belong to [Node operations](../xnode/docs/operator.md). Optimize that
+measured read path with the existing actual-floor/source/release fences intact,
+then rerun the bounded business slice. NTS alone is not the established cause.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
