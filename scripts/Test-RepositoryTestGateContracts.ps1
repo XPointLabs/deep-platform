@@ -60,6 +60,28 @@ try {
     }
     $checks++
     Require-Rejection { & $verifier -ReceiptPaths $currentPath -ReferencePaths @($referencePath, $secondPath) -NativeExitCode 0 } 'union differs'
+    $declaration = & (Get-Module TestGate) {
+        param($prior, $replacement, $decision)
+        Get-TestGateReferenceDeclaration -ReferencePaths @($prior, $replacement) `
+            -RetiredCaseReplacements @{ 'Example.OldCase' = @('Example.NewCase') } -RetirementDecisionPath $decision
+    } $referencePath $secondPath $decisionPath
+    if ($declaration.Required.Count -ne 1 -or $declaration.Retirements.Count -ne 1) {
+        throw 'Early reference declaration differs from final qualification.'
+    }
+    $checks++
+    "Status: accepted semantic change`nExample.OldCase is replaced by Example.NewCase" |
+        Set-Content -LiteralPath $decisionPath -Encoding UTF8
+    $earlyRun = Join-Path $root 'node/artifacts/must-not-launch'
+    Require-Rejection {
+        Invoke-RepositoryTestGate -WorkspaceRoot $root -Repository node -Solution 'MustNotBuild.slnx' `
+            -RunDirectory $earlyRun -ReferencePaths @($referencePath, $secondPath) `
+            -Interpreter $(if ($PSEdition -ceq 'Desktop') { 'WindowsPowerShell51' } else { 'PowerShell7' }) `
+            -RetiredCaseReplacements $transition -RetirementDecisionPath $decisionPath
+    } 'distinct declared'
+    if (Test-Path -LiteralPath $earlyRun) { throw 'Malformed declaration created a run or launched build.' }
+    $checks++
+    "Status: accepted semantic change`nExample.OldCase -> Example.NewCase" |
+        Set-Content -LiteralPath $decisionPath -Encoding UTF8
     Require-Rejection { & $verifier -ReceiptPaths $currentPath -ReferencePaths @($referencePath, $secondPath) -NativeExitCode 0 -RetiredCaseReplacements $transition } 'accepted decision'
     'Status: draft Example.OldCase Example.NewCase' | Set-Content -LiteralPath $decisionPath -Encoding UTF8
     Require-Rejection { & $verifier @transitionArguments } 'not accepted'

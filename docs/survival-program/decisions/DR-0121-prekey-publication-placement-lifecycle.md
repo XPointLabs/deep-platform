@@ -71,3 +71,9 @@ This is an exact semantic case retirement for canonical qualification: the old
 case must be absent, the replacement must pass, and unrelated cases remain
 required. Stale-view rejection and zero chunk mutation remain asserted; only
 the incorrect inventory-fork side effect is retired.
+
+Exact qualification binding (the same semantic replacement, machine-readable):
+
+```text
+XNode.Tests.Core.DeepIdV2PublicationJournalTests.ChunkFromDifferentView_LatchesForkBeforeAnyChunkIsWritten -> XNode.Tests.Core.DeepIdV2PublicationJournalTests.ChunkFromDifferentView_IsRejectedWithoutMutationOrPoisoningInventory
+```

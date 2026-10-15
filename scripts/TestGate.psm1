@@ -110,18 +110,9 @@ function Read-TestGateReceipt {
     }
 }
 
-function Test-TestGateResults {
-    param(
-        [Parameter(Mandatory = $true)][string[]]$ReceiptPaths,
-        [Parameter(Mandatory = $true)][string[]]$ReferencePaths,
-        [Parameter(Mandatory = $true)][ValidateNotNull()][Nullable[int]]$NativeExitCode,
-        [string[]]$AllowedSkippedCases = @(),
-        [string[]]$AllowedFailedCases = @(),
-        [hashtable]$RetiredCaseReplacements = @{},
-        [string]$RetirementDecisionPath = ''
-    )
-    if ($NativeExitCode -notin @(0, 1)) { throw 'The actual native test exit is missing or interrupted.' }
-    if (!$ReceiptPaths.Count -or !$ReferencePaths.Count) { throw 'Current receipts and a predeclared reference matrix are required.' }
+function Get-TestGateReferenceDeclaration {
+    param([string[]]$ReferencePaths, [hashtable]$RetiredCaseReplacements = @{}, [string]$RetirementDecisionPath = '')
+    if (!$ReferencePaths.Count) { throw 'A predeclared reference matrix is required.' }
     $required = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $referenceMethods = [Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)
     foreach ($path in $ReferencePaths) {
@@ -174,6 +165,23 @@ function Test-TestGateResults {
     } elseif ($RetirementDecisionPath) {
         throw 'A retirement decision without case replacements is not a qualification input.'
     }
+    [pscustomobject]@{ Required = $required; ReferenceMethods = $referenceMethods; Retirements = $retirements }
+}
+
+function Test-TestGateResults {
+    param(
+        [Parameter(Mandatory = $true)][string[]]$ReceiptPaths,
+        [Parameter(Mandatory = $true)][string[]]$ReferencePaths,
+        [Parameter(Mandatory = $true)][ValidateNotNull()][Nullable[int]]$NativeExitCode,
+        [string[]]$AllowedSkippedCases = @(),
+        [string[]]$AllowedFailedCases = @(),
+        [hashtable]$RetiredCaseReplacements = @{},
+        [string]$RetirementDecisionPath = ''
+    )
+    if ($NativeExitCode -notin @(0, 1)) { throw 'The actual native test exit is missing or interrupted.' }
+    if (!$ReceiptPaths.Count -or !$ReferencePaths.Count) { throw 'Current receipts and a predeclared reference matrix are required.' }
+    $declaration = Get-TestGateReferenceDeclaration $ReferencePaths $RetiredCaseReplacements $RetirementDecisionPath
+    $required = $declaration.Required; $referenceMethods = $declaration.ReferenceMethods; $retirements = $declaration.Retirements
     $names = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $ids = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $executions = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
@@ -396,6 +404,11 @@ function Invoke-RepositoryTestGate {
         throw 'Use a fresh run directory strictly inside the selected repository artifacts.'
     }
     if (!$PreflightOnly -and !$ReferencePaths.Count) { throw 'Full qualification requires a predeclared case matrix.' }
+    if (!$PreflightOnly) {
+        # Reject malformed retirement/reference declarations before build or a
+        # potentially hours-long full. Final qualification repeats the same checks.
+        $null = Get-TestGateReferenceDeclaration $ReferencePaths $RetiredCaseReplacements $RetirementDecisionPath
+    }
     $vectorPath = Join-Path $WorkspaceRoot 'docs\survival-program\releases\v3.0.0\specs\contact-codec-v1.vectors.json'
     if (!(Test-Path -LiteralPath $vectorPath -PathType Leaf)) { throw 'Required frozen ContactAccept vectors are absent; full was not launched.' }
     $dotnet = (Get-Command dotnet -ErrorAction Stop).Source

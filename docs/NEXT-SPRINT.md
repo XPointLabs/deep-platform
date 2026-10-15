@@ -8,415 +8,138 @@
 Основание — [аудит](architecture/ARCHITECTURE-AUDIT-2026-10-03.md),
 [DR-0082](survival-program/decisions/DR-0082-integration-first-delivery-baseline.md)
 и [DR-0095](survival-program/decisions/DR-0095-baseline-and-shipping-gate-separation.md).
-Этот файл содержит текущий статус, не второй protocol specification.
-[Предыдущая редакция целиком](NEXT-SPRINT-CHECKPOINTS-2026-10-13.md) сохранена
-как история; её промежуточные статусы не являются заданиями на повторную реализацию.
+Это очередь незавершённого, не второй specification или хронологический changelog.
+Предыдущие наблюдения, исходные FAIL и exact receipts сохраняются в Git,
+[исторической редакции](NEXT-SPRINT-CHECKPOINTS-2026-10-13.md) и repo-checkpoints.
 
-## Единственный текущий этап: S05
+## Единственный активный этап: S05
 
-**S04 принят на source уровне и запушен; S05 — current issuer и operational lifecycle.**
-Следующая работа ограничена критериями
-[S05](architecture/IMPLEMENTATION-PLAN-V1.md#s05--current-issuer-и-автоматический-lifecycle-управляющего-контура):
-current issuance/readiness/CAS, signed successor provisioning, автоматическое renewal,
-retained-volume restart и bounded verified catch-up. S06 и device qualification
-ещё не открыты; принятый S04 не повторять без изменения его входов.
+**S00–S04 приняты в своих source scopes; S05 не принят. S06/device ещё не открыты.**
+Не повторять принятые gates без изменения входов или конкретной verification цели.
 
-Текущая контрольная точка: [prekey lifecycle и реальный Windows owner](../deep-devops/docs/S05-PREKEY-LIFECYCLE-2026-10-15.md).
-По DR-0121 prekey publication завершилась с двумя проверенными XIC1; после cold
-reopen защищённая пара повторно проверена без изменения байтов. Исправлены
-public/peer H2 ingress и TLS session-resumption на signed-entry пути, без ослабления
-проверок сертификата. Matching Shared28/0/0, Node118/0/0, Protocol155/0/0;
-Protocol canonical2330/1/7 сохраняет известный S08 MAU2 package FAIL.
-Node/Shared full для новых inputs ещё не квалифицированы. Следующая задача S05 —
-разобрать сохранённую незавершённую contact publication: сначала ответ не прошёл
-durable-commit verifier, позднее retained XRA отвергнут current-scope verifier.
-Исходная причина ответа пока не установлена; не заменять неизвестный исход новым
-аккаунтом, intent или ослабленной authority. Owned grant/node read и physical0/4
-по-прежнему не подтверждены. Подробности ниже относятся к своим исходным receipts.
+Source checkpoint: Protocol `1b5afe6`, Shared `64477cb`, Node `3c4252f`,
+DevOps `9d16dae`. Commits фиксируют транспортные исправления и открытые границы,
+не final source/release acceptance; новые Node/Shared full остаются незакрытыми.
 
-Текущий пакет и evidence:
+Текущий checkpoint — [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
+На отдельном локальном current-dev с тремя сохранёнными нодами настоящий Windows
+production-code owner завершил prekey publication, contact commit, owned grant и
+authenticated empty mailbox read, native0. Это не installed MAUI или доставка
+между устройствами. Production этим пакетом не изменялся.
 
-- Registry canonical full07 принят: **395/0/7**,402 exact mappings, все native
-  stages0 и2834 unchanged inputs. Source реализует bounded renewal, immediate
-  authority handover и exact prepared ADA2/CAS recovery по
-  [DR-0115](survival-program/decisions/DR-0115-did2-prepared-directory-commit.md).
-  Actual HTTP client/node catch-up прошёл69 signed heads через64+5 с обрывом
-  и cold reopen. Readiness остаётся read-only. Scope, hashes и сохранённые FAIL —
-  [Registry checkpoint](../deep-registry-api/docs/testing/s05-head-renewal-budget-2026-10-14.md).
-- Node matching пакет: **139/0/0**, native0; Program/current/retained TLS-native
-  scope: **3/0/0**. Исправлены no-write replay fault, повторные Windows link
-  queries и bounded same-file replacement. Authority/floor/revocation fences и
-  peer/ingress deadlines не расширены. **Node full принят1499/0/0**, все native
-  stages0,1499 exact mappings и2180 unchanged inputs;
-  [node checkpoint](../xnode/docs/testing/s05-observation-context-reuse-2026-10-14.md)
-  содержит исходные failures и точные текущие scopes.
-- Operator CLI сохраняет полные signed chains и три node identities, готовит
-  same-key authority renewal и complete immutable bundle/NCP2. Matching69-view
-  executable и wrapper contracts14/0 прошли. Это offline candidate, не fresh
-  runtime: [operator checkpoint](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md).
+Повтор того же владельца на view58 сохранил byte-identical prekey receipt pair,
+но contact renewal отклонён exact-PMT predicate в `RequirePredecessorBindings`.
+View57/contact generation0 native0 не доказывает changed-view renewal. Не сбрасывать
+аккаунт, не убирать guard и не превращать retained-event facts в current authority.
 
-Пакет reviewed/committed/pushed: Registry `2df4474`, Node `2de436d`, DevOps
-`c92a544` (source package `9789123` + read-only expiry diagnosis); remote SHA
-всех трёх сверены. Повторный managed-external no-mock
-smoke и three-node rehearsal завершились native0 и scoped cleanup; первый
-Docker-engine EOF/exit1 сохранён отдельно. Это инфраструктурные, не DID2
-delivery/device проверки; существующий dev health остаётся unhealthy: retained
-DTS1 истёк2026-10-06T14:07:38Z, Registry сообщает `policy-interval`. State/keys
-не сбрасывались; canonical decode не заменяет signature/current-authority check.
-[Точный scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#infrastructure-rehearsal-attempt).
+### Оставшаяся работа S05 — по порядку
 
-Оставшаяся приёмка S05, в порядке выполнения:
+1. **Связный PMT/view successor для уже committed contact.** Согласовать bounded
+   переход client authoring → threshold issuer → protected pending custody →
+   publication → independent replica/node verification. Обычный publisher меняет
+   PMT с view; существующие DR-0071/0072/0078 намеренно не разрешают такой rollover.
+   Epoch/replica/device/service handover не выводить из одного same-key случая.
+2. **Незавершённые original intents.** Primary/diagnostic/replication owners
+   сохранены; их PMT/expiry/unknown-outcome reconciliation не закрывается новым
+   успешным acceptance-owner. Не remint, не менять exact pending bytes и не
+   повторять мутацию с неизвестным завершением как новую.
+3. **Operational ceremony после активации roles.** Root/witness/role/traffic/TLS
+   rotation, автоматический head/view/key lifecycle и предупреждение offline-policy
+   expiry. Pre-mailbox Prepare/Apply отказывают на enabled contour: нужен supported
+   coordinated role-volume/journal update, не обход fence или ручная правка.
+4. **Оставшаяся runtime matrix.** Restart каждого автора/ноды с retained volumes,
+   interruption/rollback, signer/time outage, expired observation/head, clock
+   rollback, конкурирующие поколения и несколько ротаций; тот же client после
+   renewal и bounded verified catch-up. Уже пройденные 129-head catch-up и
+   retained restart scopes не заменяют всю эту матрицу.
+5. **Final source qualification/review/commit/push coherent slice.** Не запускать
+   full после каждой строки. Node full01 выполнил1513/0/0/native0, но final
+   qualification1: DR-0121 не содержал exact arrow binding. Декларация исправлена;
+   общий gate проверяет её до build и в конце (49 contracts/native0). Fresh Node
+   full ещё требуется; новый Shared full не квалифицирован.
+   Текущий Protocol canonical2330/1/7:2338 exact mappings,1587 unchanged inputs;
+   build/preflight/qualification0, native test1/FullAccepted=false. Сохранены
+   один настоящий S08 MAU2 package FAIL и семь explicit skips.
+   Последние focused: Shared27/0/0, Node11/0/0; operator88 checks и26 static
+   contracts native0. Это не общий source/full/release PASS.
 
-1. DR-0116 matching source qualification выполнена с сохранённым S08 package FAIL.
-   Завершить current provisioning clean-break и supported signed policy renewal:
-   сохранённый dev содержит pre-cutover seven-chain NCP2, а не current eight-chain.
-   Не обходить отказ legacy-reader, Init/Provision/reset или ручной правкой signed
-   records/floors. Закрыть supported changed-root/witness/role
-   ceremony и автоматический
-   head/view/key lifecycle с предупреждением offline-policy expiry. Реальная
-   key rotation в source fixture не доказывает operational ceremony.
-2. Проверить process/retained-volume restart, interruption/rollback, signer/time
-   outage, competing generations и несколько ротаций на воспроизводимом контуре
-   без ручной правки signed bytes, floors, genesis или registered identities.
-3. Проверить связный issuer/node/client renewal и bounded verified catch-up;
-   offline CLI, fixture clocks и cold object reopen не заменяют runtime evidence.
+### Подтверждённая база S05 и ссылки
 
-DR-0116 source candidate устраняет overlap-only dead end после root expiry и
-разделяет offline XVP1/PMA2 horizon с коротким operational view. Protocol matching
-**61/0/0**, operator executable native0 (69-view scope сохранён), publisher
-Release build0/zero warnings/errors. Current matching scope **107/0/0**; common
-gate contracts **46/0**. Canonical Protocol full03 завершён **2297/1/7**,2305
-exact mappings,1581 unchanged inputs и explicit retirement двух superseded
-`root-gap`/`dts-gap` identities без правки старых TRX. **FullAccepted=false**:
-настоящий package graph отвергает retired MAU2 в старом PMA1 producer. Это S08
-blocker, не разрешение переименовать его или выключить guard. Witness contract
-согласован с SDK10.0.301 по DR-0117:7.6.5/.NET10/compatible architecture,
-проверка MSBuild types до full. Точный текущий scope
-и исходные failures —
-[Protocol checkpoint](../deep-protocol/docs/testing/s05-root-continuity-2026-10-14.md).
-Пакет не развёрнут; expiry сохранённого dev ещё не устранено. S04/S05 прежние
-full receipts относятся к своим прежним inputs, не к этому Protocol изменению.
+- [Registry source/runtime](../deep-registry-api/docs/testing/s05-protected-role-signer-2026-10-14.md):
+  current issuer/readiness, separate protected role signers и permanent journals.
+  Последний квалифицированный Registry full409/0/10 относится к своим inputs;
+  Unix-socket skips требуют Linux lane. Первый Store14930ms/deadline15s остаётся
+  performance risk, не S09 PASS.
+- [Authority history и custody](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md):
+  same-day authority recovery, 129-head catch-up и retained restarts; original
+  identities/keys/genesis/floors сохранены. Старый pre-cutover deep-dev не заменён
+  current-only reader и не сброшен.
+- [Signed reachable ingress](../deep-devops/docs/S05-PHYSICAL-INGRESS-2026-10-15.md):
+  LAN origins, строгие TLS/H2, same-key PKI/CRL и retained publisher CAS.
+  Это infrastructure evidence, не physical device delivery.
+- [Prekey lifecycle](../deep-devops/docs/S05-PREKEY-LIFECYCLE-2026-10-15.md):
+  DR-0121 stable publication assignment и exact cold-reopened XIC1 pair.
+- [Текущий contact slice](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md):
+  исправлены duplicate peer endpoint, bounded public-read contention и repeated-Up
+  ingress preflight. Все исходные неуспешные попытки сохранены.
+- [Node prior full/smoke](../xnode/docs/testing/s05-control-read-backoff-2026-10-15.md):
+  prior1508/0/0 и no-mock smoke/rehearsal, не квалификация новых inputs.
+- Current-source no-mock smoke и three-node infrastructure rehearsal прошли
+  native0; scoped cleanup завершён. Это не DID2 device delivery; точные receipts
+  в текущем contact checkpoint, не замена final source qualification.
 
-Dev offline `PrepareAuthority` реализован: real-signature/file fixture **20 checks**,
-native0 и build0/zero warnings/errors; source topology **7/0**. Это public-only
-paired-authority candidate, не online operational activation. Actual retained-dev
-attempt отверг pre-cutover seven-chain NCP2 до observation/signing (native2);
-610 retained views/heads/topologies не удалены, journal/floors/keys сохранены.
-Ранее указанное expiry — не единственная причина unhealthy. Точные scopes и
-сохранённые failures — [DevOps checkpoint](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#development-offline-paired-authority-preparation).
-Protocol `3b94c54` и root `266393d` запушены с exact remote SHA; dev offline
-source package зафиксирован в DevOps `0e3b074`. Root pointer/checkpoint обновляются
-после child commit; main/GitHub Releases не менялись.
+## Принятая база и следующие этапы
 
-Отдельный current-only `deep-dev-current` создан без изменения старого контура.
-После исправления retired config и штатной admission сохранённого observer:
-current Registry proof + три verified ONION capabilities; scoped restart20s
-offline →14s recovery →30s stable с прежними ключами/IDs/mounts. Real130
-admissions при offline nodes и catch-up через129 signed heads прошли native0,
-recovery10s без reset. Source22 checks и topology/observer10/0; это не выдача
-mailbox grants или physical delivery. Offline root pair prepared, не activated.
-Первый Init потерял mailbox issuer seeds; новый generator сохраняет их, но
-уже созданному контуру нужен signed role/PMA successor, не подмена ключа.
-Root/witness/role/traffic/TLS rotation и publisher CAS-import остаются S05.
-Scope/hashes — [runtime checkpoint](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#separate-current-only-runtime-qualification).
-
-DR-0118 offline issuer rollover source completed: matching119/0/0; canonical
-Protocol full2309/1/7,2317 exact mappings/1583 unchanged inputs, original package
-FAIL preserved. DevOps candidate30 checks and topology11/0; actual NTS preparation
-emitted a signed full-history policy/PMA/traffic/TLS successor with staged private
-role keys. Latest candidate matches its predecessor; only current dev publisher
-was stopped pending coordinated activation. A new sealed candidate has now been
-installed/imported with retained identities, volumes and genesis; delegated
-publication resumed. The180-second Registry/three-ONION acceptance failed:
-same-UTC-day root/DTS handover changes DTT1 epoch ID, and the retained nonce ledger
-correctly rejects the same-number fork. Coordinate policy ceremony with this
-issuance namespace; do not erase markers/floors or relax fork rejection. Readiness
-must perform a read-only ledger check, not return green while issuance fails.
-No issuer acceptance yet. Continue that single S05 boundary, then protected
-external signers and grant/MGR journals; do not claim readiness as messaging.
-Registry readiness fix qualified398/0/7,405 mappings/2839 unchanged inputs,
-all native stages0. Dev installation qualified35 checks and12 contracts, native0.
-The original HTTP503/three unavailable ONION evidence remains in that receipt.
-DR-0119 now resolves this specific collision without reopening nonce or quota:
-use exact verified same-day paired replay ancestry for negative nonce checks,
-while signatures/currentness remain bound only to current authority. Protocol
-matching20/0/0; full2312/1/7 preserves the original S08 package FAIL. Registry
-matching84/0/0 and final57/0/0; canonical full401/0/7,408 mappings/2842 unchanged
-inputs, all native stages0. Actual retained current-dev proof/three ONION recovered
-21s; scoped restart20s offline→18s recovery→30s stable, same custody/mounts.
-Epoch recovery is verified; protected grant signers/journals, remaining S05
-rotation/issuer/node/client gates and device qualification are still open.
-
-Protected external role-signer source now qualified: actual Linux ARM6421/0/0;
-Registry initial canonical full408/0/10,418 exact mappings/2844 unchanged inputs,
-all native stages0 and zero Windows build warnings/errors. Linux-only skips are
-not device evidence; Linux build copy-retry warnings remain recorded. Separate
-role custody/UID/purpose checks are now deployed on current-dev with role-only
-mounts and explicit permanent grant/MGR roots. Native first-time node floor
-enrollment now completed in current-dev; next is configured
-issuance→client verification→node acceptance. No new wire/journal generation or manual signature
-over current issuer state. [Exact source scope](../deep-registry-api/docs/testing/s05-protected-role-signer-2026-10-14.md).
-Source package pushed: Registry `625d7f1`, DevOps `47e5aa0`; remote SHAs checked.
-Docker-resumed current-dev smoke native0; unconfigured Linux signer CLI rejects
-with exact exit2, without mounts/network/HTTP startup. Release-gate contracts
-passed51 commands using synthetic evidence; actual production-readiness status
-remains blocked by10 missing evidence inputs. Synthetic contract PASS is not GA
-or device acceptance. Physical contacts/messages/attachments/groups remain0/4.
-
-Actual current-dev issuer now has eight services: two networkless external role
-processes and Registry without their seeds. Existing keys, original secret volume,
-genesis and independent floors retained. Four canonical journal tables and the
-network/two role roots were explicitly committed once; runtime executes no DDL.
-Readiness contention and per-read database-pool churn fixed without weakening
-signatures/currentness/pending/read-back fences. Final focused19/0/0 and Registry
-canonical full409/0/10,419 exact mappings/2844 unchanged inputs, all native0 and
-zero build warnings/errors. Original full407/2/10 fixture-owner FAIL preserved;
-returned live owner now belongs to its caller, not the returning helper.
-Eight-service retained restart passed20s offline→38s recovery→30s stable with
-same Registry/node/role custody and mounts. Actual MGR history30 signed rows,
-15 sequential generations per role; no pending at read-back. Prior failed
-stability attempts08/12/15 remain failures. Pre-mailbox role rollover commands
-refuse this enabled contour until coordinated role-volume/journal updates exist.
-All three current-dev nodes now have explicit native mailbox enrollment with
-the same retained identity/data roots and independent read-only protection-key
-volumes. Final operator48 checks, actual Compose15/0, strict Verify and resumed
-PowerShell5.1 smoke passed with captured native0. Existing-key reprovision
-rejected with exit2 and unchanged key bytes. The enrolled restart log reports
-153s recovery/30s stable but lacks its original native terminal after handoff;
-it remains diagnostic/unqualified, not accepted from final JSON alone.
-Current-dev resolver enrollment on all three retained nodes and explicit
-permanent route/publication journal provisioning now completed. Actual contact
-and threshold-coordination activation/Verify plus final PowerShell5.1 smoke
-passed native0; operator54 checks and Compose18/0 passed. The actual public-input
-owned-client probe's TLS admission blocker is now resolved by supported same-key
-dev PKI/CRL provisioning, without relaxing HTTPS/online revocation. Final PKI58
-checks/Compose19 passed; same-candidate owner-corrected resume and Verify passed0
-after156s. Original PostgreSQL certificate-owner failure is preserved. Strict
-managed client09 completed AccountAdmission and CurrentNetwork, then failed
-PreKeyStage: approved ML-KEM assets exclude that Linux probe RID. Supported
-Windows probe now passed AccountAdmission/CurrentNetwork/PreKeyStage using
-approved assets and strict app-scoped TLS. Its journaled DPAPI-protected state
-and exact inventory survive reopen; typed proof429 honors bounded Retry-After.
-Publication remains unknown after30-second ONION timeout: direct signed
-Docker bridge-IP TLS times out, whereas the published localhost endpoint passes
-strict H2. Next: supported reachable signed ingress/locators or matching deployed
-network, then issuer→owned-client verify→node acceptance; no sealed-endpoint
-translation, fake prekeys or Linux crypto-approval expansion. Final helper61/
-contracts20 passed. [Windows connected scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#windows-approved-provider-connected-attempt).
-[PKI/managed scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#same-key-dev-pki-and-strict-managed-admission).
-S05 remains the sole active stage; actual private grants/client verification/
-node acceptance, future role rollover and physical0/4 remain open. Release is
-not qualified. Node/Registry/Protocol source was unchanged by this operator
-package; source qualification and installed acceptance remain separate.
-Current Windows operator/probe package: DevOps `308fb02`; matching root submodule
-pointer retained. Original client/PKI/probe FAIL receipts are not shipping acceptance.
-
-Engine-resume follow-up: actual node-control GETs returned429 and initial smoke
-failed. Node candidate adds four-attempt429/503 retry inside the unchanged5s
-read deadline; focused26/0 passed. Retained local node upgrade and independent
-key/volume checks completed; post-upgrade smoke passed0 after39s. Canonical
-Node candidate `73e9905`: full accepted1508/0/0, all native stages0 and2185
-unchanged inputs; mandatory no-mock smoke/rehearsal passed native0 with their
-infrastructure-only scope. This does not resolve the Windows signed
-endpoint boundary or open S06. [Exact source/runtime scope](../xnode/docs/testing/s05-control-read-backoff-2026-10-15.md).
-
-DR-0120 endpoint producer candidate реализован: focused59/0/0, default
-production-reference operator build0/zero warnings/errors и actual DLL API
-inspection passed. Wire allocations не изменились; reviewed repin двух source
-digests/anchors и strict generator passed. Local current-dev sealed SAN/CRL/
-ingress/peer candidate активирован через retained publisher CAS без изменения
-исходных ключей, CA, genesis/floors и без обхода PKI guard. Windows strict TLS/H2
-прошёл на трёх signed LAN origins; после engine recovery operator84 и contracts22
-прошли, Registry/три ONION готовы. Это не device delivery. Сохранённый Windows
-probe дошёл до PreKeyPublication и выявил `prekey-placement-changed`: immutable
-XPP1 против current view/PMT placement после renewal. Следующий шаг — согласовать
-и исправить этот lifecycle, сохранив exact inventory/unknown intent; не сбрасывать
-аккаунт, не re-sign и не ослаблять current authority. Android ADB пока0 устройств.
-Итоговый canonical Protocol full завершён2327/1/7,2335 exact mappings,
-1587 unchanged inputs; build/preflight/qualification0, test1/FullAccepted=false.
-Единственный FAIL — прежний S08 retired-MAU2 package graph; skips не waived.
-S06 не открыт,
-physical0/4. [Operator/runtime evidence](../deep-devops/docs/S05-PHYSICAL-INGRESS-2026-10-15.md).
-[Protocol scope](../deep-protocol/docs/testing/s05-origin-relocation-2026-10-15.md).
-[Runtime scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#actual-protected-mailbox-issuer-activation).
-[Handover contract](survival-program/decisions/DR-0119-dtt1-same-day-authority-handover.md),
-[Protocol source](../deep-protocol/docs/testing/s05-same-day-handover-2026-10-14.md),
-[Dev runtime](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#same-day-lineage-aware-recovery).
-[Readiness receipt](../deep-registry-api/docs/testing/s05-epoch-readiness-2026-10-14.md).
-[Protocol scope](../deep-protocol/docs/testing/s05-mailbox-issuer-rollover-2026-10-14.md),
-[operational scope](../deep-devops/docs/S05-AUTHORITY-HISTORY-2026-10-14.md#offline-operational-roletraffictls-candidate).
-
-Первый Store в полном Registry scope занял14930ms при deadline15s: nominal
-margin70ms остаётся риском. Seven native issuer cases имеют0 foreign TRX overlaps
-после explicit xUnit collection isolation; внутренние concurrent operations
-сохранены. Это source qualification, **не stable-performance или S09 load PASS**.
-Семь Unix-socket skips требуют Linux lane. Shipping/provider/device gates,
-S06 и остальные критерии S05 не закрыты; новый full не повторять без изменения
-его входов или конкретной verification цели.
-
-## Принятый source checkpoint S04
-
-**Client grant/send/route lifecycle — source принят; пять веток сверены с origin.**
-Нормативные критерии и dependency boundaries принадлежат
-[этапу S04](architecture/IMPLEMENTATION-PLAN-V1.md#s04--завершить-client-grantsendroute-lifecycle)
-и [transport-neutral owner](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
-Сопоставление всех критериев с реальным кодом и границами доказательств —
-[S04 review](S04-CLIENT-LIFECYCLE-REVIEW-2026-10-13.md).
-
-Текущий source package включает creation/retry cutover, original unknown Store
-settlement и linked attempts, grant/path retirement, ordinary/control terminal
-cleanup и metadata-only audits, private route custody и exhausted-PQ Braid recovery.
-Это реализация-кандидат, не stage acceptance, deployed activation или device PASS.
-Local layouts/generations определяет producer Shared, не эта очередь.
-
-Последние проверенные свидетельства:
-
-- Shared canonical full-02: **1397/16/0**, native/qualification1 — FAIL.
-  Исправленный matching remediation: **77/0/0**, native/wrapper0.
-  Последующий connected outcome diagnostic: **12/0/0**, native/wrapper0.
-  Каждый scoped PASS относится к своим inputs, не заменяет новый full.
-- Shared canonical **full-03 завершён FAIL:1412/2/0**,1414 exact case keys;
-  build/preflight0, native/qualification1. Оба mixed-route случая упали при
-  последующем directory-proof issuance: исходный XNV1 fixture не покрывал
-  весь issued interval. После terminal отдельно подтверждены1981 unchanged inputs;
-  это не исправляет FAIL и не заменяет отсутствующий canonical final input check.
-  Точный receipt и cause — Shared terminal-audit checkpoint ниже.
-- Связный source package внёс genuine signed epoch/view successor перед длинной
-  late-settlement частью и очистку временных owned DAM1/DMC2 exports/records в
-  текущем DID2 outbox/inbox/projection. Старые ciphertext/grant ceilings,
-  validation и independent history/object keys не изменены.
-  Release build0/zero warnings/errors; matching **141/0/0**, native/wrapper0,
-  1981 unchanged inputs. Этот исторический scope закрыт; актуальные follow-up
-  и canonical full указаны ниже. Review, commits и push текущего пакета завершены.
-- Shared current canonical **full-05:1424/0/0**,1424 exact case keys,
-  build/preflight/native/qualification0 и1984 unchanged inputs,
-  **FullAccepted=true**. Обязательные513-send,129-grant,128-grant backpressure,
-  оба exhausted-PQ recovery и оба previously failed mixed-route случая прошли.
-  Это current source qualification, не installed/physical или release PASS.
-  После full только убрана лишняя пустая EOF-строка нового page-cache теста;
-  его отдельные Release build0 и focused1/0/0 прошли. Исходный full receipt
-  и его input snapshot сохранены без подмены; подробности в Shared checkpoint.
-- Protocol current canonical full-04: **2286/1/7**, **2294** exact case keys,
-  native1/qualification0,1579 unchanged inputs, build/preflight0.
-  MatrixQualified=true, **FullAccepted=false**: original S08 package FAIL
-  и семь original named skips сохранены. Это не shipping/provider acceptance.
-- Актуальный MAUI Clean consumer: **95/0/0**, native0/exact qualification,
-  2517 unchanged inputs; MAUI smoke: **119/0/0**, native0/exact qualification,
-  2517 unchanged inputs. Оба Release builds — zero warnings/errors.
-  Windows ARM64 Debug текущего follow-up пакета прошёл0/zero warnings/errors;
-  Android follow-up Debug также прошёл0/zero warnings/errors.
-  Эти builds не являются installed/physical delivery evidence.
-
-Закрытие S04:
-
-1. Matching141-case scope, MAUI consumer и Windows/Android compiler checks
-   предыдущего пакета прошли. Full-04 прерван после подтверждённого пропуска
-   очистки временных DMC2/DAM1 в cancellation/retry-deadline consumers;
-   native/qualification1, FullAccepted=false. Дополнение исправлено без изменения
-   durable keys/deadlines; matching connected-02 прошёл201/0/0, native/wrapper0
-   и1982 unchanged inputs. MAUI95/smoke119 и Windows/Android compiler checks
-   текущего пакета прошли; canonical full-05 завершён1424/0/0 с exact matrix
-   по completed full-03 и connected-02, без allowed FAIL/skip.
-2. Source review пакета завершён. Final source qualification подтвердила
-   exact case/method/execution matrix, native exit0 и неизменность1984 входов.
-   Не путать scratch cleanup с удалением independent asset/history keys;
-   scoped PASS и предыдущий full FAIL не являются приёмкой S04.
-3. Сохранить downstream evidence актуального пакета. Повторять consumer/compiler
-   проверки только если новый full потребует изменений их входов.
-4. Requirement-to-evidence, source/API/frozen consistency и source/secret/diff review
-   завершены в пределах S04; original shipping/provider gates остаются открыты.
-   Не превращать partial evidence или известный package FAIL в общий PASS.
-5. Локальные repo commits созданы: Protocol f6cd57f, Shared599edf2,
-   MAUI02a1ea1, DevOps ee55b90; все четыре child trees чистые.
-   Root pointers/checkpoint:659bb9d. Все пять release-candidate веток запушены;
-   точные remote SHA совпали с локальными HEAD. S04 source принят по его критериям;
-   следующий и единственный активный этап — S05.
-
-Для отладки использовать короткий connected outcome scenario; genuine513-send
-и128/129-grant crossing остаются обязательной итоговой проверкой.
-Одна цельная функциональная часть → build/focused → связный пакет исправлений →
-matching rerun → required final gates/review/commit. Не запускать full после каждой
-промежуточной правки и не открывать следующие этапы параллельно текущему.
-
-Attachment outbox-only key cleanup не доказывает independent asset-key retirement:
-live DAM1/history/object/upload/download/resume obligations нельзя удалять ради
-capacity. Independent object-key closure остаётся непроверенным требованием;
-remote BLOB/local cache expiry и installed media flow — S10. Границу приёмки
-проверять по normative owner и S04 review, не по сумме исторических PASS.
-
-## Следующие этапы и принятая source база
-
-| Этап | Текущий статус и оставшаяся приёмка |
+| Этап | Статус и оставшаяся приёмка |
 | --- | --- |
-| S00 | Принят source baseline, не shipping. [Node](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). |
-| S01 | Принят contract/API stage, не runtime/release. [Review](S01-CONTRACT-REVIEW-2026-10-10.md); original Protocol package FAIL остаётся S08 по DR-0095. |
-| S02 | Принят current-only native/configured node source/composition, не deployed/physical. [Review](S02-CURRENT-NODE-REVIEW-2026-10-10.md), [checkpoint](../xnode/docs/testing/s02-current-consumer-2026-10-10.md). |
-| S03 | Принят grant-bound peer node source/composition, не deployed/physical. [Review](S03-CURRENT-PEER-REVIEW-2026-10-11.md), [checkpoint](../xnode/docs/testing/s03-peer-cycle-2026-10-10.md); full1479/0/0, Node ddcf4b6 pushed. Intermittent native MoveFileEx denial не объявлен исправленным. |
-| S04 | Принят source lifecycle: matching201, MAUI95/smoke119, Windows/Android compiler checks и canonical full-05:1424/0/0; review/commits/push завершены. Не installed/release acceptance. |
-| S05 | Единственный активный этап: current issuer, signed successor provisioning и автоматический operational lifecycle. [Локальный issuer scope](../deep-registry-api/docs/testing/s05-mgr1-signer-bound-2026-10-04.md#connected-private-grant-exchange-2026-10-05) не квалифицирует полный Program/ONION, proxy/deployed443 или independent key rotation. |
-| S06 | Не пройден: два настоящих owned clients, publication/resolve/claim/consent/text через selected-entry и separate replica endpoints; offline/duplicate/lost-response/restart. |
-| S07 | [Local history](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md) реализована; offline logical queue, autonomous scheduler/drain, AppAck/read и полный1:1 event/UI scope не закрыты. |
-| S08 | Shipping composition отсутствует; actual package graph FAIL. Supported native owner/clean-break, package/API/resource closure, composition без diagnostic flag, installed Android/Windows text/receipt. |
-| S09 | Не квалифицирован: sustained connected delivery, retained identities/floors, rotation/offline/restart/recovery и полный catalog. |
+| S00 | Source baseline принят, не shipping. [Node](../xnode/docs/testing/s00-node-baseline-2026-10-03.md), [Registry](../deep-registry-api/docs/testing/s00-registry-baseline-2026-10-03.md). |
+| S01 | Contract/API принят, не runtime/release. [Review](S01-CONTRACT-REVIEW-2026-10-10.md); original package FAIL остаётся S08 по DR-0095. |
+| S02 | Current-only node source/composition принят, не deployed/physical. [Review](S02-CURRENT-NODE-REVIEW-2026-10-10.md). |
+| S03 | Grant-bound peer source/composition принят. [Review](S03-CURRENT-PEER-REVIEW-2026-10-11.md); intermittent native MoveFileEx denial не объявлен исправленным. |
+| S04 | Source lifecycle принят, committed/pushed: Shared full-05:1424/0/0, exact matrix и1984 unchanged inputs; matching201, MAUI95/smoke119, Windows/Android compiler checks. [Review](S04-CLIENT-LIFECYCLE-REVIEW-2026-10-13.md), [terminal audit](../deep-client-shared/docs/testing/s04-successful-audit-2026-10-12.md). Не installed/release acceptance. |
+| S05 | Единственный активный: незавершённые критерии выше. |
+| S06 | Не пройден: два owned clients, publication/resolve/claim/explicit consent/text через selected-entry и separate stores; offline/duplicate/lost-response/restart. |
+| S07 | [Local history](../deep-client-shared/docs/testing/s07-local-history-2026-10-04.md) реализована; autonomous scheduler/drain, offline logical queue, AppAck/read и полный1:1 event/UI scope не закрыты. |
+| S08 | Supported shipping composition без diagnostic flag, actual package/API/resource graph и installed Android/Windows text/receipt. MAU2 package FAIL открыт. |
+| S09 | Sustained connected delivery, retained identities/floors, rotation/offline/restart/recovery и полный catalog не квалифицированы. |
 | S10 | Local attachment custody есть; encrypted remote files/images/video/voice/avatar, integrity/resume/expiry/cache/UI не закрыты. |
-| S11 | Current DID2 app path не замкнут: governed groups, multi-device/history transfer; retired GroupV1 harness не evidence. |
+| S11 | Current DID2 governed groups, multi-device/history transfer не замкнуты; retired GroupV1 harness не evidence. |
 | S12 | Отдельные компоненты; carriers/bootstrap/push и relay-only calls не квалифицированы полностью. |
-| S13 | Зависит от предыдущих требований: одна signed/installed artifact matrix, полный evidence catalog и reviews. GitHub Releases/main — только по отдельной команде. |
+| S13 | Одна signed/installed artifact matrix, полный evidence catalog и reviews после предыдущих этапов. GitHub Releases/main — только по отдельной команде. |
 
 ## Релизные блокеры, которые нельзя потерять
 
-- **B1/S02–S06:** current node source принят; deployed authorities/provisioning,
-  owned client join и selected-entry/ONION delivery не доказываются health200,
-  local Kestrel или fixture clocks. Old PMA1 adapters не возвращать.
-- **B2/S03–S09:** distinct node/receipt identities, sole signed Store writer/prefix,
-  independent peer facts и either-replica ACK приняты на source уровне.
-  Connected/physical retained-route/horizon/retirement/recovery ещё обязательны.
-- **B3/S04:** current source full подтвердил sustained512/128 и exhausted-PQ
-  recovery; source review, commits и push завершены;
-  installed acceptance отсутствует.
-  Original pending/unknown requests/ciphertexts/floors сохраняются;
-  не повышать bounds, не remint/evict и не подменять recovery fake freshness.
-  Source Braid package не является shipping или физическим доказательством.
-- **B4/S07:** reconnect ещё не квалифицирует autonomous draining или AppAck/read;
-  прежний local-history full564 не относится к новой installed composition.
-- **B5/S08:** conversation DI diagnostic-only и запрещена в Release.
-  Просто снять запрет нельзя: нужны supported shipping owner и настоящий artifact.
-- **B6/S04/S05/S08:** independent DCA/XUR/PMT/issuer/root rollover,
-  verified catch-up, current signed PMA2/PMT2 readiness и retained volumes
-  остаются требованиями. Same-key source scenario не доказывает key rotation.
-  MAU2/MCG2 в native provenance нельзя спрятать переименованием;
-  изменения mapping/grammar требуют frozen authorization.
-  Root/custody/account/device guards не исключаются из release scope.
-- **B7/S10–S13:** files/groups/calls/multi-device/carriers и весь
-  [V1 release scope](architecture/V1-RELEASE-SCOPE.md) остаются обязательными.
-- **B8/S06/S08:** [one-time publication](../xnode/docs/testing/s00-one-time-publication-2026-10-04.md),
-  [descriptor](../xnode/docs/testing/s00-contact-descriptor-2026-10-04.md) и
-  [owned custody](../deep-client-shared/docs/testing/s00-one-time-custody-2026-10-04.md)
-  проверены локально. Public account-owned operation/QR export,
-  request-expiry reconciliation и installed evidence ещё открыты.
-  Первый permanent-contact text milestone не отменяет one-time UX.
+- **B1/S02–S06:** health200/local Kestrel/fixture clocks не доказывают deployed
+  authorities, owned client join или selected-entry/ONION delivery. PMA1 adapters
+  не возвращать.
+- **B2/S03–S09:** distinct identities, sole signed Store writer/prefix, independent
+  peer facts и either-replica ACK приняты на source уровне; connected/physical
+  retained-route/horizon/retirement/recovery всё ещё обязательны.
+- **B3/S04:** source sustained512/128 и exhausted-PQ recovery приняты, installed
+  acceptance отсутствует. Original pending/unknown requests, ciphertexts и floors
+  сохранять; bounds не повышать, custody не evict/remint, fake freshness запрещена.
+- **B4/S07:** reconnect не доказывает autonomous draining/AppAck/read. UI Delivered
+  нельзя выводить из Store receipt или transport tombstone.
+- **B5/S08:** conversation DI diagnostic-only и запрещена в Release. Нужен supported
+  shipping owner/artifact, не снятие запрета.
+- **B6/S04/S05/S08:** independent DCA/XUR/PMT/issuer/root rollover, verified catch-up,
+  signed readiness и retained volumes остаются обязательными. MAU2/MCG2 нельзя
+  спрятать переименованием; mapping/grammar меняются только по frozen authorization.
+  Root/custody/account/device guards не исключаются.
+- **B7/S10–S13:** весь [V1 release scope](architecture/V1-RELEASE-SCOPE.md), включая
+  files/groups/calls/multi-device/carriers, остаётся обязательным. Outbox cleanup
+  не доказывает independent DAM1/history/object-key retirement; live upload/download/
+  resume obligations нельзя удалять ради capacity.
+- **B8/S06/S08:** one-time source publication/descriptor/owned custody проверены
+  локально; account-owned operation/QR export, request-expiry reconciliation и
+  installed evidence открыты. Permanent-contact milestone не отменяет one-time UX.
 
 Физические contacts/messages/files/groups: **0/4 подтверждены**. Релиз не готов.
-Поддерживаемые клиенты этого спринта — Windows и Android; macOS не собирать
-до явной команды владельца.
+Клиенты этого спринта — Windows и Android; macOS не собирать до явной команды.
+OfficialXPoint3: **три production nodes**; обязательный hop outage останавливает
+data route. S09 доказывает восстановление после возврата, не outage availability.
+Переход к шести перед приглашением пользователей — отдельное решение владельца.
 
-OfficialXPoint3: **три production nodes**. Outage обязательного hop останавливает
-data route; S09 доказывает сохранность/восстановление после возврата, не outage
-availability. Расширение до шести перед приглашением пользователей — отдельное
-решение владельца, без скрытого topology fallback.
-
-## Evidence и обновление очереди
-
-Команды, hashes, exact scopes и сохранённые FAIL находятся в repo-checkpoints:
-[Shared lifecycle](../deep-client-shared/docs/testing/s04-lifecycle-2026-10-11.md),
-[Shared retention](../deep-client-shared/docs/testing/s04-contact-retention-2026-10-12.md),
-[Shared terminal audit](../deep-client-shared/docs/testing/s04-successful-audit-2026-10-12.md),
-[Shared sustained](../deep-client-shared/docs/testing/s04-sustained-send-2026-10-12.md),
-[Shared routes](../deep-client-shared/docs/testing/s04-route-processing-2026-10-11.md),
-[Shared Braid](../deep-client-shared/docs/testing/s04-braid-durable-2026-10-11.md),
-[Protocol routes](../deep-protocol/docs/testing/s04-private-route-update-2026-10-11.md),
-[Protocol Braid](../deep-protocol/docs/testing/s04-braid-recovery-2026-10-11.md).
-[SPRINT-HISTORY](SPRINT-HISTORY.md) и сохранённая редакция — исторические наблюдения,
-не новая очередь и не разрешение production/reset/publish.
-После terminal обновлять только текущую строку статуса и linked checkpoint;
-не добавлять сюда очередной хронологический changelog.
+После terminal обновлять текущую строку и linked checkpoint, не наращивать
+хронологический changelog. Одна функциональная часть → focused/build → связные
+исправления → matching rerun → required final gates/review/commit.
