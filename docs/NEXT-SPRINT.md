@@ -111,7 +111,7 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    exit из-за PowerShell stderr handling; повтор завершился native0.
    Protocol focused/API/ONION17/0/0 и строгий machine registry gate прошли.
    Receipt: Protocol `artifacts/s05-current-publication-20261015/protocol-focused-01`.
-   Source checkpoint: Protocol `3ed77a4`, Shared `e8a1178`, Registry `13678dc`,
+   Source checkpoint: Protocol `f0ef288`, Shared `e8a1178`, Registry `13678dc`,
    Node `01d86d5`. Selected source security:17/24/12/9/6 файлов,0 findings;
    changed Markdown9/317 local links и public documentation174 checks прошли.
    Все пять checkpoint refs проверены на GitHub; push verification завершён.
@@ -121,9 +121,17 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    включавшим новый typed current-submission signer. Production guards не
    изменены; исправленный полный набор этих двух классов прошёл94/0/0.
    Receipt: Protocol `artifacts/s05-current-publication-20261015/regression-focused-02`.
-   Исходный full FAIL сохранён; повтор полного gate требуется. Оставшийся
-   package FAIL — фактический retired `MAU2` token в assembly, не waiver.
-   **Осталось:** package и final full qualification,
+   Исходный full FAIL сохранён. Повтор Protocol full02 завершён2331/1/7:
+   build/preflight/qualification0, native test1,2339 exact mappings и1611
+   unchanged inputs, MatrixQualified=true, FullAccepted=false. Receipt:
+   Protocol `artifacts/s05-current-publication-20261015/full-02`.
+   Оставшийся package FAIL — фактический retired `MAU2` token в старом
+   production mailbox-authority codec/model, не waiver или причина переименовать
+   старый transport в current. Его clean-break closure остаётся S08 blocker.
+   Новый Node full запущен с exact DR-0125 case replacement; до terminal и
+   qualification его результат не заявляется. Не запускать второй full поверх
+   живого runner в `artifacts/s05-current-publication-20261015/full-01`.
+   **Осталось:** package и Shared/Registry/Node final full qualification,
    затем matched retained current-dev и Android/Windows
    activation на тех же аккаунтах. Ни новый runtime, ни physical0/4 этим кодом
    ещё не квалифицированы. Expired inner resources и epoch/cohort/device handover
