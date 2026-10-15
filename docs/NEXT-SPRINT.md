@@ -164,7 +164,12 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    Windows однократная UI Verify также завершена verified-publication;
    encrypted recovery сохранён, manual observation `windows-observation-01.json`
    не является release receipt. Это physical account/publication diagnostic, не peer contact exchange,
-   доставка сообщений или full qualification. Cold-reopen repeat остаётся.
+   доставка сообщений или full qualification. Android cold-reopen Verify04
+   завершён ContactPublication/TransportIo; этот FAIL и аккаунт сохранены,
+   стабильное восстановление после restart не заявляется. MAUI harness-only
+   `7199f67` добавляет guarded HTTPS Contacts/Accept/Text phases без изменения
+   compiled app; Clean135/0/0/native0, selected security5/0 findings. Старый APK
+   допустим только через exact ancestor/changed-path guard, не как новый build.
    Предыдущие DR-0124 Android phase5 unknown и closed `Winner/winner-missing` сохранены в
    [contact checkpoint](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md).
    Агрегаты publication6/completed6/pending0 не устанавливают принадлежность
