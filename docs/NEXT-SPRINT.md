@@ -18,10 +18,10 @@
 не получена.** Diagnostic device runs внутри S05 не открывают параллельные этапы.
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
-Matched device source: Protocol `0f295cd`, Shared `72a86c5`, MAUI `9304da3`,
-Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`. Все candidate refs
-проверены на GitHub. MAUI docs-only successor `65358dd` не меняет APK; его
-candidate push проверяется отдельно. Это не Releases/main или release acceptance.
+Installed diagnostic source: Protocol `0f295cd`, Shared `72a86c5`, MAUI Windows
+`845a666` / Android `31fe23b`; Registry `6eb84ee`, Node `01d86d5`, DevOps `7b2799f`.
+Новые source changes проходят отдельную квалификацию; старые APK не являются
+доказательством новых inputs. Это не Releases/main или release acceptance.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
@@ -59,36 +59,28 @@ permanent fences, native replay floors, registered node keys и volumes сохр
    в decision, исходные TRX не изменены. Strict registry PASS44/247/10/5/4/11,
    security12/0 findings, strict UTF-8/local links5/75.
 
-   Matched Windows build05 впервые завершил actual mailbox synchronization без
-   ошибки на том же аккаунте, background Verified; это empty-read observation,
-   не contact delivery. Android build07/install07 сохранил account/recovery и
-   три protected packages; Verify08/Inspect26 — verified-publication/Verified,
-   но mailbox refresh02/Inspect28 — terminal incomplete-redacted, затем фоновый
-   reconnect Rejected и Contacts.Add disabled. Verify09/Inspect30 восстановил
-   verified-publication/Verified; один AddContact02 retry того же intent завершён
-   operation-cancelled (Inspect32), без contactRequestStored. Третьего send нет.
-   **Текущий следующий шаг:** локализовать этот Android отказ, восстановить тот же
-   logical contact intent и проверить явное принятие / A↔B text без reset.
-   Windows trace не доказывает Android причину; состояние кнопки не delivery.
-   MAUI-only candidate объединяет foreground network work и background verify
-   существующей process queue; local history остаётся вне неё. Source scheduling
-   tests не доказывают точную Android причину; новый matched device retest обязателен.
-   Focused35 и полный MAUI Clean150 прошли без FAIL/skip/native errors;
-   security17/0 findings, strict UTF-8/local links6/97. Receipts: MAUI тот же
-   prefix `foreground-pipeline-focused-02`, `foreground-pipeline-clean-01`.
-   Matched Windows build06 снова завершил actual empty mailbox synchronization;
-   Android build08/install08 автоматически достиг Verified. AddContact03 retry
-   того же intent завершён protected-state-rejected (Inspect35), без подтверждения
-   сохранения. Четвёртого send нет. Smoke119 прошёл; точный Android source guard
-   ещё не установлен. QA-only bounded category/method/line observer квалифицируется
-   без exception text/IDs/paths; Clean160 и Windows compiler-check0 warnings/errors
-   прошли (`business-diagnostics-clean-02`, `business-diagnostics-windows-compile-01`).
-   Это не installed/release qualification. Не менять crypto/expiry по догадке.
-   Android metadata APK09 локализовал AddContact04/Inspect37 protected-state
-   rejection в `RequireContactHelloEndpointBindingsAsync` при восстановлении
-   initial draft. PDB line недоступна; уточняется closed guard/IL offset, без
-   изменения разрешающих проверок. Пятого send нет. Отдельный Windows read снова
-   завершён пустой синхронизацией; это не доказательство remote noncommit.
+   Windows build06 (`845a666`) завершил actual empty mailbox synchronization на
+   retained аккаунте; это read observation, не delivery/noncommit. Android
+   build10/install10 (`31fe23b`) сохранил account/recovery и protected packages,
+   background Verified. AddContact05 того же intent завершён точным
+   `RequireCurrentIssuer / XurWindow` (IL104), без contactRequestStored. Это
+   доказанный отказ полного authenticated time window XUR, не доказательство
+   конкретной стороны interval и не повод ослаблять guard. Шестого send нет.
+   **Текущий следующий шаг:** завершить explicit stop старого contact intent
+   через существующий owned producer, затем отдельное создание нового запроса
+   и явное принятие / A↔B text без reset. Stop не доказывает non-delivery/recall.
+   Foreground network work и background verify используют одну существующую
+   process queue; local history остаётся вне неё. QA-only diagnostics ограничены
+   closed category/check/static method/IL, без произвольного exception text/IDs/
+   paths. Source tests и Windows trace не заменяют actual Android observation.
+   Explicit stop UI подключается к существующему `CancelOwnInitialContactAsync`;
+   readonly `IsStopped` берётся из protected draft. Cold Add сначала предлагает
+   retry/stop без dispatch; unknown stop сохраняет original, confirmed stop
+   позволяет только последующее explicit Add. Никаких новых journals/wire/reset.
+   Shared native/SQLCipher cold-reopen projection3, MAUI Clean175 и Smoke119
+   прошли0fail/0skip/native0 (`contact-stop-projection-01`, `contact-stop-clean-01`,
+   `contact-stop-maui-smoke-01`); это
+   source evidence, не installed stop или contact delivery. Final full остаются.
 
    **Открытые source/lifecycle границы:** dependency-closed retirement смешанной
    closed/adopted predecessor history (сейчас такие ancestors остаются pinned);
