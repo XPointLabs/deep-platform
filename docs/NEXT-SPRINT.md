@@ -211,16 +211,27 @@ View57/contact generation0 native0 не доказывает changed-view renewa
    Не удлинять120s, не освобождать originals/floors и не вводить reset как recovery.
    Причина ошибки Android этим Windows trace не доказана. Physical peer exchange
    остаётся0/4; текст, файлы и группы не переданы.
-   Shared source candidate теперь вызывает тот же DR-0084 closure из ordinary
-   new-work maintenance под уже удержанной lease; active read/ACK bypass сохранён.
-   Original request/holder/policy/route/possible-grant ceiling не меняются.
-   Focused6/0/0 и affected regression48/0/0/native0 проверяют sole expiry refusal,
-   complete epoch exclusion → retirement → original-path read, faults и cold reopen.
-   Receipts: Shared `artifacts/s05-current-publication-20261015/`
-   `pending-maintenance-focused-01`, `pending-maintenance-regression-01`.
-   Security4/0 findings и25 local doc links прошли. Journal/wire/expiry/limits
-   не менялись; canonical full и matched device retest ещё требуются. Это не
-   разрешение reissue по closed outcome. Отдельная проверяемая гипотеза issuer:
+   DR-0084 closure уже скомпонован под удержанной lease, без изменения originals.
+   Matched Shared `d2ef134` Windows build04 / Android build06/install06 сохранили
+   аккаунты, но оба mailbox refresh завершились ошибкой; Windows trace локализовал
+   следующий отказ в `AcquisitionForNewWork` после actual closure. Smoke119 прошёл.
+   [DR-0126](survival-program/decisions/DR-0126-independent-grant-after-unresolved-acquisition.md)
+   исправляет смешение retained uncertainty с запретом независимой authorization:
+   новый owned holder/request для новой работы допустим, exact old request и
+   active Store/Retrieve/ACK не заменяются. Current issuer/route/time, CAS,
+   pending exact replay и128-entry bound сохранены; layout/wire/limits не менялись.
+   Focused16/0/0 и affected regression58/0/0/native0 проверяют оба направления,
+   lost reply, SQL/CAS/cold handover, late-original non-overwrite и full-bound
+   refusal до issuer/read callback. Receipts: Shared
+   `artifacts/s05-current-publication-20261015/independent-grant-focused-03`
+   и `independent-grant-regression-01`; исходный compiler FAIL02 сохранён.
+   **Следующее:** matched device build/retest на тех же аккаунтах, bounded
+   mixed closed/adopted predecessor retirement и canonical full. Старые6/48
+   receipts не квалифицируют новую семантику; exact3 retired-case replacements
+   объявлены в DR-0126, без waiver FAIL/skip. Security7/0 findings прошёл;
+   normative source hash repinned ровно для transport-neutral-v1, strict registry
+   PASS44/247/10/5/4/11. Это не physical delivery или S05/release acceptance.
+   Отдельная проверяемая гипотеза issuer:
    grant ScopeHash содержит hash current network-history; retry того же XMG2
    через новый view может получить immutable-scope conflict. Нужен actual Registry
    regression, не удаление старых reservations или ослабление scope guard.

@@ -474,7 +474,7 @@ notBefore) / 5)`. Independently current authenticated upper time, достигш
 границы, запускает отдельный successor acquisition. Это conservative scheduling
 по подписанному lifetime, не новая authority, продление grant или разрешение на
 использование expired issuer/route. Существующий pending successor возобновляется
-exact прежде создания другого; closed-unresolved/late tail не remint.
+exact прежде создания другого; original closed request никогда не remint.
 Автоматический выбор применяется только к новой send attempt или новому read
 cycle; outstanding Store/Retrieve/ACK сохраняют original grant/request. Новый
 winner допускается только после полной current проверки, protected read-back и
@@ -482,6 +482,24 @@ promotion; incomplete successor не подменяет current. Full bounds з�
 новый acquisition до issuer callback, а известное исчерпание send/grant floors
 проверяется до нового authored/ratchet work. Никакие интервалы, journal limits,
 wire values или replay/deletion permission этим trigger не изменяются.
+
+**Independent authorization after unresolved acquisition — DR-0126.** После
+описанного ниже authenticated closure owner может append отдельный grant
+acquisition для новой работы, сохраняя closed predecessor целиком. Это не retry
+и не повторная выдача исходного XMG2: новый request/operation и независимый
+reachability-direction holder создаёт только held owner; old request, holder,
+policy, route, possible-grant ceiling и uncertainty остаются exact и counted.
+Issuer/route/current-time verification, protected CAS/read-back, capacity checks
+и promotion нового winner обязательны независимо от старого outcome. Один
+existing pending candidate сначала возобновляется exact; unadopted late result
+не перескакивается. Уже подготовленные Store/Retrieve/ACK продолжают original
+grant/request/counter и не входят в этот new-work selector. Ни application event,
+ни ratchet ciphertext не создаются заново из-за новой authorization. Старый
+closed outcome не становится non-issuance/BeforeForward, а новый grant не
+разрешает удалять predecessor, replay floors или accepted-object dependencies.
+Сохраняются hard bounds и отдельный dependency-closed retirement; отсутствие
+его qualified producer не разрешает eviction или повышение limits. Используется
+существующий predecessor graph, без нового layout/slot/version или wire.
 
 **Expired/unknown acquisition: исходная граница возможной выдачи.** До первого
 issuer callback owner MUST защищённо сохранить exact original XMG2, holder
