@@ -22,8 +22,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `229c3da` | `09f5c1d` | `605090b` | build14 |
-| Android | `229c3da` | `09f5c1d` | `605090b` | APK21/install21 |
+| Windows | `7cf9d21` | `acc65f1` | `605090b` | build15, running retained profile |
+| Android | `7cf9d21` | `acc65f1` | `605090b` | APK22/install22, retained profile |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
@@ -31,6 +31,29 @@ Verified и завершил Chats sync без ошибки, Android reopened re
 Typed429/503 recovery физически не инъецировался. Runtime code: Registry `a4805bf`, Node `01d86d5`, DevOps `7b2799f`.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
+Shared `acc65f1` carries the independently verified contact pair through one
+owned command, including explicit borrowed read/claim custody; current protected
+floor, time, endpoint and final native checks remain. Focused8 and the existing
+eight affected regressions passed on that production source; MAUI Clean193 /
+Smoke119 passed. The first new test run retained one wrong-exception assertion
+FAIL, corrected without relaxing production verification. Final full remains.
+
+**Immediate runtime blocker:** supported local Verify subsequently failed;
+Registry readiness oscillates and all three node mailbox hosts report
+`unavailable` while ONION/contact terminals are ready. Closed Registry logs show
+authenticated-time acquisition denials (`scope-or-quorum`, `interval-conflict`,
+`floor-rollback`); the individual node recovery reason is not yet proven.
+Publisher renewal still succeeds, so offline-policy expiry is not established.
+Windows15 reached Verified after explicit registration check, then Rejected;
+Android22 has no Store/contact delivery. Recover current time/host readiness
+before another business retry; do not reset accounts/floors or extend windows.
+Local diagnostic Node `2a5f718` is now active on all three nodes; its closed
+reason is `observation-missing`. Supported Build/Up preserved all29 volume and25
+bind mount identities using saved canonical before/after snapshots. This new
+upgrade check does not replace the older FAIL. Node focused27/3/0/native1 and
+the subsequent interrupted run remain unaccepted; a separate hash-bound binary
+diagnostic also failed the original10s Store deadline after peer response capture.
+Fix/qualify source performance and current-authority recovery, not larger windows.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
