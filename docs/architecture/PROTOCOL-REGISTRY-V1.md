@@ -37,9 +37,10 @@ issuer/node/peer activation and retained-account/device qualification remain ope
 
 [DR-0123](../survival-program/decisions/DR-0123-retained-publication-intent.md)
 adds separate closed owner/issuer original-publication-intent verification.
-It allocates no wire, signing domain, mutation lease or journal generation.
 Those read-only facts cannot release an issuer fence, prove noncommit or
-authorize redispatch; connected expired-intent recovery remains open.
+authorize redispatch. Its connected target adds XPL1 and target3 coordination
+for independently current mutation permission over the exact original intent;
+no journal generation or compatibility path. Runtime recovery remains open.
 
 [DR-0101](../survival-program/decisions/DR-0101-retained-mailbox-route-custody.md)
 freezes independent bounded private node read-route custody and typed lookup.
@@ -593,6 +594,7 @@ Normative source: `CONTACT-RESOLVER-V1.md`.
 | `XPU1` | compare-and-swap publication of encrypted DCR1 at an opaque invite locator. | `TARGET_UNFROZEN`; internal DID2-only V2 structural pair with XPA1 and exact-head witness/time checks exists, but no complete account, route, placement or runtime authority |
 | `XPO1` | closed publication outcome for one XPU1 operation. | `TARGET_UNFROZEN` |
 | `XPA1` | short-lived directory-threshold authorization for one opaque XPU1 publication; exposes no Deep ID/account/device. | `TARGET_UNFROZEN`; DID2-only V2 shape/body binding, XNA1 threshold signatures and live ADH1/DTT1 head/time binding exist, but current-account issuance, route/placement authority and runtime remain open |
+| `XPL1` | fresh current publication mutation lease over one exact original XPU1 intent; original replay/CAS/receipt identity is preserved. | `FROZEN_TARGET_NOT_ACTIVE`; DR-0123, matched issuer/client/node/peer and retained-owner activation required |
 | `XIQ1` | idempotent permanent-address resolve or one-time invite claim request. | `TARGET_UNFROZEN` |
 | `XIS1` | closed invite resolve result with exact-replay semantics. | `TARGET_UNFROZEN` |
 | `XPS1` | signed per-device prekey service descriptor carried by DCB1. | `TARGET_UNFROZEN`; DID2-only version-2/suite-`0x0301` codec, author and verifier use the V2 signing domain, generation-1 genesis and version-2 ArtifactRef; retired V1 descriptor is not a DID2 publication input |

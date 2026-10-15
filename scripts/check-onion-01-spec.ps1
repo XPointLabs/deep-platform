@@ -48,7 +48,7 @@ if ((@($groupOperation.requestMagic) -join '|') -cne 'GSW1|GSQ1' -or
     Fail 'GroupControl exact pairing or bounds'
 }
 $contactOperation = $terminalOperations[3]
-if ((@($contactOperation.requestMagic) -join '|') -cne 'XPU1|XIQ1|XPK1|XUW1|XUQ1|XMG2|XPP1|XCA2' -or
+if ((@($contactOperation.requestMagic) -join '|') -cne 'XPU1|XPL1|XIQ1|XPK1|XUW1|XUQ1|XMG2|XPP1|XCA2' -or
     (@($contactOperation.successMagic) -join '|') -cne 'XPO1|XIS1|XPC1|XUS1|XMC2|XIC1|XCS2' -or
     [int]$contactOperation.maxRequestBytes -ne (12 + 171614) -or
     [int]$contactOperation.maxSuccessBytes -ne 131072) {
@@ -66,6 +66,15 @@ foreach ($name in @('registry','vectors')) {
     if (!($publicationRaw | Test-Json -SchemaFile $publicationSchema)) { Fail "DR89 publication $name schema" }
 }
 $publication = Get-Content -LiteralPath (Join-Path $specRoot 'contact-publication-v4.registry.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+foreach ($name in @('registry','vectors')) {
+    $leasePath = Join-Path $specRoot "contact-publication-lease-v1.$name.json"
+    $leaseSchema = Join-Path $specRoot "contact-publication-lease-v1.$name.schema.json"
+    if (!(Test-Path -LiteralPath $leasePath -PathType Leaf) -or
+        !(Test-Path -LiteralPath $leaseSchema -PathType Leaf)) { Fail 'missing DR123 publication lease freeze' }
+    if (!((Get-Content -LiteralPath $leasePath -Raw -Encoding UTF8) | Test-Json -SchemaFile $leaseSchema)) {
+        Fail "DR123 publication lease $name schema"
+    }
+}
 if ($publication.envelopeVersion -ne 4 -or $publication.maximumRequestBytes -ne 171614 -or
     $publication.runtimeActivation -or $publication.clientOneTimeCustodyImplemented -or
     [int]$contactOperation.maxRequestBytes -ne 12 + [int]$publication.maximumRequestBytes) {

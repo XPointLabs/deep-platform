@@ -647,6 +647,17 @@ permanent generation fence, prove noncommit, authorize a new write or become a
 synthetic XPO. Fresh lease, expired-resource settlement and two-replica adoption
 remain separate connected recovery requirements.
 
+The connected DR-0123 target uses XPL1 as the sole reusable publication mutation envelope,
+with exact grammar/domains/limits in
+[contact-publication-lease-v1.registry.json](../survival-program/releases/v3.0.0/specs/contact-publication-lease-v1.registry.json).
+The embedded original XPU is never rewritten or used as a fresh operation lease.
+Current owner/witness/carriage verification is independent from the original
+intent, permanent winner and both-node commitment. Client/peer/store adoption
+must preserve the original replay/CAS/receipt identity. A standalone original
+reusable XPU is not the connected target's second mutation path. The separate
+one-time genesis operation retains its strict current window. No journal reset,
+generation bump or compatibility reader is authorized.
+
 The DID2 descriptor bootstrap and current permanent-read boundary follow
 [DR-0041](../survival-program/decisions/DR-0041-did2-permanent-contact-resolution.md).
 With the reusable successors from
