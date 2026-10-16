@@ -22,8 +22,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `7cf9d21` | `acc65f1` | `605090b` | build15, running retained profile |
-| Android | `3505482` | `acc65f1` | `605090b` | APK24/install24, retained profile |
+| Windows | `7fb384d` | `104b24b` | `0867668` | build16, running retained profile |
+| Android | `7fb384d` | `104b24b` | `0867668` | APK25/install25, retained profile |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
@@ -32,6 +32,20 @@ Typed429/503 recovery физически не инъецировался. Local 
 Registry `469460e` (comment-only after `2859756`), Node `7520654`;
 Registry NTS helper `dd36774`, publisher
 `f4a77ca` (no production change).
+The active local Registry/node images now compile Protocol `0867668` under
+DR-0127. Up11 verified the exact Registry image, all three exact node images and
+unchanged29 volume /25 bind identities; supported smoke12 exited0. Both retained
+device profiles then reached explicit verified-publication/proof success.
+Sustained readiness and physical business acceptance are still missing:
+Android later became Unavailable and its Add01/02 observed no Store; a supported
+owned contact scroll confirms the network-ready prerequisite refusal. The
+repeated background failures are Cancelled in local account/floor/compaction
+reads at the unchanged2m bound, not an established network-only cause. Windows16
+actual incoming synchronization ended OutcomeUnknown at HTTP ingress. Existing
+closed node logs locate a ContactResolve exit custody-or-io failure and two relay
+504 responses. Diagnose its inner operation and Android's bounded recovery cost;
+no reset, replacement intent or longer deadline is a remedy. Physical acceptance
+remains0/4. Current exact evidence is in the linked device/contact checkpoints.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Shared `acc65f1` carries the independently verified contact pair through one
