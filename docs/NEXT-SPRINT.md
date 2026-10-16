@@ -46,6 +46,12 @@ IL4129; matching build PDB line86). Какая из привязок отлич�
 не ослаблять guard и не заменять прежний intent. DR-0064 требует сохранения exact
 draft; текущая проверка нового запроса с другого устройства не закрывает этот
 retained retry. [Физический checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
+Отдельно Windows contact operation остаётся Busy без результата. Source audit
+нашёл отсутствие foreground attempt budget; candidate добавляет отмену actual
+token через2m только после очереди, сохраняя lease до drain и исходную uncertainty.
+Red1/2 FAIL сохранён; reconnect/messaging49 и unfiltered MAUI Clean254 PASS,
+0 warnings. Это scheduling correction, не установленная причина async wait или
+device fix; [matching build/retest ещё требуются](../deep-client-maui/docs/S05-FOREGROUND-DEADLINE-2026-10-16.md).
 Точные [source receipts и оставшиеся проверки](../deep-client-shared/docs/testing/s05-expired-active-retrieve-2026-10-16.md)
 не заменяют matching device/full/package acceptance. Далее — retained-account
 contact/text; затем по единому плану attachments/groups. Physical acceptance0/4.
