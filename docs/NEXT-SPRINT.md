@@ -23,7 +23,7 @@ Installed diagnostic source:
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
 | Windows | `7fb384d` | `104b24b` | `0867668` | build16, running retained profile |
-| Android | `7fb384d` | `104b24b` | `0867668` | APK25/install25, retained profile |
+| Android | `1ba92e6` | `104b24b` | `0867668` | APK27/install27, retained profile |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
@@ -51,9 +51,16 @@ regressions. Component build13 / supported Up14 verified its exact image on all
 three nodes, unchanged Registry09 and29/25 mounts; smoke15 exited0. Windows16's
 single incoming refresh at05:24Z completed with an empty list, so the earlier
 exit failure is not yet reproduced or explained. Android25 Verify03 still
-failed with retained state. A QA-only stage/protector work-cost candidate passed
-52 focused and227 unfiltered Clean-project cases; matching physical measurement
-is pending, not a performance fix, source full gate or delivery acceptance.
+failed with retained state. QA-only stage/protector work-cost source passed52
+focused and227 unfiltered Clean-project cases. Matching APK27 retained update
+measured1226 unprotect calls /66.8s protection in a120.1s cancelled verification.
+Shared `f87fc97` batches twelve independent local journal reads into one actual
+atomic inventory read, without cache, omitted validation or authority changes.
+The encrypted source fixture reduces repeated reopen reads19 ->8; focused05
+passed39, affected regression03 passed104, contact04 passed32, all native0 with
+no failure/skip. Matching optimized APK28/device measurement and full source
+qualification remain open. Windows16's second empty sync was slow but completed
+by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Shared `acc65f1` carries the independently verified contact pair through one
