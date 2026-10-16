@@ -123,9 +123,21 @@ Its private storage component passed63 affected regressions and9 final focused
 cases (native0, no failures/skips), including actual encrypted reopen, native
 authoring, concurrent CAS, lost response and missing/cyclic/changed custody.
 The [Shared mapping](../deep-client-shared/docs/architecture/owned-prekey-inventory-custody.md)
-explicitly remains inactive: connect the actual SQL-key owner, signed lineage,
-replica pair, common receiver consumption/recovery and compaction readback
-before device activation. This does not yet recover either installed account.
+now records actual SQL-key/lease integration, signed lineage, per-publication
+pair custody, the one global receiver ledger, secret-destruction recovery and
+compaction readback. Owner regression06 passed89, compaction07 passed27,
+epoch09 passed6 and final runtime regression10 passed97, all native0 with no
+failures/skips. The epoch test includes real
+pending old Hello after same-service epoch succession, out-of-order LR counters
+and cross-key counter-reuse rejection. Replicas are signed in-process fixtures,
+not physical/deployed transport acceptance. Final11 rebuild/two exact storage
+rows passed with0 compiler warnings/errors after correcting a test-style warning;
+runtime source is unchanged from regression10. Ordinary automatic authoring and
+changed contact-support adoption remain unconnected: freeze the minimal missing
+closed authoring API before changing it, preserve pending exact bytes and all
+old claimed/Initial custody. Canonical full/package qualification and
+retained-account device recovery remain open. This does not yet recover either
+installed account; physical acceptance remains0/4 and S05 is not accepted.
 
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
