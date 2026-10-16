@@ -23,7 +23,7 @@ Installed diagnostic source:
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
 | Windows | `7fb384d` | `104b24b` | `0867668` | build16, running retained profile |
-| Android | `1ba92e6` | `104b24b` | `0867668` | APK27/install27, retained profile |
+| Android | `68caf0d` | `f87fc97` | `0867668` | APK28/install28, retained profile |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
@@ -58,8 +58,13 @@ Shared `f87fc97` batches twelve independent local journal reads into one actual
 atomic inventory read, without cache, omitted validation or authority changes.
 The encrypted source fixture reduces repeated reopen reads19 ->8; focused05
 passed39, affected regression03 passed104, contact04 passed32, all native0 with
-no failure/skip. Matching optimized APK28/device measurement and full source
-qualification remain open. Windows16's second empty sync was slow but completed
+no failure/skip. Full source and physical business qualification remain open.
+APK28 did pass exact packaged-code verification and
+retained update:103.8s /1008 unprotect calls /53.6s protection, but registration
+still failed at the existing `VerifyDtt` binding guard and UI became Rejected.
+The failed subcondition is not yet proven. Reproduce coherent closure/DTT
+acquisition across a legitimate view advance; do not disable exact bindings,
+reset protected state or extend deadlines. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
