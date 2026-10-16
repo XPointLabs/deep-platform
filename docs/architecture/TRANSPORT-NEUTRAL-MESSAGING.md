@@ -501,6 +501,19 @@ closed outcome не становится non-issuance/BeforeForward, а новы
 его qualified producer не разрешает eviction или повышение limits. Используется
 существующий predecessor graph, без нового layout/slot/version или wire.
 
+**Expired active Retrieve before capture — DR-0133.** Пока исходный grant
+допускает операцию, active Retrieve/ACK сохраняет exact original work и не входит
+в idle new-work selector. После independently current protected lower time,
+достигшего expiry исходного grant, owner может закрыть только Retrieve без
+captured page как explicit closed-unknown, сохранив exact original MAU/body,
+acquisition/holder/route/counters и traversal. Это не successful empty,
+BeforeForward, non-delivery или namespace retirement. Только после protected
+CAS/read-back отдельный новый read может получить независимый current grant.
+Original frame никогда не переподписывается и не dispatches после expiry.
+Captured page/semantic/ACK custody остаётся pinned до отдельного qualified
+continuation. Allocation и evidence:
+[DR-0133](../survival-program/decisions/DR-0133-expired-owned-retrieve-attempt-closure.md).
+
 **Expired/unknown acquisition: исходная граница возможной выдачи.** До первого
 issuer callback owner MUST защищённо сохранить exact original XMG2, holder
 custody и immutable evidence для conservative upper bound возможного MCG3.

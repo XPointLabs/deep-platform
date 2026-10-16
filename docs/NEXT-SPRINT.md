@@ -18,6 +18,16 @@
 не получена.** Diagnostic device runs внутри S05 не открывают параллельные этапы.
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
+Непосредственный текущий блокер — восстановление expired active Retrieve,
+наблюдённое на APK36 (`51eda49` / Shared `ca1df5f` / Protocol `d2e3d42`),
+без сброса retained аккаунта. [DR-0133](survival-program/decisions/DR-0133-expired-owned-retrieve-attempt-closure.md)
+выделяет closure только uncaptured phases1/2; реализация пока source candidate.
+Protocol139, Shared affected44 и final40 прошли; final40 без compiler warnings.
+Captured page/semantic/ACK phases3–6 остаются pinned и не считаются исправленными.
+Точные [source receipts и оставшиеся проверки](../deep-client-shared/docs/testing/s05-expired-active-retrieve-2026-10-16.md)
+не заменяют matching device/full/package acceptance. Далее — retained-account
+contact/text; затем по единому плану attachments/groups. Physical acceptance0/4.
+
 Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
