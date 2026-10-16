@@ -71,6 +71,11 @@ contact/text; затем по единому плану attachments/groups. Matc
 с inner cancellation; его точный повтор отменился до нового dispatch. Android
 Retrieve также OutcomeUnknown. Следующий blocker — конкретная задержка bounded
 owned/authority работы; не увеличивать сроки authority или вводить plaintext cache.
+Source-кандидат использует существующий atomic inventory batch для4 network
+markers и пары directory markers вместо отдельных расшифрований:47 focused
+PASS/native0 без compiler diagnostics. Это сокращение чтений, не доказанное
+ускорение устройства; matching builds/retest ещё нужны.
+[Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
 
