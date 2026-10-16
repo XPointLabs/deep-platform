@@ -102,8 +102,20 @@ affected82 and contact47 passed, no failures/skips/native errors. Full source an
 matching physical performance qualification remain open. Windows UI access was
 revalidated in this turn: build17 is running with the retained profile, so its
 earlier tool-budget refusal is no longer a current blocker.
-Windows17 built with0 warnings/errors, but its launch returned UI-budget exhaustion;
-fresh window observation remains required. Acceptance is still0/4;
+The DR-0129 contact-object/service boundary now has a signed native owner and
+independent target5 issuer regression:final12 passed, no failures/skips/native
+error, including actual expired-service succession and publication request
+expiry capped by the signed object;
+Protocol9 and MAUI108 focused cases passed, Protocol solution build has0
+warnings/errors. Exact scopes and original red evidence are in the
+[Shared checkpoint](../deep-client-shared/docs/testing/s05-prekey-service-succession-2026-10-16.md).
+This does not implement multi-generation inventory custody or recover the
+installed account yet. Complete that lifecycle before another device contact
+attempt; no reset or old signed interval extension. Protocol canonical full11
+completed2361PASS/1FAIL/7 declared skips,2369 exact mappings and1620 unchanged
+inputs: only the existing MAU2 package witness fails. Build/preflight and
+qualification exited0; native test1, FullAccepted=false. Successful full/package
+qualification remains open. Acceptance is still0/4;
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
