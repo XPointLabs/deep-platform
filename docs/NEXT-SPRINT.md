@@ -168,6 +168,14 @@ count assertion с дополнительным own proof. Final affected29 PASS
 без compiler diagnostics, включая actual native stop/cold reopen и durable
 Store precedence. Это не canonical full; full/package и matching device pending;
 [scope](../deep-client-shared/docs/testing/s05-initial-retry-entry-2026-10-17.md).
+Matching Windows27/APK44 (`8181f0a` / `f63b432` / `9d6df07`) собраны native0
+без diagnostics и установлены с прежними аккаунтами/recovery, Android Verified.
+Windows exact old Retry штатно закрыл proven expiry без автоматической замены
+(17668ms). Отдельный новый Add и один exact Retry отказали в permanent-contact
+read: ForwardOnceAsync:146 / ingress HTTP:299,46429ms и5650ms. Это before-forward
+ingress refusal, не новый Store или contact delivery; точный error class ещё
+не установлен. QA-only closed-label correction проверен Clean284/native0/0skip;
+matching diagnostic builds/retest pending, server/authority не менялись.
 Затем actual contact request/accept и text. Full/package и device business
 acceptance пока0/4.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
@@ -178,8 +186,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `443e9b7` | runtime `7d64fe7` | `8ea886f` | build26; existing pending request projected; exact Retry XurWindow, no new native Store |
-| Android | `443e9b7` | runtime `7d64fe7` | `8ea886f` | APK43/update165 + actual installed hash; Settings166 account/recovery retained; Refresh173→Inspect174 Retrieve OutcomeUnknown, native pending Store refusal observed |
+| Windows | `8181f0a` | `f63b432` | `9d6df07` | build27; old owned retry expired/closed; separate new Add + one exact retry fail permanent-read ingress before new Store |
+| Android | `8181f0a` | `f63b432` | `9d6df07` | APK44/update195; Settings196 account/recovery retained; Scroll198 Verified; contact/expiry retest pending |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
