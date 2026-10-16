@@ -23,7 +23,7 @@ Installed diagnostic source:
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
 | Windows | `fcc84fc` | `cbcd28a` | `b3d24cb` | build18, retained profile observed; closed after PreKeyPublication OutcomeUnknown |
-| Android | `c8732ab` | `32de907` | `ef6b5f4` | APK30/install30, retained profile |
+| Android | `438474b` | `ca1df5f` | `fed7d30` | APK34/install50, retained profile; two complete publication verifications |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
@@ -224,6 +224,17 @@ focused05 source-location assertion FAIL is retained; its replacement follows
 the same full pinned verification into the owner, not a waived check. Canonical
 full/package and new-workflow physical acceptance remain open. No public API,
 native format, authority lifetime, original intent or replay floor changed.
+
+Matching APK34 retained update now completed the whole owned workflow twice:
+65238/62920ms,491 unprotects each,0 protected writes. Independent Inspect54
+observed Verified; manual Verify55 -> Inspect56 observed
+`verified-publication / Verified`. This is actual local-dev retained-account
+publication readiness, not sustained/cold-restart or business acceptance (0/4).
+Contacts57 has an empty editor/disabled Add; no replacement intent or Store.
+Matching Windows19 built/published with0 warnings/errors but has not launched;
+Windows UI remains stopped after physical Escape, pending fresh human permission.
+See the exact APK/hash/phase matrix in the
+[device checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md#local-replica-rollover-retest).
 
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
