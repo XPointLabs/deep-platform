@@ -11,6 +11,12 @@ Historical sizes are not releasable values or permission for a legacy reader.
 The connected consumer/package/physical closure remains unqualified; see the
 [current audit](ARCHITECTURE-AUDIT-2026-10-03.md).
 
+[DR-0129](../survival-program/decisions/DR-0129-owned-prekey-service-succession.md)
+freezes same-device immediate XPS1 succession in existing contact-object and
+publication APIs. It adds no wire/API value, suite/domain or error code. Exact
+signed lineage/currentness and retained inventory custody remain mandatory;
+matched owner/issuer/native/device activation is separately gated.
+
 [DR-0080](../survival-program/decisions/DR-0080-did2-current-mailbox-host-authority.md)
 freezes the additive current mailbox host authority API without new wire values.
 DR-0081 freezes the missing authenticated binding as MCG3/MCP3/MAU3 and XMC2,

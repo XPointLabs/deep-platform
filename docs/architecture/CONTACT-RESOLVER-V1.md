@@ -876,6 +876,15 @@ V2)`. Its ArtifactRef uses version `2` and raw SHA-256 of the exact V2 record.
 DID2 DCB1, XPI1 and XPP1 MUST reject version-1/suite-`0x0201` XPS1 and V1
 signature domains; the V1 descriptor above is not a compatibility input.
 
+[DR-0129](../survival-program/decisions/DR-0129-owned-prekey-service-succession.md)
+defines the closed same-device XPS1 service transition inside a successor
+contact object. Both exact signatures and the immediate generation/hash link
+are required; scope/capability/policy stay fixed. Existing object/publication
+lineage, independently current time and native inventory custody remain separate.
+A new object can contain a current later-generation signed service; object
+genesis is not prekey-service genesis. No expired inventory is renewed by parsing
+or authoring that object. Connected retained-secret lifecycle remains required.
+
 #### 3.3.1 Complete pre-key inventory manifest: `XPI1`
 
 An XPS1 generation is not publication authority for an arbitrary subset of

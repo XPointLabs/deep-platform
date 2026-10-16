@@ -6,6 +6,9 @@ Decision owner: Mr. X (delegated architecture authority)
 
 The strict DCB expiry-advance clause below is superseded only by
 [DR-0127](DR-0127-capped-contact-object-successor-validity.md). Other requirements remain.
+The exact service-descriptor immutability clause is separately narrowed by
+[DR-0129](DR-0129-owned-prekey-service-succession.md) for authenticated immediate
+same-device XPS1 succession; unrelated identity/profile/policy rollover stays closed.
 
 Connect DR72 route successors to the signed/encrypted permanent contact object
 and publication. No wire version, suite, signature domain, legacy reader or
