@@ -250,6 +250,16 @@ Keep currentness rejection and all pending originals. Next locate the owned
 caller state before choosing new-read renewal versus active-read recovery;
 neither old grant acceptance nor account reset is a fix. The QA-only distinct-
 owner frame selection passed161 focused cases under the unchanged4-frame bound.
+APK36's distinct-owner trace and matching build-output Shared PDB locate that
+expiry at `RetrieveOwnMailboxAsync` lines57–59: restoration of an active cycle's
+original grant, not new-read acquisition. Independent Inspect85 verifies the
+retained account's publication readiness; Refresh87/Inspect88 still fails.
+The precise active subphase1–6 is not observed. Next close expired-active
+Retrieve/ACK recovery under the existing transition owner, retaining exact old
+requests/grants/counters/pages; do not route it through the new-work selector,
+accept expired authority, erase the cycle or reset the account. Any required
+allocation must be frozen before code. Incomplete Settings80 and overlapping
+Scroll83/84 are retained separately and are not acceptance evidence.
 
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
