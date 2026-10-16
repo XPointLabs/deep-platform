@@ -244,6 +244,12 @@ exact predicate before another business retry; original grant/intent custody
 remains. A closed reason-only diagnostic candidate passed Protocol89/MAUI160,
 native0/no failures/skips; APK34 does not contain it. Shared preflight05 before
 these diagnostic Protocol changes passed build0/6 fixtures/terminal0, not full.
+Matching APK35 retained update now proves `MailboxGrantExpiry` at that exact
+issuer guard (incoming Refresh75/Inspect76), while publication remains Verified.
+Keep currentness rejection and all pending originals. Next locate the owned
+caller state before choosing new-read renewal versus active-read recovery;
+neither old grant acceptance nor account reset is a fix. The QA-only distinct-
+owner frame selection passed161 focused cases under the unchanged4-frame bound.
 
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
