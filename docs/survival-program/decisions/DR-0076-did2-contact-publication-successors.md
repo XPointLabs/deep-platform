@@ -4,6 +4,9 @@ Status: accepted connected API increment; durable issuer/owner/device gates open
 Date: 2026-10-03
 Decision owner: Mr. X (delegated architecture authority)
 
+The strict DCB expiry-advance clause below is superseded only by
+[DR-0127](DR-0127-capped-contact-object-successor-validity.md). Other requirements remain.
+
 Connect DR72 route successors to the signed/encrypted permanent contact object
 and publication. No wire version, suite, signature domain, legacy reader or
 historical-currentness switch is introduced. Independently current DID2/device,

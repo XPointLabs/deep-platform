@@ -687,6 +687,14 @@ generation to match the exact signed DCB/XIR lineage and both selected-node
 resolve receipts. Nonzero generations do not relax current identity, route,
 placement, time, ciphertext or signature verification. One-time invitations
 remain a separate genesis-only operation.
+Under [DR-0127](../survival-program/decisions/DR-0127-capped-contact-object-successor-validity.md),
+a reusable DCB successor has nondecreasing issue time and expiry, including equal
+expiry when the unchanged signed service/delegation caps its lifetime. Its
+generation must still advance exactly once and bind the exact prior bundle hash.
+Identity/service/profile/policy continuity, current authority and complete trusted
+interval coverage remain mandatory. No signed inner expiry is extended; expired
+objects/services remain rejected. This changes only DR-0076's strict DCB expiry
+advance, not XRA/threshold succession or prekey replenishment.
 Capability-bound AEAD opening yields only a parsed candidate; promotion requires
 an independently fetched nonce-bound current peer proof and the actual two-node
 neutral resolve-read receipts. No unsigned server clock, structural parse or

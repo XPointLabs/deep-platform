@@ -23,7 +23,7 @@ Installed diagnostic source:
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
 | Windows | `7cf9d21` | `acc65f1` | `605090b` | build15, running retained profile |
-| Android | `7cf9d21` | `acc65f1` | `605090b` | APK22/install22, retained profile |
+| Android | `3505482` | `acc65f1` | `605090b` | APK24/install24, retained profile |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
@@ -41,7 +41,7 @@ eight affected regressions passed on that production source; MAUI Clean193 /
 Smoke119 passed. The first new test run retained one wrong-exception assertion
 FAIL, corrected without relaxing production verification. Final full remains.
 
-**Immediate runtime blocker:** supported local Verify subsequently failed;
+**Earlier runtime failure evidence:** supported local Verify subsequently failed;
 Registry readiness oscillates and all three node mailbox hosts report
 `unavailable` while ONION/contact terminals are ready. Closed Registry logs show
 authenticated-time acquisition denials. Earlier `interval-conflict` and
@@ -53,7 +53,7 @@ Floor metadata changes
 alone are not stable readiness evidence; no time-policy/floor reset is a remedy.
 Publisher renewal still succeeds, so offline-policy expiry is not established.
 Windows15 reached Verified after explicit registration check, then Rejected;
-Android22 has no Store/contact delivery. Recover current time/host readiness
+Android22 had no Store/contact delivery. Recover current time/host readiness
 before another business retry; do not reset accounts/floors or extend windows.
 Earlier local diagnostic Node `0240120` was active on all three nodes; its closed
 recovery reasons include `observation-missing` and `revocation-context`.
@@ -148,6 +148,23 @@ different failure: ProtectedState in local contact-object authoring, exact guard
 not yet identified. Windows input is stopped after two geometry failures pending
 operator window restoration. Preserve both profiles and diagnose that authoring
 guard using QA-only closed labels; no contact/message effect is accepted yet.
+APK23's installed closed authoring labels were independently confirmed in the
+exact APK assembly store. Retained Verify02 still reports ProtectedState /
+Unclassified in authoring, with no Store or delivery accepted. The next bounded
+diagnostic covers signing, retained issuance/successor and route-time checks;
+it does not weaken those checks, change crypto or reset retained custody.
+APK24 then identifies `ContactSuccessorAdvance`; a signed default day-service
+regression reproduces the expiry-cap conflict. [DR-0127](survival-program/decisions/DR-0127-capped-contact-object-successor-validity.md)
+corrects only DCB's strict expiry increase to nondecreasing expiry, retaining
+strict generation/hash lineage, complete current interval coverage and all
+unchanged inner expiries. Red02/03 reproduced that guard; green04 and expanded
+Shared05 passed1/6 cases respectively, native0. Matched Protocol/issuer/client
+builds and retained-device retest remain required. Windows screenshot-backed
+input recovery succeeded; its Verify ended ContactPublication /
+OnionCompletionUnknown at ingress HTTP error handling, not publication success.
+Protocol focused06 passed24/0/0/native0 and production solution build07 passed
+with0 warnings/errors. Graph08 still exits1 on retired MAU2; that separate
+shipping blocker remains open and is not waived by the contact fix.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
