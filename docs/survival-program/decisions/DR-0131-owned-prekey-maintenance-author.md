@@ -78,6 +78,19 @@ The next command independently acquires fresh complete authority. This is a
 call-local verified context, not a cached capability, implicit held-lease loan,
 retry/fallback transport or extension of the existing caller/signed budgets.
 
+The existing public `EnsureOwnPermanentContactPublishedAsync(source, ct)` is the
+complete owned workflow: independently acquire one fresh context, maintain and
+publish both prekey replicas, then restore/renew or author/commit the permanent
+contact under that same context. Its private owner phases keep separate actual
+leases and all callback/currentness checks; the final return rechecks current
+protected authority after the account-plan read. Internal explicit phase APIs
+remain phase operations, not another shipping orchestration or legacy path.
+MAUI calls this workflow once, rather than first repeating complete network
+verification, then a prekey command, then another contact acquisition. Initial
+account admission is still independently verified. No new public API or source-
+supplied time/custody bypass is allocated; the caller's whole-operation budget
+and every independently signed freshness/resource ceiling remain unchanged.
+
 For completed custody, reauthenticate its exact replica pair before deciding to
 renew. Replenishment may use a same-service next XPI epoch within its existing
 fourteen-epoch bound, only while that exact service covers the new interval and

@@ -209,6 +209,22 @@ Android retest and full qualification remain open; see
 [local read groups](../deep-client-shared/docs/architecture/owned-authored-counter-custody.md#actual-atomic-local-read-groups)
 and [device checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md#local-replica-rollover-retest).
 
+Matching APK33 passed build/signature verification and retained-account update.
+Prekey publication completed before contact publication (65884ms); later
+commands reauthenticated its durable pair in21205/24306ms with0 protection
+writes. Full verification/contact publication still fails (120s cancellation
+or typed ingress dependency refusal), so acceptance remains0/4. The next
+candidate folds dependencies into the existing public owned-contact workflow,
+using one fresh context with every owner-phase check, and fixes typed transient
+dependency scheduling. No clock predicate, signed lifetime or original changed;
+source and new-device checks are still required for this candidate.
+The source slice passed Shared workflow18, MAUI focused79 and unfiltered Smoke
+project119, all0fail/0skip/native0/no compiler diagnostics. The original MAUI
+focused05 source-location assertion FAIL is retained; its replacement follows
+the same full pinned verification into the owner, not a waived check. Canonical
+full/package and new-workflow physical acceptance remain open. No public API,
+native format, authority lifetime, original intent or replay floor changed.
+
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
