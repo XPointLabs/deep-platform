@@ -693,6 +693,13 @@ API for authenticating past exact Store commitments in the current projection.
 It creates no current grant/replay/dispatch authority and allocates no wire ID.
 Writer/path/prefix implementation and package activation remain separately gated.
 
+[DR-0134](../survival-program/decisions/DR-0134-original-store-expiry-exclusion.md)
+adds `VerifiedMailboxHostAuthorityV2.VerifyStoreExpiryExclusionAsync` over exact
+original PRQ2 and cancellation only. Fully authenticated historical Store scope
+and independently current lower time at/after its signed grant expiry return
+no current admission authority or noncommit fact. Native prefix/read consumers,
+package and physical activation remain separately gated; no wire allocation.
+
 [DR-0106](../survival-program/decisions/DR-0106-retained-store-public-evidence.md)
 adds bounded public original Store replica evidence capture/verification. Its
 output is historical receipt-key metadata, never current routing/admission or

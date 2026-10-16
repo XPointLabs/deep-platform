@@ -136,9 +136,17 @@ Matching Build16/Up17/Verify18 прошли, но APK43 Refresh177/Inspect178 с
 OutcomeUnknown/native pending Store. Observer Build22/Up23/Verify24 прошёл на
 9 desired images/54 прежних mounts; runtime подтверждает GrantExpiry в original
 grant admission, не доказательство lower-time exclusion, noncommit или допустимого
-retirement. Следующий код — штатная expired-original exclusion/settlement boundary
-по XPOINT-NETWORK§9.1, без signed-window extension, нового nonce, пропуска live
-Pending по голому флагу или удаления floors. Device acceptance пока0/4.
+retirement. [DR-0134](survival-program/decisions/DR-0134-original-store-expiry-exclusion.md)
+заморозил closed original Store expiry boundary без новой wire/journal generation.
+Protocol `9d6df07`:125 affected PASS/native0, без diagnostics. Node candidate
+связывает prefix/read с actual protected original, authenticated lower expiry и
+native serialization/recheck, сохраняя bytes/unknown/floors; invalid durable quorum
+не обходит проверку через expiry. Initial fixture27/7 FAIL сохранён, corrected9
+PASS; expanded52/3 и final12 PASS/native0 закрыли affected scope после исправления
+двух native exception contracts и canonical TTL fixture. Без compiler diagnostics;
+[matching runtime/device и full/package qualification ещё требуются](../xnode/docs/testing/s05-store-expiry-exclusion-2026-10-17.md).
+Никаких signed-window extension, новых nonce или пропуска live Pending по флагу.
+Device acceptance пока0/4.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.

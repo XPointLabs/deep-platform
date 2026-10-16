@@ -1065,7 +1065,9 @@ already requires both selected nodes. XNode never chooses a client's route.
 The cursor owner is the writer's existing durable operation ledger. Within the
 exact epoch/mailbox/placement/membership scope, a new cursor cannot be allocated
 past an earlier signed intent without an independently authenticated two-node
-Store commitment. Intent precedes mutation; complete quorum custody precedes
+Store commitment or permanent original-permission expiry exclusion under
+[DR-0134](../survival-program/decisions/DR-0134-original-store-expiry-exclusion.md).
+Intent precedes mutation; authenticated settlement or exclusion precedes
 advancing the prefix. An unsigned state label or a local completed blob is not
 settlement. A lost quorum persistence result retains exact Pending and can be
 reconciled by the original request. Capacity/unavailable proof is backpressure,
@@ -1079,7 +1081,17 @@ keys. Verification requires current protected host/time, but never promotes a
 receipt timestamp to current time or authorizes an expired grant. The closed
 settlement API and its non-authority result are frozen by DR-0086.
 
-Unsettled expiry/retirement, retained-route/descriptor history, object horizon
+Expiry exclusion authenticates the exact original signed request/grant and
+requires independently current lower time at or beyond its signed expiry.
+Upper-time overlap alone is insufficient. It returns no current authority and
+never proves noncommit/non-delivery. Original bytes, uncertainty and all floors
+remain. Invalid/missing durable quorum cannot fall back to expiry. A native
+Pending read additionally requires exact protected intent binding and mutation
+serialization/recheck; absent original custody remains refusal, not an empty
+mailbox. Completed objects remain readable. DR-0134 freezes the closed API and
+its bounded current-issuer/verified-history coverage; it adds no wire or journal.
+
+Owned retirement, retained-route/descriptor history, object horizon
 and sustained lifecycle remain activation requirements. A bare timeout or new
 grant cannot discard an intent or prove absence of its remote effects.
 
