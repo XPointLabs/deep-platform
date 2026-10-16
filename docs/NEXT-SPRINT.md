@@ -136,6 +136,10 @@ exited1: mailbox recovery remains unavailable. Supported signed-control capture
 then fetched both roles in5.8s; public codec/host-clock diagnostics do not prove
 protected currentness or native progress. Inspect the actual worker phase/floors;
 no full, stable recovery or physical acceptance is claimed by this source fix.
+The next Node diagnostic candidate records the actual failed refresh phase,
+closed reason and already-read native generations, without additional I/O or
+authority effects. Matching focused17 passed46/0/0/native0; runtime evidence is
+still required before selecting the next recovery fix.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
