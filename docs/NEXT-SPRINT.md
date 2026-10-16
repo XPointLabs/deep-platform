@@ -22,14 +22,14 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `7fb384d` | `104b24b` | `0867668` | build16, running retained profile |
-| Android | `68caf0d` | `f87fc97` | `0867668` | APK28/install28, retained profile |
+| Windows | `893db64` | `32de907` | `cacbd67` | build17 ready; launch unobserved after UI budget exhausted, build16 closed |
+| Android | `893db64` | `32de907` | `cacbd67` | APK29/install29, retained profile |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
 Typed429/503 recovery физически не инъецировался. Local runtime managed code:
-Registry `469460e` (comment-only after `2859756`), Node `b8b7674`;
+Registry `20be804` (local route admission update), Node `b8b7674`;
 Registry NTS helper `dd36774`, publisher
 `f4a77ca` (no production change).
 The active local Registry/node images now compile Protocol `0867668` under
@@ -67,7 +67,21 @@ reproduced and corrected under DR-0128: Protocol `cacbd67` adds only a read-only
 strictly-newer-view observation; Shared `32de907` permits one bounded complete
 reacquisition, preserving all original verification/history/native/CAS gates.
 Protocol14/204 and Shared5/47 passed; Release solution build had0 warnings/errors.
-Graph09 retains the MAU2 shipping FAIL. Matching client/device retest remains;
+Graph09 retains the MAU2 shipping FAIL. APK29's retained retest passed network
+verification/prekey publication, then failed ContactPublication after65.2s:
+closed server evidence identifies route issuer `Admission/busy` ->backend503
+->relay504. Registry `20be804` reuses the existing single private issuer waiter
+for route issuance within its unchanged30s budget; focused43 passed, native0,
+original red1FAIL retained. Registry family now runs the qualified `20be804`
+image; supported smoke03 exited0. Up02's outer mount comparison failed and
+its before snapshot was not retained: do not count it as preservation proof.
+Read-only audit04 confirms9 services /29 existing-volume bindings /25 scoped
+binds, all volumes older than the update. APK29 Verify01 -> independent Inspect02
+now completed `verified-publication/Verified`, with recovery retained. The
+attempt recorded99.5s /887 unprotect calls /51.0s protection, within the original
+budget; it is not sustained readiness or business delivery acceptance.
+Windows17 built with0 warnings/errors, but its launch returned UI-budget exhaustion;
+fresh window observation remains required. Acceptance is still0/4;
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
