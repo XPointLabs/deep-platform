@@ -176,15 +176,20 @@ using existing exact historical support and current device authority, without
 wire/native format changes. Node focused90 and Protocol focused36 passed/native0,
 no failures/skips/compiler warnings/errors; original red and fixture failures
 remain in [the checkpoint](../xnode/docs/testing/s05-service-rollover-2026-10-16.md).
-This candidate is not deployed or accepted full/package/device evidence.
-One existing fork marker was observed read-only in the local dev runtime;
-none on the other two nodes. Do not infer its cause, clear it, reset custody or
-replace an account to claim recovery. Mr. X explicitly authorized a local-dev
-reset if the other contour's snapshot cannot be reused. Read-only comparison
-found different network and both genesis anchors, so `deep-dev` cannot supply
-`deep-dev-current` custody. Planned operator maintenance quarantines only the
-affected local service state, not keys/accounts/production; it is not native
-retained-state recovery acceptance. No reset has been performed yet.
+This candidate has been activated only in the local dev contour, not production,
+and is not accepted full/package/device evidence. One existing fork marker was
+observed read-only locally; none on the other two nodes. Do not infer its cause
+or replace an account to claim recovery. Mr. X explicitly authorized a local-dev
+reset if the other contour's snapshot cannot be reused. The network and both
+genesis anchors differ, so `deep-dev` cannot supply `deep-dev-current` custody.
+Operator `reset-09` recoverably quarantined the one affected service directory
+(4 files, intact marker); keys, accounts, other service and staging state were
+not reset. This is not retained-native-custody recovery acceptance. Image08 and
+supported Up10 exited0; all9 services run matched images and all29 volume/25
+bind identities are retained. Smoke11 exited0: current Registry proof,3 verified
+ONION nodes, recovery60s; no business/device delivery claim. Android31
+install preflight passed without installation. A physical Escape stopped
+Windows automation before profile launch; device acceptance remains0/4.
 
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
