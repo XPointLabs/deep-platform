@@ -144,9 +144,21 @@ native serialization/recheck, сохраняя bytes/unknown/floors; invalid dur
 не обходит проверку через expiry. Initial fixture27/7 FAIL сохранён, corrected9
 PASS; expanded52/3 и final12 PASS/native0 закрыли affected scope после исправления
 двух native exception contracts и canonical TTL fixture. Без compiler diagnostics;
-[matching runtime/device и full/package qualification ещё требуются](../xnode/docs/testing/s05-store-expiry-exclusion-2026-10-17.md).
+[точные scopes и оставшиеся full/package/business gates](../xnode/docs/testing/s05-store-expiry-exclusion-2026-10-17.md).
 Никаких signed-window extension, новых nonce или пропуска live Pending по флагу.
-Device acceptance пока0/4.
+Matching local Build25/Up26/Verify27 native0:9 desired images и54 mounts сохранены;
+raw representation FAIL и отдельный finite alias proof1 не смешиваются.
+APK43 Refresh180→Inspect182 завершил read sync без ошибки; Windows26 после первого
+native-deadline/OutcomeUnknown прошёл один штатный UI retry без сброса. Это read
+recovery, не contact delivery; прежние unknown intents и4 ожидающих диалога
+сохранены. Android Add186 сначала спроецировал прежний pending; отдельный exact
+Retry188 снова остановился на retained draft metadata equality в
+PrepareInitialContactDraftAsync IL4129/source86, до нового Store. Actual business
+69531ms,3 Protect/382 Unprotect,35200ms protection; Contacts192 подтвердил ошибку.
+Следующий код — original Initial draft/current-dependency recovery; какая
+привязка отличается, пока не установлено. Не ослаблять guard и не заменять intent.
+Затем actual contact request/accept и text. Full/package и device business
+acceptance пока0/4.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
