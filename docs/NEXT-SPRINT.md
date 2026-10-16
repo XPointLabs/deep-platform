@@ -28,7 +28,9 @@ Installed diagnostic source:
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
-Typed429/503 recovery физически не инъецировался. Local runtime code: Registry `2859756`, Node `0240120`, DevOps `f4a77ca` (no production change).
+Typed429/503 recovery физически не инъецировался. Local runtime managed code:
+Registry `2859756`, Node `0240120`; Registry NTS helper `2e96265`, publisher
+`f4a77ca` (no production change).
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Shared `acc65f1` carries the independently verified contact pair through one
@@ -100,6 +102,14 @@ concurrent-health regression reproduced503 before the fix; focused provider44
 then passed (`control-readiness-09`). The new image is active, but Up04 failed
 during retained observer admission with InvalidDataException while NTS was
 unavailable. Do not relabel that activation or the earlier failures as PASS.
+Later Up05 with tested NTS helper `2e96265` succeeded with exact29/25 mount
+identity preservation and retained observer admission. Smoke05 still exited1;
+mailbox is unavailable and ONION oscillates. Windows registration and Android
+Verify28/Inspect88 both now report AccountProof/AdmissionAuthorityUnavailable,
+with the same accounts/recovery retained. A bounded two-CPU Registry diagnostic
+did not restore authority; the same container's original one-CPU quota was restored.
+Helper closed source-failure diagnostics passed8 Go tests, but are not yet runtime
+or physical acceptance. Recover this prerequisite before another business retry.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
