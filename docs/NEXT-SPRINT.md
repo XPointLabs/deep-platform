@@ -84,6 +84,16 @@ QA source теперь измеряет actual business totals существу�
 observer (14 focused PASS/native0), а не подменяет их background VerificationTotal.
 Только elapsed/count/protectionMs, без payload/адресов/slot names или новых
 таймаутов; [scope](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md).
+Matching Windows24/APK40 сохранили аккаунты/recovery. Exact Windows retry
+отменился через120031ms:1738 Unprotect, protection78880ms. Android Retrieve
+остался OutcomeUnknown (40780ms,304 Unprotect). Это не доставка и не доказательство
+noncommit. Candidate объединяет application registrations/roots6→1 и actual
+held directory/network floor recheck через один SQL transaction + один atomic
+marker inventory; каждый вызов заново читает ключ/markers, без plaintext cache,
+новых wire/API/generation или сроков. Final affected39 PASS/native0, без
+compiler diagnostics; owned claim→Store→cold exact retry и Initial/Accept
+lost-reply3 PASS/native0. Это source fixtures, не device delivery;
+[scope/остаток](../deep-client-shared/docs/testing/s05-owned-read-batch-2026-10-17.md).
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
@@ -92,8 +102,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `07b9065` | runtime `5fa8789` | `2bb61d0` | build23 launched; retained profile; fresh Store path OutcomeUnknown with directory-validation cancellation |
-| Android | `07b9065` | runtime `5fa8789` | `2bb61d0` | APK39/update138, Settings139 retained account/recovery; Retrieve OutcomeUnknown, Inspect142 error |
+| Windows | `826d337` | runtime `5fa8789` | `2bb61d0` | build24 launched; retained exact contact retry cancelled at120s; intent preserved |
+| Android | `826d337` | runtime `5fa8789` | `2bb61d0` | APK40/update144, Settings145 retained account/recovery; Retrieve OutcomeUnknown, Inspect148 error |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
