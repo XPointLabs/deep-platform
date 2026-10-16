@@ -49,8 +49,14 @@ retained retry. [Физический checkpoint](../deep-client-maui/docs/DID2-
 Отдельно Windows contact operation наблюдалась Busy; после повторной активации
 QA независимый UI подтвердил terminal protected-state failure. Closed log
 локализует его в `ProtectedDid2MailboxGrantJournal.OriginalCeiling` line624 при
-подготовке Deposit custody для Initial. Это compound original-policy/route/request
-binding guard: точный предикат пока не выделен, не отключать его. Source audit
+подготовке Deposit custody для Initial. Сверка именно build20 DLL/portable PDB
+уточнила диагноз: IL758 соответствует отказу «no possible grant interval»,
+а не compound binding guard line616. Shared ошибочно ограничивал logical route
+коротким окном исходного PMT snapshot; исправление согласует ceiling и current
+issuer joins с уже принятым DR-0122. Затронутые41 tests PASS/native0, включая
+persist-before-callback, lost reply, cold exact retry и SQL install; это source,
+не физическая доставка. [Receipts и ограничения](../deep-client-shared/docs/testing/s05-logical-grant-custody-2026-10-16.md).
+Source audit
 нашёл отсутствие foreground attempt budget; candidate добавляет отмену actual
 token через2m только после очереди, сохраняя lease до drain и исходную uncertainty.
 Red1/2 FAIL сохранён; reconnect/messaging49 и unfiltered MAUI Clean254 PASS,
