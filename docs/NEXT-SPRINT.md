@@ -148,8 +148,17 @@ encrypted reopen, pair-before-adoption, locator/Retrieve preservation, exact
 retry and the existing recovery cases. MAUI Clean07 passed230 unfiltered cases,
 native0, no failures/skips.
 Protocol10 passed35 targeted cases/native0 with0 compiler warnings/errors.
-Actual Windows QA compilation and full/source/package/runtime/physical
-qualification remain open; no device activation yet. Preserve
+Windows QA CompileOnly11 passed native0 with0 compiler warnings/errors; it
+did not publish, install or launch. The remaining DevOps/Registry consumers
+now use DR-0131's command/explicit fixture phases without retired API aliases;
+Registry consumer14 passed3 real-PQ/PostgreSQL cases, DevOps contracts passed26.
+Matching dev image15 and retained Up16 exited0. All29 volume bindings are
+identical; all25 binds uniquely match their prior source/destination/mode after
+accounting only for Windows/Docker Desktop source-path representation. Raw bind
+hash comparison failed and is retained separately, not relabelled PASS.
+Supported smoke17 exited0: current Registry proof and all3 verified ONION nodes,
+recovery37s. This is readiness, not sustained/business/device acceptance.
+Full/source/package and physical qualification remain open; no new device activation yet. Preserve
 all old claimed/Initial custody. Multiple completed inventory-service generations
 while contact promotion was unavailable, and recovery of expired unresolved
 publication, still need lifecycle closure: do not skip the contact's immediate
