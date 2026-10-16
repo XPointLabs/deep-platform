@@ -885,6 +885,13 @@ A new object can contain a current later-generation signed service; object
 genesis is not prekey-service genesis. No expired inventory is renewed by parsing
 or authoring that object. Connected retained-secret lifecycle remains required.
 
+[DR-0130](../survival-program/decisions/DR-0130-owned-prekey-inventory-custody.md)
+allocates protected successor inventory custody under the existing account tip,
+without changing the initial SQL schema or creating another receiver ledger.
+Pending/current-publication, complete signature/time verification, two-replica
+commit, exact private-key consumption and compaction readback must close together
+before activation; a parsed protected record alone grants none of those facts.
+
 #### 3.3.1 Complete pre-key inventory manifest: `XPI1`
 
 An XPS1 generation is not publication authority for an arbitrary subset of
