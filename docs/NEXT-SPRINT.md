@@ -123,6 +123,12 @@ connectivity diagnostic saw five query timeouts and recovery, but failed its own
 Docker shutdown budget (Terminal=false/native-1); it is not accepted evidence.
 Contract rerun exited0, production readiness exited1. Recover this prerequisite
 before another business retry; no physical acceptance or production update.
+Node source candidate `71bcae3` fixes a reproduced MGR refresh early exit:
+Deposit reaching its64-step cap no longer suppresses Retrieve's bounded batch
+when the original30-second flight still has time. Incomplete catch-up still
+cannot enter ordinary host admission; actual source/native checks remain.
+Red13 failed both generation assertions; matching focused15 passed42/0/0/native0.
+It is not yet deployed or full-qualified, and is not the proven sole live cause.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
