@@ -28,7 +28,7 @@ Installed diagnostic source:
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
-Typed429/503 recovery физически не инъецировался. Runtime code: Registry `a4805bf`, Node `01d86d5`, DevOps `7b2799f`.
+Typed429/503 recovery физически не инъецировался. Local runtime code: Registry `2859756`, Node `0240120`, DevOps `f4a77ca` (no production change).
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Shared `acc65f1` carries the independently verified contact pair through one
@@ -41,14 +41,19 @@ FAIL, corrected without relaxing production verification. Final full remains.
 **Immediate runtime blocker:** supported local Verify subsequently failed;
 Registry readiness oscillates and all three node mailbox hosts report
 `unavailable` while ONION/contact terminals are ready. Closed Registry logs show
-authenticated-time acquisition denials (`scope-or-quorum`, `interval-conflict`,
-`floor-rollback`); the individual node recovery reason is not yet proven.
+authenticated-time acquisition denials. Earlier `interval-conflict` and
+`floor-rollback` observations remain historical evidence; `a936bd8` reported
+`scope-or-quorum`. The latest Registry separates policy/age/quorum labels;
+after the latest restart it reports `observation-quorum` and `source-interval`.
+Registry now returns503 and ONION is unavailable as well. Floor metadata changes
+alone are not stable readiness evidence; no time-policy/floor reset is a remedy.
 Publisher renewal still succeeds, so offline-policy expiry is not established.
 Windows15 reached Verified after explicit registration check, then Rejected;
 Android22 has no Store/contact delivery. Recover current time/host readiness
 before another business retry; do not reset accounts/floors or extend windows.
-Local diagnostic Node `2a5f718` is now active on all three nodes; its closed
-reason is `observation-missing`. Supported Build/Up preserved all29 volume and25
+Local diagnostic Node `0240120` is now active on all three nodes; its closed
+recovery reasons include `observation-missing` and `revocation-context`.
+Supported Build/Up preserved all29 volume and25
 bind mount identities using saved canonical before/after snapshots. This new
 upgrade check does not replace the older FAIL. Node focused27/3/0/native1 and
 the subsequent interrupted run remain unaccepted; a separate hash-bound binary
@@ -62,6 +67,39 @@ file work ahead of network/host crypto reconstruction; exact counts and failed
 receipts belong to [Node operations](../xnode/docs/operator.md). Optimize that
 measured read path with the existing actual-floor/source/release fences intact,
 then rerun the bounded business slice. NTS alone is not the established cause.
+Current source candidates: Node `0240120` bounds actual file acquisition before
+allocation, batches independent public reads and closes duplicated Windows token
+handles without caching security decisions. Focused85 passed, including configured
+three-hop Store/Retrieve/ACK/cold exact retry, but unchanged-binary repeat failed
+three of four business cases at the original deadlines; performance is not
+qualified. Registry `a936bd8` fixes a separately reproduced queued-observation
+comparison at different monotonic instants. It projects both intervals to the
+same actual sample and subtracts queue delay from remaining freshness; no signed
+window or durable lower floor is weakened. Original-code red1 is retained;
+focused37 passed, including true rollback/expiry rejection. Supported local
+Build/Up completed, but Verify still exited1; source/full and stable runtime
+acceptance remain open. Read-only public-file diagnostics measured30 reads across
+the Windows bind mount at4002ms versus537ms for a container-local control file;
+this is not an isolated .NET/business timing or proof of the sole cause. A fresh
+pinned observer process obtained two authenticated observations both in Docker
+and on Windows; that connectivity probe is not current authority or sustained
+process recovery. See the exact source receipts in
+[Registry operations](../deep-registry-api/docs/DID2_DIRECTORY_CANDIDATE.md) and
+Node operations above. Do not infer that this resolves every readiness denial.
+Registry `9136453` separates mailbox-only monotonic sampling
+from full trusted-time acquisition, keeping actual current-source/floor, signer,
+journal and release checks. Matching focused provider44 passed. Broader
+unactivated clock candidate06 remains51PASS/5FAIL; source05 lacked PostgreSQL
+and failed14 prerequisites. Runtime and stable physical recovery are not yet
+qualified; no other issuer clock, signed window or storage generation changed.
+Its component build/Up preserved the retained mounts; one Registry readiness
+request returned200 in2965ms, but supported Verify still exited1 on the nodes.
+Registry `2859756` further isolates the single signed-control reader from
+readiness, retaining actual journal transactions and all source checks. A real
+concurrent-health regression reproduced503 before the fix; focused provider44
+then passed (`control-readiness-09`). The new image is active, but Up04 failed
+during retained observer admission with InvalidDataException while NTS was
+unavailable. Do not relabel that activation or the earlier failures as PASS.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
