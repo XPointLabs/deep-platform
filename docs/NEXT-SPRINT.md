@@ -62,9 +62,13 @@ no failure/skip. Full source and physical business qualification remain open.
 APK28 did pass exact packaged-code verification and
 retained update:103.8s /1008 unprotect calls /53.6s protection, but registration
 still failed at the existing `VerifyDtt` binding guard and UI became Rejected.
-The failed subcondition is not yet proven. Reproduce coherent closure/DTT
-acquisition across a legitimate view advance; do not disable exact bindings,
-reset protected state or extend deadlines. Windows16's second empty sync was slow but completed
+The failed subcondition is not yet proven. A separate signed source race is
+reproduced and corrected under DR-0128: Protocol `cacbd67` adds only a read-only
+strictly-newer-view observation; Shared `32de907` permits one bounded complete
+reacquisition, preserving all original verification/history/native/CAS gates.
+Protocol14/204 and Shared5/47 passed; Release solution build had0 warnings/errors.
+Graph09 retains the MAU2 shipping FAIL. Matching client/device retest remains;
+no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
