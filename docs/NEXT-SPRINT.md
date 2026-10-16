@@ -127,6 +127,12 @@ Store и expiry boundary. Не пропускать pending cursor, не remint 
 не продлевать XUR/grant, не заменять recovery новым аккаунтом. Точные результаты:
 [business checkpoint](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#retained-local-deployment-and-native-pending-store-diagnosis).
 Physical acceptance по-прежнему0/4; S05 не принят.
+Native source candidate добавляет host-owned exact Store recovery и последующее
+adoption того же saved quorum клиентом без нового peer HTTP. Initial22,
+expanded164 и final23 focused PASS/native0 без compiler diagnostics; новые
+nonce/grant/ciphertext, expiry bypass и новый журнал не добавлены. Exact scope:
+[node recovery checkpoint](../xnode/docs/testing/s05-native-store-recovery-2026-10-17.md).
+Matching retained activation/device и unsettled-expiry boundary пока открыты.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
