@@ -129,13 +129,16 @@ Store и expiry boundary. Не пропускать pending cursor, не remint 
 Physical acceptance по-прежнему0/4; S05 не принят.
 Native source `30cd519` добавляет host-owned exact Store recovery и последующее
 adoption того же saved quorum клиентом без нового peer HTTP. Initial22,
-expanded164/final23 и closed-observer5 focused PASS/native0 без diagnostics;
+expanded164/final23, closed-observer5 и authority-reason3 focused PASS/native0 без diagnostics;
 новые nonce/grant/ciphertext, expiry bypass и новый журнал не добавлены. Exact scope:
 [node recovery checkpoint](../xnode/docs/testing/s05-native-store-recovery-2026-10-17.md).
 Matching Build16/Up17/Verify18 прошли, но APK43 Refresh177/Inspect178 снова
-OutcomeUnknown/native pending Store; worker unavailable пока не локализован по
-guard. Closed method/IL observation требует matching activation. Original
-settlement/device acceptance и unsettled-expiry boundary остаются открыты.
+OutcomeUnknown/native pending Store. Observer Build22/Up23/Verify24 прошёл на
+9 desired images/54 прежних mounts; runtime подтверждает GrantExpiry в original
+grant admission, не доказательство lower-time exclusion, noncommit или допустимого
+retirement. Следующий код — штатная expired-original exclusion/settlement boundary
+по XPOINT-NETWORK§9.1, без signed-window extension, нового nonce, пропуска live
+Pending по голому флагу или удаления floors. Device acceptance пока0/4.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
