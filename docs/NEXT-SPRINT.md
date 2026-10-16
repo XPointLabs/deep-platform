@@ -29,7 +29,7 @@ Windows build12 не запускался и не является installed evi
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
 Typed429/503 recovery физически не инъецировался. Local runtime managed code:
-Registry `469460e` (comment-only after `2859756`), Node `0240120`;
+Registry `469460e` (comment-only after `2859756`), Node `71bcae3`;
 Registry NTS helper `dd36774`, publisher
 `f4a77ca` (no production change).
 Новые source changes проходят отдельную квалификацию; старые APK не являются
@@ -55,7 +55,7 @@ Publisher renewal still succeeds, so offline-policy expiry is not established.
 Windows15 reached Verified after explicit registration check, then Rejected;
 Android22 has no Store/contact delivery. Recover current time/host readiness
 before another business retry; do not reset accounts/floors or extend windows.
-Local diagnostic Node `0240120` is now active on all three nodes; its closed
+Earlier local diagnostic Node `0240120` was active on all three nodes; its closed
 recovery reasons include `observation-missing` and `revocation-context`.
 Supported Build/Up preserved all29 volume and25
 bind mount identities using saved canonical before/after snapshots. This new
@@ -128,7 +128,14 @@ Deposit reaching its64-step cap no longer suppresses Retrieve's bounded batch
 when the original30-second flight still has time. Incomplete catch-up still
 cannot enter ordinary host admission; actual source/native checks remain.
 Red13 failed both generation assertions; matching focused15 passed42/0/0/native0.
-It is not yet deployed or full-qualified, and is not the proven sole live cause.
+Component build07 completed without compiler warnings/errors. The first Up07
+used the old image due a build/Compose tag mismatch; smoke07 exited1 and is not
+new-source evidence. After retagging the identical image, Up08 verified exact
+build image IDs on all three nodes and29/25 retained mounts. Smoke08 still
+exited1: mailbox recovery remains unavailable. Supported signed-control capture
+then fetched both roles in5.8s; public codec/host-clock diagnostics do not prove
+protected currentness or native progress. Inspect the actual worker phase/floors;
+no full, stable recovery or physical acceptance is claimed by this source fix.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
