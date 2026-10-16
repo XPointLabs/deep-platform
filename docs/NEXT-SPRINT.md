@@ -71,10 +71,15 @@ contact/text; затем по единому плану attachments/groups. Matc
 с inner cancellation; его точный повтор отменился до нового dispatch. Android
 Retrieve также OutcomeUnknown. Следующий blocker — конкретная задержка bounded
 owned/authority работы; не увеличивать сроки authority или вводить plaintext cache.
-Source-кандидат использует существующий atomic inventory batch для4 network
+Shared использует существующий atomic inventory batch для4 network
 markers и пары directory markers вместо отдельных расшифрований:47 focused
 PASS/native0 без compiler diagnostics. Это сокращение чтений, не доказанное
-ускорение устройства; matching builds/retest ещё нужны.
+ускорение устройства. Matching Windows23/APK39 собраны без diagnostics и
+установлены без сброса. Старый XUR retry закономерно истёк; после штатного stop
+свежий запрос снова завершился OutcomeUnknown с отменой при directory batch
+validation. Android Retrieve также OutcomeUnknown. Actual forwarding, storage
+и приём контакта не подтверждены; прежний intent сохраняется, нужен узкий
+разбор latency/cancellation в настоящем пути.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
@@ -83,8 +88,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `381fe2c` | runtime `d3642b6` | `2bb61d0` | build22 launched; retained account/recovery, Verified; new Initial reaches Store but outcome unknown |
-| Android | `381fe2c` | runtime `d3642b6` | `2bb61d0` | APK38/update130, retained account/recovery; Retrieve outcome unknown, Inspect136 error |
+| Windows | `07b9065` | runtime `5fa8789` | `2bb61d0` | build23 launched; retained profile; fresh Store path OutcomeUnknown with directory-validation cancellation |
+| Android | `07b9065` | runtime `5fa8789` | `2bb61d0` | APK39/update138, Settings139 retained account/recovery; Retrieve OutcomeUnknown, Inspect142 error |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
