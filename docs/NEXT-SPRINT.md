@@ -27,6 +27,11 @@ Matching APK37 сохранил account/recovery и подтвердил Verifie
 дошёл до нового retained-grant acquisition и завершился onion OutcomeUnknown,
 не успешной синхронизацией. Диагностировать этот запрос, сохранив его exact pending
 custody; не выводить noncommit из таймаута и не повторять уже закрытые native gates.
+Closed node metadata локализует новый отказ в private grant HTTP client;
+read-only TLS/liveness/method probes проходят. Source diagnostics Node32 /
+Registry33 PASS (0 warnings), без изменения authority или исходов. До выбора
+исправления получить matching runtime classification того же pending запроса;
+[точные ограничения](../xnode/docs/testing/s05-private-grant-hop-2026-10-16.md).
 Captured page/semantic/ACK phases3–6 остаются pinned и не считаются исправленными.
 Точные [source receipts и оставшиеся проверки](../deep-client-shared/docs/testing/s05-expired-active-retrieve-2026-10-16.md)
 не заменяют matching device/full/package acceptance. Далее — retained-account
