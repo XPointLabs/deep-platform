@@ -191,6 +191,18 @@ ONION nodes, recovery60s; no business/device delivery claim. Android31
 install preflight passed without installation. A physical Escape stopped
 Windows automation before profile launch; device acceptance remains0/4.
 
+Android31 has since been installed by supported update without account reset;
+recovery and protected-package audits are retained. Two complete attempts spent
+120094/120070ms and913/931 unprotect calls before cancellation during prekey
+publication's local account reads. This is not the former inventory-expiry
+refusal or evidence of noncommit. The seventeen-slot local registration group
+now reuses exact decoded retirement owners under the actual account lease,
+without cached authority, new formats or relaxed native-floor/history checks.
+Focused78/0/0/native0 passed; encrypted reopen measures4 ->2 unprotect calls.
+Matching Android retest and full qualification remain open; see
+[local read groups](../deep-client-shared/docs/architecture/owned-authored-counter-custody.md#actual-atomic-local-read-groups)
+and [device checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md#local-replica-rollover-retest).
+
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
