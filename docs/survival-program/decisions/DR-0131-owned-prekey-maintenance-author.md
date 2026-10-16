@@ -65,6 +65,19 @@ Do not hold a network dispatch across that lease or turn restored custody into a
 cached live capability. A missing current pair retains the exact candidate and
 operation: timeout/expiry does not authorize replacement or new key selection.
 
+For this one publication command, all bounded fragments use the same freshly
+verified network/proof as preparation, not another full network acquisition per
+fragment. The existing source rechecks the exact protected directory and network
+floors, fork state, monotonic boot/time and live proof before path preparation,
+again after asynchronous frame construction immediately before forwarding, and
+after authenticating each returned result. Each request still binds its exact
+network/view/placement, service capability, operation and selected exit; both
+independent XIC1 signatures are verified as before. Any changed/expired authority
+rejects without adopting a receipt pair or replacing the durable candidate.
+The next command independently acquires fresh complete authority. This is a
+call-local verified context, not a cached capability, implicit held-lease loan,
+retry/fallback transport or extension of the existing caller/signed budgets.
+
 For completed custody, reauthenticate its exact replica pair before deciding to
 renew. Replenishment may use a same-service next XPI epoch within its existing
 fourteen-epoch bound, only while that exact service covers the new interval and

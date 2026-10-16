@@ -199,7 +199,13 @@ refusal or evidence of noncommit. The seventeen-slot local registration group
 now reuses exact decoded retirement owners under the actual account lease,
 without cached authority, new formats or relaxed native-floor/history checks.
 Focused78/0/0/native0 passed; encrypted reopen measures4 ->2 unprotect calls.
-Matching Android retest and full qualification remain open; see
+APK32 retained the account but still cancelled at120071ms/897 unprotect calls/
+69613ms protection; the read-group change alone does not close this blocker.
+DR-0131's next call-local fragment context removes repeated full acquisition,
+retaining before-dispatch/after-response proof, protected-floor and time checks,
+without holding an account lease across the network. Focused11 passed/native0;
+all frames were sealed for both selected exits, not sent or committed. Matching
+Android retest and full qualification remain open; see
 [local read groups](../deep-client-shared/docs/architecture/owned-authored-counter-custody.md#actual-atomic-local-read-groups)
 and [device checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md#local-replica-rollover-retest).
 
