@@ -23,17 +23,21 @@
 без сброса retained аккаунта. [DR-0133](survival-program/decisions/DR-0133-expired-owned-retrieve-attempt-closure.md)
 выделяет closure только uncaptured phases1/2; реализация пока source candidate.
 Protocol139, Shared affected44 и final40 прошли; final40 без compiler warnings.
-Matching APK37 сохранил account/recovery и подтвердил Verified; один refresh
-дошёл до нового retained-grant acquisition и завершился onion OutcomeUnknown,
-не успешной синхронизацией. Диагностировать этот запрос, сохранив его exact pending
-custody; не выводить noncommit из таймаута и не повторять уже закрытые native gates.
+Matching APK37 сохранил account/recovery и подтвердил Verified; первоначальный
+refresh завершился onion OutcomeUnknown при retained-grant acquisition.
+Исходная uncertainty сохранена, noncommit из таймаута не выводится.
 Closed node metadata локализует новый отказ в private grant HTTP client;
 read-only TLS/liveness/method probes проходят. Source diagnostics Node32 /
 Registry33 PASS (0 warnings), без изменения authority или исходов. Matching
 runtime DLL/PDB доказали immediate shared-gate busy throw в Registry. Исправление
 использует существующий single private-issuer waiter в прежнем30s бюджете;
 background refresh остаётся non-queuing. Admission80 и real TLS/PostgreSQL2 PASS,
-без warnings. Обязательны matching activation и retained-account physical read;
+без warnings. Matching local build10/Up11/smoke12 прошли native0:9 ожидаемых
+images, все54 прежних mounts сохранены, readiness68s. Raw representation FAIL
+и отдельное finite-equivalence proof сохранены раздельно. APK37 Refresh106 ->
+независимый Inspect110 и Windows build20 завершили входящую синхронизацию без
+ошибки, на прежних аккаунтах с encrypted recovery. Это empty-mailbox read, не
+contact/text delivery или sustained acceptance;
 [точные ограничения](../xnode/docs/testing/s05-private-grant-hop-2026-10-16.md).
 Captured page/semantic/ACK phases3–6 остаются pinned и не считаются исправленными.
 Точные [source receipts и оставшиеся проверки](../deep-client-shared/docs/testing/s05-expired-active-retrieve-2026-10-16.md)
@@ -44,8 +48,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `fcc84fc` | `cbcd28a` | `b3d24cb` | build18, retained profile observed; closed after PreKeyPublication OutcomeUnknown |
-| Android | `71c973b` | `2cd2f77` | `2bb61d0` | APK37/update91, retained account/recovery; Verified96, issuer OutcomeUnknown101 |
+| Windows | `bf154f4` | `a06c121` (runtime `2cd2f77`) | `2bb61d0` | build20 launched; retained account/recovery, verified registration, completed empty incoming sync |
+| Android | `71c973b` | `2cd2f77` | `2bb61d0` | APK37/update91, retained account/recovery; Refresh106 -> Inspect110 completed empty incoming sync |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
