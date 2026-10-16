@@ -116,6 +116,17 @@ completed2361PASS/1FAIL/7 declared skips,2369 exact mappings and1620 unchanged
 inputs: only the existing MAU2 package witness fails. Build/preflight and
 qualification exited0; native test1, FullAccepted=false. Successful full/package
 qualification remains open. Acceptance is still0/4;
+
+[DR-0130](survival-program/decisions/DR-0130-owned-prekey-inventory-custody.md)
+now freezes the local successor-custody allocation without changing PKV2 schema4.
+Its private storage component passed63 affected regressions and9 final focused
+cases (native0, no failures/skips), including actual encrypted reopen, native
+authoring, concurrent CAS, lost response and missing/cyclic/changed custody.
+The [Shared mapping](../deep-client-shared/docs/architecture/owned-prekey-inventory-custody.md)
+explicitly remains inactive: connect the actual SQL-key owner, signed lineage,
+replica pair, common receiver consumption/recovery and compaction readback
+before device activation. This does not yet recover either installed account.
+
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
