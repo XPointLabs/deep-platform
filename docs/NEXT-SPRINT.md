@@ -29,7 +29,8 @@ Windows build12 не запускался и не является installed evi
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
 Typed429/503 recovery физически не инъецировался. Local runtime managed code:
-Registry `2859756`, Node `0240120`; Registry NTS helper `2e96265`, publisher
+Registry `469460e` (comment-only after `2859756`), Node `0240120`;
+Registry NTS helper `dd36774`, publisher
 `f4a77ca` (no production change).
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
@@ -47,7 +48,8 @@ authenticated-time acquisition denials. Earlier `interval-conflict` and
 `floor-rollback` observations remain historical evidence; `a936bd8` reported
 `scope-or-quorum`. The latest Registry separates policy/age/quorum labels;
 after the latest restart it reports `observation-quorum` and `source-interval`.
-Registry now returns503 and ONION is unavailable as well. Floor metadata changes
+Before helper update06 Registry returned503 and ONION also became unavailable.
+Floor metadata changes
 alone are not stable readiness evidence; no time-policy/floor reset is a remedy.
 Publisher renewal still succeeds, so offline-policy expiry is not established.
 Windows15 reached Verified after explicit registration check, then Rejected;
@@ -108,8 +110,19 @@ mailbox is unavailable and ONION oscillates. Windows registration and Android
 Verify28/Inspect88 both now report AccountProof/AdmissionAuthorityUnavailable,
 with the same accounts/recovery retained. A bounded two-CPU Registry diagnostic
 did not restore authority; the same container's original one-CPU quota was restored.
-Helper closed source-failure diagnostics passed8 Go tests, but are not yet runtime
-or physical acceptance. Recover this prerequisite before another business retry.
+Helper closed source-failure diagnostics passed8 Go tests. Component build06 /
+supported Up06 completed with exact29/25 retained mount preservation and tested
+helper hash equality. Smoke06 still exited1; the post-Up snapshot has ONION/
+contact ready but all three mailbox hosts unavailable. Initial helper logs have
+no closed failure category, not proof of sustained acquisition. Node recovery
+still reports revocation-context/observation-missing/check-deadline; isolate that
+path rather than treating NTS timeout as the sole cause. Later active helper
+logs reproduced four query-timeout failures; renewal also lost current time.
+The separate24-request
+connectivity diagnostic saw five query timeouts and recovery, but failed its own
+Docker shutdown budget (Terminal=false/native-1); it is not accepted evidence.
+Contract rerun exited0, production readiness exited1. Recover this prerequisite
+before another business retry; no physical acceptance or production update.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
