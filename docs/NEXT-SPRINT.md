@@ -18,11 +18,15 @@
 не получена.** Diagnostic device runs внутри S05 не открывают параллельные этапы.
 Не повторять принятые gates без изменения входов или конкретной verification цели.
 
-Непосредственный текущий блокер — восстановление expired active Retrieve,
+Исходный блокер этого среза — восстановление expired active Retrieve,
 наблюдённое на APK36 (`51eda49` / Shared `ca1df5f` / Protocol `d2e3d42`),
 без сброса retained аккаунта. [DR-0133](survival-program/decisions/DR-0133-expired-owned-retrieve-attempt-closure.md)
 выделяет closure только uncaptured phases1/2; реализация пока source candidate.
 Protocol139, Shared affected44 и final40 прошли; final40 без compiler warnings.
+Matching APK37 сохранил account/recovery и подтвердил Verified; один refresh
+дошёл до нового retained-grant acquisition и завершился onion OutcomeUnknown,
+не успешной синхронизацией. Диагностировать этот запрос, сохранив его exact pending
+custody; не выводить noncommit из таймаута и не повторять уже закрытые native gates.
 Captured page/semantic/ACK phases3–6 остаются pinned и не считаются исправленными.
 Точные [source receipts и оставшиеся проверки](../deep-client-shared/docs/testing/s05-expired-active-retrieve-2026-10-16.md)
 не заменяют matching device/full/package acceptance. Далее — retained-account
@@ -33,7 +37,7 @@ Installed diagnostic source:
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
 | Windows | `fcc84fc` | `cbcd28a` | `b3d24cb` | build18, retained profile observed; closed after PreKeyPublication OutcomeUnknown |
-| Android | `438474b` | `ca1df5f` | `fed7d30` | APK34/install50, retained profile; two complete publication verifications |
+| Android | `71c973b` | `2cd2f77` | `2bb61d0` | APK37/update91, retained account/recovery; Verified96, issuer OutcomeUnknown101 |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
