@@ -64,14 +64,22 @@ Red1/2 FAIL сохранён; reconnect/messaging49 и unfiltered MAUI Clean254 
 device fix; [matching build/retest ещё требуются](../deep-client-maui/docs/S05-FOREGROUND-DEADLINE-2026-10-16.md).
 Точные [source receipts и оставшиеся проверки](../deep-client-shared/docs/testing/s05-expired-active-retrieve-2026-10-16.md)
 не заменяют matching device/full/package acceptance. Далее — retained-account
-contact/text; затем по единому плану attachments/groups. Physical acceptance0/4.
+contact/text; затем по единому плану attachments/groups. Matching Windows22/APK38
+установлены без сброса аккаунтов/recovery, builds native0 без compiler diagnostics.
+Старый Windows intent отвергнут по expired XUR; штатная остановка подтверждена.
+Отдельный новый запрос прошёл grant custody до Store, но завершился OutcomeUnknown
+с inner cancellation; его точный повтор отменился до нового dispatch. Android
+Retrieve также OutcomeUnknown. Следующий blocker — конкретная задержка bounded
+owned/authority работы; не увеличивать сроки authority или вводить plaintext cache.
+[Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
+Physical acceptance0/4.
 
 Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `bf154f4` | `a06c121` (runtime `2cd2f77`) | `2bb61d0` | build20 launched; retained account/recovery, verified registration, completed empty incoming sync |
-| Android | `71c973b` | `2cd2f77` | `2bb61d0` | APK37/update91, retained account/recovery; Refresh106 -> Inspect110 completed empty incoming sync |
+| Windows | `381fe2c` | runtime `d3642b6` | `2bb61d0` | build22 launched; retained account/recovery, Verified; new Initial reaches Store but outcome unknown |
+| Android | `381fe2c` | runtime `d3642b6` | `2bb61d0` | APK38/update130, retained account/recovery; Retrieve outcome unknown, Inspect136 error |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
