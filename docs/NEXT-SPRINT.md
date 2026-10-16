@@ -22,8 +22,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `893db64` | `32de907` | `cacbd67` | build17 ready; launch unobserved after UI budget exhausted, build16 closed |
-| Android | `893db64` | `32de907` | `cacbd67` | APK29/install29, retained profile |
+| Windows | `893db64` | `32de907` | `cacbd67` | build17, fresh UI observation confirms retained profile |
+| Android | `c8732ab` | `32de907` | `ef6b5f4` | APK30/install30, retained profile |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
@@ -88,6 +88,20 @@ loaded the retained intent choice; explicit Retry02 did not Store. A separate
 owned contact scroll confirms the verified-network prerequisite refusal. Keep
 the original intent and diagnose sustained refresh cost plus retained prekey
 currentness; no reset, remint, backdating or longer timeout is authorized.
+APK30 now isolates the physical refusal as `PreKeyInventoryExpiry` after51.4s:
+the staged inventory fails authenticated upper-time coverage, not device binding.
+The original exception stage/rejection and all predicates remain unchanged.
+Protocol focused9 and MAUI focused108 passed; its build had0 warnings/errors,
+retained install/recovery/package audits passed. The account service and SQL
+store implement only initial staging; normal replenishment/service succession
+is missing, not an account-corruption or network workaround task. Complete it
+inside S05 under the existing CONTACT-RESOLVER owner before further contact/text.
+The sixteen-slot local reopen candidate reduces actual encrypted fixture reads
+8 ->4 with original decoders and independent retirement checks; focused39,
+affected82 and contact47 passed, no failures/skips/native errors. Full source and
+matching physical performance qualification remain open. Windows UI access was
+revalidated in this turn: build17 is running with the retained profile, so its
+earlier tool-budget refusal is no longer a current blocker.
 Windows17 built with0 warnings/errors, but its launch returned UI-budget exhaustion;
 fresh window observation remains required. Acceptance is still0/4;
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
@@ -235,6 +249,12 @@ Source/runtime evidence:
 permanent fences, native replay floors, registered node keys и volumes сохранены.
 
 ### Оставшаяся работа S05 — по порядку
+
+Непосредственный prerequisite к пунктам ниже — подтверждённый на APK30
+prekey expiry: закончить штатное пополнение/преемственность инвентаря и contact
+publication, сохранив старые claims/Initial и originals. Точный выход/gate
+в [S05](architecture/IMPLEMENTATION-PLAN-V1.md#s05--current-issuer-и-автоматический-lifecycle-управляющего-контура).
+Новый тестовый аккаунт не закрывает восстановление существующего.
 
 1. **Logical assignment / current carriage — окончательная квалификация.**
    [DR-0122](survival-program/decisions/DR-0122-logical-mailbox-assignment-carriage.md)

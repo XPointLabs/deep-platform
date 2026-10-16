@@ -197,6 +197,19 @@ deep-devops — lifecycle и наблюдаемость; xpoint-node-installer �
 restart/upgrade; deep-client-shared — bounded verified catch-up.
 **Зависимости:** S01; connected gate требует S02/S03.
 
+Подтверждённое физическое истечение первоначального XPI1 — блокер S05, не
+повод создавать новый аккаунт. Перед connected contact/text завершить штатный
+owned prekey lifecycle по [CONTACT-RESOLVER](CONTACT-RESOLVER-V1.md), §3.3:
+пополнение инвентаря, signed predecessor/service succession при исчерпании
+его срока и атомарная публикация обновлённого contact closure. Shared владеет
+сохранением точных pending/committed поколений, старых секретов для уже выданных
+claim/Initial и protected tip; Protocol — закрытым проверенным rollover boundary;
+Registry/XNode — current-only admission и durable lineage. Любое недостающее
+API/выделение сначала отдельно заморозить. Gate включает offline expiry,
+cold reopen, lost publication response, competing successor, прежний pending
+Hello и один эффект после восстановления. Таймауты и сроки старых подписанных
+ресурсов не продлевать; reset/remint не заменяет этот lifecycle.
+
 Использовать имеющийся private XMC2 issuer и permanent winner journal. Проверить
 role signers, current proof/time и revocation; отдельно выполнить positive
 issuance→client verify→node acceptance. Подготовить поддерживаемое authoring и
