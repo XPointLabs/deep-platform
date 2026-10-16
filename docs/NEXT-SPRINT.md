@@ -80,6 +80,14 @@ binds, all volumes older than the update. APK29 Verify01 -> independent Inspect0
 now completed `verified-publication/Verified`, with recovery retained. The
 attempt recorded99.5s /887 unprotect calls /51.0s protection, within the original
 budget; it is not sustained readiness or business delivery acceptance.
+The later background refresh still timed out at120.0s with1161 unprotect calls
+/73.3s protection, then another attempt rejected the existing replica-prekey
+current-device-authority guard (`VerifyComplete` IL806). Exact packaged code
+locates that compound guard, not its failed subcondition. Android Add01 only
+loaded the retained intent choice; explicit Retry02 did not Store. A separate
+owned contact scroll confirms the verified-network prerequisite refusal. Keep
+the original intent and diagnose sustained refresh cost plus retained prekey
+currentness; no reset, remint, backdating or longer timeout is authorized.
 Windows17 built with0 warnings/errors, but its launch returned UI-budget exhaustion;
 fresh window observation remains required. Acceptance is still0/4;
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
