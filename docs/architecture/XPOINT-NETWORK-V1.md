@@ -896,6 +896,14 @@ The source restrictions in section 8 apply unchanged, including masked policy.
 HTTP distribution uses the exact media types exposed by the Protocol codec;
 bounded transport and TLS checks remain consumer-owned.
 
+[DR-0128](../survival-program/decisions/DR-0128-coherent-network-view-acquisition.md)
+adds a non-authoritative strictly-newer-view observation for coherent acquisition.
+Only an authenticated forward-view mismatch after ordinary full verification may
+trigger one owned closure/proof reacquisition under the original budget. Every
+new pair still passes complete verification and actual protected custody before
+release; equal-generation conflicts and other failures do not grant a retry.
+This changes no wire or currentness/rollback/fork rule.
+
 ## 9. Mailbox placement and storage swarms
 
 Original-namespace continuity follows
