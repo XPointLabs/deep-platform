@@ -40,6 +40,12 @@ images, все54 прежних mounts сохранены, readiness68s. Raw rep
 contact/text delivery или sustained acceptance;
 [точные ограничения](../xnode/docs/testing/s05-private-grant-hop-2026-10-16.md).
 Captured page/semantic/ACK phases3–6 остаются pinned и не считаются исправленными.
+Следующий actual retained-contact отказ: Android Retry117 -> Inspect118/Scroll121
+останавливается на exact draft-metadata equality (`PrepareInitialContactDraftAsync`,
+IL4129; matching build PDB line86). Какая из привязок отличается, не установлено;
+не ослаблять guard и не заменять прежний intent. DR-0064 требует сохранения exact
+draft; текущая проверка нового запроса с другого устройства не закрывает этот
+retained retry. [Физический checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Точные [source receipts и оставшиеся проверки](../deep-client-shared/docs/testing/s05-expired-active-retrieve-2026-10-16.md)
 не заменяют matching device/full/package acceptance. Далее — retained-account
 contact/text; затем по единому плану attachments/groups. Physical acceptance0/4.
