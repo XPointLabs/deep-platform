@@ -29,7 +29,7 @@ Windows build12 не запускался и не является installed evi
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
 Typed429/503 recovery физически не инъецировался. Local runtime managed code:
-Registry `469460e` (comment-only after `2859756`), Node `71bcae3`;
+Registry `469460e` (comment-only after `2859756`), Node `7520654`;
 Registry NTS helper `dd36774`, publisher
 `f4a77ca` (no production change).
 Новые source changes проходят отдельную квалификацию; старые APK не являются
@@ -136,10 +136,18 @@ exited1: mailbox recovery remains unavailable. Supported signed-control capture
 then fetched both roles in5.8s; public codec/host-clock diagnostics do not prove
 protected currentness or native progress. Inspect the actual worker phase/floors;
 no full, stable recovery or physical acceptance is claimed by this source fix.
-The next Node diagnostic candidate records the actual failed refresh phase,
+Node `7520654` records the actual failed refresh phase,
 closed reason and already-read native generations, without additional I/O or
 authority effects. Matching focused17 passed46/0/0/native0; runtime evidence is
-still required before selecting the next recovery fix.
+obtained: Up09 verified the exact image on all three nodes and29/25 retained
+mounts; native reads show468/455 and later Retrieve456, with occasional target-
+read I/O/retry failures rather than absent enrollment. At03:00Z all three nodes
+reported ready/recovered, and supported smoke09 exited0. This does not prove
+sustained stability or any device delivery. Android Verify29 then reached a
+different failure: ProtectedState in local contact-object authoring, exact guard
+not yet identified. Windows input is stopped after two geometry failures pending
+operator window restoration. Preserve both profiles and diagnose that authoring
+guard using QA-only closed labels; no contact/message effect is accepted yet.
 Source/runtime evidence:
 [contact transport](../deep-devops/docs/S05-CONTACT-TRANSPORT-2026-10-15.md),
 [grant custody](../deep-client-shared/docs/architecture/owned-mailbox-grant-custody.md),
