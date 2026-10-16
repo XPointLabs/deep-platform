@@ -187,6 +187,13 @@ RequireRetainedInitialDraftAndRecipientUnderLeaseAsync:208. Independent UI уж�
 retirement/checkpoint inventory reads; actual native/SQL/cancellation joins
 сохранить, не вводить plaintext cache, не продлевать сроки. Android44 остаётся
 установлен; diagnostic-only APK заново не собирался.
+Device-source candidate объединяет actual registration+marker в один fresh
+inventory и registration+retirement+optional draft/catalog в другой. Штатный
+cancellation owner всё ещё читает actual native floor/history; независимо
+от каждого вызова нет plaintext cache или пропуска SQL/root checks. Source union
+с новыми missing/foreign/cancel/cold tests прошёл53/0FAIL/0skip/native0 без
+compiler diagnostics. Это affected scope, не canonical full или device speedup.
+[Границы изменения](../deep-client-shared/docs/testing/s05-owned-read-batch-2026-10-17.md#device-source-and-retirement-opening).
 Затем actual contact request/accept и text. Full/package и device business
 acceptance пока0/4.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
