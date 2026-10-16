@@ -901,6 +901,15 @@ issued claims without serving an additional future pre-signed epoch. Signed
 service policy, global LR counters, current/overlap admission and all original
 claim/Initial/replay custody remain unchanged. Activation is independently gated.
 
+[DR-0132](../survival-program/decisions/DR-0132-replica-prekey-service-transition.md)
+closes replica service rollover without changing wire/native formats. A new
+service starts at epoch1/zero XPI predecessor and extends the exact signed XPS
+chain, never the old inventory epoch. The final committer verifies its predecessor
+descriptor from existing operation custody against the node-signed manifest and
+the independently current device key. Epoch conflict scope includes service
+generation; reused operation IDs and genuine same-service forks still reject.
+Missing/substituted support is not fork evidence and cannot clear an old latch.
+
 #### 3.3.1 Complete pre-key inventory manifest: `XPI1`
 
 An XPS1 generation is not publication authority for an arbitrary subset of

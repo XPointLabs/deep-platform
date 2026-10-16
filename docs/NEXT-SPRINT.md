@@ -22,7 +22,7 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `893db64` | `32de907` | `cacbd67` | build17, fresh UI observation confirms retained profile |
+| Windows | `fcc84fc` | `cbcd28a` | `b3d24cb` | build18, retained profile observed; closed after PreKeyPublication OutcomeUnknown |
 | Android | `c8732ab` | `32de907` | `ef6b5f4` | APK30/install30, retained profile |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
@@ -32,7 +32,7 @@ Typed429/503 recovery физически не инъецировался. Local 
 Registry `20be804` (local route admission update), Node `b8b7674`;
 Registry NTS helper `dd36774`, publisher
 `f4a77ca` (no production change).
-The active local Registry/node images now compile Protocol `0867668` under
+The earlier local Registry/node images compiled Protocol `0867668` under
 DR-0127. Up11 verified the exact Registry image, all three exact node images and
 unchanged29 volume /25 bind identities; supported smoke12 exited0. Both retained
 device profiles then reached explicit verified-publication/proof success.
@@ -158,7 +158,10 @@ accounting only for Windows/Docker Desktop source-path representation. Raw bind
 hash comparison failed and is retained separately, not relabelled PASS.
 Supported smoke17 exited0: current Registry proof and all3 verified ONION nodes,
 recovery37s. This is readiness, not sustained/business/device acceptance.
-Full/source/package and physical qualification remain open; no new device activation yet. Preserve
+Windows18 then opened the retained profile without reset. Its prekey dispatch
+returned OutcomeUnknown; one relay recorded504, without proven inner cause.
+APK31 passed build/signature verification but is not installed. Full/source/
+package and physical qualification remain open. Preserve
 all old claimed/Initial custody. Multiple completed inventory-service generations
 while contact promotion was unavailable, and recovery of expired unresolved
 publication, still need lifecycle closure: do not skip the contact's immediate
@@ -166,6 +169,22 @@ signed predecessor, infer noncommit, drop pending custody or reset an account.
 Canonical full/package qualification and
 retained-account device recovery remain open. This does not yet recover either
 installed account; physical acceptance remains0/4 and S05 is not accepted.
+
+[DR-0132](survival-program/decisions/DR-0132-replica-prekey-service-transition.md)
+closes the independently reproduced replica false-fork at service+1/epoch1,
+using existing exact historical support and current device authority, without
+wire/native format changes. Node focused90 and Protocol focused36 passed/native0,
+no failures/skips/compiler warnings/errors; original red and fixture failures
+remain in [the checkpoint](../xnode/docs/testing/s05-service-rollover-2026-10-16.md).
+This candidate is not deployed or accepted full/package/device evidence.
+One existing fork marker was observed read-only in the local dev runtime;
+none on the other two nodes. Do not infer its cause, clear it, reset custody or
+replace an account to claim recovery. Mr. X explicitly authorized a local-dev
+reset if the other contour's snapshot cannot be reused. Read-only comparison
+found different network and both genesis anchors, so `deep-dev` cannot supply
+`deep-dev-current` custody. Planned operator maintenance quarantines only the
+affected local service state, not keys/accounts/production; it is not native
+retained-state recovery acceptance. No reset has been performed yet.
 
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
