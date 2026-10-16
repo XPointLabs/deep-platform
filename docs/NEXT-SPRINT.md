@@ -101,6 +101,15 @@ actual DLL/PDB подтвердили guard, но не отдельное усл
 сохраняет все8 ordered predicates и выводит только закрытую метку причины:
 Protocol140 и MAUI Clean271 PASS/native0, без compiler diagnostics. Не считать
 это clock fix, разрешением принять future result или device acceptance.
+APK42 установлен после отдельного preflight retry; actual installed APK SHA256
+совпал с локальным. На устройстве наблюдён ANR, Refresh не подтверждён.
+Source-тест воспроизвёл UI-context capture фонового worker; correction запускает
+worker и native conversation work вне UI, сохраняя foreground caller context,
+lane/deadlines. Red1 FAIL сохранён, unfiltered Clean272 PASS/native0, без
+compiler diagnostics. Matching build/device retest ещё требуется; причина
+retained-result time refusal остаётся неизвестной, guard не ослаблен.
+Отдельный unfiltered MAUI Smoke119 PASS/native0 (без compiler diagnostics)
+не заменяет matching физический ANR/receive retest.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
@@ -110,7 +119,7 @@ Installed diagnostic source:
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
 | Windows | `fa927e2` | `7d64fe7` | `2bb61d0` | build25; expired-XUR refusal, normal stop; separately fresh Store OutcomeUnknown/peer504; new intent preserved |
-| Android | `fa927e2` | `7d64fe7` | `2bb61d0` | APK41/update150, Settings151 retained account/recovery; first retained-result time guard refusal, Inspect154 error |
+| Android | `3bf452f` | runtime `7d64fe7` | `8ea886f` | APK42/install158 + actual installed hash; ANR; restart161/Inspect162 Chats, Refresh163 not confirmed; last business receipt remains APK41 |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
