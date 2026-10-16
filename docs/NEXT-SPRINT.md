@@ -46,7 +46,11 @@ IL4129; matching build PDB line86). Какая из привязок отлич�
 не ослаблять guard и не заменять прежний intent. DR-0064 требует сохранения exact
 draft; текущая проверка нового запроса с другого устройства не закрывает этот
 retained retry. [Физический checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
-Отдельно Windows contact operation остаётся Busy без результата. Source audit
+Отдельно Windows contact operation наблюдалась Busy; после повторной активации
+QA независимый UI подтвердил terminal protected-state failure. Closed log
+локализует его в `ProtectedDid2MailboxGrantJournal.OriginalCeiling` line624 при
+подготовке Deposit custody для Initial. Это compound original-policy/route/request
+binding guard: точный предикат пока не выделен, не отключать его. Source audit
 нашёл отсутствие foreground attempt budget; candidate добавляет отмену actual
 token через2m только после очереди, сохраняя lease до drain и исходную uncertainty.
 Red1/2 FAIL сохранён; reconnect/messaging49 и unfiltered MAUI Clean254 PASS,
