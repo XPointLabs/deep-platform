@@ -893,6 +893,16 @@ Deleting locally does not remotely revoke another user's history. Blocking
 stops receipts, new route updates and new content acceptance and rotates local
 unsolicited capabilities where needed.
 
+For owned Initial retries, [DR-0135](../survival-program/decisions/DR-0135-owned-initial-retry-expiry-entry.md)
+requires original durable Store replay first, then the existing authenticated
+expiry/stop owner before current peer resolution. Only protected original
+deadline plus current lower time permits expiry; an upper overlap or changed
+contact is not closure. The stopped original remains distinct from a separate
+explicit new user request. UI expiry feedback may clear its exact retry choice,
+but cannot allocate/dispatch replacement work in the same command or confer
+noncommit/recall authority. Existing original/native/dependency custody and
+non-expired exact metadata/claim checks remain mandatory.
+
 ## 8. `DMC2` canonical application event
 
 `DMC2`, version 1, suite `0x0201`, is the sole pairwise application plaintext.

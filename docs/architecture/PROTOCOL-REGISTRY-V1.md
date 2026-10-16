@@ -11,6 +11,12 @@ Historical sizes are not releasable values or permission for a legacy reader.
 The connected consumer/package/physical closure remains unqualified; see the
 [current audit](ARCHITECTURE-AUDIT-2026-10-03.md).
 
+[DR-0135](../survival-program/decisions/DR-0135-owned-initial-retry-expiry-entry.md)
+allocates the informative Shared business exception
+`DeepIdV2ContactRetryExpiredException` and early existing-owner expiry ordering.
+It carries no authority and changes no Protocol API/wire/schema/generation.
+Actual native stop/recovery and explicit-next-command UI/device gates remain.
+
 [DR-0129](../survival-program/decisions/DR-0129-owned-prekey-service-succession.md)
 freezes same-device immediate XPS1 succession in existing contact-object and
 publication APIs. It adds no wire/API value, suite/domain or error code. Exact

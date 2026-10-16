@@ -157,6 +157,17 @@ PrepareInitialContactDraftAsync IL4129/source86, до нового Store. Actual
 69531ms,3 Protect/382 Unprotect,35200ms protection; Contacts192 подтвердил ошибку.
 Следующий код — original Initial draft/current-dependency recovery; какая
 привязка отличается, пока не установлено. Не ослаблять guard и не заменять intent.
+Source candidate по [DR-0135](survival-program/decisions/DR-0135-owned-initial-retry-expiry-entry.md)
+вводит существующий actual-owned expiry owner перед peer resolve, сохраняя
+приоритет authenticated durable Store и все unexpired metadata checks.
+Typed informative outcome снимает только exact UI retry choice; новый запрос
+возможен лишь отдельной командой Add после повторного чтения protected roots.
+Аккаунты не сбрасываются. Initial affected22/5 FAIL сохранён: пять scoped-claim
+fixtures ожидали прежнее число network fetches; correction сохраняет exact
+count assertion с дополнительным own proof. Final affected29 PASS/native0/0skip,
+без compiler diagnostics, включая actual native stop/cold reopen и durable
+Store precedence. Это не canonical full; full/package и matching device pending;
+[scope](../deep-client-shared/docs/testing/s05-initial-retry-entry-2026-10-17.md).
 Затем actual contact request/accept и text. Full/package и device business
 acceptance пока0/4.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
