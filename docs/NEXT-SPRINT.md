@@ -94,6 +94,13 @@ marker inventory; каждый вызов заново читает ключ/mar
 compiler diagnostics; owned claim→Store→cold exact retry и Initial/Accept
 lost-reply3 PASS/native0. Это source fixtures, не device delivery;
 [scope/остаток](../deep-client-shared/docs/testing/s05-owned-read-batch-2026-10-17.md).
+Matching Windows25/APK41 сохранили аккаунты. После expired-XUR отказа и
+штатного stop отдельно новый Windows Store снова OutcomeUnknown/peer504.
+Android retained Retrieve остановился на проверке времени первого ответа;
+actual DLL/PDB подтвердили guard, но не отдельное условие. Diagnostic candidate
+сохраняет все8 ordered predicates и выводит только закрытую метку причины:
+Protocol140 и MAUI Clean271 PASS/native0, без compiler diagnostics. Не считать
+это clock fix, разрешением принять future result или device acceptance.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
@@ -102,8 +109,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `826d337` | runtime `5fa8789` | `2bb61d0` | build24 launched; retained exact contact retry cancelled at120s; intent preserved |
-| Android | `826d337` | runtime `5fa8789` | `2bb61d0` | APK40/update144, Settings145 retained account/recovery; Retrieve OutcomeUnknown, Inspect148 error |
+| Windows | `fa927e2` | `7d64fe7` | `2bb61d0` | build25; expired-XUR refusal, normal stop; separately fresh Store OutcomeUnknown/peer504; new intent preserved |
+| Android | `fa927e2` | `7d64fe7` | `2bb61d0` | APK41/update150, Settings151 retained account/recovery; first retained-result time guard refusal, Inspect154 error |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
