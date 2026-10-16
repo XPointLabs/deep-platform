@@ -110,6 +110,13 @@ compiler diagnostics. Matching build/device retest ещё требуется; п
 retained-result time refusal остаётся неизвестной, guard не ослаблен.
 Отдельный unfiltered MAUI Smoke119 PASS/native0 (без compiler diagnostics)
 не заменяет matching физический ANR/receive retest.
+Matching Windows26/APK43 native0 без diagnostics; installed APK hash совпал,
+Settings166 сохранил account/recovery. Chats167/Refresh168/Inspect169 доступны,
+ANR в этом bounded проходе не наблюдался (не sustained acceptance). Retained
+result guard пройден, но Retrieve вернул OutcomeUnknown/peer504; matching PDB
+подтвердил non-success response в ForwardAsync, не local cancellation.
+Следующий узкий blocker — native mailbox terminal отказ; не увеличивать сроки,
+не ослаблять guard, не сбрасывать аккаунты. Physical acceptance по-прежнему0/4.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
@@ -118,8 +125,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `fa927e2` | `7d64fe7` | `2bb61d0` | build25; expired-XUR refusal, normal stop; separately fresh Store OutcomeUnknown/peer504; new intent preserved |
-| Android | `3bf452f` | runtime `7d64fe7` | `8ea886f` | APK42/install158 + actual installed hash; ANR; restart161/Inspect162 Chats, Refresh163 not confirmed; last business receipt remains APK41 |
+| Windows | `443e9b7` | runtime `7d64fe7` | `8ea886f` | build26 launched; retained profile/intent; no new business submit on26 |
+| Android | `443e9b7` | runtime `7d64fe7` | `8ea886f` | APK43/update165 + actual installed hash; Settings166 account/recovery retained; Refresh168→Inspect169 Retrieve OutcomeUnknown/peer504, UI accessible |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
