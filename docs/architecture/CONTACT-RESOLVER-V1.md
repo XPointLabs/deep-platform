@@ -892,6 +892,15 @@ Pending/current-publication, complete signature/time verification, two-replica
 commit, exact private-key consumption and compaction readback must close together
 before activation; a parsed protected record alone grants none of those facts.
 
+[DR-0131](../survival-program/decisions/DR-0131-owned-prekey-maintenance-author.md)
+allocates exact owned XPS1 restoration for the existing inventory author and one
+Shared maintenance/publication command. Fresh authority and the account lease
+control successor selection; unresolved pending publication never authorizes
+new keys. On-demand replacement may overlap its exact predecessor for already
+issued claims without serving an additional future pre-signed epoch. Signed
+service policy, global LR counters, current/overlap admission and all original
+claim/Initial/replay custody remain unchanged. Activation is independently gated.
+
 #### 3.3.1 Complete pre-key inventory manifest: `XPI1`
 
 An XPS1 generation is not publication authority for an arbitrary subset of

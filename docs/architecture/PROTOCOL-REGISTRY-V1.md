@@ -601,6 +601,13 @@ Durable transfer/initial-secret retirement are activation prerequisites.
 
 ### 6.6 Contact resolver and prekey service records
 
+[DR-0131](../survival-program/decisions/DR-0131-owned-prekey-maintenance-author.md)
+freezes owned XPS restoration/lineage verification and the clean replacement
+Shared maintenance/publication surface. It reuses existing closed types and
+unchanged wire/state layouts; it does not restore a legacy reader or grant
+currentness by parsing persisted XPS1. Source/package/runtime activation remains
+separate from this accepted API allocation.
+
 Owner: exact codecs/vectors in `deep-protocol`; service runtime in `xnode`;
 client author/verification/orchestration in `deep-client-shared`.
 Normative source: `CONTACT-RESOLVER-V1.md`.

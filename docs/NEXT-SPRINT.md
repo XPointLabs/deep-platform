@@ -132,10 +132,29 @@ pending old Hello after same-service epoch succession, out-of-order LR counters
 and cross-key counter-reuse rejection. Replicas are signed in-process fixtures,
 not physical/deployed transport acceptance. Final11 rebuild/two exact storage
 rows passed with0 compiler warnings/errors after correcting a test-style warning;
-runtime source is unchanged from regression10. Ordinary automatic authoring and
-changed contact-support adoption remain unconnected: freeze the minimal missing
-closed authoring API before changing it, preserve pending exact bytes and all
-old claimed/Initial custody. Canonical full/package qualification and
+runtime source is unchanged from regression10.
+[DR-0131](survival-program/decisions/DR-0131-owned-prekey-maintenance-author.md)
+now freezes owned XPS restoration, one canonical service-transition verifier
+and one maintenance/publication command without legacy aliases. Its source
+candidate connects ordinary authoring under the actual lease, exact pending
+retry and changed-contact adoption only after the new prekey pair. Initial
+source02 passed10/failed2 (new fixture exception-type expectations, not accepted
+qualification); source03 stopped at a test-file namespace compile error.
+Source06 passed26/failed1; its remaining fixture incorrectly coupled reachability
+and threshold lifetime. Matching the actual Registry issuer's existing lease
+bound corrected it. Renewal08 then passed9 (native0, no failures/skips/compiler
+warnings/errors), including forced changed-service contact publication after
+encrypted reopen, pair-before-adoption, locator/Retrieve preservation, exact
+retry and the existing recovery cases. MAUI Clean07 passed230 unfiltered cases,
+native0, no failures/skips.
+Protocol10 passed35 targeted cases/native0 with0 compiler warnings/errors.
+Actual Windows QA compilation and full/source/package/runtime/physical
+qualification remain open; no device activation yet. Preserve
+all old claimed/Initial custody. Multiple completed inventory-service generations
+while contact promotion was unavailable, and recovery of expired unresolved
+publication, still need lifecycle closure: do not skip the contact's immediate
+signed predecessor, infer noncommit, drop pending custody or reset an account.
+Canonical full/package qualification and
 retained-account device recovery remain open. This does not yet recover either
 installed account; physical acceptance remains0/4 and S05 is not accepted.
 
