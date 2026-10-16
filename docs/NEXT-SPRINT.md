@@ -106,7 +106,7 @@ APK42 установлен после отдельного preflight retry; actu
 Source-тест воспроизвёл UI-context capture фонового worker; correction запускает
 worker и native conversation work вне UI, сохраняя foreground caller context,
 lane/deadlines. Red1 FAIL сохранён, unfiltered Clean272 PASS/native0, без
-compiler diagnostics. Matching build/device retest ещё требуется; причина
+compiler diagnostics. Bounded matching retest описан ниже; причина
 retained-result time refusal остаётся неизвестной, guard не ослаблен.
 Отдельный unfiltered MAUI Smoke119 PASS/native0 (без compiler diagnostics)
 не заменяет matching физический ANR/receive retest.
@@ -115,8 +115,18 @@ Settings166 сохранил account/recovery. Chats167/Refresh168/Inspect169 д
 ANR в этом bounded проходе не наблюдался (не sustained acceptance). Retained
 result guard пройден, но Retrieve вернул OutcomeUnknown/peer504; matching PDB
 подтвердил non-success response в ForwardAsync, не local cancellation.
-Следующий узкий blocker — native mailbox terminal отказ; не увеличивать сроки,
-не ослаблять guard, не сбрасывать аккаунты. Physical acceptance по-прежнему0/4.
+Node `17cee31`: focused43 PASS/native0; supported local Build13/Up14/Verify15
+native0,9 desired images и54 mounts сохранены (отдельный finite path-alias proof,
+не raw representation PASS). APK43 Refresh173→Inspect174 снова OutcomeUnknown;
+actual runtime DLL/PDB указывает ReadCurrentWindowAsync:47 — live unresolved
+native Store custody. Без correlation IDs это не привязка к конкретному старому
+sender intent и не причина его первоначального Store failure. Windows26 сохранил
+pending request; отдельный exact Retry остановлен XurWindow до нового Store.
+Следующий узкий blocker — bounded settlement/recovery исходного native pending
+Store и expiry boundary. Не пропускать pending cursor, не remint peer request,
+не продлевать XUR/grant, не заменять recovery новым аккаунтом. Точные результаты:
+[business checkpoint](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#retained-local-deployment-and-native-pending-store-diagnosis).
+Physical acceptance по-прежнему0/4; S05 не принят.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
@@ -125,13 +135,13 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `443e9b7` | runtime `7d64fe7` | `8ea886f` | build26 launched; retained profile/intent; no new business submit on26 |
-| Android | `443e9b7` | runtime `7d64fe7` | `8ea886f` | APK43/update165 + actual installed hash; Settings166 account/recovery retained; Refresh168→Inspect169 Retrieve OutcomeUnknown/peer504, UI accessible |
+| Windows | `443e9b7` | runtime `7d64fe7` | `8ea886f` | build26; existing pending request projected; exact Retry XurWindow, no new native Store |
+| Android | `443e9b7` | runtime `7d64fe7` | `8ea886f` | APK43/update165 + actual installed hash; Settings166 account/recovery retained; Refresh173→Inspect174 Retrieve OutcomeUnknown, native pending Store refusal observed |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
-Typed429/503 recovery физически не инъецировался. Local runtime managed code:
+Typed429/503 recovery физически не инъецировался. Historical runtime at that observation:
 Registry `20be804` (local route admission update), Node `b8b7674`;
 Registry NTS helper `dd36774`, publisher
 `f4a77ca` (no production change).
