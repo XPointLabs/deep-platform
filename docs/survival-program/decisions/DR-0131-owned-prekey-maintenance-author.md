@@ -141,3 +141,13 @@ replacement injects a lost stage response and verifies valid new support, no
 ONION reservation and unchanged original replica custody. The existing pending-
 expiry test still requires rejection without replacement or dispatch. Exact
 canonical reference retirement mapping must name this decision and replacement.
+
+Exact source-case replacement declaration for the canonical reader:
+
+```text
+Deep.Client.Shared.Production.Tests.DeepIdV2ContactPathAuthoritySourceTests.CompletedPublication_ExpiredInventoryRemainsExpiredDespiteValidStoredSignatures -> Deep.Client.Shared.Production.Tests.DeepIdV2ContactPathAuthoritySourceTests.CompletedPublication_ExpiredInventoryMaintainsBeforeDispatchAndPreservesOriginalCustody
+```
+
+This is the same replacement already accepted above, not another retirement,
+allowed failure/skip or changed assertion. Original reference TRX stay unchanged;
+the replacement must actually pass in the current full run.

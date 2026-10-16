@@ -236,6 +236,15 @@ Windows UI remains stopped after physical Escape, pending fresh human permission
 See the exact APK/hash/phase matrix in the
 [device checkpoint](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md#local-replica-rollover-retest).
 
+Android34 also reopens the retained account after Restart59 and reaches Verified
+in66931ms (Inspect63); later background cycles complete64838/59496ms. One actual
+incoming refresh65 instead fails retained Retrieve-grant issuer/network/time
+verification (Inspect66), with no successful empty page or delivery. Diagnose the
+exact predicate before another business retry; original grant/intent custody
+remains. A closed reason-only diagnostic candidate passed Protocol89/MAUI160,
+native0/no failures/skips; APK34 does not contain it. Shared preflight05 before
+these diagnostic Protocol changes passed build0/6 fixtures/terminal0, not full.
+
 no exact binding, protected state or deadline was weakened. Windows16's second empty sync was slow but completed
 by06:00Z; exact latency/cause was not measured. This is not delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
