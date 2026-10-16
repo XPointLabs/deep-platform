@@ -29,7 +29,7 @@ Windows build12 не запускался и не является installed evi
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
 Typed429/503 recovery физически не инъецировался. Local runtime managed code:
-Registry `469460e` (comment-only after `2859756`), Node `7520654`;
+Registry `469460e` (comment-only after `2859756`), Node `b8b7674`;
 Registry NTS helper `dd36774`, publisher
 `f4a77ca` (no production change).
 The active local Registry/node images now compile Protocol `0867668` under
@@ -46,6 +46,14 @@ closed node logs locate a ContactResolve exit custody-or-io failure and two rela
 504 responses. Diagnose its inner operation and Android's bounded recovery cost;
 no reset, replacement intent or longer deadline is a remedy. Physical acceptance
 remains0/4. Current exact evidence is in the linked device/contact checkpoints.
+Node's bounded inner-cause diagnostic passed11 focused and133 affected
+regressions. Component build13 / supported Up14 verified its exact image on all
+three nodes, unchanged Registry09 and29/25 mounts; smoke15 exited0. Windows16's
+single incoming refresh at05:24Z completed with an empty list, so the earlier
+exit failure is not yet reproduced or explained. Android25 Verify03 still
+failed with retained state. A QA-only stage/protector work-cost candidate passed
+52 focused and227 unfiltered Clean-project cases; matching physical measurement
+is pending, not a performance fix, source full gate or delivery acceptance.
 Новые source changes проходят отдельную квалификацию; старые APK не являются
 доказательством новых inputs. Это не Releases/main или release acceptance.
 Shared `acc65f1` carries the independently verified contact pair through one
