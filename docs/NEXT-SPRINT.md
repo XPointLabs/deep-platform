@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-16**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-17**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -80,6 +80,10 @@ PASS/native0 без compiler diagnostics. Это сокращение чтени
 validation. Android Retrieve также OutcomeUnknown. Actual forwarding, storage
 и приём контакта не подтверждены; прежний intent сохраняется, нужен узкий
 разбор latency/cancellation в настоящем пути.
+QA source теперь измеряет actual business totals существующим закрытым
+observer (14 focused PASS/native0), а не подменяет их background VerificationTotal.
+Только elapsed/count/protectionMs, без payload/адресов/slot names или новых
+таймаутов; [scope](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md).
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
 [Физические результаты и ограничения метрик](../deep-client-maui/docs/DID2-HTTPS-DEVICE-2026-09-28.md).
 Physical acceptance0/4.
