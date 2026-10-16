@@ -176,6 +176,17 @@ read: ForwardOnceAsync:146 / ingress HTTP:299,46429ms и5650ms. Это before-fo
 ingress refusal, не новый Store или contact delivery; точный error class ещё
 не установлен. QA-only closed-label correction проверен Clean284/native0/0skip;
 matching diagnostic builds/retest pending, server/authority не менялись.
+Matching Windows28 (`a2a758a`, runtime Shared `f63b432`, Protocol `9d6df07`)
+прошёл native0 без diagnostics и сохранил аккаунт. Add выбрал actual protected
+pending, отдельный exact Retry завершился на прежнем120s foreground budget:
+120050ms,9 Protect/1809 Unprotect,75840ms protection. Cancellation находится в
+OpenInitialSessionCustodyAsync:28 / OpenCurrentDeviceStateStoreAsync:109 при
+RequireRetainedInitialDraftAndRecipientUnderLeaseAsync:208. Independent UI уже
+не busy, сохранил retry choice и показал отмену. Предыдущий ingress class не
+воспроизведён и не установлен. Следующий узкий код — повторные device-source /
+retirement/checkpoint inventory reads; actual native/SQL/cancellation joins
+сохранить, не вводить plaintext cache, не продлевать сроки. Android44 остаётся
+установлен; diagnostic-only APK заново не собирался.
 Затем actual contact request/accept и text. Full/package и device business
 acceptance пока0/4.
 [Охват source-проверок](../deep-client-shared/docs/testing/s05-protected-floor-batch-2026-10-16.md).
@@ -186,7 +197,7 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `8181f0a` | `f63b432` | `9d6df07` | build27; old owned retry expired/closed; separate new Add + one exact retry fail permanent-read ingress before new Store |
+| Windows | `a2a758a` | runtime `f63b432`, docs `ce65494` | `9d6df07` | build28; protected pending preserved; exact Retry cancelled at120s while opening device-source custody; no delivery acceptance |
 | Android | `8181f0a` | `f63b432` | `9d6df07` | APK44/update195; Settings196 account/recovery retained; Scroll198 Verified; contact/expiry retest pending |
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
