@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-17**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-18**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -78,15 +78,39 @@ Connected strict retained run33 прошёл/native0: оба исходных т
 подтверждённый Store, обе cold histories содержат ровно по одному своему и
 входящему тексту, duplicate polls прошли, unresolved Store0. Четыре transient
 попытки потребовали по одному cold exact retry; это recovery PASS, не
-first-attempt reliability claim. Fresh-contact run34 на той же CLI сборке и
-локальном Node candidate проверяет полный сценарий с новыми профилями.
+first-attempt reliability claim. Fresh-contact run34 на той же CLI сборке
+создал/опубликовал оба аккаунта, но Initial Store исчерпал два native deadlines;
+receipt FAIL/native1. Диагностика выявила высокую стоимость чтения публичных
+inputs через Windows bind. Текущий publisher теперь выводит те же подписанные
+байты в Linux volume; Registry и три ноды читают его read-only без изменения
+проверок. Build02/probe-build01 прошли без compiler diagnostics, Compose
+contracts30/native0 и native output contracts8/native0. Supported activation01
+сохранил все50 остальных mounts,9 services и все аккаунты/ключи/floors;
+7 фиксированных public outputs совпали byte-for-byte. Run35 завершил ту же
+пару и исходный contact intent: PASS/native0,24 cold commands,0 failed attempts,
+оба согласия, verified Store/receive/ACK в обе стороны, обе истории ровно один
+свой/входящий текст, duplicate polls PASS и unresolved Store0. Аккаунты и
+первоначальные unknown-попытки34 не заменялись. [Точная граница](../deep-devops/docs/CLI_PUBLIC_IO_2026-10-18.md).
+Отдельно на этом contact path исправлено смешение opaque Node ID с Ed25519
+receipt key: final inventory/claim runtime и durable signature verification
+берут ключ из verified current XND1 через существующий Protocol API. Исходные
+2 reproducer FAIL сохранены; затем67 focused PASS/native0/0skip, включая
+wrong-seed refusal и exact staged/cold recovery. Форматы и идентичность нод
+не меняются. Supported deploy21 Build/Up0 сохранил9 services/55 mounts; run36
+прошёл/native0 на обновлённых нодах:26 cold commands,0 failed attempts,
+две новые verified Store/receive/ACK, duplicate polls/истории PASS и unresolved
+Store0. Дополнительное cold чтение подтвердило на каждом клиенте ровно2 своих
+и2 полученных текста,0 pending; originals сохранены. Новые сообщения посланы
+только после подтверждённых originals, не вместо unknown-операций.
 Ни один original intent/ciphertext/native floor не сброшен или заменён.
-Retained CLI PASS не заменяет fresh-contact и final full/package/device acceptance.
+CLI PASS не заменяет final full/package/device acceptance.
 [Source scope и исходные FAIL](../deep-protocol/docs/testing/s05-pending-route-assignment-2026-10-17.md).
 [Точные ограничения и receipts](../xnode/docs/testing/s05-cli-contact-text-2026-10-17.md).
 Исходные unknown intents/native reservations сохранены, rollback/reset/новых
-wire/journal formats нет. Следующий результат — fresh CLI↔CLI contact/text на
-одной сборке; до его проверки к Windows/Android не возвращаться.
+wire/journal formats нет. Fresh-pair CLI↔CLI contact/text подтверждён34→35;
+проверка той же пары на обновлённом Node candidate также пройдена36.
+Следующий результат — remaining CLI files/groups и final qualification. К
+Windows/Android в этой итерации ещё не возвращались.
 Device/release acceptance не получена.
 
 ## Единственный активный этап: S05
