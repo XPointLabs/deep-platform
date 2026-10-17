@@ -65,7 +65,16 @@ refusal/clock PASS/native0.
 восстановлением уже committed native send. Shared теперь выбирает historical
 verification по actual native custody, а не по факту compaction;1 reproducer
 FAIL, затем3 PASS/native0, включая оба first-late-admission refusal. CLI matching
-focused15:35PASS/native0. Продолжается тот же pending текст, без сброса/замены события. Полный CLI PASS ещё
+focused15:35PASS/native0. Retained real CLI run32 подтвердил обе cold histories:
+ровно один свой и один входящий текст на каждом клиенте, duplicate polls прошли.
+Оба sender Store остались unknown, поэтому receipt `passed=false`, native1;
+это реальный A↔B receive, но не полный CLI PASS. [DR-0140](survival-program/decisions/DR-0140-attempt-scoped-mailbox-object-key.md)
+исправляет ошибочное смешение transport-object key и semantic ciphertext hash;
+Shared focused07/08:4+12PASS/native0, CLI matching16:35PASS/native0.
+Node execution/capacity memory transition объединён за одним current join без
+расширения authority/budgets; focused27/28:31+5PASS/native0. Connected candidate
+проверяется дальше. Ни один original
+intent/ciphertext/native floor не сброшен или заменён. Полный CLI PASS ещё
 не получен; focused scopes не заменяют final full/package/connected acceptance.
 [Source scope и исходные FAIL](../deep-protocol/docs/testing/s05-pending-route-assignment-2026-10-17.md).
 [Точные ограничения и receipts](../xnode/docs/testing/s05-cli-contact-text-2026-10-17.md).

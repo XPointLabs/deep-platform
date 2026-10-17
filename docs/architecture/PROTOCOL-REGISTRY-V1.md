@@ -4,6 +4,12 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0140](../survival-program/decisions/DR-0140-attempt-scoped-mailbox-object-key.md)
+corrects the producer scope of the existing mailbox object/ACK digest using
+its existing domain constant. No wire/API/schema/version/domain is allocated.
+Captured original canonical requests remain immutable; source and connected
+qualification are pending.
+
 [DR-0139](../survival-program/decisions/DR-0139-current-store-pre-intent-recovery.md)
 clarifies native first-Store-intent recovery after an exact pending MAU replay
 reservation. It allocates no wire/API/schema/generation and does not relax

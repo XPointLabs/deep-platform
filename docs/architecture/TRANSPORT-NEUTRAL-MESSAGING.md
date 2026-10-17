@@ -446,6 +446,17 @@ item хранит уже committed exact ciphertext и ratchet transition. Attem
 
 #### 8.4.1 Send/attempt transitions
 
+The mailbox transport object/ACK key is attempt-scoped, not the logical E2EE
+dedup identity. For newly authored objects its existing `DeduplicationDigest`
+is SHA-256 of UTF-8 `MailboxDomainSeparation.EnvelopeDigest`, a zero byte, the
+canonical16-byte mailbox operation ID and exact ciphertext, in that order.
+An exact retry retains its original canonical body; a successor retains the
+E2EE event/ciphertext but owns a distinct transport key/cursor. The recipient
+semantically deduplicates the event and ACKs each actual transport object.
+Original SQL/protected/native binding and receipt verification obligations are
+specified by [DR-0140](../survival-program/decisions/DR-0140-attempt-scoped-mailbox-object-key.md);
+no native missing-intent or rollback guard is relaxed.
+
 | Вход → переход | Обязательные evidence и durable effect | Retry / expiry / cancel | Crash/reopen obligation |
 | --- | --- | --- | --- |
 | Local intent → encrypted item | Authenticated local custody; independently current own/peer/consent для encryption; один atomic ratchet/ciphertext commit | Network unavailable сохраняет intent; expired/revoked target не получает encryption | До commit нет transport attempt; после commit exact ciphertext восстанавливается без второго ratchet step |

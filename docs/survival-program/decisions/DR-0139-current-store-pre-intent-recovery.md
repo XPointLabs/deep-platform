@@ -5,9 +5,14 @@ Date: 2026-10-18
 Decision owner: Mr. X (delegated architecture authority)
 
 Real CLI text retry reached `ReserveStoreCoreAsync` and failed with “Known
-current Store replay has lost its exact peer intent.” The actual sequence was
-client MAU replay reservation/floor -> cancellation -> no first Store intent.
-The old guard treated every pending MAU replay as proof of a previous PRQ2.
+current Store replay has lost its exact peer intent.” That guard alone did not
+identify its cause. A separate genuine native fixture reproduced client MAU
+replay reservation/floor -> cancellation -> no first Store intent: the old
+guard treated every pending MAU replay as proof of a previous PRQ2. This
+decision fixes that source gap, not an inferred absence of real CLI effects.
+Later connected diagnosis found native Store custody for the CLI ciphertext;
+[DR-0140](DR-0140-attempt-scoped-mailbox-object-key.md) addresses that distinct
+producer collision. No pre-intent noncommit claim is made for those CLI runs.
 
 The sole normative owner is [XPOINT-NETWORK §9.1](../../architecture/XPOINT-NETWORK-V1.md).
 For an independently current exact `NewReserved` or `InFlight` request with no
