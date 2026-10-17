@@ -4,6 +4,11 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0139](../survival-program/decisions/DR-0139-current-store-pre-intent-recovery.md)
+clarifies native first-Store-intent recovery after an exact pending MAU replay
+reservation. It allocates no wire/API/schema/generation and does not relax
+missing/rollback/effect custody refusal. Connected/full qualification remains.
+
 [DR-0138](../survival-program/decisions/DR-0138-expired-authenticated-initial-disposal.md)
 allocates the closed owned mailbox Initial preparation and expired atomic-store
 handoff. Expired custody exports no TRS and cannot admit a live session; exact

@@ -1073,6 +1073,17 @@ settlement. A lost quorum persistence result retains exact Pending and can be
 reconciled by the original request. Capacity/unavailable proof is backpressure,
 never silent deletion, new nonce or a successful page omitting uncertain work.
 
+An exact pending MAU3 reservation can precede creation of its first Store
+intent. After recovery, complete native protected-ledger snapshot verification
+may authenticate that no such intent was ever committed; this is not a missing
+or rolled-back document. Only `NewReserved`/`InFlight` with no recovered canonical
+outcome and no native Store mutation may enter first-intent allocation. The
+ledger lock still allocates/persists exactly one cursor and signed PRQ2 before
+peer replay/effects. Existing intents always return their exact original PRQ2;
+missing/rolled-back custody, effects or completed outcome forbid reconstruction.
+[DR-0139](../survival-program/decisions/DR-0139-current-store-pre-intent-recovery.md)
+records this distinction and exact source-case replacement.
+
 Stored signed MQR3 proves a past commit, not current dispatch authority. Its
 exact PRQ2/body/grant/proofs and both distinct descriptor-key receipts must match;
 signed acceptance times must lie within the original grant/object interval.

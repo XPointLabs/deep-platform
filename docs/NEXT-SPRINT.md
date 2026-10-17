@@ -52,8 +52,17 @@ Store/aggregate ACK имеют25s, peer15s, public ONION30s; signing/dispatch lo
 чтобы proof/SQL preparation не обрывала исправный последний network hop.
 Повторная локальная semantic verification всё ещё может исчерпать отдельный30s
 ACK scope; exact durable recovery проверяется, быстрый стабильный путь не принят.
-Сейчас выполняется согласие и двусторонний текст. Полный CLI PASS ещё не получен;
-focused source scopes не заменяют final full/package/connected acceptance.
+Согласие/peer acceptance уже подтверждены, первый текст остаётся pending.
+Shared теперь сохраняет exact original evidence при обычном view renewal и
+готовит его до свежего30s dispatch scope: сначала4FAIL, затем4PASS и16 соседних
+refusal/clock PASS/native0.
+[Source scope](../deep-client-shared/docs/testing/s05-cli-store-view-retry-2026-10-17.md).
+Следующий реальный отказ выявил MAU replay → first Store intent crash gap.
+[DR-0139](survival-program/decisions/DR-0139-current-store-pre-intent-recovery.md)
+уточняет восстановление первого intent из complete anchored snapshot, не repair
+потерянного журнала;4 positive/recovery и8 rollback/prefix cases PASS/native0.
+Продолжается тот же pending текст, без сброса/замены события. Полный CLI PASS ещё
+не получен; focused scopes не заменяют final full/package/connected acceptance.
 [Source scope и исходные FAIL](../deep-protocol/docs/testing/s05-pending-route-assignment-2026-10-17.md).
 [Точные ограничения и receipts](../xnode/docs/testing/s05-cli-contact-text-2026-10-17.md).
 Исходные unknown intents/native reservations сохранены, rollback/reset/новых

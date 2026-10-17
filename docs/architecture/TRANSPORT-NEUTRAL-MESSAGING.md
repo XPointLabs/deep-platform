@@ -302,6 +302,15 @@ signed validity: grant/request/proof/route expiry, revocation, currentness and
 caller cancellation still independently stop work. No wire/profile generation,
 new nonce, compatibility path or authority-extension permission is introduced.
 
+Owned client Store commits its original public evidence/CAS before creating
+the fresh signer-free30s dispatch scope (DR-0056). Evidence preparation has its
+own bounded local budget and exports no signer. The conservative preparation
+upper-time floor continues ageing across that work; neither signed lifetime
+nor the later dispatch fence is extended. An exact retry authenticates and
+retains its original view/descriptor evidence under the same attempt MAC and
+native request, while independently current route/grant checks remain required.
+Ordinary view renewal cannot replace those original bytes or receipt keys.
+
 Ниже указана семантика будущих interfaces, а не разрешение добавить их без
 protocol types и tests.
 
