@@ -1231,7 +1231,15 @@ without treating the mutation request expiry as a delivery deadline. All
 current endpoint/inventory/placement validity and independent initiator,
 AEAD, replay and durable prekey-consumption gates remain. Its evidence cannot
 authorize initiator encryption; the existing current initiator receipt policy
-above is unchanged.
+above is unchanged. [DR-0136](../survival-program/decisions/DR-0136-committed-claim-original-carriage.md)
+separates immutable allocation placement from current carriage on recipient use:
+the exact original signed PMT/view must be present in verified retained history,
+its original request interval and placement hash must verify, and its ordered
+replica pair must equal the current pair through a continuous unchanged
+network/epoch/count/cohort. Both signatures still use current admitted identity
+keys. A historical fact does not become current claim/transport permission;
+missing history, changed cohort/epoch or current endpoint expiry/revocation
+rejects. No saved request/result bytes are rewritten.
 The current-recipient receipt itself has no public session-binding method;
 only the fully verified initial claim can transfer the two single-use lanes.
 This remains independent from durable claim completion, protected pending

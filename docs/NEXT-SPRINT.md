@@ -204,8 +204,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `a3fc002` | `94bc6d8` | `9d6df07` | build30; exact account/recovery/Verified retained; one exact Retry reached Store transport/OutcomeUnknown114784ms, no delivery acceptance |
-| Android | `a3fc002` | `94bc6d8` | `9d6df07` | APK46/update223 without reset; Settings224 retained account/recovery; Scroll226 Verified; matching receive pending |
+| Windows | `20b16b2` | `e78290f` | `9d6df07` | build31; exact identity/recovery/Verified retained; exact Retry113584ms reached Store, native quorum-not-durable; acceptance absent |
+| Android | `20b16b2` | `e78290f` | `9d6df07` | APK47/update230 without reset; account/recovery and Verified retained; Refresh235 received Initial but claim promotion rejected |
 
 Android harness ошибочно принимал stale WindowManager IME flag за открытую
 клавиатуру. Узкое исправление читает actual input-method service state после
@@ -262,6 +262,21 @@ native1); candidate сохраняет оригиналы, независимо 
 и равенство receipt keys вместо byte-equality current/old carriage. Source23
 PASS/native0/0skip, без compiler diagnostics; matching client builds/retry ещё требуются;
 [scope](../deep-client-shared/docs/testing/s05-logical-grant-custody-2026-10-16.md#2026-10-17-pending-initial-across-ordinary-carriage-renewal).
+
+Matching Windows31/APK47 установлены без reset. Точный Windows retry прошёл
+старый evidence guard, но Store завершился quorum-not-durable/OutcomeUnknown.
+Android получил Initial до claim promotion, где отказал current-placement guard;
+owned source regression воспроизводит его после обычной смены view (red0/1,
+native1). [DR-0136](survival-program/decisions/DR-0136-committed-claim-original-carriage.md)
+выделяет original committed allocation как read-only fact при неизменном current
+cohort/epoch, сохраняя все current endpoint/inventory/revocation gates. Protocol
+focused13, затем crypto witness14 PASS/native0/0skip без diagnostics. Final
+encrypted owned receive/ContactAccept/reply и policy-negative2 PASS; отдельно
+issuer-rotation2 PASS, без warnings. Native closed peer diagnostics118 PASS;
+matching activation ещё требуется. Registry preview выявил накопленный drift
+7 sources/175 anchors; blind repin не применялся, full/package остаются open.
+Peer quorum cause остаётся отдельным
+незакрытым отказом этого же S05 vertical; правило120s не ослаблено. Physical0/4.
 [Matching scope и ограничения](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#segmented-custody-matching-builds).
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`

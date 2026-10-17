@@ -706,6 +706,11 @@ The smaller outer wire bucket remains a structural/negative fixture, not an
 alternate event-only or unpadded-XPC1 format. Closed V2 promotion and the
 current-device/recheck boundary are frozen by
 [DR-0017](../../../decisions/DR-0017-did2-initial-claim-promotion.md).
+Committed-recipient verification across ordinary carriage renewal follows
+[DR-0136](../../../decisions/DR-0136-committed-claim-original-carriage.md): original
+allocation signatures/placement are historical facts, while the unchanged pair,
+all endpoint/inventory validity and protected time remain independently current.
+No wire, signature domain, caller flag or initiator-use permission is added.
 The sole sender completion API and its initial/final protected-time checks
 of both endpoints are frozen by
 [DR-0018](../../../decisions/DR-0018-did2-initiator-completion.md).

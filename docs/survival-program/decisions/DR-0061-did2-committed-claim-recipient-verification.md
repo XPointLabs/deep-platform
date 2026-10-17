@@ -1,6 +1,8 @@
 # DR-0061 — committed pre-key claim on delayed initial receipt
 
 Status: **accepted contract; connected/device verification pending**
+Ordinary-carriage equality is superseded narrowly by
+[DR-0136](DR-0136-committed-claim-original-carriage.md); other gates below remain.
 Date: 2026-10-02
 Decision owner: **Mr. X** (delegated architecture authority)
 
