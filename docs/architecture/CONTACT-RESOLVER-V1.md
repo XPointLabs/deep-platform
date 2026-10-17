@@ -1418,6 +1418,12 @@ continues to be bounded by that current carriage deadline.
 
 Genesis selects the actual current snapshot and issues inside its creation
 window. A same-assignment successor requires authenticated predecessor custody.
+Threshold completion of an already signed genesis proposal binds its exact
+assignment through independently verified retained history and current
+cohort/epoch eligibility, just as proposal verification and device completion
+do. A normal view renewal between those phases must not substitute the latest
+PMT or rewrite the saved proposal. This does not let advertisement authoring
+select an arbitrary historical assignment or extend any signed interval.
 Signed logical-resource expiry is not capped by a short network view/head lease;
 canonical, subject/device/delegation and issuing-witness limits remain binding.
 Each mutation/grant/dispatch still obtains and rechecks fresh current authority.

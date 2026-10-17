@@ -33,8 +33,28 @@ CLI PASS не даёт device acceptance и не снимает release blockers
 раздельные Windows DPAPI/SQLCipher профили, запрет overwrite, closed errors и
 cancellation. Focused12/native0/0skip, без compiler diagnostics; два новых QA
 аккаунта различны и сохраняются после reopen. Отдельные реальные процессы CLI
-подтвердили6 account/reopen/overwrite/status checks/native0. Network/contact/text команды ещё
-не реализованы: следующим идёт общий headless composition и contact/text/recovery.
+подтвердили6 account/reopen/overwrite/status checks/native0. Общий headless
+composition и команды network/contact/consent/mailbox/text теперь реализованы
+через текущие owned API Shared. CLI focused30/native0/0skip. На retained паре
+подтверждены настоящий `IncomingRequest` и локальное согласие; оно истекло во
+время диагностики, сроки не увеличивались. Более поздний exact request прошёл
+claim до Store; Store исчерпал15s (81 lease-check,12.5s authority work).
+Node source-кандидаты:75 affected IO/authority,35 claim и18 public-head
+memo/native TLS Store/Retrieve/ACK/reopen tests PASS/native0. Это последовательные
+source scopes, не один final full или connected acceptance. Сейчас проверяется
+повторная signature-верификация98 неизменных public heads на каждом lease-check;
+actual protected files/MAC/anchor/index всё ещё читаются и проверяются.
+Дополнительно исправлен общий resource budget forwarded claim (35 focused PASS).
+CLI затем локализовал отказ genesis threshold при обычном view renewal:
+автор не привязывал frozen XRA к его exact logical assignment, а static graph
+сохранял obsolete PMT/issuance-view equality. Регрессия воспроизведена до
+исправления; после него Shared5 и Protocol20 focused PASS/native0/0skip.
+Подписанная старая выдача как новая authority и смена epoch остаются запрещены.
+[Source scope и исходные FAIL](../deep-protocol/docs/testing/s05-pending-route-assignment-2026-10-17.md).
+[Точные ограничения и receipts](../xnode/docs/testing/s05-cli-contact-text-2026-10-17.md).
+Исходные unknown intents/native reservations сохранены, rollback/reset/новых
+wire/journal formats нет. Следующий результат — работающий CLI↔CLI contact/text;
+до него к Windows/Android не возвращаться. Device/release acceptance не получена.
 
 ## Единственный активный этап: S05
 
