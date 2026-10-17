@@ -318,8 +318,22 @@ including actual native pending/SQL/stable recovery, lost-ACK exact replay,
 uncertain-time refusal, two SQL proof-corruption refusals and a separate current
 contact on the same retained accounts after disposal. Protocol focused surface,
 current/retained endpoint and claim-crypto scope passed22/native0/0skip. Full
-source/package/frozen input qualification and matching installation remain;
-these are not device-delivery receipts.
+source/package/frozen input qualification remains. Matching Windows34/APK50
+are installed without reset and retained account/recovery/Verified. Android's
+first attempt now reaches ACK instead of XurWindow, but exceeds the120s whole
+operation deadline; an ordinary exact retry reaches managed ACK ingress and
+fails after81s. The same window has a recipient peer crypto-authorization403;
+the exact predicate/correlation is not yet known. Preserve the original ACK,
+grant, page and unknown outcome. Matching diagnostics and legitimate original
+outcome recovery are next, not a new ACK or timeout/authority bypass.
+[Physical scope](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#matched-expired-initial-update-ack-remains-unresolved).
+Peer403 diagnosis now has closed owned-method/IL and authority-check metadata;
+its two focused cases pass/native0, but matching activation remains. The broad
+331-case selection was interrupted/native-1/noTRX after two Store-recovery setup
+failures; it is unqualified, not superseded by the narrow PASS. Read-only raw
+metadata also finds the recent node2 tombstone target absent in3's independently
+resolved current mutation directory. This is not authenticated noncommit or
+permission to copy state; [scope and remaining checks](../xnode/docs/testing/s05-private-grant-hop-2026-10-16.md#peer-ack-authorization-diagnostic-follow-up).
 Peer send cancellation followed by expired/stale ingress is a separate observed
 liveness blocker; no identifier-level correlation is asserted. Physical0/4,
 S05 and release remain unaccepted; no timeout/lifetime rule was relaxed.
