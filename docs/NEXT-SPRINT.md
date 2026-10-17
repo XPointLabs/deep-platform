@@ -12,6 +12,30 @@
 Предыдущие наблюдения, исходные FAIL и exact receipts сохраняются в Git,
 [исторической редакции](NEXT-SPRINT-CHECKPOINTS-2026-10-13.md) и repo-checkpoints.
 
+## Первый приоритет: CLI-first вертикальный сценарий внутри S05
+
+По решению Mr. X от **2026-10-17** первой задачей становится разработка
+[deep-cli](../deep-cli/README.md). Следующая бизнес-итерация не начинается
+со сборки/установки MAUI: сначала два независимых CLI-профиля проходят реальный
+путь контактов → двустороннего текста → вложений/картинок → групп в локальном
+Docker-контуре. Существующие S05 blockers воспроизводятся и исправляются здесь.
+Порядок и критерии — [CLI-first в едином плане](architecture/IMPLEMENTATION-PLAN-V1.md#cli-first--первый-приоритет-внутри-s05).
+
+Использовать текущие Shared/Protocol, native crypto, SQLCipher и настоящий
+Registry/XNode transport, не mock E2E и не второй стек. Сначала local account/
+profile и общий headless composition, затем законченный contact/text/recovery
+slice; files/groups — после него. Slice → focused gates → исправления; дорогие
+full/package gates — на согласованном пакете. Windows/Android device E2E
+остаются финальной проверкой платформ и UI, не основным циклом отладки.
+CLI PASS не даёт device acceptance и не снимает release blockers.
+
+Первый CLI account slice реализован: real Shared DID2 create/status/address,
+раздельные Windows DPAPI/SQLCipher профили, запрет overwrite, closed errors и
+cancellation. Focused12/native0/0skip, без compiler diagnostics; два новых QA
+аккаунта различны и сохраняются после reopen. Отдельные реальные процессы CLI
+подтвердили6 account/reopen/overwrite/status checks/native0. Network/contact/text команды ещё
+не реализованы: следующим идёт общий headless composition и contact/text/recovery.
+
 ## Единственный активный этап: S05
 
 **S00–S04 приняты в своих source scopes; S05 не принят. S06/device acceptance
@@ -328,9 +352,12 @@ grant, page and unknown outcome. Matching diagnostics and legitimate original
 outcome recovery are next, not a new ACK or timeout/authority bypass.
 [Physical scope](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#matched-expired-initial-update-ack-remains-unresolved).
 Peer403 diagnosis now has closed owned-method/IL and authority-check metadata;
-its two focused cases pass/native0, but matching activation remains. The broad
-331-case selection was interrupted/native-1/noTRX after two Store-recovery setup
-failures; it is unqualified, not superseded by the narrow PASS. Read-only raw
+its two focused cases pass/native0; matching local Build40/Up41/Verify42 passed
+with retained mounts. The broad331-case selection was interrupted/native-1/noTRX
+after two different rows failed at Store (invalid-continuation cursor setup and
+lost/rolled-back-intent false recovery). Targeted6/native0/0skip now pass with
+unchanged assertions/budgets; the original timing failure remains unexplained.
+The broad run is unqualified, not superseded by the narrow PASS. Read-only raw
 metadata also finds the recent node2 tombstone target absent in3's independently
 resolved current mutation directory. This is not authenticated noncommit or
 permission to copy state; [scope and remaining checks](../xnode/docs/testing/s05-private-grant-hop-2026-10-16.md#peer-ack-authorization-diagnostic-follow-up).

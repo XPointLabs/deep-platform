@@ -37,3 +37,6 @@
 [submodule "deep-push-notification-server"]
 	path = deep-push-notification-server
 	url = https://github.com/XPointLabs/deep-push-notification-server.git
+[submodule "deep-cli"]
+	path = deep-cli
+	url = https://github.com/XPointLabs/deep-cli.git

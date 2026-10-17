@@ -37,6 +37,9 @@ release evidence, а не ещё одна очередь реализации.
   изменённым входам/риску; прежний PASS не квалифицирует новые входы.
 - Коммиты локальные и раздельные, submodule pointers — после child commits.
   Production/reset/push/publish не следуют из этого плана автоматически.
+- Решение Mr. X от 2026-10-17: первым реализовать CLI-first путь ниже.
+  Бизнес-E2E сначала проверяется двумя headless клиентами, затем на физических
+  Windows/Android. Сборка MAUI не prerequisite каждой бизнес-итерации.
 
 ## 2. Зависимости и критерий первого результата
 
@@ -191,6 +194,44 @@ unknown outcome; cold reopen и crash на каждом compaction/handover ша
 один semantic effect, без потери replay floor или повторного ratchet encryption.
 
 ### S05 — current issuer и автоматический lifecycle управляющего контура
+
+#### CLI-first — первый приоритет внутри S05
+
+**Владельцы:** `deep-cli` — console adapter, профили, команды и black-box driver;
+Shared — единственный portable business/runtime owner; Protocol — существующие
+codecs/crypto; DevOps — локальный настоящий Registry/три XNode. Это способ
+исполнения S05, не новый параллельный этап и не отмена зависимостей S06–S13.
+
+1. **Headless основа.** .NET CLI без MAUI/workloads/emulator; отдельные persistent
+   профили Alice/Bob с разными аккаунтами, protected storage и SQLCipher.
+   Первая host-платформа — Windows с существующим native стеком и OS protection.
+   Account create/status/address, явный выбор network/profile, строгие аргументы,
+   cancellation, ненулевые failure exits и machine-readable результаты.
+   Не выводить recovery/ключи, не трогать MAUI/prod namespaces.
+2. **Общий runtime и contact/text.** Использовать публичные owned операции Shared;
+   переносимый composition вынести в один общий owner, если он сейчас в MAUI.
+   Не копировать orchestration, wire, proof/grant/time checks или retries в CLI.
+   Network verify → contact publish/resolve/request/consent → send/sync/receive
+   в обе стороны, затем restart/offline/exact retry/dedup/unknown-outcome recovery
+   на тех же профилях. Исправить текущие S05 дефекты на этом пути.
+3. **Вложения и группы.** После рабочего contact/text подключить Shared APIs и
+   недостающие реальные consumers. Файл/картинку проверять по байтам/hash,
+   возобновление/повреждение; группы — создание, приглашение/принятие, сообщения
+   и membership/revocation в пределах нормативного V1 scope.
+4. **Квалификация.** Воспроизводимый noninteractive CLI↔CLI сценарий с bounded
+   ожиданием и редактированными receipts точных source/runtime inputs. Сначала
+   законченный slice → focused tests → исправления → повторные focused;
+   обязательные full/frozen/package gates на согласованном пакете. Только после
+   CLI PASS — matching Windows/Android build/deploy и физическая проверка того
+   же поведения. Platform-specific дефекты проверяются отдельно на устройстве.
+
+**Выход:** работающий клиент, не оболочка над fixtures/raw RPC. Команды не
+принимают caller-authored authority и не имитируют доставку. Expired grant не
+разрешает remint/перезапись неизвестной операции; TLS/currentness/replay/quorum
+не ослабляются. CLI PASS не заменяет device acceptance, signed release/package
+evidence или разрешение на GitHub Release.
+
+#### Lifecycle управляющего контура
 
 **Подзадачи и владельцы:** deep-registry-api — current issuance/readiness/CAS;
 deep-devops — lifecycle и наблюдаемость; xpoint-node-installer — retained-volume

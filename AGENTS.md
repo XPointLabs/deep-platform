@@ -32,6 +32,8 @@ contains public user/operator behavior, not a second protocol specification.
 
 - `deep-protocol`: normative codecs, cryptography boundaries, exact packages and evidence gates.
 - `deep-client-shared`: portable domain, SQLCipher persistence, E2EE/message/attachment/call orchestration and transport interfaces.
+- `deep-cli`: headless adapters and isolated profiles; first business-E2E surface.
+  Reuse Shared/Protocol, never a second transport/business stack.
 - `deep-client-maui`: MAUI UI, platform adapters, UAT/device automation and release composition.
 - `xnode`: Entry/Relay/Mailbox/InviteStore/Blob/CallRelay runtime, epoch keys,
   forwarding, replication, quotas and heartbeat; never client path selection.
