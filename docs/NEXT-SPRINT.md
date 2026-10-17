@@ -213,6 +213,15 @@ Android harness ошибочно принимал stale WindowManager IME flag �
 PASS/native0/0skip, это source, не physical acceptance. Следом — retained APK45
 readback/receive и разбор native Store deadline, без reset/blind retry/новых сроков;
 [matching receipts и ограничения](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#device-source-batch-matching-builds-and-keyboard-harness).
+На APK45 Settings208 и Scroll210 после harness fix подтвердили retained
+account/recovery и Verified без reset. Одно Refresh212 пока Busy; завершённый
+MailboxSync не наблюдён. Windows29 отдельным read загрузил локальную историю,
+не сетевую доставку. Installed Node DLL/PDB локализовал наблюдённый IL163 на
+ожидании network gate; это не correlation с Windows-запросом. Node `c29f5c9`
+добавляет только закрытые resource timings,34 affected PASS/native0/0skip;
+[точные границы](../xnode/docs/testing/s05-private-grant-hop-2026-10-16.md#2026-10-17-native-network-gate-observation).
+Matching local activation/phase diagnosis ещё требуются; authority/cache/deadlines
+не менялись. Physical business acceptance0/4.
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
