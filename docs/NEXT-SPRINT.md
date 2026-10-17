@@ -228,7 +228,15 @@ network-verify163–358ms не воспроизводят старое30s gate w
 не contact delivery. Windows29 отдельно снова Verified; exact original Retry
 штатно завершил owned expiry за29330ms: retry choice снят, no error, без
 автоматической замены. Только отдельный Add00:28:03Z начал новую работу для
-того же QA peer; исход ещё наблюдается. Authority/cache/deadlines не менялись.
+того же QA peer: отмена120047ms,30 Protect/1717 Unprotect,69458ms protection,
+сохранён exact retry/no Busy. Closed stack локален: ReadOwnedBatchAsync101 →
+retirement ReadAsync242 → native ReconcileInitialSessions308 → mailbox envelope91.
+Исходных remote effects это не исключает. Следующий source candidate объединяет
+idle compaction16 parts и pending floor+18 parts в fresh bounded inventory;
+affected80/0FAIL/0skip/native0 без compiler diagnostics, включая encrypted
+cold handovers и negative/freshness tests. Это source, matching builds/device
+ещё отсутствуют; [точный scope](../deep-client-shared/docs/testing/s05-owned-read-batch-2026-10-17.md#segmented-custody-read-candidate).
+Authority/cache/deadlines не менялись.
 Physical business acceptance0/4.
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
