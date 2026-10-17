@@ -511,7 +511,10 @@ BeforeForward, non-delivery или namespace retirement. Только после
 CAS/read-back отдельный новый read может получить независимый current grant.
 Original frame никогда не переподписывается и не dispatches после expiry.
 Captured page/semantic/ACK custody остаётся pinned до отдельного qualified
-continuation. Allocation и evidence:
+continuation. Для captured final page локальное завершение и независимо
+авторизованный current ACK определяет
+[DR-0137](../survival-program/decisions/DR-0137-captured-final-page-expiry-continuation.md);
+non-final pagination этим не открывается. Allocation и evidence:
 [DR-0133](../survival-program/decisions/DR-0133-expired-owned-retrieve-attempt-closure.md).
 
 **Expired/unknown acquisition: исходная граница возможной выдачи.** До первого

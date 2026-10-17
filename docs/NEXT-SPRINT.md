@@ -279,6 +279,20 @@ Peer quorum cause остаётся отдельным
 незакрытым отказом этого же S05 vertical; правило120s не ослаблено. Physical0/4.
 [Matching scope и ограничения](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#segmented-custody-matching-builds).
 
+Matching Windows32/APK48 retained accounts and Verified, but Android Refresh243
+stopped at the original Retrieve grant expiry before the corrected claim path.
+Independent Inspect244 confirmed a terminal error. The exact captured page is
+retained; no reset. [DR-0137](survival-program/decisions/DR-0137-captured-final-page-expiry-continuation.md)
+separates local historical final-page completion from independently current ACK
+authorization before any original ACK preparation; source qualification is in progress. Non-final
+pagination, expired prepared ACK and captured ACK-response expiry stay closed. Initial encrypted
+regressions0/2/native1 reproduce the original guard. Corrected source batch16/1
+native1 found only a premature fixture retry; after advancing both fixture clocks
+without changing the runtime lease, final focused2 PASS/native0/0skip/no compiler
+diagnostics. Native review rejected a permissive intermediate re-ACK fixture;
+expired prepared ACK stays pinned. Matching clients remain pending. This does not promote the
+physical acceptance count or release status; [scope](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#captured-final-page-authority-expiry).
+
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
