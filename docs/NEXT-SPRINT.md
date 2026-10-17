@@ -293,6 +293,16 @@ diagnostics. Native review rejected a permissive intermediate re-ACK fixture;
 expired prepared ACK stays pinned. Matching clients remain pending. This does not promote the
 physical acceptance count or release status; [scope](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#captured-final-page-authority-expiry).
 
+Local native37/38/39:9 desired images/54 retained mounts, native0, subsequent
+point-in-time native recovery3/3. Windows33/APK49 build native0/0 diagnostics;
+Windows33 retained identity/recovery and Verified. Android245–252 were wrongly
+labeled: Inspect did not install49, so their UI and expiry event belong to old48.
+Actual Install253 plus independent installed-APK SHA256 check established49 only
+afterward; business validation is still pending. The corrected harness rejects
+that phase mix-up and requires exact installed executable bytes before/after UI;
+26 focused contracts PASS/native0/0skip. Raw old receipts are unchanged and
+explicitly disqualified as49 evidence. [Provenance and scope](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#installed-apk-provenance-correction).
+
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.
