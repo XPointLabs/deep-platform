@@ -245,8 +245,23 @@ Segmented candidate matching Windows30/APK46 native0 без compiler diagnostics
 Store transport, OutcomeUnknown. Он совпал со сборкой Android и не является
 чистым performance benchmark; дальнейшие Windows attempts — без heavy builds.
 Новый node2 native event IL325 установленным PDB локализован в generic mutation
-rejection, не прежнем gate wait. Source-only closed reason candidate49 PASS;
-matching local activation/фактическая причина ещё не получены.
+rejection, не прежнем gate wait. Closed reason49 PASS; matching local
+Build31/Up32/Verify33 native0,9 images/54 retained mounts. После owned expiry
+старого retry отдельный fresh Add завершился OutcomeUnknown107650ms; actual
+native reason `BlobTtl`. Поставляемый cap7d противоречил protocol/product30d.
+Node `ea9f796` исправляет binding и запрещает shorter cap при current-host startup;
+148 focused PASS/native0/0skip, без compiler diagnostics. Сроки signed objects,
+authority и retry не продлевались. Matching local Build34/Up35/Verify36 native0,
+readiness17s,9 desired images/54 retained mounts. Отдельный health read подтвердил
+native recovery1/2; node3 unavailable/checking (`revocation-context`), поэтому
+sustained recovery не заявлена. Windows retained account снова Verified;
+физический приём ещё не получен, точный unresolved intent сохранён. Exact retry
+30900ms остановился до dispatch на сравнении original Store evidence с новым
+current view. Два native encrypted cases воспроизводят тот же guard (red0/2,
+native1); candidate сохраняет оригиналы, независимо проверяет signed history
+и равенство receipt keys вместо byte-equality current/old carriage. Source23
+PASS/native0/0skip, без compiler diagnostics; matching client builds/retry ещё требуются;
+[scope](../deep-client-shared/docs/testing/s05-logical-grant-custody-2026-10-16.md#2026-10-17-pending-initial-across-ordinary-carriage-renewal).
 [Matching scope и ограничения](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#segmented-custody-matching-builds).
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
