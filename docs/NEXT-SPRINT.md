@@ -52,12 +52,13 @@ Store/aggregate ACK имеют25s, peer15s, public ONION30s; signing/dispatch lo
 чтобы proof/SQL preparation не обрывала исправный последний network hop.
 Повторная локальная semantic verification всё ещё может исчерпать отдельный30s
 ACK scope; exact durable recovery проверяется, быстрый стабильный путь не принят.
-Согласие/peer acceptance уже подтверждены, первый текст остаётся pending.
+Согласие/peer acceptance подтверждены; первоначально первый текст оставался pending.
 Shared теперь сохраняет exact original evidence при обычном view renewal и
 готовит его до свежего30s dispatch scope: сначала4FAIL, затем4PASS и16 соседних
 refusal/clock PASS/native0.
 [Source scope](../deep-client-shared/docs/testing/s05-cli-store-view-retry-2026-10-17.md).
-Следующий реальный отказ выявил MAU replay → first Store intent crash gap.
+Разбор следующего отказа отдельно воспроизвёл source MAU replay → first Store
+intent crash gap; это не доказательство отсутствия native эффекта реального CLI.
 [DR-0139](survival-program/decisions/DR-0139-current-store-pre-intent-recovery.md)
 уточняет восстановление первого intent из complete anchored snapshot, не repair
 потерянного журнала;4 positive/recovery и8 rollback/prefix cases PASS/native0.
@@ -72,15 +73,21 @@ focused15:35PASS/native0. Retained real CLI run32 подтвердил обе co
 исправляет ошибочное смешение transport-object key и semantic ciphertext hash;
 Shared focused07/08:4+12PASS/native0, CLI matching16:35PASS/native0.
 Node execution/capacity memory transition объединён за одним current join без
-расширения authority/budgets; focused27/28:31+5PASS/native0. Connected candidate
-проверяется дальше. Ни один original
-intent/ciphertext/native floor не сброшен или заменён. Полный CLI PASS ещё
-не получен; focused scopes не заменяют final full/package/connected acceptance.
+расширения authority/budgets; focused27/28:31+5PASS/native0.
+Connected strict retained run33 прошёл/native0: оба исходных текста получили
+подтверждённый Store, обе cold histories содержат ровно по одному своему и
+входящему тексту, duplicate polls прошли, unresolved Store0. Четыре transient
+попытки потребовали по одному cold exact retry; это recovery PASS, не
+first-attempt reliability claim. Fresh-contact run34 на той же CLI сборке и
+локальном Node candidate проверяет полный сценарий с новыми профилями.
+Ни один original intent/ciphertext/native floor не сброшен или заменён.
+Retained CLI PASS не заменяет fresh-contact и final full/package/device acceptance.
 [Source scope и исходные FAIL](../deep-protocol/docs/testing/s05-pending-route-assignment-2026-10-17.md).
 [Точные ограничения и receipts](../xnode/docs/testing/s05-cli-contact-text-2026-10-17.md).
 Исходные unknown intents/native reservations сохранены, rollback/reset/новых
-wire/journal formats нет. Следующий результат — работающий CLI↔CLI contact/text;
-до него к Windows/Android не возвращаться. Device/release acceptance не получена.
+wire/journal formats нет. Следующий результат — fresh CLI↔CLI contact/text на
+одной сборке; до его проверки к Windows/Android не возвращаться.
+Device/release acceptance не получена.
 
 ## Единственный активный этап: S05
 
