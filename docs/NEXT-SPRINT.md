@@ -204,8 +204,15 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `a2a758a` | runtime `f63b432`, docs `ce65494` | `9d6df07` | build28; protected pending preserved; exact Retry cancelled at120s while opening device-source custody; no delivery acceptance |
-| Android | `8181f0a` | `f63b432` | `9d6df07` | APK44/update195; Settings196 account/recovery retained; Scroll198 Verified; contact/expiry retest pending |
+| Windows | `5b7132d` | `c9fbb0f` | `9d6df07` | build29; account/recovery retained; exact Retry reached Store transport, OutcomeUnknown65429ms; pending/error preserved, no delivery acceptance |
+| Android | `5b7132d` | `c9fbb0f` | `9d6df07` | APK45/update202 without reset; keyboard harness blocked Settings readback; matching reobservation pending |
+
+Android harness ошибочно принимал stale WindowManager IME flag за открытую
+клавиатуру. Узкое исправление читает actual input-method service state после
+прежнего package-owner guard; неоднозначный формат отвергается. Clean285
+PASS/native0/0skip, это source, не physical acceptance. Следом — retained APK45
+readback/receive и разбор native Store deadline, без reset/blind retry/новых сроков;
+[matching receipts и ограничения](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#device-source-batch-matching-builds-and-keyboard-harness).
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
