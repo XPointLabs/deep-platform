@@ -204,8 +204,8 @@ Installed diagnostic source:
 
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
-| Windows | `5b7132d` | `c9fbb0f` | `9d6df07` | build29; account/recovery retained; exact Retry reached Store transport, OutcomeUnknown65429ms; pending/error preserved, no delivery acceptance |
-| Android | `5b7132d` | `c9fbb0f` | `9d6df07` | APK45/update202 without reset; harness `b5fcd98` Settings208/Scroll210 retained account/recovery/Verified; Refresh212→Chats216 empty sync/no error; no delivery acceptance |
+| Windows | `a3fc002` | `94bc6d8` | `9d6df07` | build30; exact account/recovery/Verified retained; one exact Retry reached Store transport/OutcomeUnknown114784ms, no delivery acceptance |
+| Android | `a3fc002` | `94bc6d8` | `9d6df07` | APK46/update223 without reset; Settings224 retained account/recovery; Scroll226 Verified; matching receive pending |
 
 Android harness ошибочно принимал stale WindowManager IME flag за открытую
 клавиатуру. Узкое исправление читает actual input-method service state после
@@ -234,10 +234,20 @@ retirement ReadAsync242 → native ReconcileInitialSessions308 → mailbox envel
 Исходных remote effects это не исключает. Следующий source candidate объединяет
 idle compaction16 parts и pending floor+18 parts в fresh bounded inventory;
 affected80/0FAIL/0skip/native0 без compiler diagnostics, включая encrypted
-cold handovers и negative/freshness tests. Это source, matching builds/device
-ещё отсутствуют; [точный scope](../deep-client-shared/docs/testing/s05-owned-read-batch-2026-10-17.md#segmented-custody-read-candidate).
+cold handovers и negative/freshness tests. Это source; matching builds теперь
+установлены ниже, actual contact/device acceptance всё ещё отсутствует;
+[точный scope](../deep-client-shared/docs/testing/s05-owned-read-batch-2026-10-17.md#segmented-custody-read-candidate).
 Authority/cache/deadlines не менялись.
 Physical business acceptance0/4.
+
+Segmented candidate matching Windows30/APK46 native0 без compiler diagnostics;
+оба retained без reset. Windows30 actual Retry после очереди114784ms дошёл до
+Store transport, OutcomeUnknown. Он совпал со сборкой Android и не является
+чистым performance benchmark; дальнейшие Windows attempts — без heavy builds.
+Новый node2 native event IL325 установленным PDB локализован в generic mutation
+rejection, не прежнем gate wait. Source-only closed reason candidate49 PASS;
+matching local activation/фактическая причина ещё не получены.
+[Matching scope и ограничения](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#segmented-custody-matching-builds).
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
