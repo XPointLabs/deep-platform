@@ -1099,6 +1099,11 @@ event/pending-Hello custody and original route facts, then re-read native and
 protected commitments before returning a semantic handoff. Parsed bytes alone
 are insufficient. New event authoring, first admission and dispatch keep their
 existing current rendezvous/route checks; no expired descriptor becomes usable.
+For an AEAD-authenticated first Initial whose SessionInit and Hello are both
+proven expired, [DR-0138](../survival-program/decisions/DR-0138-expired-authenticated-initial-disposal.md)
+defines separate terminal native disposal, not first live admission or consent.
+Its closed handoff destroys ratchet keys and creates no contact/session; ACK
+still independently checks actual native custody and current own authority.
 This is the retained-event distinction of DR-0072, not a new wire generation
 or device/directory rollover join. Actual API/package and downstream consumer
 qualification remain mandatory at the business-batch boundary.

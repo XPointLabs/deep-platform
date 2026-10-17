@@ -303,6 +303,27 @@ that phase mix-up and requires exact installed executable bytes before/after UI;
 26 focused contracts PASS/native0/0skip. Raw old receipts are unchanged and
 explicitly disqualified as49 evidence. [Provenance and scope](../deep-client-maui/docs/S05-BUSINESS-WORK-2026-10-17.md#installed-apk-provenance-correction).
 
+Actual APK49 Refresh259 and independent Inspect260 now confirm that the
+captured-page continuation and committed-recipient claim verification pass;
+first Initial preparation stops at its embedded expired ContactHello XUR.
+Windows33's old intent reached the normal terminal-expiry UI; the separate new
+intent remains outcome-unknown after120s. A fresh independent Windows observation
+confirms retained retry/stop controls and an error, not successful delivery.
+Do not duplicate either intent or reset either account.
+[DR-0138](survival-program/decisions/DR-0138-expired-authenticated-initial-disposal.md)
+defines terminal authenticated expired-Initial disposal, with no live contact,
+session or transferable ratchet keys. The connected Protocol/native/ACK source
+batch passed12 focused cases/native0/0skip without compiler diagnostics,
+including actual native pending/SQL/stable recovery, lost-ACK exact replay,
+uncertain-time refusal, two SQL proof-corruption refusals and a separate current
+contact on the same retained accounts after disposal. Protocol focused surface,
+current/retained endpoint and claim-crypto scope passed22/native0/0skip. Full
+source/package/frozen input qualification and matching installation remain;
+these are not device-delivery receipts.
+Peer send cancellation followed by expired/stale ingress is a separate observed
+liveness blocker; no identifier-level correlation is asserted. Physical0/4,
+S05 and release remain unaccepted; no timeout/lifetime rule was relaxed.
+
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
 Verified и завершил Chats sync без ошибки, Android reopened retained workspace.

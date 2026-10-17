@@ -517,6 +517,14 @@ continuation. Для captured final page локальное завершение
 non-final pagination этим не открывается. Allocation и evidence:
 [DR-0133](../survival-program/decisions/DR-0133-expired-owned-retrieve-attempt-closure.md).
 
+**Authenticated expired Initial.**
+[DR-0138](../survival-program/decisions/DR-0138-expired-authenticated-initial-disposal.md)
+defines terminal native disposal of the exact authenticated expired first
+SessionInit/Hello, without live session/contact import. A page may ACK that item
+only after independently rereading its protected/native terminal receipt under
+current own authority. A parsed expiry, callback flag or missing SQL state is
+never semantic completion. Existing current ACK/quorum rules are unchanged.
+
 **Expired/unknown acquisition: исходная граница возможной выдачи.** До первого
 issuer callback owner MUST защищённо сохранить exact original XMG2, holder
 custody и immutable evidence для conservative upper bound возможного MCG3.

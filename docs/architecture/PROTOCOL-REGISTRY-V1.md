@@ -4,6 +4,12 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0138](../survival-program/decisions/DR-0138-expired-authenticated-initial-disposal.md)
+allocates the closed owned mailbox Initial preparation and expired atomic-store
+handoff. Expired custody exports no TRS and cannot admit a live session; exact
+native terminal receipt and independently current ACK remain required. No wire
+allocation, account reset or larger storage bound. Activation is unqualified.
+
 The current source baseline implements `DID2`/`DAB2` and root suite `0x0301`;
 `DID1`/`DAB1` are retired by DR-0006/0069. Exact lifecycle is recorded per
 allocation below and in the machine registry, not inferred from compilation.
