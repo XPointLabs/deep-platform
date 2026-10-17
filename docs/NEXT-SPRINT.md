@@ -61,7 +61,11 @@ refusal/clock PASS/native0.
 [DR-0139](survival-program/decisions/DR-0139-current-store-pre-intent-recovery.md)
 уточняет восстановление первого intent из complete anchored snapshot, не repair
 потерянного журнала;4 positive/recovery и8 rollback/prefix cases PASS/native0.
-Продолжается тот же pending текст, без сброса/замены события. Полный CLI PASS ещё
+Повтор ContactAccept на retained паре выявил live-rendezvous check перед
+восстановлением уже committed native send. Shared теперь выбирает historical
+verification по actual native custody, а не по факту compaction;1 reproducer
+FAIL, затем3 PASS/native0, включая оба first-late-admission refusal. CLI matching
+focused15:35PASS/native0. Продолжается тот же pending текст, без сброса/замены события. Полный CLI PASS ещё
 не получен; focused scopes не заменяют final full/package/connected acceptance.
 [Source scope и исходные FAIL](../deep-protocol/docs/testing/s05-pending-route-assignment-2026-10-17.md).
 [Точные ограничения и receipts](../xnode/docs/testing/s05-cli-contact-text-2026-10-17.md).
