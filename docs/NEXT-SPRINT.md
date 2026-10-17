@@ -35,21 +35,25 @@ cancellation. Focused12/native0/0skip, без compiler diagnostics; два но�
 аккаунта различны и сохраняются после reopen. Отдельные реальные процессы CLI
 подтвердили6 account/reopen/overwrite/status checks/native0. Общий headless
 composition и команды network/contact/consent/mailbox/text теперь реализованы
-через текущие owned API Shared. CLI focused30/native0/0skip. На retained паре
-подтверждены настоящий `IncomingRequest` и локальное согласие; оно истекло во
-время диагностики, сроки не увеличивались. Более поздний exact request прошёл
-claim до Store; Store исчерпал15s (81 lease-check,12.5s authority work).
-Node source-кандидаты:75 affected IO/authority,35 claim и18 public-head
-memo/native TLS Store/Retrieve/ACK/reopen tests PASS/native0. Это последовательные
-source scopes, не один final full или connected acceptance. Сейчас проверяется
-повторная signature-верификация98 неизменных public heads на каждом lease-check;
-actual protected files/MAC/anchor/index всё ещё читаются и проверяются.
-Дополнительно исправлен общий resource budget forwarded claim (35 focused PASS).
-CLI затем локализовал отказ genesis threshold при обычном view renewal:
-автор не привязывал frozen XRA к его exact logical assignment, а static graph
-сохранял obsolete PMT/issuance-view equality. Регрессия воспроизведена до
-исправления; после него Shared5 и Protocol20 focused PASS/native0/0skip.
-Подписанная старая выдача как новая authority и смена epoch остаются запрещены.
+через текущие owned API Shared. CLI focused35/native0/0skip. Реальные CLI
+воспроизвели и локализовали дефекты pending route assignment, вложенных resource
+budgets и истёкшего pending Deposit acquisition. Исправления сохраняют original
+неопределённость, protected floors и signed lifetimes; версия wire/journal не
+менялась. Shared pending-grant regression сначала FAIL, затем9 focused PASS;
+код нового Store не заменяет grant уже captured попытки.
+[Source scope и восстановление pending grant](../deep-client-shared/docs/testing/s05-cli-pending-grant-2026-10-17.md).
+
+На retained CLI-паре подтверждены durable Initial Store и получение запроса
+с завершённым ACK после cold exact retry. Base shipping JSON всё ещё задавал5s
+peer timeout поверх нового code default; actual coordinator diagnostic выявил
+это расхождение. JSON теперь15s, shipping-config regression PASS/native0.
+Store/aggregate ACK имеют25s, peer15s, public ONION30s; signing/dispatch loans и
+подписанные интервалы не расширялись. Внешний CLI command budget теперь5min,
+чтобы proof/SQL preparation не обрывала исправный последний network hop.
+Повторная локальная semantic verification всё ещё может исчерпать отдельный30s
+ACK scope; exact durable recovery проверяется, быстрый стабильный путь не принят.
+Сейчас выполняется согласие и двусторонний текст. Полный CLI PASS ещё не получен;
+focused source scopes не заменяют final full/package/connected acceptance.
 [Source scope и исходные FAIL](../deep-protocol/docs/testing/s05-pending-route-assignment-2026-10-17.md).
 [Точные ограничения и receipts](../xnode/docs/testing/s05-cli-contact-text-2026-10-17.md).
 Исходные unknown intents/native reservations сохранены, rollback/reset/новых

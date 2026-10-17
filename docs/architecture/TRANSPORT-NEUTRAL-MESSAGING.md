@@ -292,6 +292,16 @@ build, narrow ABI, fuzz/interop, storage/zeroization review и physical evidence
 
 ## 7. Target transport contracts
 
+Native mailbox resource scheduling follows the closed Protocol
+`MailboxWireHttpContract`: Store and aggregate ACK are25s total coordinator
+budgets, peer Store/Tombstone remain15s leaves, and local Retrieve remains10s.
+The coordinator budget includes local authority/durability work plus the peer
+exchange and stays below the existing public ONION30s boundary. Each budget
+starts once; callbacks/retries never slide it. These are resource limits, not
+signed validity: grant/request/proof/route expiry, revocation, currentness and
+caller cancellation still independently stop work. No wire/profile generation,
+new nonce, compatibility path or authority-extension permission is introduced.
+
 Ниже указана семантика будущих interfaces, а не разрешение добавить их без
 protocol types и tests.
 
@@ -550,6 +560,12 @@ XMC2, `UnknownOrExpired`, HTTP error или cache miss не являются aut
 отрицательным доказательством. После такого закрытия original XMG не dispatches,
 не re-signs и не re-windows; successor остаётся отдельной acquisition с retained
 predecessor uncertainty, не перезаписью старой строки.
+
+Перед acquisition для ещё не captured Store owner выполняет это закрытие
+для exact выбранного Deposit scope, в том числе при продолжении уже созданного
+Initial draft/session. Наличие draft само по себе не делает auxiliary XMG
+вечным retry. Captured Store обходит new-work acquisition и сохраняет original
+grant/request/ciphertext; закрытие не меняет его исход и не разрешает замену.
 
 Поздний exact successful XMC2 может стать usable winner только через existing
 independent retained-success verification, пока полный current grant/issuer/route
