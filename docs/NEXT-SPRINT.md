@@ -205,7 +205,7 @@ Installed diagnostic source:
 | Device | MAUI | Shared | Protocol | Artifact |
 | --- | --- | --- | --- | --- |
 | Windows | `5b7132d` | `c9fbb0f` | `9d6df07` | build29; account/recovery retained; exact Retry reached Store transport, OutcomeUnknown65429ms; pending/error preserved, no delivery acceptance |
-| Android | `5b7132d` | `c9fbb0f` | `9d6df07` | APK45/update202 without reset; keyboard harness blocked Settings readback; matching reobservation pending |
+| Android | `5b7132d` | `c9fbb0f` | `9d6df07` | APK45/update202 without reset; harness `b5fcd98` Settings208/Scroll210 retained account/recovery/Verified; Refresh212→Chats216 empty sync/no error; no delivery acceptance |
 
 Android harness ошибочно принимал stale WindowManager IME flag за открытую
 клавиатуру. Узкое исправление читает actual input-method service state после
@@ -220,8 +220,16 @@ MailboxSync не наблюдён. Windows29 отдельным read загру�
 ожидании network gate; это не correlation с Windows-запросом. Node `c29f5c9`
 добавляет только закрытые resource timings,34 affected PASS/native0/0skip;
 [точные границы](../xnode/docs/testing/s05-private-grant-hop-2026-10-16.md#2026-10-17-native-network-gate-observation).
-Matching local activation/phase diagnosis ещё требуются; authority/cache/deadlines
-не менялись. Physical business acceptance0/4.
+Matching Node `c29f5c9` Build28/Up29/Verify30 прошли native0:9 exact images,
+54 retained mounts, readiness62s. Raw comparison4 bind aliases отличается от
+отдельного конечного normalized proof. Первые proof-acquire work1–4s /
+network-verify163–358ms не воспроизводят старое30s gate wait. APK45 incoming sync
+завершился без ошибки:70937ms,0 incoming/outgoing/accepted rows. Это empty read,
+не contact delivery. Windows29 отдельно снова Verified; exact original Retry
+штатно завершил owned expiry за29330ms: retry choice снят, no error, без
+автоматической замены. Только отдельный Add00:28:03Z начал новую работу для
+того же QA peer; исход ещё наблюдается. Authority/cache/deadlines не менялись.
+Physical business acceptance0/4.
 
 Windows build12 не запускался и не является installed evidence. Source `229c3da`
 исправляет закрытый BootstrapAuthority I/O wrapper; matching Windows reached
