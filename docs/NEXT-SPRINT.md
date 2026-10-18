@@ -142,6 +142,17 @@ CLI build/unit09:49 PASS/native0,0 warnings/errors;32 полных801-КБ чт�
 старый payload baseline1858ms). Новый `e2e-16` идёт на новой тройке, все три
 account publication прошли first attempt; на623/663/623 protected reads пришлось
 241/276/224ms. Новые full network/business claims пока не приняты.
+В `e2e-16` выдача grant для второго контакта обнаружила независимый Registry
+bug: reservation сохранял live DNH2/PMA/root checkpoint как intent identity,
+после правильного отказа release на изменившемся view exact retry навсегда
+конфликтовал. [DR-0149](survival-program/decisions/DR-0149-stable-mailbox-grant-intent-scope.md)
+отделяет неизменный verified evidence tuple/kind/horizon от fresh authority;
+все проверки authority/signing/release сохраняются. Scope hash v2 — clean break,
+старые несовместимые reservations не переписываются/не конвертируются.
+Registry6 focused PASS/native0:2 pure,2 actual PostgreSQL journal и2 actual
+HTTPS/Protocol/role-signing/native-mailbox cases (не full gate).
+Дальше — текущие первый/второй CLI и отдельный новый третий QA-account;
+старый заблокированный grant остаётся отдельным непочиненным scope-v1 case.
 Expired unknown-write reconciliation, descriptor rotation/handover и retention
 ещё не реализованы/не квалифицированы. Ordinary mailbox PASS не заменяет GSR E2E.
 К MAUI до завершения текущего сквозного среза не возвращаться.
