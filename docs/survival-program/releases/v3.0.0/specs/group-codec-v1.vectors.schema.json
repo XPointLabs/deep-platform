@@ -29,7 +29,7 @@
           "id": { "type": "string", "minLength": 1 },
           "target": { "enum": ["GIV1", "GIA1", "DGP1", "DGC1", "DGT1", "DGM1", "GCP1", "GCF1", "GSR1", "GSW1", "GSQ1", "GSS1"] },
           "fixtureBytesHex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})+$" },
-          "expectedCode": { "enum": ["NonCanonicalReserved", "DeviceSignatureVerificationFailed"] },
+          "expectedCode": { "enum": ["NonCanonicalReserved", "DeviceSignatureVerificationFailed", "ReferenceTypeMismatch"] },
           "signerPublicKeyHex": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
         }
       }

@@ -40,10 +40,18 @@ hashes и replay/dedup/overwrite checks. Подробности и актуал�
 [CLI attachment checkpoint](../deep-cli/docs/testing/cli-attachments-2026-10-18.md).
 S10 целиком не закрыт: cancel/materialization retention, sustained churn/recovery,
 large-file performance и device/media workflows остаются. Следующий CLI business
-slice — current DID2 governed groups; в текущем коде отсутствуют действующие
-author/semantic/control-owner producers. Старые GroupV1 structures не являются
-разрешением включить их или вернуть SessionId. Нужны текущий identity-bound
-contract/owner и durable fanout, затем create→invite→accept→commit→messages в обе
+slice — current DID2 governed groups. DR-0142 добавляет current directory
+capability и закрытые owner/consent author/verifier для genesis→invite→accept→
+activation; nonce proofs разных клиентов больше не смешиваются с идентичностью
+состояния. Retired ADC/ADP refs отвергаются, unused generic signer удалён.
+Protocol focused24 и downstream CLI37 PASS/native0; normal Release/Debug
+exact-three API/assembly graph PASS/native0. Это source predicates, не CLI E2E.
+[Точные receipts и граница](../deep-protocol/docs/testing/current-did2-group-directory-2026-10-18.md).
+В текущем клиенте ещё отсутствуют semantic/control-owner producers и protected
+group custody, поэтому групповые DMC2 emission/ACK не открыты. Старые GroupV1 structures не являются
+разрешением включить их или вернуть SessionId. Далее — protected account-owned
+group journal/semantic consumer, current control owner и durable batch fanout,
+затем create→invite→accept→commit→messages в обе
 стороны→cold reopen/remove/fork refusal. S11 и общий релиз не приняты.
 
 Первый CLI account slice реализован: real Shared DID2 create/status/address,

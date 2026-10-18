@@ -4,6 +4,11 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0142](../survival-program/decisions/DR-0142-current-did2-group-directory.md)
+retargets GROUP ADC1/ADP1 ArtifactRefs to version2, without an old reader or
+new record header/domain. It allocates current DID2 directory capabilities and
+closed owner/consent authoring; group DMC2/runtime activation remains separate.
+
 [DR-0141](../survival-program/decisions/DR-0141-owned-blob-chunk-plane.md)
 allocates ONION Blob6 and closed XBQ1/XBS1 under the
 [BLOB machine registry](../survival-program/releases/v3.0.0/specs/blob-chunk-v1.registry.json).

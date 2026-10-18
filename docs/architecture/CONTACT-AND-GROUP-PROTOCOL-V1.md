@@ -1366,6 +1366,16 @@ not duplicate UI content.
 
 ### 13.1 Choice and boundary
 
+[DR-0142](../survival-program/decisions/DR-0142-current-did2-group-directory.md)
+retargets all GROUP ADC1/ADP1 ArtifactRefs to version2 only. Group record
+headers/domains and the other reference types do not change. Current directory
+authority comes from the DID2 verifier, not raw package support. ADH/ADP are
+lookup provenance: acceptance echoes the invitation, while independently
+verified current ADC/DMD/DRS and active devices must match. Independent nonce
+proof bytes need not match. This is one current reader, not a legacy fallback.
+Runtime group emission remains closed until the protected client/control path
+is composed and qualified.
+
 The first release uses owner-sequenced membership and pairwise Triple-Ratchet
 fanout. It deliberately reuses the reviewed 1:1 engine, matches the release
 parity bound of 100 accounts/500 active devices and avoids inventing a shared
@@ -1442,11 +1452,12 @@ User acceptance creates `GIA1`, version 1, suite `0x0201`:
 The signature domain is `Deep/Group/V1/invitation-acceptance`. The accepting
 device must be active in the referenced current directory closure; GIA1 matches
 the exact invitation, invitee and requested role and cannot outlive GIV1. Its
-ADC1/ADH1/ADP1/DMD1/DRS1 tuple must be byte-identical to GIV1; any directory
-advance invalidates the pending offer and requires a fresh invitation. This
-clean-break rule lets the activation verifier prove both signed records from one
-non-forgeable current directory capability instead of trusting historical raw
-support bytes. It is
+ADC1/ADH1/ADP1/DMD1/DRS1 tuple must be byte-identical to GIV1. Independently
+verified current ADC1 V2/DMD1/DRS1 and active devices must match that stable
+state; an advance invalidates the offer. ADH1/ADP1 are echoed lookup provenance,
+not a demand to reproduce another client's nonce or an authority from raw
+support bytes. The owner retains the original invitation lookup evidence for
+the eventual exact GCP1 closure. It is
 sent to inviter/owner through the pairwise ratchet. Only a later owner-signed
 DGC1 may activate the member. A declined/expired invitation remains absent from
 membership; optional decline notification is a DMC2 event, not a governance
@@ -1577,22 +1588,21 @@ signature.
   verification input. DMD1 and DNP1 support references retain their respective
   domain-separated artifact-hash rules rather than being reinterpreted as raw
   SHA-256.
-- The production Contact verifier output consumed by GROUP binds
-  `exactADC1Ref38`, `exactADH1CoreRef38`, `exactADP1Hash32`, current DMD1/DRS1
-  and one trusted time. Member entries and every activation/device action must
-  equal that tuple byte-for-byte. For an account present at both the base and
+- The DID2 verifier output consumed by GROUP binds current ADC1 V2,
+  DMD1/DRS1, active devices and boot-specific trusted time. Signed ADH1/ADP1
+  provenance remains exact within its original package, but independent
+  current lookups need only match the stable state, not its old nonce. For an account present at both the base and
   result side, changed DMD1 bytes must be the exact next generation naming the
   base DMD1 hash as predecessor; an identical DMD1 is allowed. A removed/left
   account still supplies its current verified tuple even though it is absent
   from the resulting member table. Raw support bytes or caller keys cannot
   construct this capability.
 - GROUP does not duplicate account-directory parsing, witness-policy, sparse-map,
-  history-proof or trusted-time verification. The production Contact verifier now
-  exposes the exact non-forgeable freshness output above, and GROUP consumes it
-  directly without caller keys or validation-only constructors. Historical base
-  tuples are accepted only when they byte-match the prior verified commit and its
-  authenticated commit time; resulting tuples must additionally be current in the
-  caller's boot-specific monotonic window. Runtime activation remains false until
+  history-proof or trusted-time verification. GROUP consumes the current DID2
+  verifier output directly without caller keys or validation-only constructors.
+  Historical base provenance byte-matches the prior verified commit; resulting
+  stable ADC/DMD/DRS/device facts must additionally be current in the caller's
+  boot-specific monotonic window. Nonce evidence is not a stable tuple. Runtime activation remains false until
   the separate GROUP-CLIENT gate.
 - The sequencer revalidates current DMD1/DRS1 for every affected account.
 - Removal of an account removes all its devices.
