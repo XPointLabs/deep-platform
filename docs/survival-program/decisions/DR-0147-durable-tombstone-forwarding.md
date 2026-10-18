@@ -51,6 +51,10 @@ expired-object admission. Replays still require exact native floors and target.
 
 ## Qualification
 
+Sender items not yet visited after a whole native ACK capture use the separately
+owned original-admission closure in [DR-0148](DR-0148-original-native-ack-admission.md).
+They do not invent a durable source receipt before the actual mutation.
+
 Protocol owns canonical framing, exact signature/receipt/request binding and
 no-reservation-on-invalid-evidence cases. Node owns real protected first-replica
 custody, current admission, pinned TLS peer forwarding, delayed second-replica

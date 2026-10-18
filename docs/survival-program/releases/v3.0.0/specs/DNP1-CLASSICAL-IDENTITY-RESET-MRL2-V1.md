@@ -2444,6 +2444,13 @@ allocates the exact PTR1 peer tombstone carriage and original-admission evidence
 ownership. PRQ2/MRR2 inner bytes remain unchanged; raw tombstone HTTP carriage is
 replaced, not retained as a fallback. Current authority and expiry remain required.
 
+### 7.18 Original native ACK admission
+
+[DR-0148](../../../decisions/DR-0148-original-native-ack-admission.md) allocates
+the exact ephemeral source-signature purpose and actual native whole-ACK owner
+join for a sender's missing first reservation. Inner/wire bytes, journals and
+current admission remain unchanged; raw peer requests cannot use this owner.
+
 ## 8. Package and consumer cutover
 
 ### 8.1 Executable-evidence ownership and release gates
