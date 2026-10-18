@@ -47,12 +47,22 @@ activation; nonce proofs разных клиентов больше не сме�
 Protocol focused24 и downstream CLI37 PASS/native0; normal Release/Debug
 exact-three API/assembly graph PASS/native0. Это source predicates, не CLI E2E.
 [Точные receipts и граница](../deep-protocol/docs/testing/current-did2-group-directory-2026-10-18.md).
-В текущем клиенте ещё отсутствуют semantic/control-owner producers и protected
-group custody, поэтому групповые DMC2 emission/ACK не открыты. Старые GroupV1 structures не являются
-разрешением включить их или вернуть SessionId. Далее — protected account-owned
-group journal/semantic consumer, current control owner и durable batch fanout,
-затем create→invite→accept→commit→messages в обе
-стороны→cold reopen/remove/fork refusal. S11 и общий релиз не приняты.
+DR-0143 теперь связывает current owner/consent reducer с mandatory protected
+group custody, полным durable batch intent, общим ordinary counter, native
+receive/materialization до ACK и native-backed history. Открыты только закрытые
+owned GCF1/GIV1/GIA1/text DGM1, не generic/raw emission. Реальный CLI `e2e-06`
+прошёл create→invite→accept→activation→messages в обе стороны→cold history→
+original-batch replay/empty mailbox:35 холодных процессов, один неуспешный
+activation ACK восстановлен exact cold retry без новых операций. Финальный
+binary проверен отдельной группой в07 и продолжением той же группы в08 после
+исправления Node recovery-worker:08 PASS/native0,34 холодных процесса,0 failed
+steps, обе native histories, exact Stores/receive/ACK/replay/empty mailbox.
+Shared93/Protocol25/CLI39/Node20 focused PASS; это не unfiltered/full/package gate.
+[актуальные receipts и границы](../deep-cli/docs/testing/cli-groups-2026-10-18.md).
+Кандидат ограничен2 accounts/1 current device each; это не full S11/GSR1 или
+100-account/500-device fanout acceptance. Далее остаются полные membership/
+remove/rekey/device/history workflows, GSR1 retention и final qualification.
+S11 и общий релиз не приняты; Windows/Android пока не трогать.
 
 Первый CLI account slice реализован: real Shared DID2 create/status/address,
 раздельные Windows DPAPI/SQLCipher профили, запрет overwrite, closed errors и

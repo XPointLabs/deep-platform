@@ -1373,8 +1373,13 @@ authority comes from the DID2 verifier, not raw package support. ADH/ADP are
 lookup provenance: acceptance echoes the invitation, while independently
 verified current ADC/DMD/DRS and active devices must match. Independent nonce
 proof bytes need not match. This is one current reader, not a legacy fallback.
-Runtime group emission remains closed until the protected client/control path
-is composed and qualified.
+[DR-0143](../survival-program/decisions/DR-0143-owned-connected-group-candidate.md)
+allocates a closed account-owned connected candidate: typed GCF1/GIV1/GIA1/text
+DGM1 over the existing native pairwise E2EE and replicated ordinary mailbox.
+Generic/raw group emission stays closed. Protected journal registration,
+native-backed materialization before ACK and original durable batch retries
+are mandatory. The first candidate is bounded to two accounts/one device each;
+it is not GSR1 long-offline retention or full S11/release qualification.
 
 The first release uses owner-sequenced membership and pairwise Triple-Ratchet
 fanout. It deliberately reuses the reviewed 1:1 engine, matches the release
