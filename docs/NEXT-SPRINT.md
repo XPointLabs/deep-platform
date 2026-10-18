@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-18**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-19**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -76,13 +76,75 @@ source/native проверок и укладывание первого multi-sc
 Актуальные результаты — в
 [трёх-CLI checkpoint](../deep-cli/docs/testing/cli-three-groups-2026-10-18.md).
 Это ещё не full S11/GSR1 или100-account/500-device acceptance. Открыты remove/
-rekey/device/history, GSR1 current placement/client/descriptor-key custody,
-long-offline recovery и final qualification.
-После трёх-CLI fanout следующий сквозной срез — GSR1: закрытая передача
-descriptor/key по E2EE, protected recipient custody, current placement/client
-и подключённый XNode boundary, проверенные GSS1 two-replica receipts, fetch/gap
-и cold recovery. Наличие dormant opaque store не закрывает этот срез; ordinary
-mailbox PASS не заменяет его. К MAUI до этого не возвращаться.
+rekey/device/history, long-offline recovery и final qualification.
+**Текущий GSR1 slice (DR-0145/DR-0146):** реализованы closed E2EE descriptor/key carrier,
+protected journal3 без reader2, descriptor-anchored placement/client с текущим NETCODEC admission, подключённый
+XNode boundary, проверка двух replica signatures, sealed write-before-effects и
+GSR fetch/adoption с атомарным cursor CAS. Новые commits не идут через ordinary
+mailbox. Ноды используют аутентифицированные DID2 service clocks; peer HTTP
+подписи сохраняют отдельные host clocks. Сокращены повторные native scope opens,
+retained Store reads и joint floor reads внутри одной held фазы ACK, без кеша
+DPAPI/plaintext и без обхода callback fences. Protocol29/Shared8+2/CLI47 и
+Node21 focused PASS/native0; DevOps30 contracts PASS. Это не full gates.
+Реальный новый GSR three-CLI прогон ещё не принят: текущие аккаунты опубликованы,
+все три пары контактов прошли. Первый кандидат остановился на unknown CAS после
+смены operational view. Исправлено незаметное перемещение пары при routine PMT
+renewal: теперь anchor берётся из GSR descriptor, а admission/ключи/время — только
+из текущей authority. Реальный подписанный view+selection-epoch regression PASS.
+Старый uncertain CAS сохранён; corrected group candidate тестируется отдельно.
+Независимый GSR catch-up второго участника после empty ordinary mailbox прошёл
+за35256ms; это ещё не complete three-member fanout/cold replay. Точные runtime,
+failed receipts и результаты — в
+[GSR checkpoint](../deep-cli/docs/testing/cli-gsr-groups-2026-10-18.md).
+DR-0147 закрывает отдельный peer gap: оригинальный tombstone, не успевший на вторую
+реплику за120s, передаётся в PTR1 с проверяемой durable receipt первой и подписью
+всех исходных bytes. Native TLS/H2 delayed-first-admission/cold-replay PASS1;
+12 соседних ACK/Store/crash/HTTP cases прошли отдельно. Без доказательства старый
+первый admission по-прежнему запрещён. Protocol strict registry и normal
+Release/Debug actual exact-three graph PASS. Старый CLI ACK за время диагностики
+потерял current grant уже после подготовки: он сохранён и остаётся отдельным
+expired-prepared-ACK recovery blocker, PTR1 его не авторизует.
+Новая изолированная тройка проходит текущий путь без сброса прежних профилей.
+Фактический publication time lead1s выявил bounded pre-forward maturity fix:
+ожидание не меняет bytes/сроки, actual authority заново проверяется; 12 focused PASS.
+Lead3s теперь покрыт ожиданием в пределах signed uncertainty и прежних deadlines;
+фактическое схождение времени всё равно обязательно.
+DR-0148 подключает существующий protected whole-ACK AcceptedAt/exact-item owner
+для ещё не посещённых sender-items после120s. Дополнительно PTR1 ждёт реального
+receiver upper при подписанном durable-time lead, не подставляет peer time.
+Protocol35 и Node20 focused PASS/native0 (включая соседние ACK/Store/crash/HTTP
+и независимые clocks). Новый прогон сохранил созданную группу,
+двух active участников и старый expired-ACK как отдельный nonmember case; добавляет
+новый третий QA-account. Приглашение дошло exact retry, но первый ACK остановился
+на node native deadline, повтор — до wire на client loan. Native SQL owners теперь
+удерживаются в пределах того же ACK lease без повторного открытия; floors/rows,
+semantic и endpoint/root fences заново проверяются в каждой callback-фазе.
+Текущий прогон продолжает ту же группу/аккаунты/оригинальный ACK, без сброса.
+Это не закрывает expired-prepared-ACK recovery или SLO.
+На сохранённой группе новый третий участник прошёл ACK/accept, владелец —
+consent ACK и публикацию epoch2, второй участник — независимый GSR catch-up.
+Третий выявил Node pagination defect: большой aggregate декодировался до выбора
+страницы. Исправлены предварительный size check и граница canonical65535 /
+padding65536; 14 focused runtime tests PASS, включая exact cursor после restart.
+Установлен node-build10/up09 без сброса custody. Тот же CLI cycle продолжается;
+трёхсторонние сообщения и cold replay ещё не приняты текущим GSR-кандидатом.
+Последующий Store timeout локализован в цене повторной DPAPI-дешифровки всего
+801-КБ CLI aggregate. Синтетические32 native reads:32-byte key8ms против
+801334-byte payload1858ms. CLI platform adapter переводится на fresh per-write
+AES-256-GCM key, обёрнутый current-user DPAPI; каждый read заново открывает ключ
+и аутентифицирует весь aggregate, без key/plaintext cache или отдельного key file.
+Это только local CLI envelope clean break, не новый сетевой codec/Shared journal;
+raw-DPAPI reader/migration не добавляются, старые QA-профили сохраняются.
+Новый формат требует отдельной новой изолированной тройки и своего E2E receipt;
+пока этот кандидат не прошёл, performance и полный GSR cycle не закрывать.
+CLI build/unit09:49 PASS/native0,0 warnings/errors;32 полных801-КБ чтения с
+нативным unwrap каждого ключа и проверкой данных —152ms (отдельный native-only
+старый payload baseline1858ms). Новый `e2e-16` идёт на новой тройке, все три
+account publication прошли first attempt; на623/663/623 protected reads пришлось
+241/276/224ms. Новые full network/business claims пока не приняты.
+Expired unknown-write reconciliation, descriptor rotation/handover и retention
+ещё не реализованы/не квалифицированы. Ordinary mailbox PASS не заменяет GSR E2E.
+К MAUI до завершения текущего сквозного среза не возвращаться.
 S11 и общий релиз не приняты; Windows/Android пока не трогать.
 
 Первый CLI account slice реализован: real Shared DID2 create/status/address,
