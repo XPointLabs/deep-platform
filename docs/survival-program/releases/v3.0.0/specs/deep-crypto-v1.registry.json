@@ -8,7 +8,7 @@
     { "id": "APPLICATION-CORE-CODEC-01", "status": "FROZEN_CLEAN_BREAK", "records": ["DID1", "DAB1", "DMD1", "DCA1", "DAO1", "DMC2"] },
     { "id": "ATTACHMENT-CODEC-01", "status": "FROZEN_CLEAN_BREAK", "records": ["DAM1"], "dmc2Kinds": [18, 19] },
     { "id": "CONTACT-CODEC-01", "status": "FROZEN_TARGET_NOT_ACTIVE", "records": ["DCB1", "DCR1", "DIA1", "XIR1", "XUR1", "XRA1", "XRC1", "XRR1", "XSS1", "PMA2", "PMT2", "PMS2", "XMG1", "XMC1"], "dmc2Kinds": [2, 3, 4, 14] },
-    { "id": "GROUP-CODEC-01", "status": "FROZEN_TARGET_NOT_ACTIVE", "records": ["GIV1", "GIA1", "DGP1", "DGC1", "DGM1", "DGT1", "GCP1", "GCF1", "GSR1", "GSW1", "GSQ1", "GSS1"], "dmc2Kinds": [15, 16, 17, 26, 27, 28, 29] },
+    { "id": "GROUP-CODEC-01", "status": "FROZEN_TARGET_NOT_ACTIVE", "records": ["GIV1", "GIA1", "DGP1", "DGC1", "DGM1", "DGT1", "GCP1", "GCF1", "GSR1", "GSW1", "GSQ1", "GSS1"], "dmc2Kinds": [15, 16, 17, 26, 27, 28, 29, 30] },
     { "id": "CALL-CODEC-01", "status": "TARGET_UNFROZEN", "dmc2Kinds": [20, 21, 22, 23, 24] },
     { "id": "HISTORY-CODEC-01", "status": "TARGET_UNFROZEN", "dmc2Kinds": [25] }
   ],
@@ -625,8 +625,9 @@
         { "tag": 12, "name": "typedPayload", "type": "bytes", "lengthMinimum": 0, "lengthMaximum": 32768 }
       ],
       "acceptedKindIds": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,18,19],
-      "reservedRejectKindIds": [15,16,17,20,21,22,23,24,25,26,27,28,29],
+      "reservedRejectKindIds": [15,16,17,20,21,22,23,24,25,26,27,28,29,30],
       "payloads": {
+        "30": "groupId32||recipientAccount32||exactGSR1[528]||sealingPrivateScalar32; exact624; DR-0145; owned sequencer/pairwise E2EE only",
         "1": "handshakeNonce32||senderDMD1Hash32||LP32(exactDMD1)||capabilityBits:u32be; payload=428+70*N, N=1..16",
         "5": "LP16(canonicalUtf8[1..16384])",
         "6": "targetLogicalId32||LP16(canonicalUtf8[0..16384])",

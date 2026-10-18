@@ -109,7 +109,7 @@ are never guessed:
 | `APPLICATION-CORE-CODEC-01` | DID2/DAB2; exact dependent records follow the current machine registry | DR-0069; lifecycle is per record, not a blanket implementation/activation claim |
 | `ATTACHMENT-CODEC-01` | DAM1; DMC2 kinds 18 and 19 | `FROZEN_CLEAN_BREAK`, runtime inactive until BLOB-01 |
 | `CONTACT-CODEC-01` | DID2-bound DCB1/DCR1/XIR1 closure, DIA1 and XMC2 | Current machine registry and DR-0081; consumer/physical activation gated |
-| `GROUP-CODEC-01` | DGP1/DGC1/DGM1/DGT1/GIV1/GIA1/GCP1/GCF1/GSR1/GSW1/GSQ1/GSS1 and DMC2 kinds 15..17 and 26..29 | `FROZEN_TARGET_NOT_ACTIVE` |
+| `GROUP-CODEC-01` | DGP1/DGC1/DGM1/DGT1/GIV1/GIA1/GCP1/GCF1/GSR1/GSW1/GSQ1/GSS1 and DMC2 kinds 15..17 and 26..30 | `FROZEN_TARGET_NOT_ACTIVE` |
 | `CALL-CODEC-01` | DMC2 kinds 20..24 and their exact call payload records | `TARGET_UNFROZEN` |
 | `HISTORY-CODEC-01` | DMC2 kind 25 and its backup/history producer closure | `TARGET_UNFROZEN` |
 
@@ -978,6 +978,7 @@ does not change authenticated bytes.
 | 27 | `GroupInvitationAcceptance` | frozen target | exactly `LP32(GIA1)`; zero flags/reply and nonzero expiry at most seven days |
 | 28 | `GroupCommitChunk` | frozen target | exactly `LP32(GCF1)`; zero flags/reply and nonzero expiry at most seven days |
 | 29 | `GroupEmergencySequencerTransfer` | frozen target | exactly `LP32(DGT1)`; zero flags/reply and nonzero expiry at most seven days |
+| 30 | `GroupControlRendezvous` | DR-0145 allocation | exactly `groupId32 || recipientAccount32 || GSR1[528] || sealingPrivateScalar32`; pairwise E2EE only; zero flags/reply and expiry at most seven days |
 
 Unknown IDs and every reserved ID reject before payload allocation, crypto,
 mutation or callback. A reserved ID never carries a generic blob. New IDs
@@ -1827,6 +1828,11 @@ The signature domain is `Deep/Group/V1/control-rendezvous`. Capability, directio
 placement and sealing key are independently random per `(group, recipient account,
 generation)` and never contain/derive group/account/device IDs in service requests.
 The XNode store therefore cannot correlate two members as one group from GSR1.
+The selector, current placement, E2EE descriptor/key carrier and exact sealed
+GCF1 transcript are allocated by
+[DR-0145](../survival-program/decisions/DR-0145-owned-group-control-rendezvous.md).
+Full GSR1, inner identifiers and sealing keys never enter service requests.
+A parsed descriptor or activation flag is not authority.
 
 GSW1 and GSQ1 are legal terminal requests only under the distinct ONION-01
 operation `GroupControl=5`; GSS1 is its only success record. All three records
@@ -1835,7 +1841,7 @@ group-control HTTP client fallback exists.
 
 `GSW1` uses exactly sparse tags `1..6,16..22`; tags `7..15` are absent. It uses the
 common request tags from the resolver contract plus
-`16=serviceCapability32`, `17=exactGSR1Hash32`, `18=controlSequence:u64`,
+`16=opaqueServiceSelector32`, `17=exactGSR1Hash32`, `18=controlSequence:u64`,
 `19=predecessorControlHash32`, `20=sealedGCF1Hash32`,
 `21=LP32(sealedExactGCF1[1..32768])`, `22=effectiveExpiresAt:u64`.
 It is a two-replica CAS. Every exact GCP1/GCF1 chunk needed for the recipient's
@@ -1843,7 +1849,7 @@ current membership lineage is written; owner commit becomes publish-complete onl
 after every target's durable receipts are recorded in the local fanout plan.
 
 `GSQ1` uses exactly sparse tags `1..6,16..20`; tags `7..15` are absent. It uses
-common request tags plus `16=serviceCapability32`,
+common request tags plus `16=opaqueServiceSelector32`,
 `17=exactGSR1Hash32`, `18=afterControlSequence:u64`, `19=maxRecords:u16(1..64)`
 and `20=responsePaddingClass:u16(0..4)`. Class 4 can carry at least one
 maximum-size sealed GCF1. `GSS1` uses exactly sparse tags `1..8,16..20`; absent
