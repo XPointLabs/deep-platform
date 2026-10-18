@@ -1378,8 +1378,11 @@ allocates a closed account-owned connected candidate: typed GCF1/GIV1/GIA1/text
 DGM1 over the existing native pairwise E2EE and replicated ordinary mailbox.
 Generic/raw group emission stays closed. Protected journal registration,
 native-backed materialization before ACK and original durable batch retries
-are mandatory. The first candidate is bounded to two accounts/one device each;
-it is not GSR1 long-offline retention or full S11/release qualification.
+are mandatory. [DR-0144](../survival-program/decisions/DR-0144-multi-account-group-batches.md)
+extends the candidate to multiple accounts, complete protected per-session
+batches and sequential accepted-invite successors. It remains one current device
+per account pending enrollment qualification, not GSR1 long-offline retention or
+full S11/release qualification.
 
 The first release uses owner-sequenced membership and pairwise Triple-Ratchet
 fanout. It deliberately reuses the reviewed 1:1 engine, matches the release
@@ -1584,6 +1587,12 @@ signature.
   by an earlier proposal, an unauthorized action or a result that violates any
   count/role invariant invalidates the whole DGC1. The sequencer cannot silently
   skip or reorder a listed proposal.
+- Historical lineage verification checks GIV1/GIA1/DGP1 validity at the signed
+  DGC1 commit time, not at the later fetch/reopen time. Each issue time is at or
+  before that commit and each expiry is strictly after it. Fresh authoring and
+  pending invitation/acceptance still require current unexpired records. Current
+  directory/device checks remain independent; this does not activate historical
+  DID2 recovery or GSR1 transport by itself.
 - A verifier independently applies the same reducer and requires byte-identical
   tag 12 member entries, group profile fields and owner/sequencer result.
 - Successor verification accepts the prior non-forgeable

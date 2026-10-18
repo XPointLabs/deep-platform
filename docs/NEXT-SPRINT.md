@@ -59,9 +59,30 @@ binary проверен отдельной группой в07 и продолж
 steps, обе native histories, exact Stores/receive/ACK/replay/empty mailbox.
 Shared93/Protocol25/CLI39/Node20 focused PASS; это не unfiltered/full/package gate.
 [актуальные receipts и границы](../deep-cli/docs/testing/cli-groups-2026-10-18.md).
-Кандидат ограничен2 accounts/1 current device each; это не full S11/GSR1 или
-100-account/500-device fanout acceptance. Далее остаются полные membership/
-remove/rekey/device/history workflows, GSR1 retention и final qualification.
+DR-0144 снимает искусственный предел2 accounts: защищённая lineage и отдельные
+consent tuples, полный snapshot current targets, один DGM1 и независимые
+пер-session операции, bounded workers с очередью account operations до захвата
+lock/authority. Это не parallel wire-loan qualification. Group journal2 — clean break,
+без reader поколения1; прежние QA-профили сохранены. Native regression и
+Protocol27 (включая3 members, historical consent и строгую длину GCF), Shared94
+focused +2 native +11 ACK, CLI46 PASS/native0; это не unfiltered full.
+Реальный трёх-CLI `e2e-07` прошёл:59 холодных команд/native0, состав3/epoch2,
+по одному сообщению от каждого всем остальным, холодные native histories,
+original-batch Store replay и пустые mailbox без дублей. Это recovery PASS
+на retained группе, не first-attempt reliability. Дополнительный multi-scope
+ACK `continuation-02` также PASS/native0:23 команды, все пять сообщений на каждом
+клиенте, пустые mailbox; один ACK потребовал exact cold retry. Стоимость повторных
+source/native проверок и укладывание первого multi-scope ACK в30s ещё не приняты.
+Актуальные результаты — в
+[трёх-CLI checkpoint](../deep-cli/docs/testing/cli-three-groups-2026-10-18.md).
+Это ещё не full S11/GSR1 или100-account/500-device acceptance. Открыты remove/
+rekey/device/history, GSR1 current placement/client/descriptor-key custody,
+long-offline recovery и final qualification.
+После трёх-CLI fanout следующий сквозной срез — GSR1: закрытая передача
+descriptor/key по E2EE, protected recipient custody, current placement/client
+и подключённый XNode boundary, проверенные GSS1 two-replica receipts, fetch/gap
+и cold recovery. Наличие dormant opaque store не закрывает этот срез; ordinary
+mailbox PASS не заменяет его. К MAUI до этого не возвращаться.
 S11 и общий релиз не приняты; Windows/Android пока не трогать.
 
 Первый CLI account slice реализован: real Shared DID2 create/status/address,
