@@ -1271,6 +1271,16 @@ bounded jittered poll otherwise.
 
 ### 12.2 Attachments
 
+The closed DID2 chunk carrier allocation is
+[DR-0141](../survival-program/decisions/DR-0141-owned-blob-chunk-plane.md) and
+[its exact machine registry](../survival-program/releases/v3.0.0/specs/blob-chunk-v1.registry.json).
+It adds ONION operation6; nodes receive an immutable key-free commitment
+descriptor and unlinkable capability, never DAM1/key/filename/MIME. Upload
+requires two distinct signed Blob nodes; bounded current-node discovery on
+download advances only on authenticated Missing, never integrity failure.
+Original storage copies must remain admitted until retention/handover completes.
+This allocation alone is not remote-transfer or retention acceptance.
+
 Attachments are limited to 25 MiB plaintext per V1 object, encrypted on the client
 with an independent random object key, and split into 256 KiB content-addressed
 ciphertext chunks. The signed application

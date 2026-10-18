@@ -1,0 +1,37 @@
+{
+  "schema": "deep.blob-chunk-registry.v1",
+  "decision": "DR-0141",
+  "onionOperation": 6,
+  "version": 1,
+  "suite": 769,
+  "byteOrder": "big-endian",
+  "descriptor": {
+    "prefixBytes": 98,
+    "fields": ["networkId16", "objectId32", "capabilitySha256_32", "expiresAt_u64", "plaintextBytes_u64", "chunkCount_u16", "orderedChunks(ciphertextBytes_u32,ciphertextSha256_32)"],
+    "chunkCount": [1, 100],
+    "plaintextBytes": [1, 26214400],
+    "chunkPlaintextBytes": 262144,
+    "aeadOverheadBytes": 16,
+    "maximumOriginalRetentionSeconds": 2592000
+  },
+  "request": {
+    "magic": "XBQ1",
+    "headerBytes": 52,
+    "fields": ["magic4", "version_u16", "suite_u16", "operation_u8", "zero3", "descriptorBytes_u32", "chunkIndex_u32", "capability32", "descriptor", "ciphertext"],
+    "operations": {"1": "Put", "2": "Get"},
+    "maximumBytes": 265910,
+    "put": "exact committed chunk length and SHA256; capability SHA256 matches descriptor",
+    "get": "no trailing body; capability SHA256 matches descriptor"
+  },
+  "response": {
+    "magic": "XBS1",
+    "headerBytes": 48,
+    "fields": ["magic4", "version_u16", "suite_u16", "operation_u8", "status_u8", "zero2", "exactRequestSha256_32", "bodyBytes_u32", "body"],
+    "statuses": {"1": "Stored", "2": "ExactReplay", "3": "Chunk", "4": "Missing", "5": "Expired", "6": "Quota", "7": "Conflict"},
+    "chunk": "Get only; exact descriptor length and SHA256",
+    "other": "empty body; Stored/ExactReplay only for Put"
+  },
+  "routing": {"roleBit": 3, "onionExitRoleBit": 2, "nonzeroXnd1CapacityTag": 17, "maximumDiscoveryNodes": 128, "uploadReplicaCount": 2, "directFallback": false},
+  "refusals": ["unknown magic/version/suite/operation/status", "nonzero reserved", "truncated/trailing/oversized", "zero identifiers/capability", "wrong geometry/hash/capability/network", "changed descriptor", "expired/overlong upload", "unverified role/capacity/path/time", "lost/corrupt custody", "quota"],
+  "lifecycle": "remote transfer allocation; cancellation/materialization-retention and operator handover remain independent release gates"
+}

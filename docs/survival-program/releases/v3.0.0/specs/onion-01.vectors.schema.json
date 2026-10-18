@@ -11,13 +11,14 @@
     "status": { "const": "FROZEN_TARGET_NOT_ACTIVE" },
     "runtimeActivation": { "const": false },
     "terminalOperations": {
-      "type": "array", "minItems": 5, "maxItems": 5,
+      "type": "array", "minItems": 6, "maxItems": 6,
       "prefixItems": [
         { "$ref": "#/$defs/storeOperation" },
         { "$ref": "#/$defs/retrieveOperation" },
         { "$ref": "#/$defs/acknowledgeOperation" },
         { "$ref": "#/$defs/contactResolveOperation" },
-        { "$ref": "#/$defs/groupControlOperation" }
+        { "$ref": "#/$defs/groupControlOperation" },
+        { "$ref": "#/$defs/blobOperation" }
       ],
       "items": false
     },
@@ -55,6 +56,11 @@
       "type": "object", "additionalProperties": false,
       "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
       "properties": { "id": { "const": 5 }, "name": { "const": "GroupControl" }, "requestMagic": { "const": ["GSW1", "GSQ1"] }, "successMagic": { "const": ["GSS1"] }, "maxRequestBytes": { "const": 33160 }, "maxSuccessBytes": { "const": 65535 } }
+    },
+    "blobOperation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "requestMagic", "successMagic", "maxRequestBytes", "maxSuccessBytes"],
+      "properties": { "id": { "const": 6 }, "name": { "const": "Blob" }, "requestMagic": { "const": ["XBQ1"] }, "successMagic": { "const": ["XBS1"] }, "maxRequestBytes": { "const": 265910 }, "maxSuccessBytes": { "const": 262208 } }
     },
     "wireContract": {
       "type": "object", "additionalProperties": false,

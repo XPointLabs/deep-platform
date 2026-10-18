@@ -4,6 +4,12 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0141](../survival-program/decisions/DR-0141-owned-blob-chunk-plane.md)
+allocates ONION Blob6 and closed XBQ1/XBS1 under the
+[BLOB machine registry](../survival-program/releases/v3.0.0/specs/blob-chunk-v1.registry.json).
+DAM1 and AEAD remain unchanged. Source/remote transfer, retention/handover and
+device acceptance are distinct pending gates; no direct file URL is allocated.
+
 [DR-0140](../survival-program/decisions/DR-0140-attempt-scoped-mailbox-object-key.md)
 corrects the producer scope of the existing mailbox object/ACK digest using
 its existing domain constant. No wire/API/schema/version/domain is allocated.
@@ -361,6 +367,8 @@ Owner: `deep-protocol`. Normative source:
 | `XRE1` | Exit plaintext. | `FROZEN_TARGET_NOT_ACTIVE`; old DRE1 rejects |
 | `XPR1` | HTTP-independent terminal result contained in the sealed exit response. | `FROZEN_TARGET_NOT_ACTIVE`; old DPR1 rejects |
 | `XRS1` | reply-key-sealed response plaintext carrying exact XPR1 and zero padding. | `FROZEN_TARGET_NOT_ACTIVE`; old DRS1 rejects |
+| `XBQ1` | DR-0141 capability-bound encrypted blob chunk request. | `FROZEN_TARGET_NOT_ACTIVE`; exact blob-chunk-v1.registry.json |
+| `XBS1` | DR-0141 exact-request-bound blob chunk result. | `FROZEN_TARGET_NOT_ACTIVE`; exact blob-chunk-v1.registry.json |
 
 The implementation package must inventory every existing privacy-routing magic
 from source before freeze; no unlisted magic is grandfathered by this row.

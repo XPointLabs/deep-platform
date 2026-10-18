@@ -9,7 +9,8 @@
     { "id": 2, "name": "Retrieve", "requestMagic": ["MAU3"], "successMagic": ["MRP1"], "maxRequestBytes": 824, "maxSuccessBytes": 1048556 },
     { "id": 3, "name": "Acknowledge", "requestMagic": ["MAU3"], "successMagic": ["MAR1"], "maxRequestBytes": 4824, "maxSuccessBytes": 77840 },
     { "id": 4, "name": "ContactResolve", "requestMagic": ["XPU1", "XPL1", "XIQ1", "XPK1", "XUW1", "XUQ1", "XMG2", "XPP1", "XCA2"], "successMagic": ["XPO1", "XIS1", "XPC1", "XUS1", "XMC2", "XIC1", "XCS2"], "maxRequestBytes": 171870, "maxSuccessBytes": 131072 },
-    { "id": 5, "name": "GroupControl", "requestMagic": ["GSW1", "GSQ1"], "successMagic": ["GSS1"], "maxRequestBytes": 33160, "maxSuccessBytes": 65535 }
+    { "id": 5, "name": "GroupControl", "requestMagic": ["GSW1", "GSQ1"], "successMagic": ["GSS1"], "maxRequestBytes": 33160, "maxSuccessBytes": 65535 },
+    { "id": 6, "name": "Blob", "requestMagic": ["XBQ1"], "successMagic": ["XBS1"], "maxRequestBytes": 265910, "maxSuccessBytes": 262208 }
   ],
   "wireContracts": [
     { "magic": "XRF1", "fixedPrefixBytes": 160, "maxBytes": 1572864, "fields": [{ "offset": 0, "length": 4, "name": "magic" }, { "offset": 4, "length": 1, "name": "version" }, { "offset": 5, "length": 1, "name": "minimumReader" }, { "offset": 6, "length": 1, "name": "suite" }, { "offset": 7, "length": 1, "name": "purpose" }, { "offset": 8, "length": 1, "name": "layerKind" }, { "offset": 12, "length": 16, "name": "networkId" }, { "offset": 28, "length": 32, "name": "keyOwnerId" }, { "offset": 60, "length": 8, "name": "epoch" }, { "offset": 68, "length": 32, "name": "keyId" }, { "offset": 100, "length": 32, "name": "ephemeralPublic" }, { "offset": 132, "length": 24, "name": "nonce" }, { "offset": 156, "length": 4, "name": "ciphertextLength" }] },

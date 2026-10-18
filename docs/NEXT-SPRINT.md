@@ -29,6 +29,23 @@ full/package gates — на согласованном пакете. Windows/And
 остаются финальной проверкой платформ и UI, не основным циклом отладки.
 CLI PASS не даёт device acceptance и не снимает release blockers.
 
+**Текущий files slice:** DR-0141 выделяет закрытый BLOB terminal через обычный
+ONION, без file-server fallback. Реальный CLI-прогон `cli-files-groups-20261018/e2e-02`
+завершился PASS/native0:28 холодных процессов, документ524325 bytes Alice→Bob и
+PNG68 bytes Bob→Alice, полные remote hashes совпали, exact retries/duplicate polls
+и запрет overwrite проверены. Последующие source corrections (atomic descriptor,
+retained Store без повторного upload) отдельно проверены в `e2e-03`:24 холодных
+процесса/PASS/native0, прежние объекты после supported node restart, оба полных
+hashes и replay/dedup/overwrite checks. Подробности и актуальная матрица —
+[CLI attachment checkpoint](../deep-cli/docs/testing/cli-attachments-2026-10-18.md).
+S10 целиком не закрыт: cancel/materialization retention, sustained churn/recovery,
+large-file performance и device/media workflows остаются. Следующий CLI business
+slice — current DID2 governed groups; в текущем коде отсутствуют действующие
+author/semantic/control-owner producers. Старые GroupV1 structures не являются
+разрешением включить их или вернуть SessionId. Нужны текущий identity-bound
+contract/owner и durable fanout, затем create→invite→accept→commit→messages в обе
+стороны→cold reopen/remove/fork refusal. S11 и общий релиз не приняты.
+
 Первый CLI account slice реализован: real Shared DID2 create/status/address,
 раздельные Windows DPAPI/SQLCipher профили, запрет overwrite, closed errors и
 cancellation. Focused12/native0/0skip, без compiler diagnostics; два новых QA
