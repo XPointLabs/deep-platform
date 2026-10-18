@@ -119,3 +119,7 @@ export must not be retried through another tool or wrapper. A source-only
 implementation is not a deployed image, issuer activation or physical delivery.
 No release approval until real Windows/USB Android contacts/acceptance, two-way
 text, remote file/image integrity, governed groups and recovery pass E2E.
+
+
+Peer tombstone carriage and delayed second-replica recovery are amended by
+[DR-0147](DR-0147-durable-tombstone-forwarding.md); inner PRQ2/MRR2 remain exact.

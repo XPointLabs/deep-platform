@@ -4,6 +4,11 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0147](../survival-program/decisions/DR-0147-durable-tombstone-forwarding.md)
+allocates PTR1, the exact durable first-replica proof carriage on the peer
+tombstone route. It replaces raw peer tombstone HTTP carriage without changing
+inner PRQ2/MRR2, client wire, expiry or independently current admission.
+
 [DR-0142](../survival-program/decisions/DR-0142-current-did2-group-directory.md)
 retargets GROUP ADC1/ADP1 ArtifactRefs to version2, without an old reader or
 new record header/domain. It allocates current DID2 directory capabilities and

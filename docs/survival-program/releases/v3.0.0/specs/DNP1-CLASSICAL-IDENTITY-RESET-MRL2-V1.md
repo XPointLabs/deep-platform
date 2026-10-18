@@ -2437,6 +2437,13 @@ collection reads at most configured max plus one, verifies HMAC before trusting
 expiry, deletes only terminal retained rows, and quarantines corrupt rows. No
 live row is evicted to admit work.
 
+### 7.17 Durable tombstone forwarding
+
+Accepted [DR-0147](../../../decisions/DR-0147-durable-tombstone-forwarding.md)
+allocates the exact PTR1 peer tombstone carriage and original-admission evidence
+ownership. PRQ2/MRR2 inner bytes remain unchanged; raw tombstone HTTP carriage is
+replaced, not retained as a fallback. Current authority and expiry remain required.
+
 ## 8. Package and consumer cutover
 
 ### 8.1 Executable-evidence ownership and release gates
