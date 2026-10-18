@@ -75,88 +75,46 @@ ACK `continuation-02` также PASS/native0:23 команды, все пять
 source/native проверок и укладывание первого multi-scope ACK в30s ещё не приняты.
 Актуальные результаты — в
 [трёх-CLI checkpoint](../deep-cli/docs/testing/cli-three-groups-2026-10-18.md).
-Это ещё не full S11/GSR1 или100-account/500-device acceptance. Открыты remove/
+Этот прежний ordinary-mailbox PASS не заменяет GSR1, full S11 или
+100-account/500-device acceptance. Открыты remove/
 rekey/device/history, long-offline recovery и final qualification.
-**Текущий GSR1 slice (DR-0145/DR-0146):** реализованы closed E2EE descriptor/key carrier,
-protected journal3 без reader2, descriptor-anchored placement/client с текущим NETCODEC admission, подключённый
-XNode boundary, проверка двух replica signatures, sealed write-before-effects и
-GSR fetch/adoption с атомарным cursor CAS. Новые commits не идут через ordinary
-mailbox. Ноды используют аутентифицированные DID2 service clocks; peer HTTP
-подписи сохраняют отдельные host clocks. Сокращены повторные native scope opens,
-retained Store reads и joint floor reads внутри одной held фазы ACK, без кеша
-DPAPI/plaintext и без обхода callback fences. Protocol29/Shared8+2/CLI47 и
-Node21 focused PASS/native0; DevOps30 contracts PASS. Это не full gates.
-Реальный новый GSR three-CLI прогон ещё не принят: текущие аккаунты опубликованы,
-все три пары контактов прошли. Первый кандидат остановился на unknown CAS после
-смены operational view. Исправлено незаметное перемещение пары при routine PMT
-renewal: теперь anchor берётся из GSR descriptor, а admission/ключи/время — только
-из текущей authority. Реальный подписанный view+selection-epoch regression PASS.
-Старый uncertain CAS сохранён; corrected group candidate тестируется отдельно.
-Независимый GSR catch-up второго участника после empty ordinary mailbox прошёл
-за35256ms; это ещё не complete three-member fanout/cold replay. Точные runtime,
-failed receipts и результаты — в
-[GSR checkpoint](../deep-cli/docs/testing/cli-gsr-groups-2026-10-18.md).
-DR-0147 закрывает отдельный peer gap: оригинальный tombstone, не успевший на вторую
-реплику за120s, передаётся в PTR1 с проверяемой durable receipt первой и подписью
-всех исходных bytes. Native TLS/H2 delayed-first-admission/cold-replay PASS1;
-12 соседних ACK/Store/crash/HTTP cases прошли отдельно. Без доказательства старый
-первый admission по-прежнему запрещён. Protocol strict registry и normal
-Release/Debug actual exact-three graph PASS. Старый CLI ACK за время диагностики
-потерял current grant уже после подготовки: он сохранён и остаётся отдельным
-expired-prepared-ACK recovery blocker, PTR1 его не авторизует.
-Новая изолированная тройка проходит текущий путь без сброса прежних профилей.
-Фактический publication time lead1s выявил bounded pre-forward maturity fix:
-ожидание не меняет bytes/сроки, actual authority заново проверяется; 12 focused PASS.
-Lead3s теперь покрыт ожиданием в пределах signed uncertainty и прежних deadlines;
-фактическое схождение времени всё равно обязательно.
-DR-0148 подключает существующий protected whole-ACK AcceptedAt/exact-item owner
-для ещё не посещённых sender-items после120s. Дополнительно PTR1 ждёт реального
-receiver upper при подписанном durable-time lead, не подставляет peer time.
-Protocol35 и Node20 focused PASS/native0 (включая соседние ACK/Store/crash/HTTP
-и независимые clocks). Новый прогон сохранил созданную группу,
-двух active участников и старый expired-ACK как отдельный nonmember case; добавляет
-новый третий QA-account. Приглашение дошло exact retry, но первый ACK остановился
-на node native deadline, повтор — до wire на client loan. Native SQL owners теперь
-удерживаются в пределах того же ACK lease без повторного открытия; floors/rows,
-semantic и endpoint/root fences заново проверяются в каждой callback-фазе.
-Текущий прогон продолжает ту же группу/аккаунты/оригинальный ACK, без сброса.
-Это не закрывает expired-prepared-ACK recovery или SLO.
-На сохранённой группе новый третий участник прошёл ACK/accept, владелец —
-consent ACK и публикацию epoch2, второй участник — независимый GSR catch-up.
-Третий выявил Node pagination defect: большой aggregate декодировался до выбора
-страницы. Исправлены предварительный size check и граница canonical65535 /
-padding65536; 14 focused runtime tests PASS, включая exact cursor после restart.
-Установлен node-build10/up09 без сброса custody. Тот же CLI cycle продолжается;
-трёхсторонние сообщения и cold replay ещё не приняты текущим GSR-кандидатом.
-Последующий Store timeout локализован в цене повторной DPAPI-дешифровки всего
-801-КБ CLI aggregate. Синтетические32 native reads:32-byte key8ms против
-801334-byte payload1858ms. CLI platform adapter переводится на fresh per-write
-AES-256-GCM key, обёрнутый current-user DPAPI; каждый read заново открывает ключ
-и аутентифицирует весь aggregate, без key/plaintext cache или отдельного key file.
-Это только local CLI envelope clean break, не новый сетевой codec/Shared journal;
-raw-DPAPI reader/migration не добавляются, старые QA-профили сохраняются.
-Новый формат требует отдельной новой изолированной тройки и своего E2E receipt;
-пока этот кандидат не прошёл, performance и полный GSR cycle не закрывать.
-CLI build/unit09:49 PASS/native0,0 warnings/errors;32 полных801-КБ чтения с
-нативным unwrap каждого ключа и проверкой данных —152ms (отдельный native-only
-старый payload baseline1858ms). Новый `e2e-16` идёт на новой тройке, все три
-account publication прошли first attempt; на623/663/623 protected reads пришлось
-241/276/224ms. Новые full network/business claims пока не приняты.
-В `e2e-16` выдача grant для второго контакта обнаружила независимый Registry
-bug: reservation сохранял live DNH2/PMA/root checkpoint как intent identity,
-после правильного отказа release на изменившемся view exact retry навсегда
-конфликтовал. [DR-0149](survival-program/decisions/DR-0149-stable-mailbox-grant-intent-scope.md)
-отделяет неизменный verified evidence tuple/kind/horizon от fresh authority;
-все проверки authority/signing/release сохраняются. Scope hash v2 — clean break,
-старые несовместимые reservations не переписываются/не конвертируются.
-Registry6 focused PASS/native0:2 pure,2 actual PostgreSQL journal и2 actual
-HTTPS/Protocol/role-signing/native-mailbox cases (не full gate).
-Дальше — текущие первый/второй CLI и отдельный новый третий QA-account;
-старый заблокированный grant остаётся отдельным непочиненным scope-v1 case.
-Expired unknown-write reconciliation, descriptor rotation/handover и retention
-ещё не реализованы/не квалифицированы. Ordinary mailbox PASS не заменяет GSR E2E.
-К MAUI до завершения текущего сквозного среза не возвращаться.
-S11 и общий релиз не приняты; Windows/Android пока не трогать.
+
+**Текущий GSR1 slice (DR-0145/DR-0146): функциональный CLI цикл принят.**
+Связанный прогон17–20 использует одну текущую группу и те же3 профиля, без
+сбросов или замены неизвестных операций. Финальный `e2e-20` PASS/native0:
+51 холодная команда,0 failed steps. Подтверждены mutual contacts, создание/
+приглашения/принятие,3 active members/epoch2 на всех CLI, независимый GSR catch-up
+при пустом ordinary mailbox, по одному сообщению от каждого двум остальным,
+3 точных сообщения в каждой native history (1 local), replay всех original
+Store batches без дублей, пустые mailbox и холодная проверка GSR receipts/cursors.
+Это recovery PASS: предыдущие timeout/отказы и exact retries остаются в
+[GSR checkpoint](../deep-cli/docs/testing/cli-gsr-groups-2026-10-18.md), не выданы
+за first-attempt reliability.
+
+Подключены owned E2EE descriptor/key carrier, protected group journal3 без
+reader2, descriptor-anchored placement с текущим NETCODEC admission, обе replica
+signatures и атомарная adoption/cursor CAS. Successor commits идут через GSR,
+не ordinary mailbox. DR-0147/0148 связывают delayed ACK с настоящей sender receipt
+и whole-batch native custody. DR-0149 отделяет immutable grant intent от live
+authority; старые scope-v1 reservations не конвертируются. Нормативные контракты
+остаются в CONTACT-AND-GROUP §14 и соответствующих DR, не в этой очереди.
+
+Ускорены phase-local native scopes/floor reads, CLI key-wrapped current-user
+DPAPI envelope (native unwrap на каждом чтении) и однократный разбор operation
+snapshot с повторным чтением/hash/native commitment после callbacks. Plaintext/
+key cache, legacy reader, deadline extension и упрощение authority не добавлены.
+Focused PASS/native0: CLI49; Shared12+2; Protocol29/35 + strict registry/current
+Release/Debug exact-three graph; Node14/25; Registry6; DevOps30. Build11/up10
+установил текущий образ на3 локальные ноды с прежними ключами/volumes/CPU quotas.
+Результат не заменяет unfiltered full/package, scale, soak или device gates.
+
+**Открыто:** first-attempt reliability и скорость повторных directory/network
+проверок (исходные fanout-команды всё ещё около228s); expired-prepared-ACK и
+expired unknown-GSR-write recovery; descriptor rotation/handover/400-day
+retention; remove/rekey/device/history policies и final qualification. Старые
+непринятые кандидаты сохранены отдельно, не объявлены восстановленными.
+S11 целиком и общий релиз не приняты. Дальнейший порядок задаёт единый план.
+Windows/Android и production в текущем CLI-запросе не изменялись.
 
 Первый CLI account slice реализован: real Shared DID2 create/status/address,
 раздельные Windows DPAPI/SQLCipher профили, запрет overwrite, closed errors и
