@@ -4,6 +4,8 @@ Status: accepted implementation allocation; runtime qualification is separate
 Date: 2026-10-18
 Decision owner: Mr. X (delegated authority)
 
+Placement stability is corrected by [DR-0146](DR-0146-stable-group-control-placement.md);
+that decision supersedes the moving-current-PMT interpretation below.
 This closes missing composition grammar in CONTACT-AND-GROUP §14. It does not
 claim GSR1 active merely because a codec or an activation flag exists.
 

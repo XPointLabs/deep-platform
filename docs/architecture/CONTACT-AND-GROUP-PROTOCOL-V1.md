@@ -1831,6 +1831,10 @@ The XNode store therefore cannot correlate two members as one group from GSR1.
 The selector, current placement, E2EE descriptor/key carrier and exact sealed
 GCF1 transcript are allocated by
 [DR-0145](../survival-program/decisions/DR-0145-owned-group-control-rendezvous.md).
+[DR-0146](../survival-program/decisions/DR-0146-stable-group-control-placement.md)
+fixes placement to descriptor tag6 across routine view/epoch renewal. This anchor
+is placement facts only: current admission/time/keys/floors remain mandatory.
+GSW1/GSQ1 tags3/4 identify this anchor-derived placement, not a stale authority.
 Full GSR1, inner identifiers and sealing keys never enter service requests.
 A parsed descriptor or activation flag is not authority.
 
