@@ -108,8 +108,26 @@ Release/Debug exact-three graph; Node14/25; Registry6; DevOps30. Build11/up10
 установил текущий образ на3 локальные ноды с прежними ключами/volumes/CPU quotas.
 Результат не заменяет unfiltered full/package, scale, soak или device gates.
 
-**Открыто:** first-attempt reliability и скорость повторных directory/network
-проверок (исходные fanout-команды всё ещё около228s); expired-prepared-ACK и
+**Ускорение CLI групп, 2026-10-19:** явный command-local scope повторно использует
+только проверенные public capabilities, сохраняя actual floor/clock/lifetime/
+native fences; Node повторно использует только digest проверенной грамматики под
+тем же native lease, с чтением/hash/commitment реального файла после callbacks.
+Новые fanout-команды получают3 directory proofs и2 network closures вместо
+28–29/12–13. Связанный прогон01–05 без сбросов группы/профилей завершён:
+финальный05 PASS/native0,50 команд, один отказ восстановлен exact retry.
+Подтверждены3 active members/epoch2, GSR catch-up, сообщения каждого двум
+остальным, exact native histories, original Store replay без дублей и пустые
+mailbox/GSR cursors. Fanout A/B с исходными отказами и восстановлением занял
+146.617/202.954s вместо227.858/227.826s; C —136.355s с первой попытки.
+Это recovery qualification, не first-attempt SLO. Shared focused17 и10
+(пересекаются), CLI49, Node27 PASS/native0; stalled compiler run прерван и
+не объявлен PASS. Точные hashes, исходные FAIL и таблица всех159 CLI attempts —
+в [performance checkpoint](../deep-cli/docs/testing/cli-gsr-performance-2026-10-19.md).
+Новый образ установлен только в local Docker с прежними ключами/volumes/CPU;
+форматы, окна authority/deadlines и проверки TLS/подписей не менялись.
+
+**Открыто:** first-attempt reliability, native/ONION latency и дальнейшая
+производительность без ослабления проверки актуальности; expired-prepared-ACK и
 expired unknown-GSR-write recovery; descriptor rotation/handover/400-day
 retention; remove/rekey/device/history policies и final qualification. Старые
 непринятые кандидаты сохранены отдельно, не объявлены восстановленными.
