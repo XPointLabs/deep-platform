@@ -14,27 +14,39 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий результат send/DTT/ACK slice:** строгий `steady-04` —46/46 команд PASS,
-все driver attempts1, без ручных и owned automatic повторов. Три отправителя,
-шесть receive/durable ACK, cold batch replay/dedup/empty mailbox/GSR; у каждого
-профиля15 сообщений /5 локальных команд, та же группа из3 участников, epoch2.
+**Текущий результат message-latency slice:** строгий `cli-latency-20261019/steady-01`
+—46/46 команд PASS, все driver attempts1, без ручных и owned Store/ACK повторов.
+Три отправителя, шесть receive/durable ACK, полный cold original-batch audit,
+dedup/empty mailbox/GSR; у каждого профиля18 сообщений /6 локальных команд,
+та же группа из3 участников, epoch2. Новая отправка обслуживает2 незавершённых
+target items; явный replay проверил все20/13/13 старых и новых items.
 Отдельное восстановление `recovery-07` подтвердило один живой automatic ACK resume;
 оно не переклассифицирует прежние FAIL. Нормативные владельцы —
 [ACCOUNT-DIRECTORY](architecture/ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md#working-public-authority-and-delivery)
 и [transport retry](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#82-retry-and-failover),
 поправка [DR-0153](survival-program/decisions/DR-0153-owned-mailbox-automatic-continuation.md).
-[Проверки, все исходные FAIL, полная таблица длительностей и текущий cursor](../deep-cli/docs/testing/cli-dtt-send-2026-10-19.md).
+[Текущие проверки, полная таблица и cursor](../deep-cli/docs/testing/cli-message-latency-2026-10-19.md);
+[прежние FAIL и recovery evidence](../deep-cli/docs/testing/cli-dtt-send-2026-10-19.md).
+
+Исправлены смешанный Release/Debug CLI graph (четыре реально загруженные
+зависимости теперь Release; mixed graph negative4/4 rejects), повторный аудит
+всех завершённых Store при новой отправке, ACK phase-local memo после независимой
+аквизиции и однотиковый lifetime публичных HTTPS-соединений. Shared focused
+17/71/11 PASS, CLI63 PASS; unfiltered full этим не квалифицирован.
 
 Следующая работа внутри S05 — **остаточная latency**, не другой криптостек:
 
-- Fanout всё ещё94–97s, ACK42–57s. Сумма трёх отправок301.631→287.175s;
-  улучшение неравномерно, B в этом замере дольше. На одинаковой истории
-  выбор/чтение диалога5.066→3.250s; это не35.8% ускорения всей доставки.
-- Изолированно профилировать повторные directory/closure reads на ACK и полную
-  проверку native SQL tip внутри исторических batch reads. Сохранять реальные
+- Fanout всё ещё80–91s: сумма287.175→256.742s (−10.6%); ACK26–54s:
+  сумма297.115→228.180s (−23.2%); все46 команд761.626→632.739s (−16.9%).
+  Это один operational comparison с выросшей историей и другим состоянием
+  grants/freshness, не изолированный benchmark или Signal parity. В новом
+  раунде сохранены control-plane non-success/catch-up; не каждая операция быстрее.
+- Главный остаток отправки — четыре ONION request на fanout,47.7–50.4s,
+  плюс24.6–40.5s CLI CPU. Изолированно профилировать data-plane/grant path и
+  оставшиеся authenticated native SQL/history joins. Сохранять реальные
   floors, snapshot consistency, подписи и every-effect fences; без приватного
   кэша ключей/успешных storage reads и без увеличения таймаутов.
-- Новый semantic strict round начинается с `SteadyStateRound=5` на сохранённых
+- Новый semantic strict round начинается с `SteadyStateRound=6` на сохранённых
   аккаунтах; прежние FAIL никогда не выдавать за first-attempt PASS.
 - Fresh lifecycle, full source/package/retention/scale/device и release acceptance
   не закрываются этим steady-state slice. MAUI/Android и production здесь не трогать.

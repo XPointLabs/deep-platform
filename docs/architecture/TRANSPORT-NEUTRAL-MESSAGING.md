@@ -388,6 +388,17 @@ Transitions are monotonic and atomic. Every state stores authenticated bounded
 evidence. UI labels MUST distinguish `queued`, `sent/accepted`, `delivered to a
 device`, `read` and `expired`; `Accepted` не называется delivered.
 
+Scheduling a new group command is not a historical receipt-audit request. It
+may omit previously completed fanout entries using the actual authenticated
+authored `Stored` phase or retained successful terminal audit as a **scheduling
+hint only**. Match the exact operation/scope/event when the authored entry is
+present; missing, unadopted or uncertain work remains in the existing owned path.
+This omission returns no historical Store/ACK/delivery claim and deletes no
+outbox, receipt or audit custody. Every selected pending attempt retains its
+ordinary native, authority, grant, route and receipt checks. Explicit original
+batch replay/flush still independently verifies every historical Store; a
+scheduling hint cannot answer that audit or recreate missing evidence.
+
 ### 8.2 Retry and failover
 
 The connected owned client may automatically resume an original protected Store

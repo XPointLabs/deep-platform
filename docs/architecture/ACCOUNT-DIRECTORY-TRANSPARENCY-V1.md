@@ -831,6 +831,14 @@ transport loans and successful protected-storage reads are not cached. Initial,
 Braid and fresh ACK capture keep independent acquisition boundaries. Restart
 discards the working context but preserves durable operations and floors.
 
+ACK independence means a newly acquired phase-local context after semantic
+receive, even if the caller already holds a working/command memo. Within that
+one ACK phase, endpoint and group-member verification may borrow its public
+proofs after the ordinary actual floor/history/time checks. They must not fetch
+another own context that advances the floor underneath the captured endpoint
+set. The phase ends with the existing durable ACK/readback fences; no receive
+proof, transport loan, private key or successful storage read crosses into it.
+
 Refresh is separate pre-effect control-plane work: atomically discard the
 uncaptured public memo, acquire/verify a coherent current context, then publish
 it to subsequent commands. Idle maintenance cannot overlap a business command
