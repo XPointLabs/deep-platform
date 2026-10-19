@@ -1228,6 +1228,23 @@ multiplex requests. Circuit lifetime is at most ten minutes or 256 MiB, with +/-
 jitter. A circuit is never shared across transport profiles or accounts unless a
 future privacy review explicitly allows it.
 
+Node-to-node HTTP/2 connection reuse is a separate hop-local resource, not a
+shared client circuit or `Ready`/delivery evidence. An XNode-owned pool may reuse
+a connection only for the same immutable verified network-context instance and
+exact next-hop network/node/origin, carrier, address family/address/port and SPKI
+binding. A new context, including a new key/view epoch, cannot borrow the old
+pool entry. Each frame still has independent authenticated peer headers, nonce,
+ONION entropy and durable replay admission. No automatic RPC retry follows from
+connection reuse. The implementation caps retained entries at16 and resource
+age at two minutes (one minute socket idle), disables TLS session resumption and
+checks the intersection of authenticated certificate validity intervals before
+accepting responses, including rejection before `NotBefore` after a clock rollback.
+Expiry/eviction/shutdown drain active borrowers rather than cancel their dispatch;
+capacity uses a non-retained one-shot connection, not a wider sharing key. These
+resource limits do not extend any signed authority/key lifetime. Client entry
+handlers remain independently path-bound; TCP no-delay changes packet scheduling
+only, not framing, routing or authentication.
+
 ```text
 Absent -> Selecting -> Connecting -> Ready -> Draining -> Closed
                          |             |

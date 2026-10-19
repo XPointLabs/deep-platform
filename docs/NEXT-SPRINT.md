@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-19**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-20**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -14,40 +14,57 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий результат message-latency slice:** строгий `cli-latency-20261019/steady-01`
-—46/46 команд PASS, все driver attempts1, без ручных и owned Store/ACK повторов.
-Три отправителя, шесть receive/durable ACK, полный cold original-batch audit,
-dedup/empty mailbox/GSR; у каждого профиля18 сообщений /6 локальных команд,
-та же группа из3 участников, epoch2. Новая отправка обслуживает2 незавершённых
-target items; явный replay проверил все20/13/13 старых и новых items.
+**Текущий verdict ONION/local-latency slice: итоговый strict round7 FAIL.**
+`cli-onion-20261020/steady-02` остановился на21-й команде, первом fanout:
+`RouteTimeXRA1Expiry` при проверке текущего аутентифицированного peer route.
+Это не HTTP timeout: два ONION ответа успешны, но отправка целиком не завершена.
+Исходный semantic command сохранён: A22 сообщений /8 local commands,
+B/C21 /7; у всех та же Active-группа,3 участника, epoch2. Аккаунты, ratchets,
+pending ciphertext/Store и node volumes не сбрасывались и не заменялись.
+**Нельзя повторно запускать round7 как новый first-attempt или переходить на8:**
+сначала штатный authenticated route-update lifecycle и восстановление именно
+исходного A-командного batch; B/C-команды этого раунда ещё не создавались.
+
+Предшествующий `cli-onion-20261020/steady-01` —46/46 PASS, все attempts1,
+без owned Store/ACK повторов:3 отправителя,6 receive/durable ACK, полный cold
+original-batch audit22/15/15, dedup/empty mailbox/GSR;21 сообщений /7 local
+commands у каждого профиля. Он был выполнен **до** последних SQL batch/grammar
+оптимизаций и не квалифицирует итоговый runtime. Полное активное время тогда
+632.739→705.378s (**регресс11.5%**), не ускорение.
 Отдельное восстановление `recovery-07` подтвердило один живой automatic ACK resume;
 оно не переклассифицирует прежние FAIL. Нормативные владельцы —
 [ACCOUNT-DIRECTORY](architecture/ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md#working-public-authority-and-delivery)
 и [transport retry](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#82-retry-and-failover),
 поправка [DR-0153](survival-program/decisions/DR-0153-owned-mailbox-automatic-continuation.md).
-[Текущие проверки, полная таблица и cursor](../deep-cli/docs/testing/cli-message-latency-2026-10-19.md);
+[Текущие проверки, таблица и точка остановки](../deep-cli/docs/testing/cli-onion-latency-2026-10-20.md);
+[предыдущий полный baseline](../deep-cli/docs/testing/cli-message-latency-2026-10-19.md);
 [прежние FAIL и recovery evidence](../deep-cli/docs/testing/cli-dtt-send-2026-10-19.md).
 
-Исправлены смешанный Release/Debug CLI graph (четыре реально загруженные
-зависимости теперь Release; mixed graph negative4/4 rejects), повторный аудит
-всех завершённых Store при новой отправке, ACK phase-local memo после независимой
-аквизиции и однотиковый lifetime публичных HTTPS-соединений. Shared focused
-17/71/11 PASS, CLI63 PASS; unfiltered full этим не квалифицирован.
+В новом source slice: ограниченный exact-network/hop HTTP/2 pool XNode с полной
+TLS pin/expiry проверкой, TCP no-delay, один полный SQL snapshot подготовки,
+bounded native batch reads и отказ от копирования ненужных protected values.
+Повторно используется только чистый grammar predicate точных bytes/bindings;
+actual storage, floors, SQL integrity, currentness и effect fences сохранены.
+Node focused56 PASS; Shared focused62/61/24/24 PASS; итоговый CLI64 PASS,
+shipping Release build0 warnings/errors. Это не unfiltered full/package acceptance.
 
-Следующая работа внутри S05 — **остаточная latency**, не другой криптостек:
+Следующая работа внутри S05 — **route lifecycle, затем остаточная latency**,
+не другой криптостек:
 
-- Fanout всё ещё80–91s: сумма287.175→256.742s (−10.6%); ACK26–54s:
-  сумма297.115→228.180s (−23.2%); все46 команд761.626→632.739s (−16.9%).
-  Это один operational comparison с выросшей историей и другим состоянием
-  grants/freshness, не изолированный benchmark или Signal parity. В новом
-  раунде сохранены control-plane non-success/catch-up; не каждая операция быстрее.
-- Главный остаток отправки — четыре ONION request на fanout,47.7–50.4s,
-  плюс24.6–40.5s CLI CPU. Изолированно профилировать data-plane/grant path и
-  оставшиеся authenticated native SQL/history joins. Сохранять реальные
-  floors, snapshot consistency, подписи и every-effect fences; без приватного
-  кэша ключей/успешных storage reads и без увеличения таймаутов.
-- Новый semantic strict round начинается с `SteadyStateRound=6` на сохранённых
-  аккаунтах; прежние FAIL никогда не выдавать за first-attempt PASS.
+- Сначала подключить штатное обновление уже установленного peer route до
+  истечения его XRA1 и определить разрешённое normative recovery для уже
+  истёкшей взаимной reachability. Существующие successor/ratcheted route-update
+  owners использовать, не подменять peer route публичным Registry fallback,
+  stale-route разрешением или новым контактом/аккаунтом. FAIL сохранён.
+- Одинаковые retained21/7 данные, три local-history samples: A ускоряется;
+  B/C существенно варьируются, C во втором sample даже медленнее. Итоговый
+  диагностический sample mean A387.7→212.7ms, B2532.3→2402.7ms,
+  C5018.0→4998.3ms; это не delivery benchmark. JIT counters диагностические,
+  не доказанная причина всей задержки и не основание отключать проверки.
+- Полный промежуточный fanout256.742→289.188s, ACK228.180→237.167s;
+  ONION fanout RPC147.839→147.513s почти без изменения. Продолжить изолированное
+  профилирование actual data-plane/grant path, сохраняя floors, snapshot,
+  подписи, original uncertainty и every-effect fences, без увеличения таймаутов.
 - Fresh lifecycle, full source/package/retention/scale/device и release acceptance
   не закрываются этим steady-state slice. MAUI/Android и production здесь не трогать.
 
