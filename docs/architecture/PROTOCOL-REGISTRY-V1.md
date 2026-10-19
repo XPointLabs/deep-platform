@@ -4,6 +4,20 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0150](../survival-program/decisions/DR-0150-dtt1-transport-time-envelope.md)
+corrects receiver-side monotonic mapping of DTT1 with the bounded challenge RTT.
+It adds no wire/schema/suite; complete-interval expiry checks remain mandatory.
+
+[DR-0151](../survival-program/decisions/DR-0151-native-store-origin-time.md)
+corrects native PRQ2 authoring so its origin cannot precede its exact MEO1.
+Bounded pre-capture convergence changes no expiry, freshness, skew or wire rule;
+already captured originals remain immutable.
+
+[DR-0152](../survival-program/decisions/DR-0152-native-ack-pre-intent.md)
+distinguishes a pending authenticated client counter from a complete ACK peer
+intent. Authenticated absence plus independently joined native tombstone floors
+govern first capture; current continuation admission remains mandatory.
+
 [DR-0147](../survival-program/decisions/DR-0147-durable-tombstone-forwarding.md)
 allocates PTR1, the exact durable first-replica proof carriage on the peer
 tombstone route. It replaces raw peer tombstone HTTP carriage without changing

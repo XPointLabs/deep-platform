@@ -788,8 +788,16 @@ resulting interval atomically before authorizing mutation. Thus freshness derive
 from an unpredictable live challenge plus a bounded local round trip, not from the
 fresh install's wall clock.
 
-The DTT1 interval is exactly
+The signed DTT1 observation interval is exactly
 `[observedAt-uncertainty, observedAt+uncertainty]` with saturating subtraction.
+Receiver mapping follows [DR-0150](../survival-program/decisions/DR-0150-dtt1-transport-time-envelope.md):
+for same-boot nonce-send S, response-receipt R and current sample C, require
+`S <= R <= C` and the unchanged `R-S <= 30`; use
+`lower=saturatingSubtract(observedAt,uncertainty)+(C-R)` and
+`upper=observedAt+uncertainty+(C-S)`. The observation may occur anywhere in the
+challenge/response window; receipt is not its exact timestamp. Overflow or an
+upper beyond signed DTT expiry rejects. All complete-interval artifact checks
+and protected interval-intersection rules remain; no authority expiry is widened.
 ADH1/XNV1 windows are artifact validity bounds and MUST NOT be used as time
 observations or to prove their own freshness. A fresh install obtains DTT1 through
 XPoint or the exact OHTTP profile, verifies its nonce/threshold, then requires its

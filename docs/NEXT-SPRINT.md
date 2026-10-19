@@ -14,6 +14,27 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
+**Текущая проверка first-attempt latency:** выполняется отдельным строгим
+трёх-CLI сценарием без driver retries. Исторический recovery PASS не закрывает
+таймауты. Исправлены гонка двух валидных Store settlements для одного PRQ2,
+несогласованный предел group aggregate, DTT transport-time envelope (DR-0150),
+повторные denial-only native проверки и ограничены новые ACK pages.
+DR-0151 исправляет реальный impossible-origin defect: новый PRQ2 больше не
+может быть сохранён с origin раньше его точного MEO1; bounded wait требует
+фактического схождения времени без изменения TTL/skew/deadline. Старые
+некорректные captured intents сохраняются и не выданы за восстановленные.
+DR-0152 отличает pending MAU counter от уже сохранённого полного ACK intent:
+первый capture после прерывания допускается только при authenticated absence,
+отсутствии native tombstone facts и всё ещё действительном исходном page token.
+Истёкшие uncaptured ACK не получают исключения; 6 новых адресных cases PASS,
+расширенный срез37 PASS/3 устаревших exact-exception assertions затем9 PASS.
+Проверки полномочий, полного временного интервала, native custody и replay
+сохраняются; увеличения таймаутов, сбросов аккаунтов и замены неизвестных Store
+нет. Точные неуспешные/успешные receipts и измерения — в
+[first-attempt checkpoint](../deep-cli/docs/testing/cli-gsr-first-attempt-2026-10-19.md).
+До успешного нового полного прогона first-attempt gate остаётся открытым.
+Full/package/scale/device и прочие release blockers этим срезом не закрываются.
+
 По решению Mr. X от **2026-10-17** первой задачей становится разработка
 [deep-cli](../deep-cli/README.md). Следующая бизнес-итерация не начинается
 со сборки/установки MAUI: сначала два независимых CLI-профиля проходят реальный

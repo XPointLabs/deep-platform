@@ -23,11 +23,22 @@ ordinary sender sequence namespace. Unknown Store never becomes noncommit.
 Register `deep.store.v2.groups` atomically during account generation creation.
 Its closed local generation1 binds network/account/database instance, revision,
 exact packages/invitations/original lookup evidence, bounded received chunks,
-messages/native selectors, and outgoing batches. Root size is bounded to32MiB,
+messages/native selectors, and outgoing batches. Root size is bounded to4MiB,
 groups to32 and retained outgoing events to512. Missing/corrupt registration is
 not an empty group store. Native receive must be authenticated before state
 adoption; ACK repeats durable group materialization from actual native custody.
 No SQL projection, caller-supplied record or "processed" flag grants ACK.
+
+2026-10-19 allocation correction: the earlier32MiB codec bound disagreed with
+the real secure-storage adapter's1MiB per-slot bound. The exact registered
+`deep.store.v2.groups` slot now has the same4MiB bound in its codec, in-memory
+adapter, journaled adapter, CAS/registration/deletion and cold decoder. All
+ordinary slots remain limited to1MiB and the entire authenticated inventory
+remains limited to8MiB/1024 entries. The size and entry limits apply jointly;
+they do not guarantee all maximum counts can fit simultaneously. No storage
+format/generation, cryptography, authority window or existing bytes change,
+and no reset, migration or alternate reader is introduced. Large-history
+partitioning/retirement remains separate S11 work, not a32MiB retention claim.
 
 Application SQL schema17 changes only the ordinary payload bound; old schemas
 reject rather than migrate. Common ordinary journal generation9 admits the four owned group kinds and a
