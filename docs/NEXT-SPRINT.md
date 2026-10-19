@@ -14,6 +14,29 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
+**Текущий latency slice — рабочая сессия:** CLI сохраняет process/profile/Shared
+composition; только established groups переиспользуют проверенный публичный
+контекст с фактическими account/device/floor/time checks. Idle refresh отдельно
+сериализован с delivery; Initial/Braid/fresh ACK границы не объединены. Node
+убирает повтор signature verification по искусственному10s resource age,
+сохраняя исходный lease и actual source/floor/issuer fences. Нормативный владелец —
+[ACCOUNT-DIRECTORY](architecture/ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md#working-public-authority-and-delivery).
+[Matching tests, retained failures и измерения](../deep-cli/docs/testing/cli-working-session-2026-10-19.md).
+First-attempt three-CLI, полная доставка и release acceptance остаются открытыми;
+ускорение чтений либо recovery PASS не закрывают их.
+Контрольный замер на той же группе:18 команд PASS; cold→повторный working
+control18.646→0.243s,25.003→8.543s и25.009→13.013s; отдельный refresh учтён
+в отчёте. `recovery-02`:49 команд PASS, все три сообщения у всех участников,
+cold replay/dedup/empty mailbox/GSR. Новый `steady-01`:3 fanout PASS
+(97.560/83.001/121.070s), последний ACK FAIL на прежнем native VerifyDtt
+binding branch. Точный сохранённый ACK восстановлен без замены операции;
+исходный strict FAIL не переклассифицирован. Локальная CPU стоимость и
+native control-plane coherence остаются следующими blockers, не новый ratchet.
+После точного восстановления последнего ACK `recovery-04`:15 холодных команд
+PASS, по6 сообщений/2 локальных команды у каждого, без дублей; mailbox и GSR
+пусты. Следующий новый strict round использует `SteadyStateRound=2`; исходный
+`steady-01` остаётся FAIL. MAUI/Android и production в этой итерации не менялись.
+
 **Текущая проверка first-attempt latency:** выполняется отдельным строгим
 трёх-CLI сценарием без driver retries. Исторический recovery PASS не закрывает
 таймауты. Исправлены гонка двух валидных Store settlements для одного PRQ2,

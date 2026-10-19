@@ -814,6 +814,37 @@ change the persisted lower bound remains a floor, while the old upper bound beco
 unknown until authenticated sources re-establish it; OS wall time never supplies a
 floor or upper bound.
 
+### Working public authority and delivery
+
+A verified public context may be retained in one serial client session while
+its **original** proof/network/issuer windows remain current. This is not a
+cache of an unverified "latest" DTT response or permission to reuse a nonce.
+Every borrow rejoins the actual protected directory/network floors and exact
+history, current local account/device binding, same-boot nondecreasing clock,
+and complete signed issuer interval. A changed floor, fork, account/device,
+source binding, rollback, cancellation or expired captured authority still
+rejects; a previous successful check is never authority for another use.
+
+Established group commands may share this public context and at most the
+existing group member bound of peer proofs. Private account/ratchet keys,
+transport loans and successful protected-storage reads are not cached. Initial,
+Braid and fresh ACK capture keep independent acquisition boundaries. Restart
+discards the working context but preserves durable operations and floors.
+
+Refresh is separate pre-effect control-plane work: atomically discard the
+uncaptured public memo, acquire/verify a coherent current context, then publish
+it to subsequent commands. Idle maintenance cannot overlap a business command
+or queue unbounded refreshes. Failed refresh grants no stale fallback. Expired
+uncaptured authority may be reacquired for new work; captured requests/loans
+retain their exact bytes and original deadline. No delivery retry is implied.
+
+For a node's observational verifier, an exact immutable signature result need
+not be recomputed merely because ten resource-clock seconds elapsed. Reuse
+still requires the original live capability, exact actual source bytes and
+authority, actual floor/readback, clock, issuer and final observation fences.
+Source/floor change or expiry invalidates it; observational use cannot acquire
+a replacement proof or advance a floor. Acquisition/refresh remains its owner.
+
 After signature, authority-lineage and predecessor checks that do not depend on wall
 time, only DTT1 contributes a new authenticated time interval. Its linked ADH1/XNV1
 contribute validity constraints, not time observations. For protected state, one new
