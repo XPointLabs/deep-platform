@@ -845,6 +845,26 @@ authority, actual floor/readback, clock, issuer and final observation fences.
 Source/floor change or expiry invalidates it; observational use cannot acquire
 a replacement proof or advance a floor. Acquisition/refresh remains its owner.
 
+A node may invoke that acquisition owner once at the **initial pre-effect
+mailbox admission boundary** when an acquired observation detects changed exact
+public closure bytes. The new proof and complete closure must independently
+verify and join the actual protected history before any grant/native/mailbox
+effect is admitted. This is not an observational fallback: missing observation,
+expiry, changed protected floor, rollback, cancellation or invalid authority
+remain denials. All later checks in the admitted operation are observational;
+a source change there aborts, never refreshes or redispatches the effect. Existing
+captured ACK/request/grant bytes and their original deadlines remain unchanged.
+
+The production receive-binding owner may poll an acquired context rather than
+fetch a new proof every ten seconds. Each packet admission and maintenance poll
+must still rejoin the actual source bytes, protected floors/history, issuer,
+same-boot monotonic time, installed handle and original network lease. Only that
+denial-only observation may reuse the binding. Independent acquisition is due
+within thirty seconds of the original proof/signed closure bound, on a changed
+source/view, or at a conservative two-minute resource cap. No observation renews
+the original lease. Invalid/missing observation, floor/clock failure or failed
+acquisition clears availability; later in-effect fences remain observational.
+
 After signature, authority-lineage and predecessor checks that do not depend on wall
 time, only DTT1 contributes a new authenticated time interval. Its linked ADH1/XNV1
 contribute validity constraints, not time observations. For protected state, one new

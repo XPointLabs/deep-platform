@@ -14,32 +14,34 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий latency slice — рабочая сессия:** CLI сохраняет process/profile/Shared
-composition; только established groups переиспользуют проверенный публичный
-контекст с фактическими account/device/floor/time checks. Idle refresh отдельно
-сериализован с delivery; Initial/Braid/fresh ACK границы не объединены. Node
-убирает повтор signature verification по искусственному10s resource age,
-сохраняя исходный lease и actual source/floor/issuer fences. Нормативный владелец —
-[ACCOUNT-DIRECTORY](architecture/ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md#working-public-authority-and-delivery).
-[Matching tests, retained failures и измерения](../deep-cli/docs/testing/cli-working-session-2026-10-19.md).
-First-attempt three-CLI, полная доставка и release acceptance остаются открытыми;
-ускорение чтений либо recovery PASS не закрывают их.
-Контрольный замер на той же группе:18 команд PASS; cold→повторный working
-control18.646→0.243s,25.003→8.543s и25.009→13.013s; отдельный refresh учтён
-в отчёте. `recovery-02`:49 команд PASS, все три сообщения у всех участников,
-cold replay/dedup/empty mailbox/GSR. Новый `steady-01`:3 fanout PASS
-(97.560/83.001/121.070s), последний ACK FAIL на прежнем native VerifyDtt
-binding branch. Точный сохранённый ACK восстановлен без замены операции;
-исходный strict FAIL не переклассифицирован. Локальная CPU стоимость и
-native control-plane coherence остаются следующими blockers, не новый ratchet.
-После точного восстановления последнего ACK `recovery-04`:15 холодных команд
-PASS, по6 сообщений/2 локальных команды у каждого, без дублей; mailbox и GSR
-пусты. Следующий новый strict round использует `SteadyStateRound=2`; исходный
-`steady-01` остаётся FAIL. MAUI/Android и production в этой итерации не менялись.
+**Текущий результат send/DTT/ACK slice:** строгий `steady-04` —46/46 команд PASS,
+все driver attempts1, без ручных и owned automatic повторов. Три отправителя,
+шесть receive/durable ACK, cold batch replay/dedup/empty mailbox/GSR; у каждого
+профиля15 сообщений /5 локальных команд, та же группа из3 участников, epoch2.
+Отдельное восстановление `recovery-07` подтвердило один живой automatic ACK resume;
+оно не переклассифицирует прежние FAIL. Нормативные владельцы —
+[ACCOUNT-DIRECTORY](architecture/ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md#working-public-authority-and-delivery)
+и [transport retry](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#82-retry-and-failover),
+поправка [DR-0153](survival-program/decisions/DR-0153-owned-mailbox-automatic-continuation.md).
+[Проверки, все исходные FAIL, полная таблица длительностей и текущий cursor](../deep-cli/docs/testing/cli-dtt-send-2026-10-19.md).
 
-**Текущая проверка first-attempt latency:** выполняется отдельным строгим
-трёх-CLI сценарием без driver retries. Исторический recovery PASS не закрывает
-таймауты. Исправлены гонка двух валидных Store settlements для одного PRQ2,
+Следующая работа внутри S05 — **остаточная latency**, не другой криптостек:
+
+- Fanout всё ещё94–97s, ACK42–57s. Сумма трёх отправок301.631→287.175s;
+  улучшение неравномерно, B в этом замере дольше. На одинаковой истории
+  выбор/чтение диалога5.066→3.250s; это не35.8% ускорения всей доставки.
+- Изолированно профилировать повторные directory/closure reads на ACK и полную
+  проверку native SQL tip внутри исторических batch reads. Сохранять реальные
+  floors, snapshot consistency, подписи и every-effect fences; без приватного
+  кэша ключей/успешных storage reads и без увеличения таймаутов.
+- Новый semantic strict round начинается с `SteadyStateRound=5` на сохранённых
+  аккаунтах; прежние FAIL никогда не выдавать за first-attempt PASS.
+- Fresh lifecycle, full source/package/retention/scale/device и release acceptance
+  не закрываются этим steady-state slice. MAUI/Android и production здесь не трогать.
+
+**Техническая база текущего CLI пути:** исходные проверки и FAIL сохраняются в
+датированных checkpoints; текущий verdict указан выше. Ранее исправлены гонка
+двух валидных Store settlements для одного PRQ2,
 несогласованный предел group aggregate, DTT transport-time envelope (DR-0150),
 повторные denial-only native проверки и ограничены новые ACK pages.
 DR-0151 исправляет реальный impossible-origin defect: новый PRQ2 больше не

@@ -4,6 +4,11 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0153](../survival-program/decisions/DR-0153-owned-mailbox-automatic-continuation.md)
+adds bounded business-owned continuation of original Store / mailbox page / ACK
+after unknown. It changes no wire, crypto, signed window or adapter's single-attempt
+contract. Driver attempts and owned resumes are reported separately.
+
 [DR-0150](../survival-program/decisions/DR-0150-dtt1-transport-time-envelope.md)
 corrects receiver-side monotonic mapping of DTT1 with the bounded challenge RTT.
 It adds no wire/schema/suite; complete-interval expiry checks remain mandatory.

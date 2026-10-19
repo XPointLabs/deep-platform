@@ -390,6 +390,25 @@ device`, `read` and `expired`; `Accepted` не называется delivered.
 
 ### 8.2 Retry and failover
 
+The connected owned client may automatically resume an original protected Store
+or mailbox page/ACK once after typed `OutcomeUnknown`. It must close the old loan,
+discard only uncaptured public memo state, then re-enter the existing owner and
+independent current-authority checks. It cannot rerun queue/create/group action,
+mint another semantic event, itself replace a captured request/grant/counter,
+waive a signed window or change transport/privacy profile. A live prepared
+attempt remains byte-identical. Existing owner-only authenticated retirement /
+transport-successor rules are neither bypassed nor expanded by this helper;
+retained audit tails and semantic dedup remain mandatory. If the original retry lease
+still blocks dispatch, one bounded35s scheduling wait is allowed; the next owner
+check, not the wait or OS wall clock, must authorize replay. A second unknown,
+failed authority or cancellation stops with original custody retained. No failed
+attempt is relabelled success. CLI receipts expose owned Store/mailbox resumes
+and lease waits separately from driver command attempts; CLI-attempt1 is not a
+claim of wire-attempt1 or absence of an intermediate uncertain outcome.
+This business-boundary amendment is recorded in
+[DR-0153](../survival-program/decisions/DR-0153-owned-mailbox-automatic-continuation.md);
+the adapter's single-attempt contract and captured binding remain unchanged.
+
 - Retry одного adapter MUST повторять byte-identical prepared attempt, пока его
   протокол этого требует.
 - До подтверждённого forwarding (`BeforeForward`) policy MAY создать новую
