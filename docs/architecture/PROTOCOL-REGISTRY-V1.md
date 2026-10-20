@@ -4,6 +4,35 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0154](../survival-program/decisions/DR-0154-peer-reservation-preparation.md)
+freezes closed non-mutating peer preparation before independently protected
+write-ahead intent and native commit. No wire/schema/lifetime change.
+[DR-0155](../survival-program/decisions/DR-0155-durable-store-forwarding.md)
+allocates PSR1 for exact first-replica durable Store proof, replacing raw peer
+Store HTTP carriage. PTR1 remains Tombstone-only. Current admission and all
+other custody joins remain mandatory; original unpaired recovery is narrowly
+pre-effect only. Source/connected/full qualification is separate.
+
+[DR-0156](../survival-program/decisions/DR-0156-historical-peer-custody-repair.md)
+adds historical, metadata-only preparation on the current host for explicit
+listener-free native-owner recovery. It returns no current grant or expired
+effect permission. PSR1 and all inner bytes stay unchanged; the old quorum is
+not relabelled successful when the same ciphertext uses a current successor.
+
+[DR-0157](../survival-program/decisions/DR-0157-current-absent-target-tombstone.md)
+freezes current host-owned PTR1 preparation against a verified placement commitment
+for independently known absent pre-effect Store targets. The protected negative
+digest domain is `deep.mailbox.peer.absent-target.v1` plus a zero separator and
+raw TargetKey/StoreDigest/ReplayDigest. No native Store or fake placement is created;
+unknown/missing completed custody still rejects. Terminal tombstone re-ACK uses
+new current replay custody without rewriting the original native tombstone.
+
+[DR-0158](../survival-program/decisions/DR-0158-expired-prepared-final-ack.md)
+adds closed ACK kind3 and awaiting-successor phase9 inside the existing private
+read journal. This is not a new journal/version/compatibility reader. Exact old
+SQL and signed request remain; authenticated lower-time admission closure and
+independent current grant precede a new operation on the same captured final page.
+
 [DR-0153](../survival-program/decisions/DR-0153-owned-mailbox-automatic-continuation.md)
 adds bounded business-owned continuation of original Store / mailbox page / ACK
 after unknown. It changes no wire, crypto, signed window or adapter's single-attempt

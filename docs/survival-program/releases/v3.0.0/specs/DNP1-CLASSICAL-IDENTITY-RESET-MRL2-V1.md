@@ -2451,6 +2451,30 @@ the exact ephemeral source-signature purpose and actual native whole-ACK owner
 join for a sender's missing first reservation. Inner/wire bytes, journals and
 current admission remain unchanged; raw peer requests cannot use this owner.
 
+### 7.19 Protected peer preparation and durable Store forwarding
+
+[DR-0154](../../../decisions/DR-0154-peer-reservation-preparation.md) freezes
+the closed prepared peer API and independently protected pre-reservation prefix.
+[DR-0155](../../../decisions/DR-0155-durable-store-forwarding.md) freezes PSR1
+Store carriage, its exact lengths/domain/receipt ownership, and the sole
+source-proven pre-effect recovery boundary. Inner PRQ2/MRR2 and current leases
+remain unchanged; raw Store HTTP is replaced rather than kept as a fallback.
+
+[DR-0156](../../../decisions/DR-0156-historical-peer-custody-repair.md) adds the
+purpose-separated historical host preparation for listener-free metadata-only
+operator repair. It allocates no wire or expired-grant delivery permission.
+
+[DR-0157](../../../decisions/DR-0157-current-absent-target-tombstone.md) freezes
+the current host-only absent-target PTR1 preparation and protected negative
+digest domain, without a placement preimage, Store effect or wire/schema change.
+Terminal native tombstones remain immutable across independently current ACKs;
+pending tombstones retain exact-original operation binding.
+
+[DR-0158](../../../decisions/DR-0158-expired-prepared-final-ack.md) freezes private
+read-journal closed ACK kind3 / awaiting-successor phase9, unchanged exact SQL and
+authenticated lower-time closure before independent current final-page ACK.
+It adds no journal, wire, version reader, key, public API or lifetime extension.
+
 ## 8. Package and consumer cutover
 
 ### 8.1 Executable-evidence ownership and release gates

@@ -134,6 +134,38 @@ timeout и общий reset не заменяют этот переход. Вы�
 запрещённой до согласованного native/protected состояния; отдельное отсутствие
 истории нельзя автоматически принять за разрешение переавторить работу.
 
+Закрытая peer preparation и точное восстановление hash-bound Pending задаются
+[DR-0154](../survival-program/decisions/DR-0154-peer-reservation-preparation.md).
+Исключительный старый unpaired Pending не получает такого основания от native
+файла: [DR-0155](../survival-program/decisions/DR-0155-durable-store-forwarding.md)
+требует source-signed durable Store evidence, authenticated absence выбранного
+floor и отсутствие любого эффекта этой операции. Все остальные native/protected
+записи обязаны сходиться. Сначала защищённый intent, затем native reconciliation;
+readiness без source evidence эту работу не выполняет.
+
+Если старый grant уже истёк, live peer Store MUST по-прежнему отказать.
+[DR-0156](../survival-program/decisions/DR-0156-historical-peer-custody-repair.md)
+разрешает только отдельное operator-owned metadata reconciliation под актуальным
+host lease, без Store/blob/ACK/client/receipt effects. Старый quorum этим не
+восстанавливается и не считается успешным; текущая transport-попытка может
+доставить тот же неизменный ciphertext по существующим правилам succession.
+
+[DR-0157](../survival-program/decisions/DR-0157-current-absent-target-tombstone.md)
+задаёт отрицательный tombstone только для независимо известного pre-effect
+Store без native target/blob: текущий Retrieve-grant, точный source-durable PTR1
+и защищённый tagged floor обязательны. Это не восстановление истёкшего Store.
+Store resurrection запрещён до native reservation; потеря completed history
+по-прежнему fail-closed. Повтор нового текущего ACK над terminal tombstone
+не переписывает исходные native поля; pending tombstone остаётся exact-only.
+
+[DR-0158](../survival-program/decisions/DR-0158-expired-prepared-final-ack.md)
+разрешает current successor только над той же captured final page после
+защищённого закрытия допуска исходного prepared ACK по authenticated lower time.
+Неизвестный исход не становится «не доставлено»: точные SQL/MAU/hash/counter
+сохраняются и проверяются после cold reopen. Original page/ratchet не заменяются.
+Закрытие записывается до нового issuer callback; partial phase переживает отказ.
+Missing/corrupt/durable original SQL, pagination и time rollback не обходятся.
+
 Bounded custody journals требуют завершённого lifecycle: exact pending/unknown
 операции сохраняются для reconciliation; retirement/compaction не удаляет
 необходимую replay protection. Увеличение capacity или grant lifetime не
