@@ -14,59 +14,51 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий verdict ONION/local-latency slice: итоговый strict round7 FAIL.**
-`cli-onion-20261020/steady-02` остановился на21-й команде, первом fanout:
-`RouteTimeXRA1Expiry` при проверке текущего аутентифицированного peer route.
-Это не HTTP timeout: два ONION ответа успешны, но отправка целиком не завершена.
-Исходный semantic command сохранён: A22 сообщений /8 local commands,
-B/C21 /7; у всех та же Active-группа,3 участника, epoch2. Аккаунты, ratchets,
-pending ciphertext/Store и node volumes не сбрасывались и не заменялись.
-**Нельзя повторно запускать round7 как новый first-attempt или переходить на8:**
-сначала штатный authenticated route-update lifecycle и восстановление именно
-исходного A-командного batch; B/C-команды этого раунда ещё не создавались.
+**Текущий законченный route/latency slice: strict round12 —46/46 PASS.**
+Истёкшие peer XRA1 обновлены через настоящий authenticated ratcheted route-update
+по живому обратному маршруту. Исходная отправка round7 восстановлена без замены
+operation/ciphertext; последующие раунды тоже завершены. Все три прежних профиля:
+39 group messages /13 local commands, Active-группа,3 участника, epoch2.
+Это не разрешение использовать истёкший маршрут. Старые FAIL сохраняются.
+Round12 на исправленном Node admission завершён:6 receive/durable ACK,
+полные original batches34/27/27, cold dedup и пустые mailbox/GSR. Новый strict
+cursor —13; завершённый12 нельзя запускать повторно как новую отправку.
 
-Предшествующий `cli-onion-20261020/steady-01` —46/46 PASS, все attempts1,
-без owned Store/ACK повторов:3 отправителя,6 receive/durable ACK, полный cold
-original-batch audit22/15/15, dedup/empty mailbox/GSR;21 сообщений /7 local
-commands у каждого профиля. Он был выполнен **до** последних SQL batch/grammar
-оптимизаций и не квалифицирует итоговый runtime. Полное активное время тогда
-632.739→705.378s (**регресс11.5%**), не ускорение.
-Отдельное восстановление `recovery-07` подтвердило один живой automatic ACK resume;
-оно не переклассифицирует прежние FAIL. Нормативные владельцы —
-[ACCOUNT-DIRECTORY](architecture/ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md#working-public-authority-and-delivery)
-и [transport retry](architecture/TRANSPORT-NEUTRAL-MESSAGING.md#82-retry-and-failover),
-поправка [DR-0153](survival-program/decisions/DR-0153-owned-mailbox-automatic-continuation.md).
-[Текущие проверки, таблица и точка остановки](../deep-cli/docs/testing/cli-onion-latency-2026-10-20.md);
-[предыдущий полный baseline](../deep-cli/docs/testing/cli-message-latency-2026-10-19.md);
-[прежние FAIL и recovery evidence](../deep-cli/docs/testing/cli-dtt-send-2026-10-19.md).
+В текущем slice исправлены PMT snapshot-vs-logical-route lifetime, точное owned
+maintenance/resume, бесполезная перевыдача live grant у потолка route lifetime,
+перенос некaptured group memo через независимый ACK, bounded public/authority
+resource coupling и typed head-race503 с одним exact private-hop повтором.
+Дополнительно Node до admission может один раз получить новый проверенный ADH1,
+если подписанный grant не помещается в старый network record bound. Свежий nonce
+того же ADH1 не продлевает границу; все host/floor/time/signature fences сохранены.
+Новых wire/schema/legacy путей нет. Только локальный`deep-dev-current`.
 
-В новом source slice: ограниченный exact-network/hop HTTP/2 pool XNode с полной
-TLS pin/expiry проверкой, TCP no-delay, один полный SQL snapshot подготовки,
-bounded native batch reads и отказ от копирования ненужных protected values.
-Повторно используется только чистый grammar predicate точных bytes/bindings;
-actual storage, floors, SQL integrity, currentness и effect fences сохранены.
-Node focused56 PASS; Shared focused62/61/24/24 PASS; итоговый CLI64 PASS,
-shipping Release build0 warnings/errors. Это не unfiltered full/package acceptance.
+Node focused92 PASS; Registry focused40/16 PASS; Shared focused19/18/13 PASS;
+CLI66 PASS, Release build0 warnings/errors; Protocol production graph PASS.
+Подробные исходные FAIL, остальные focused suites, runtime/image hashes и
+[таблица времени](../deep-cli/docs/testing/cli-route-renewal-2026-10-20.md).
+Это не unfiltered full/package acceptance. Round11→12: active828.058→771.950s
+(-6.8%), fanout383.062→366.048s (-4.4%), receive/ACK232.963→206.301s (-11.4%).
+В финальном раунде Store resume1/lease wait1, ACK resume0; не zero-recovery.
+Исходный baseline632.739s всё ещё быстрее: история и audit workload выросли,
+постоянная быстрая доставка пока не достигнута. Controlled
+same-data33/11 local-read means: A746→232ms, B3032→2292ms, C4855→4846ms;
+это не скорость доставки и не сравнение с Signal.
 
-Следующая работа внутри S05 — **route lifecycle, затем остаточная latency**,
-не другой криптостек:
+Следующая работа внутри S05:
 
-- Сначала подключить штатное обновление уже установленного peer route до
-  истечения его XRA1 и определить разрешённое normative recovery для уже
-  истёкшей взаимной reachability. Существующие successor/ratcheted route-update
-  owners использовать, не подменять peer route публичным Registry fallback,
-  stale-route разрешением или новым контактом/аккаунтом. FAIL сохранён.
-- Одинаковые retained21/7 данные, три local-history samples: A ускоряется;
-  B/C существенно варьируются, C во втором sample даже медленнее. Итоговый
-  диагностический sample mean A387.7→212.7ms, B2532.3→2402.7ms,
-  C5018.0→4998.3ms; это не delivery benchmark. JIT counters диагностические,
-  не доказанная причина всей задержки и не основание отключать проверки.
-- Полный промежуточный fanout256.742→289.188s, ACK228.180→237.167s;
-  ONION fanout RPC147.839→147.513s почти без изменения. Продолжить изолированное
-  профилирование actual data-plane/grant path, сохраняя floors, snapshot,
-  подписи, original uncertainty и every-effect fences, без увеличения таймаутов.
+- Остаточный Store/ONION tail и повторяемую authority/native работу исследовать
+  по numeric receipts. Финальный sample:до207 lease checks/11.251s, authority
+  source до5.182s, host constructor лишь3–13ms. Не оптимизировать наугад и
+  не объявлять recovery first-attempt. Следующий новый strict round —13.
+- Подключить proactive route renewal; XUR publish/fetch, successor overlap,
+  обе стороны offline/expired и retained horizon остаются открытыми. Нельзя
+  подменять их stale-route permission, Registry fallback или новым аккаунтом.
+- Остаточную delivery latency уменьшать по actual ONION/native/grant evidence,
+  сохраняя floors, original uncertainty, snapshot и every-effect fences.
+  Не увеличивать таймауты и не добавлять криптостек ради этого slice.
 - Fresh lifecycle, full source/package/retention/scale/device и release acceptance
-  не закрываются этим steady-state slice. MAUI/Android и production здесь не трогать.
+  остаются открытыми. Windows/Android и production в этой итерации не трогать.
 
 **Техническая база текущего CLI пути:** исходные проверки и FAIL сохраняются в
 датированных checkpoints; текущий verdict указан выше. Ранее исправлены гонка
