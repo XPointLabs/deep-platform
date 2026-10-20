@@ -14,15 +14,16 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий законченный route/latency slice: strict round12 —46/46 PASS.**
+**Текущий законченный authority/native slice: strict round13 —46/46 PASS.**
 Истёкшие peer XRA1 обновлены через настоящий authenticated ratcheted route-update
 по живому обратному маршруту. Исходная отправка round7 восстановлена без замены
 operation/ciphertext; последующие раунды тоже завершены. Все три прежних профиля:
-39 group messages /13 local commands, Active-группа,3 участника, epoch2.
+42 group messages /14 local commands, Active-группа,3 участника, epoch2.
 Это не разрешение использовать истёкший маршрут. Старые FAIL сохраняются.
-Round12 на исправленном Node admission завершён:6 receive/durable ACK,
-полные original batches34/27/27, cold dedup и пустые mailbox/GSR. Новый strict
-cursor —13; завершённый12 нельзя запускать повторно как новую отправку.
+Round13 завершён:6 receive/durable ACK, полные original batches36/29/29,
+cold dedup и пустые mailbox/GSR; **Store resume0 / ACK resume0 / lease wait0**.
+Все driver attempts1, клиентских HTTP non-success0. Новый strict cursor —14;
+завершённый13 нельзя запускать повторно как новую отправку.
 
 В текущем slice исправлены PMT snapshot-vs-logical-route lifetime, точное owned
 maintenance/resume, бесполезная перевыдача live grant у потолка route lifetime,
@@ -33,13 +34,19 @@ resource coupling и typed head-race503 с одним exact private-hop повт
 того же ADH1 не продлевает границу; все host/floor/time/signature fences сохранены.
 Новых wire/schema/legacy путей нет. Только локальный`deep-dev-current`.
 
-Node focused92 PASS; Registry focused40/16 PASS; Shared focused19/18/13 PASS;
-CLI66 PASS, Release build0 warnings/errors; Protocol production graph PASS.
-Подробные исходные FAIL, остальные focused suites, runtime/image hashes и
-[таблица времени](../deep-cli/docs/testing/cli-route-renewal-2026-10-20.md).
-Это не unfiltered full/package acceptance. Round11→12: active828.058→771.950s
-(-6.8%), fanout383.062→366.048s (-4.4%), receive/ACK232.963→206.301s (-11.4%).
-В финальном раунде Store resume1/lease wait1, ACK resume0; не zero-recovery.
+В новом Node slice устранён pre-dispatch отказ при утраченном observation:
+отрицательный observer-ответ запускает настоящий acquire у binding owner в том
+же запросе, до dispatch. Publication/effect API по-прежнему отказывает без
+observation. Повторный чистый grammar разбор exact public bundle/ADH1 сокращён,
+но реальные файлы, MAC, anchor/index, floors и currentness читаются/проверяются.
+Node focused129 PASS; локальный supported build/up/smoke PASS. CLI runtime
+не менялся. Предыдущие Registry/Shared/CLI/Protocol результаты и FAIL сохранены
+в [route checkpoint](../deep-cli/docs/testing/cli-route-renewal-2026-10-20.md).
+Текущая [полная таблица и ограничения](../deep-cli/docs/testing/cli-authority-native-2026-10-20.md).
+Это не unfiltered full/package acceptance. Round12→13: active771.950→730.851s
+(-5.3%), fanout366.048→320.881s (-12.3%), receive/ACK206.301→228.696s
+(**регресс10.9%**). Authority source на sampled lease check23.673→21.976ms;
+native join не ускорился. Zero-resume одного раунда не отменяет recovery.
 Исходный baseline632.739s всё ещё быстрее: история и audit workload выросли,
 постоянная быстрая доставка пока не достигнута. Controlled
 same-data33/11 local-read means: A746→232ms, B3032→2292ms, C4855→4846ms;
@@ -47,10 +54,10 @@ same-data33/11 local-read means: A746→232ms, B3032→2292ms, C4855→4846ms;
 
 Следующая работа внутри S05:
 
-- Остаточный Store/ONION tail и повторяемую authority/native работу исследовать
-  по numeric receipts. Финальный sample:до207 lease checks/11.251s, authority
-  source до5.182s, host constructor лишь3–13ms. Не оптимизировать наугад и
-  не объявлять recovery first-attempt. Следующий новый strict round —13.
+- Остаточный ONION/ACK tail, native join и actual protected-head I/O исследовать
+  по numeric receipts:до209 lease checks/11.351s, authority source до4.988s.
+  Proof-observation не ускорился; host constructor не основной bottleneck.
+  Не пропускать реальные проверки ради скорости. Следующий новый round —14.
 - Подключить proactive route renewal; XUR publish/fetch, successor overlap,
   обе стороны offline/expired и retained horizon остаются открытыми. Нельзя
   подменять их stale-route permission, Registry fallback или новым аккаунтом.
