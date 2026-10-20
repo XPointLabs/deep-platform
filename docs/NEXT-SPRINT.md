@@ -14,20 +14,41 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Первый незакрытый блокер: атомарность native peer replay reservation и
-независимого protected fact.** Новый прямой CLI-прогон выявил1 Pending native
-запись без независимого факта:514/513. Смена operational authority между native
-reserve и protected capture оставляет peer в503; повтор исходного Store добавляет
-35s lease wait, но не восстанавливает недостающую custody. Нельзя принимать native
-файл как authority, удалять его ради GREEN или скрывать дефект reset-ом.
-Следующий законченный slice — durable pre-reservation intent, crash/currentness
-reconciliation и отдельно обоснованное восстановление уже возникшей операции;
-недостающую preparation/commit API-границу сначала заморозить. До этого не
-расходовать лимиты на очередной полный group/device прогон.
+**Атомарность reservation/recovery исправлена; исходные Store и ACK восстановлены.**
+Граница preparation → independent protected intent → native reserve и точный
+crash recovery закреплены в DR-0154–0158. Исходный orphan514/513 восстановлен
+поддерживаемым metadata-only действием до514/514, без удаления native истории,
+Store mutation или фиктивного старого quorum. Через действующий grant доставлен
+тот же ciphertext; исходный receive/ACK завершён, повторный poll пуст.
+Expired prepared ACK закрывается с сохранением исходных SQL/request/page;
+новый current ACK не заменяет старый pending native tombstone.
+
+**Первый незакрытый блокер: долгий offline и delivery latency.** Новый text:
+queue2.079s, Store42.105s, receive/ACK26.684s, zero resumes/lease waits.
+Это70.868s активного последовательного пути, не1–2s. Group cursor14 остановлен
+на XRA1 expiry; у пары участников истекли оба XRA1 и исходные XUR1.
+Нельзя объявлять этот retained batch восстановленным, продлевать signed окна,
+подменять его новым аккаунтом или использовать Registry как contact resolver.
+Отдельная fresh lifecycle проверка не снимает этот retained-route блокер.
+Изолированный3-CLI lifecycle прошёл98/98: три взаимных контакта, создание группы,
+две invitation/accept, Active3/epoch2, сообщения каждого двум остальным,
+шесть receive/durable ACK, cold full-batch replay/dedup и пустые mailbox/GSR;
+resumes/lease waits/HTTP non-success0. Три fanout:29.926/40.134/59.049s,
+шесть receive/ACK21.218–26.330s. Новый средний fanout43.036s против106.960s
+прежнего round13 — наблюдаемое снижение59.8%, но клиентские истории различаются
+(3/1 против42/14), поэтому это не controlled same-data improvement.
+Два предыдущих setup-прогона получили ingress BeforeForward Unavailable при
+публикации тех же аккаунтов; их FAIL и exact publication custody сохранены.
+Текущая targeted-проверка: Protocol54, Shared45, Node71, CLI66, DevOps31 PASS.
+Расширенный Node-run остановлен:283 PASS/4 FAIL в TRX, aborted/native1;
+четыре устаревшие fixture/conformance случая исправлены и вошли в Node71.
+Это не completed unfiltered full/package/release acceptance.
+Текущие source/connected receipts и полная таблица — в
+[reservation checkpoint](../deep-cli/docs/testing/cli-atomic-reservation-2026-10-20.md).
 
 Избыточные acquisitions личного text/attachment пути и квадратичный NETCODEC
 lookup исправлены; queue в чистых частичных замерах6.044→1.945s. Полная доставка
-не квалифицирована,1–2s и ускорение Store не доказаны. Focused: Shared10,
+теперь прошла отдельным новым сообщением;1–2s не достигнуты. Focused: Shared10,
 Protocol205, Node82, CLI66 PASS; расширенный Shared19 PASS. Исходные FAIL, незавершённый Store, ограничения
 развёртывания и точные сравнения — в
 [global latency checkpoint](../deep-cli/docs/testing/cli-global-latency-2026-10-20.md).
@@ -76,7 +97,8 @@ same-data33/11 local-read means: A746→232ms, B3032→2292ms, C4855→4846ms;
 - Остаточный ONION/ACK tail, native join и actual protected-head I/O исследовать
   по numeric receipts:до209 lease checks/11.351s, authority source до4.988s.
   Proof-observation не ускорился; host constructor не основной bottleneck.
-  Не пропускать реальные проверки ради скорости. Следующий новый round —14.
+  Не пропускать реальные проверки ради скорости. Cursor14 уже незавершён;
+  допускается только exact recovery, не повтор как новый first-attempt round.
 - Подключить proactive route renewal; XUR publish/fetch, successor overlap,
   обе стороны offline/expired и retained horizon остаются открытыми. Нельзя
   подменять их stale-route permission, Registry fallback или новым аккаунтом.
