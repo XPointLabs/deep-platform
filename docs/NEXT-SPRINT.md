@@ -14,7 +14,26 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий законченный authority/native slice: strict round13 —46/46 PASS.**
+**Первый незакрытый блокер: атомарность native peer replay reservation и
+независимого protected fact.** Новый прямой CLI-прогон выявил1 Pending native
+запись без независимого факта:514/513. Смена operational authority между native
+reserve и protected capture оставляет peer в503; повтор исходного Store добавляет
+35s lease wait, но не восстанавливает недостающую custody. Нельзя принимать native
+файл как authority, удалять его ради GREEN или скрывать дефект reset-ом.
+Следующий законченный slice — durable pre-reservation intent, crash/currentness
+reconciliation и отдельно обоснованное восстановление уже возникшей операции;
+недостающую preparation/commit API-границу сначала заморозить. До этого не
+расходовать лимиты на очередной полный group/device прогон.
+
+Избыточные acquisitions личного text/attachment пути и квадратичный NETCODEC
+lookup исправлены; queue в чистых частичных замерах6.044→1.945s. Полная доставка
+не квалифицирована,1–2s и ускорение Store не доказаны. Focused: Shared10,
+Protocol205, Node82, CLI66 PASS; расширенный Shared19 PASS. Исходные FAIL, незавершённый Store, ограничения
+развёртывания и точные сравнения — в
+[global latency checkpoint](../deep-cli/docs/testing/cli-global-latency-2026-10-20.md).
+Только локальный dev; production и физические клиенты не затрагивались.
+
+**Предыдущий законченный authority/native slice: strict round13 —46/46 PASS.**
 Истёкшие peer XRA1 обновлены через настоящий authenticated ratcheted route-update
 по живому обратному маршруту. Исходная отправка round7 восстановлена без замены
 operation/ciphertext; последующие раунды тоже завершены. Все три прежних профиля:

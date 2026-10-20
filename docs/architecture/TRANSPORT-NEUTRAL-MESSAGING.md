@@ -2,7 +2,7 @@
 
 Статус: **целевая нормативная архитектура для clean-break реализации**
 
-Актуально: 2026-10-03
+Актуально: 2026-10-20
 
 ## 1. Назначение и приоритет
 
@@ -125,12 +125,48 @@ Mailbox tombstone ACK разрешает удаление transport copy пос�
 он не является sender-visible application receipt. Receipt work и dedup должны
 переживать crash без потери подтверждения или повторной материализации.
 
+Native replay reservation и её независимый защищённый факт MUST иметь
+восстанавливаемый durable prefix. Если между ними возможен callback, cancellation,
+смена authority или crash, предварительный защищённый intent обязан предшествовать
+первой native mutation. Одного native Pending-файла без независимого основания
+недостаточно для восстановления authority. Повтор старого запроса, увеличение
+timeout и общий reset не заменяют этот переход. Выдача receipt/ACK остаётся
+запрещённой до согласованного native/protected состояния; отдельное отсутствие
+истории нельзя автоматически принять за разрешение переавторить работу.
+
 Bounded custody journals требуют завершённого lifecycle: exact pending/unknown
 операции сохраняются для reconciliation; retirement/compaction не удаляет
 необходимую replay protection. Увеличение capacity или grant lifetime не
 заменяет этот контракт. До реализации недостающие expiry/successor/compaction
 переходы замораживаются согласно S01
 [единого плана](IMPLEMENTATION-PLAN-V1.md); этот раздел не вводит новые wire bytes.
+
+### 3.2 Steady-state execution и стоимость проверки
+
+Получение/обновление публичной authority отделяется от шагов доставки одного
+сообщения. Последовательный host MAY сохранять закрытые неизменяемые public
+capabilities для установленных личных сессий, вложений и групп, но не private
+loans, decrypted storage или результат admission. Каждый borrow заново
+соединяет фактические account/device, protected directory/network floors,
+fork/clock fences и исходный срок capability. Истечение требует новой
+проверенной acquisition, а не продления старой. Ошибка не разрешает stale fallback.
+Независимые Initial/Braid, receive и ACK не наследуют authority другой фазы;
+ACK получает собственный проверенный набор после durable receive.
+
+Внутренние шаги одного command SHOULD использовать согласованный public
+endpoint set вместо независимого сетевого acquisition на каждом шаге.
+Это не отменяет повторные проверки после callbacks и перед effects.
+Поиск по уже разобранной неизменяемой public lineage SHOULD быть индексирован;
+повторное вычисление того же canonical projection digest не является новым
+доказательством безопасности. Изменившиеся bytes по-прежнему проходят полный
+разбор и проверку; signatures, currentness и фактическое custody не заменяются
+digest-only trust flag.
+
+Замер отделяет cold bootstrap, logical queue, encrypt/Store, recipient durable
+receive/materialization, tombstone ACK и historical audit. Profiling, recovery,
+разные размеры страниц и полный group fanout не выдаются за сопоставимый замер
+одного сообщения. Сравнение с чужим продуктом требует совпадающих условий;
+работающий E2E сам по себе не закрывает latency acceptance.
 
 ## 4. Canonical application model
 
