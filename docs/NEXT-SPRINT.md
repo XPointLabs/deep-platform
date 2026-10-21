@@ -14,18 +14,26 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**ONION/authority: точечный node CPU/I/O cleanup проверен, основной latency blocker открыт.**
-На node убраны повторный хэш точного публичного bundle и лишний Linux readlink,
-без кеша допуска, пропуска actual-file MAC/floor/permissions или продления lease.
-Native57/57 Windows +57/57 Linux ARM64 PASS. Локальные3 узла обновлены,
-те же3 CLI: strict cursor19 —46/46 PASS с первой попытки, без recovery/reset;
-60 сообщений /20 local commands у каждого, Active3/epoch2. Round18→19:
-fanout mean54.735→49.686s (-9.2%, ONION10→8), receive/ACK30.690→33.143s
-(+8.0%, ONION13→14), полный active run494.601→499.376s (+1.0%).
-**Ускорение ACK и общего цикла не подтверждено; основной blocker не закрыт.**
-Следующий шаг — attribution critical-path acquisition/forwarding/native/ACK
-на этом же CLI-first пути, без сокращения security fences или возврата к UI.
-[Все операции, workload и точные границы](../deep-cli/docs/testing/cli-node-authority-latency-2026-10-21.md).
+**ONION/ACK: задержки сокращены, цель1–2s и sustained lifecycle ещё не достигнуты.**
+Долгое ONION forwarding в основном ожидало native dispatch, не layer crypto.
+Исправлены Registry IPv6-loopback cold-connect penalty (~2s), повторный JSON
+decode точного ledger внутри actual lease и per-chunk WriteThrough только
+неопубликованного scratch. Complete Flush(true) перед protected pending,
+MAC/floor/currentness, replacement/readback и все commit/file/dir fences сохранены.
+Final focused:34/34 Windows native,67/67 Linux ARM64,31/31 DevOps PASS/native0.
+Три локальных узла обновлены; те же3 CLI, cursors20/21/22 —46/46 каждый.
+Cursor20 включает1 owned ACK resume/lease wait и63.327s tail — он не скрыт;
+21/22 без resumes/waits/HTTP non-success/retries. Final69 сообщений /23 local
+commands у каждого, Active3/epoch2, без reset/rekey. Round19→22:
+fanout mean49.686→35.257s (-29.0%), receive/ACK33.143→20.127s (-39.3%),
+полный active run499.376→344.884s (-30.9%). Workload ONION изменился8→6
+для fanout и14→12 для ACK; это successive retained rounds, не identical snapshots
+и не UI delivery latency. Windows/Android клиенты и production не тронуты.
+**Первый незакрытый blocker — оставшаяся delivery latency и sustained lifecycle.**
+Следующий slice внутри того же S05: измеренно сокращать O(history) native
+inventory/whole-ledger processing и repeated joins, сохраняя реальные file/MAC/
+floor/lease и crash-durability fences; не возвращаться к UI или whole-authority cache.
+[Все17 операций, промежуточные замеры, PASS и границы](../deep-cli/docs/testing/cli-critical-path-latency-2026-10-21.md).
 
 **Атомарность reservation/recovery исправлена; исходные Store и ACK восстановлены.**
 Граница preparation → independent protected intent → native reserve и точный
