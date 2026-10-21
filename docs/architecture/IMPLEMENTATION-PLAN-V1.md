@@ -233,6 +233,17 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
+Текущий CLI checkpoint2026-10-21: DR-0159 same-peer route re-introduction
+восстановил взаимно истёкшие XRA1/XUR1 без нового аккаунта/ratchet и без допуска
+expired authority. Исходный retained cursor14 —49/49 PASS; последующие15/16 —
+46/46 каждый на тех же трёх CLI. Cursor16 без owned recovery, cursor15 с одним
+ACK resume/lease wait. Исходные batch/ciphertext, все шесть receive/ACK,
+cold replay/dedup и пустые mailbox/GSR проверены. Это закрывает конкретный
+retained mutual-expiry отказ, не весь offline/XUR service и не S05 acceptance.
+Следующий срез — ONION/ACK latency, bounded uncertain-prefix lifecycle и
+proactive renewal; signed/currentness/native guards не ослаблять.
+Замеры и ограничения — [CLI checkpoint](../../deep-cli/docs/testing/cli-retained-route-reintroduction-2026-10-21.md).
+
 **Подзадачи и владельцы:** deep-registry-api — current issuance/readiness/CAS;
 deep-devops — lifecycle и наблюдаемость; xpoint-node-installer — retained-volume
 restart/upgrade; deep-client-shared — bounded verified catch-up.

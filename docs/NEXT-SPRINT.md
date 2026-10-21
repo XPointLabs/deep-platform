@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-20**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-21**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -23,13 +23,41 @@ Store mutation или фиктивного старого quorum. Через д�
 Expired prepared ACK закрывается с сохранением исходных SQL/request/page;
 новый current ACK не заменяет старый pending native tombstone.
 
-**Первый незакрытый блокер: долгий offline и delivery latency.** Новый text:
+**Взаимное истечение XRA1/XUR1: исходный batch восстановлен без сбросов.**
+По DR-0159 explicit same-peer re-introduction через current ContactResolve
+несёт только настоящий native route-update существующего отношения; expired
+окна не продлеваются, ratchet/consent/successor/floor checks сохранены.
+Все три прежние пары восстановлены, cursor14 завершён49/49 PASS на исходных
+аккаунтах/группе:45 сообщений /15 local commands. Новые cursors15 и16 —46/46
+PASS каждый, конечное состояние51/17 на каждом из трёх CLI, Active3/epoch2;
+оба проверили шесть receive/ACK, cold original batches/dedup и пустые mailbox/GSR.
+Cursor15 содержит один owned ACK resume/lease wait; cursor16 — ни одного.
+Все driver attempts1. Soft32-row cleanup больше не блокирует новую работу при
+неисчерпанных hard limits, но неизвестные старые attempts НЕ удалены.
+Settled-consent Store повторно использует semantic verification только внутри
+одного held lease с реальными native/consent/currentness проверками на границах.
+First/unsettled acceptance сохраняет полную реконструкцию.
+
+**Первый незакрытый блокер: delivery latency и устойчивый lifecycle.**
+Средний fanout round13→15→16:106.960→72.030→62.166s;
+receive/ACK38.116→38.306→30.676s;46 active commands730.851→653.715→579.018s.
+Последний раунд ниже baseline на41.9%/19.5%/20.8%, но ACK tail74.195s round15
+сохранён в отчёте;1–2s НЕ достигнуты. Истории выросли, это не идентичные
+snapshot samples и не измерение одновременной visible-message latency.
+Arbitrary missing-generation/offline XUR service, reclamation uncertain prefix,
+full/package/retention/device/release acceptance остаются открытыми.
+Shared final focused11+7, CLI67 PASS; Protocol Debug/Release actual graph PASS,
+binding/ownership/integrity checks PASS, не unfiltered full.
+[Полные замеры, исходные FAIL и границы](../deep-cli/docs/testing/cli-retained-route-reintroduction-2026-10-21.md).
+Production, Windows и Android не тронуты.
+
+**Предыдущий checkpoint до DR-0159 (не текущий verdict).** Новый text:
 queue2.079s, Store42.105s, receive/ACK26.684s, zero resumes/lease waits.
 Это70.868s активного последовательного пути, не1–2s. Group cursor14 остановлен
 на XRA1 expiry; у пары участников истекли оба XRA1 и исходные XUR1.
-Нельзя объявлять этот retained batch восстановленным, продлевать signed окна,
-подменять его новым аккаунтом или использовать Registry как contact resolver.
-Отдельная fresh lifecycle проверка не снимает этот retained-route блокер.
+На том checkpoint batch ещё не был восстановлен; последующее exact recovery
+указано выше. Signed окна не продлеваются, новый аккаунт/Registry resolver
+не заменяют восстановление. Отдельная fresh lifecycle сама по себе его не доказывает.
 Изолированный3-CLI lifecycle прошёл98/98: три взаимных контакта, создание группы,
 две invitation/accept, Active3/epoch2, сообщения каждого двум остальным,
 шесть receive/durable ACK, cold full-batch replay/dedup и пустые mailbox/GSR;
@@ -62,8 +90,8 @@ operation/ciphertext; последующие раунды тоже заверш�
 Это не разрешение использовать истёкший маршрут. Старые FAIL сохраняются.
 Round13 завершён:6 receive/durable ACK, полные original batches36/29/29,
 cold dedup и пустые mailbox/GSR; **Store resume0 / ACK resume0 / lease wait0**.
-Все driver attempts1, клиентских HTTP non-success0. Новый strict cursor —14;
-завершённый13 нельзя запускать повторно как новую отправку.
+Все driver attempts1, клиентских HTTP non-success0. Тогда следующий cursor был14;
+теперь14–16 завершены, новый strict cursor —17. Завершённые не переотправлять.
 
 В текущем slice исправлены PMT snapshot-vs-logical-route lifetime, точное owned
 maintenance/resume, бесполезная перевыдача live grant у потолка route lifetime,
@@ -97,10 +125,11 @@ same-data33/11 local-read means: A746→232ms, B3032→2292ms, C4855→4846ms;
 - Остаточный ONION/ACK tail, native join и actual protected-head I/O исследовать
   по numeric receipts:до209 lease checks/11.351s, authority source до4.988s.
   Proof-observation не ускорился; host constructor не основной bottleneck.
-  Не пропускать реальные проверки ради скорости. Cursor14 уже незавершён;
-  допускается только exact recovery, не повтор как новый first-attempt round.
+  Не пропускать реальные проверки ради скорости. Cursor14 восстановлен exact,
+  новые15/16 завершены; следующий17, исходные FAIL и ACK tail сохранять.
 - Подключить proactive route renewal; XUR publish/fetch, successor overlap,
-  обе стороны offline/expired и retained horizon остаются открытыми. Нельзя
+  arbitrary missing generations и retained horizon остаются открытыми.
+  Explicit same-peer mutual-expiry recovery уже проверен DR-0159. Нельзя
   подменять их stale-route permission, Registry fallback или новым аккаунтом.
 - Остаточную delivery latency уменьшать по actual ONION/native/grant evidence,
   сохраняя floors, original uncertainty, snapshot и every-effect fences.
