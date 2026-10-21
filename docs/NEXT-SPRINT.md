@@ -14,7 +14,23 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий audit slice:** Backend Architect / Performance Benchmarker / Security
+**Текущий bounded fanout slice:** issuer-journal attribution установил, что
+12 вместо6 ONION в full30 — это6 необходимых Deposit acquisitions: все прежние
+grants точного scope истекли. Не duplicate Store. Отдельно устранено бесполезное
+proactive renewal ещё живого Deposit на неизменном current network/PMA/route
+ceiling; несовместимый current issuer/floor/window/lifetime сохраняет renewal.
+Shared focused42/42, CLI67/67, scope6 PASS/native0, build0 warnings/errors;
+это не full/package/device/release qualification. Delivery31 —40/40; strict32/33
+отказали до ONION на DirectoryProof/History: NTS observation-quorum unavailable.
+Оба исходных batch завершены штатным recovery без reset; final33 —49/49,
+native0,102 сообщения /34 local commands у каждого, Active3/epoch2. Latest
+fanout mean39.407s с6 вместо12 ONION; receive/ACK21.889s против21.671s full30 —
+последний ACK не ускорился. Условия authority/history различаются, causal gain
+патча и fresh first-attempt full PASS не заявлены. NTS availability и delivery
+latency остаются blockers; Windows/Android клиенты и production не затронуты.
+[Атрибуция, отрицательные проверки и отдельные замеры](../deep-cli/docs/testing/cli-fanout-grant-attribution-2026-10-21.md).
+
+**Предыдущий audit slice:** Backend Architect / Performance Benchmarker / Security
 Architect независимо проверили native history, client cost и security fences.
 Добавлены bounded exact-actual-bytes mutation grammar memo, invocation-local
 identity/ACK indexes и native historical-route read snapshot без await/callback

@@ -233,7 +233,22 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
-Текущий bounded native-grammar audit: memo только после полного чтения и hash
+Текущий fanout slice: исходные12 против6 ONION в full30 объяснены шестью
+необходимыми Deposit acquisitions после expiry; duplicate Store не найден.
+Shared suppresses только бесполезное live renewal с тем же current fixed
+ceiling и всё ещё совместимой current PMA policy. Changed issuer/floor/window/
+lifetime, pending exact successor, expired acquisition и Retrieve не пропускаются.
+Focused42 Shared,67 CLI и scope6 PASS/native0, build0 warnings/errors — scoped
+evidence, не full/package/device/S05 acceptance. Delivery31 PASS40; strict32/33
+остановились на реальном NTS observation-quorum loss до ONION. Оба original
+batch завершены recovery; final33 —49/49/native0,102/34 каждый, Active3/epoch2,
+без reset/rekey. Latest fanout mean39.407s при6 вместо12 ONION, ACK21.889s
+против21.671s full30: fresh first-attempt acceptance и global latency gain
+не доказаны, authority/history conditions различаются. NTS availability и
+оставшаяся native/ONION latency сохраняют S05 открытым; UI/device не затронуты.
+[Matching source, receipts и замеры](../../deep-cli/docs/testing/cli-fanout-grant-attribution-2026-10-21.md).
+
+Предыдущий bounded native-grammar audit: memo только после полного чтения и hash
 actual bytes, invocation-local identity/ACK indexes; нет кеша authority/floor
 или пропуска lease/file/currentness. Native historical-route selectors разделяют
 одну полную SQL-проверку внутри синхронной read-транзакции, без await/callback;
