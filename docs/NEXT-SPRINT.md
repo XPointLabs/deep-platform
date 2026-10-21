@@ -14,7 +14,26 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий NTS/ACK slice:** штатной offline renewal активированы4 signed NTS
+**Текущий post-rotation latency slice:** устранено открытие непричастной
+application SQLCipher БД при проверке group-authored native event. Реальный
+native/group history, direct SQL fallback и contact-consent проверяются как
+прежде; integrity/schema/currentness/floor/Store fences не ослаблены.
+На одной истории ABBA old/new/new/old: cold original batch36.585→30.426s
+(-16.8%), CPU34.508→28.844s (-16.4%). Page-cache эксперимент без выигрыша удалён.
+Shared87/87, CLI67/67 и actual production graph/frozen manifest integrity
+PASS/native0, zero build warnings/errors; это focused, не full qualification.
+Те же3 CLI без reset/rekey: full38 —46/46 PASS/native0 с первой попытки;
+warm delivery39 —40/40 PASS/native0, без resumes/waits/retries и abnormal close.
+120 group messages /40 original local commands у каждого, Active3/epoch2.
+**Fanout/ACK НЕ ускорились:** mean38.480→42.223s /20.881→21.317s относительно37,
+при прежних6/12 ONION. Delivery-only39 не заменяет полный steady-state gate.
+Повторная proof/source observation остаётся заметной; кеш нового nonce-bound
+acquisition отвергнут. Node/Registry images и CPU limits не менялись.
+Следующий cursor40 без reset; S05, latency1–2s, sustained/full/package/device/
+release acceptance открыты. Windows/Android и production не затронуты.
+[Замеры, точные границы и retained evidence](../deep-cli/docs/testing/cli-authority-regression-2026-10-21.md).
+
+**Предыдущий NTS/ACK slice:** штатной offline renewal активированы4 signed NTS
 sources /4 независимые families при прежнем кворуме2/2, sample age10s и
 width30s; TLS/pin, радиусы и protected floors не ослаблены. Поддерживаемая
 retained mailbox ceremony по [DR-0161](survival-program/decisions/DR-0161-retained-time-source-activation.md)
@@ -39,7 +58,7 @@ native0 без automatic resumes/waits/retries/non-success;111 сообщени�
 Но steady-state fanout32.610→38.480s, receive/ACK19.807→20.881s mean,
 cold batch32.211→44.252s: ускорение относительно strict35 НЕ подтверждено.
 История/authority после succession различаются, это не causal A/B. Следующий
-cursor38 без reset; главный unfinished slice — historical/native/ONION work
+cursor38 тогда был следующим; главный unfinished slice — historical/native/ONION work
 и ACK latency после operational succession, а не новое UI/device направление.
 1–2s, sustained availability, full/package/device/release и S05 acceptance
 остаются открыты. Windows/Android приложения и production не затронуты.

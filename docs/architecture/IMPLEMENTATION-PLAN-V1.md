@@ -233,7 +233,24 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
-Текущий NTS/ACK slice: DR-0161 расширяет обычную offline operational renewal
+Текущий post-rotation latency slice: group-authored native replay больше не
+открывает непричастную application SQLCipher БД; direct fallback, actual native/
+group custody, consent и integrity/currentness/floor/Store fences сохранены.
+На одной retained истории ABBA36.585→30.426s cold original batch (-16.8%),
+CPU34.508→28.844s (-16.4%); неподтвердившийся page-cache эксперимент удалён.
+Shared87/87, CLI67/67, actual production graph и frozen manifest integrity
+PASS/native0, zero warnings/errors — не full/package qualification.
+На тех же3 CLI full38 —46/46 PASS/native0; warm delivery39 —40/40 PASS/native0
+без resets/retries/resumes/waits,120 сообщений /40 local commands каждый,
+Active3/epoch2. Fanout/ACK регрессия НЕ устранена:38.480→42.223s /
+20.881→21.317s относительно37 при6/12 ONION. Delivery-only39 не full acceptance.
+Новый acquisition нельзя заменить кешем signed validity window: fresh
+nonce-bound DTT1 остаётся обязательным. Node/Registry images и quotas неизменны.
+Следующий cursor40; remaining client/native history и per-hop proof/source work
+сохраняют S05 открытым. Windows/Android/production не затронуты.
+[Matching evidence](../../deep-cli/docs/testing/cli-authority-regression-2026-10-21.md).
+
+Предыдущий NTS/ACK slice: DR-0161 расширяет обычную offline operational renewal
 явной retained mailbox ceremony. Действующая signed policy теперь4 sources /
 4 independent families, прежний кворум2/2, sample age10s/width30s, прежние
 радиусы/TLS/pin/floors. Prepare/Apply/Up/Verify native0,9 сервисов healthy.
@@ -256,7 +273,7 @@ non-success;114/38 у каждого, recovery не выдаётся за first 
 поочерёдное исключение каждого исходного источника оставляет3/3 и кворум
 за1.298/1.404s. Но fanout32.610→38.480s, ACK19.807→20.881s,
 cold batch32.211→44.252s mean относительно strict35: ускорение НЕ подтверждено,
-разные authority/history, не causal A/B. Следующий cursor38 на тех же профилях;
+разные authority/history, не causal A/B. Тогда следующий cursor38 на тех же профилях;
 устранять historical/native/ONION work и ACK latency, не переходить в UI/device.
 Sustained availability,1–2s delivery, full/package/device и S05 acceptance
 остаются открытыми; UI/production не затронуты.
