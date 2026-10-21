@@ -38,6 +38,14 @@ adds bounded business-owned continuation of original Store / mailbox page / ACK
 after unknown. It changes no wire, crypto, signed window or adapter's single-attempt
 contract. Driver attempts and owned resumes are reported separately.
 
+[DR-0159](../survival-program/decisions/DR-0159-established-contact-route-reintroduction.md)
+permits explicit current same-peer publication carriage only for an existing
+relationship's native DMC2/14 maintenance control after mutual route expiry.
+Native purpose/consent, exact protected peer identity and original Store proof
+remain independent. A held Store may reuse its verified private route only with
+complete native-row/prefix reauthentication, exact consent-input fences and all
+current endpoint/time checks. No new wire, local schema, journal or lifetime.
+
 [DR-0150](../survival-program/decisions/DR-0150-dtt1-transport-time-envelope.md)
 corrects receiver-side monotonic mapping of DTT1 with the bounded challenge RTT.
 It adds no wire/schema/suite; complete-interval expiry checks remain mandatory.

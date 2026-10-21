@@ -2475,6 +2475,23 @@ read-journal closed ACK kind3 / awaiting-successor phase9, unchanged exact SQL a
 authenticated lower-time closure before independent current final-page ACK.
 It adds no journal, wire, version reader, key, public API or lifetime extension.
 
+### 7.20 Established route re-introduction and held Store input fences
+
+[DR-0159](../../../decisions/DR-0159-established-contact-route-reintroduction.md)
+freezes current same-peer ContactResolve publication carriage solely for an
+existing mutually consented relationship's exact native DMC2/14 control. It
+cannot replace private route history or authorize any ordinary payload. Exact
+predecessor/generation, independent current proof/time, protected native purpose
+and original request/publication/quorum joins remain mandatory, including cold
+historical Store, settlement, closure and retirement. No expired descriptor is
+made usable; no account/ratchet/ciphertext is replaced and no wire/schema is added.
+
+One held Store may reuse its fully verified private route only after each
+boundary reauthenticates complete actual native rows and protected history,
+rejoins the exact native floor and exact protected/SQL consent inputs, and
+independently enforces current endpoint, floor, clock and signed-route windows.
+The fence cannot cross leases or become a persistent accepted-authority cache.
+
 ## 8. Package and consumer cutover
 
 ### 8.1 Executable-evidence ownership and release gates

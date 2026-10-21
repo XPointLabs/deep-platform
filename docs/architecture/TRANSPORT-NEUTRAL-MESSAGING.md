@@ -194,6 +194,15 @@ endpoint set вместо независимого сетевого acquisition 
 разбор и проверку; signatures, currentness и фактическое custody не заменяются
 digest-only trust flag.
 
+Внутри одного held Store [DR-0159](../survival-program/decisions/DR-0159-established-contact-route-reintroduction.md)
+допускает повторное использование уже проверенного private route только при
+точно неизменном native floor после полной повторной проверки всех native SQL
+rows и protected history prefix. Protected acceptance-root и SQL acceptance
+projection фиксируются точными digest до/после исходной semantic verification
+и заново сравниваются перед effects. Current endpoint pair, фактические floors,
+clock continuity и signed route windows проверяются независимо. Этот read fence
+не переживает lease и не является кешем authority между commands.
+
 Замер отделяет cold bootstrap, logical queue, encrypt/Store, recipient durable
 receive/materialization, tombstone ACK и historical audit. Profiling, recovery,
 разные размеры страниц и полный group fanout не выдаются за сопоставимый замер

@@ -1060,6 +1060,13 @@ native custody remain separate under
 [DR-0110](../survival-program/decisions/DR-0110-did2-private-route-update-custody.md);
 no invitation is synthesized from the six-record update.
 
+For mutual XRA1/XUR1 expiry, explicit same-peer re-introduction under
+[DR-0159](../survival-program/decisions/DR-0159-established-contact-route-reintroduction.md)
+may use a separately current owned ContactResolve publication solely as carriage
+for an existing relationship's exact native DMC2/14 maintenance control. It does
+not replace the private head, skip predecessors, renew expired authority or start
+a new relationship. Original pending business ciphertext remains unchanged.
+
 Under [DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md),
 the Hello/Accept contact reference is exactly `ASCII(DAB2) || u16be(2) ||
 exactDab2RecordHash32`, not an application type/length/hash ArtifactRef.
