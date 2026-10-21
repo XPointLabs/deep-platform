@@ -233,7 +233,16 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
-Текущий CLI checkpoint2026-10-21: DR-0159 same-peer route re-introduction
+Текущий CLI checkpoint2026-10-21: same-format PKV2 KDF computation reuse
+уменьшил повторный local open cost, без rekey/reset и без кеша verification.
+Те же3 CLI: cursors17/18 —46/46 каждый,57 сообщений /19 local commands на
+каждом, Active3/epoch2, без resumes/lease waits/non-success/retries.
+Round16→18: fanout mean62.166→54.735s, полный active run579.018→494.601s;
+ACK wall-time30.676→30.690s не улучшился, хотя CPU снизился. Следующая работа
+в этом же S05 — измеренные ONION/authority stages и ACK latency, не device/UI.
+[Все замеры и workload caveats](../../deep-cli/docs/testing/cli-prekey-open-latency-2026-10-21.md).
+
+Предыдущий CLI checkpoint2026-10-21: DR-0159 same-peer route re-introduction
 восстановил взаимно истёкшие XRA1/XUR1 без нового аккаунта/ratchet и без допуска
 expired authority. Исходный retained cursor14 —49/49 PASS; последующие15/16 —
 46/46 каждый на тех же трёх CLI. Cursor16 без owned recovery, cursor15 с одним

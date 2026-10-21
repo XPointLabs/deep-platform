@@ -39,6 +39,24 @@ Settled-consent Store повторно использует semantic verificatio
 First/unsettled acceptance сохраняет полную реконструкцию.
 
 **Первый незакрытый блокер: delivery latency и устойчивый lifecycle.**
+В текущем slice найден дорогой повторный KDF при открытии PKV2. Теперь тот же
+PBKDF2-HMAC-SHA512/256000 с настоящим file salt вычисляется платформенным .NET;
+результат переиспользуется только внутри disposable verified-account read,
+при совпадении path/key/salt. Формат БД, native cold password reader и все
+SQLCipher/схема/подпись/retirement/floor проверки сохранены; rekey/reset нет.
+Shared15 и CLI67 PASS/native0. На тех же3 CLI strict cursors17/18 —46/46 каждый,
+без Store/ACK resumes, lease waits, HTTP non-success и driver retries;57/19
+на каждом профиле, Active3/epoch2, все receive/ACK/cold replay/dedup/empty queues.
+Round16→18: средний fanout62.166→54.735s (-12.0%), все46 команды579.018→494.601s
+(-14.6%); CPU fanout -38.7%, ACK -20.8%. Средний receive/ACK30.676→30.690s:
+**wall-time ACK не улучшился**. Round17 также сохранён: active565.469s,
+ACK sample52.613s. Число ONION-запросов изменилось: fanout6→12→10, ACK12→15→13;
+внутренний terminal по этим агрегатам не различается, grant-specific причина
+пока не доказана. Следующий bottleneck — ONION/authority latency, не повторный
+local KDF. Никаких stale-authority/ACK shortcuts ради скорости.
+[Все операции, CPU/HTTP и границы](../deep-cli/docs/testing/cli-prekey-open-latency-2026-10-21.md).
+
+Предыдущие retained замеры до KDF slice:
 Средний fanout round13→15→16:106.960→72.030→62.166s;
 receive/ACK38.116→38.306→30.676s;46 active commands730.851→653.715→579.018s.
 Последний раунд ниже baseline на41.9%/19.5%/20.8%, но ACK tail74.195s round15
