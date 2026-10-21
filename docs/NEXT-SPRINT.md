@@ -14,6 +14,19 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
+**ONION/authority: точечный node CPU/I/O cleanup проверен, основной latency blocker открыт.**
+На node убраны повторный хэш точного публичного bundle и лишний Linux readlink,
+без кеша допуска, пропуска actual-file MAC/floor/permissions или продления lease.
+Native57/57 Windows +57/57 Linux ARM64 PASS. Локальные3 узла обновлены,
+те же3 CLI: strict cursor19 —46/46 PASS с первой попытки, без recovery/reset;
+60 сообщений /20 local commands у каждого, Active3/epoch2. Round18→19:
+fanout mean54.735→49.686s (-9.2%, ONION10→8), receive/ACK30.690→33.143s
+(+8.0%, ONION13→14), полный active run494.601→499.376s (+1.0%).
+**Ускорение ACK и общего цикла не подтверждено; основной blocker не закрыт.**
+Следующий шаг — attribution critical-path acquisition/forwarding/native/ACK
+на этом же CLI-first пути, без сокращения security fences или возврата к UI.
+[Все операции, workload и точные границы](../deep-cli/docs/testing/cli-node-authority-latency-2026-10-21.md).
+
 **Атомарность reservation/recovery исправлена; исходные Store и ACK восстановлены.**
 Граница preparation → independent protected intent → native reserve и точный
 crash recovery закреплены в DR-0154–0158. Исходный orphan514/513 восстановлен

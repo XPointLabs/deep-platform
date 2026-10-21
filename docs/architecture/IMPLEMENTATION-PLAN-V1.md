@@ -233,7 +233,16 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
-Текущий CLI checkpoint2026-10-21: same-format PKV2 KDF computation reuse
+Последний node/CLI checkpoint2026-10-21: pure exact-bundle digest reuse и fresh
+Linux path attributes вместо повторного readlink, без изменения authority/floor/
+MAC/lease fences. Native57 Windows +57 Linux PASS; same3 CLI cursor19 —46/46
+strict PASS без recovery/reset,60/20 каждый, Active3/epoch2. Round18→19:
+fanout mean54.735→49.686s при ONION10→8; ACK30.690→33.143s при ONION13→14;
+весь active run494.601→499.376s. **ACK и общая latency не улучшились: S05 blocker
+открыт**, следующий шаг — critical-path attribution/optimization, не device/UI.
+[Все операции и ограничения сравнения](../../deep-cli/docs/testing/cli-node-authority-latency-2026-10-21.md).
+
+Предыдущий CLI checkpoint2026-10-21: same-format PKV2 KDF computation reuse
 уменьшил повторный local open cost, без rekey/reset и без кеша verification.
 Те же3 CLI: cursors17/18 —46/46 каждый,57 сообщений /19 local commands на
 каждом, Active3/epoch2, без resumes/lease waits/non-success/retries.
