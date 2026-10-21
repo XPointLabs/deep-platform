@@ -14,23 +14,36 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий NTS/ACK slice:** timeout уже установленной NTS-сессии больше не
-включает10s KE backoff: следующая bounded попытка через2s без изменения
-кворума, signed age/radius, TLS/pin, floor или KE authentication backoff.
-Registry после observation-quorum miss также опрашивает через2s; restart10s
-сохранён. Go8, Protocol29, Registry53, Dev118/32 и CLI67/scope8 PASS/native0
-в своих focused scopes, не full/package/release. Registry обновлён штатным Up;
-те же3 CLI без reset: strict34 и35 —46/46 с первой попытки, ноль resumes,
-waits, retries и HTTP non-success;108 сообщений /36 команд каждый, Active3/epoch2.
-Explicit ReadyToRun CLI publish: fanout mean32.610s, ACK19.807s;
-относительно completed33 при тех же6/12 ONION —17.2%/9.5% ниже, но истории и
-runtime conditions различаются; causal/global gain не заявлен. Cold full-batch
-verification не ускорилась. Доставка1–2s, sustained availability и S05 ещё
-не приняты. [DR-0160](survival-program/decisions/DR-0160-offline-additive-time-source-succession.md)
-покрывает offline additive source authoring; mailbox-enabled activation требует
-отдельного coordinated role-volume/journal/node-floor rollover. Guard НЕ обойдён,
-действующих NTS sources всё ещё2. Windows/Android и production не затронуты.
-[Matching evidence и полные замеры](../deep-cli/docs/testing/cli-nts-quorum-ack-2026-10-21.md).
+**Текущий NTS/ACK slice:** штатной offline renewal активированы4 signed NTS
+sources /4 независимые families при прежнем кворуме2/2, sample age10s и
+width30s; TLS/pin, радиусы и protected floors не ослаблены. Поддерживаемая
+retained mailbox ceremony по [DR-0161](survival-program/decisions/DR-0161-retained-time-source-activation.md)
+сохраняет зарегистрированные identities, genesis, CA key, accounts, native
+journals и старые role floors/SQL scopes; новые TLS/traffic/issuer keys ротированы
+обычной подписанной succession. Root онлайн не монтировался; старый guard
+не обойдён. Prepare/Apply/Up/Verify native0,9/9 сервисов healthy.
+По DR-0162–0164 добавлены bounded exact public-signature arithmetic memo,
+аутентифицированные historical issuer facts только для past Store и key-free
+receive→ACK scope handoff (один catalog lookup вместо двух, signer custody
+независимо перепроверяется). Protocol318, Shared5+21, Node47 Windows /
+218 Linux, Protocol215 Linux, CLI67/scope9 и DevOps36 PASS в focused scopes;
+actual API graph Release/Debug и frozen manifest integrity PASS.
+Первоначальный strict36 FAIL на истёкшем XRA1 сохранён; реальные маршруты
+обновлены без reset. Выявлен и исправлен отказ past Store после issuer rotation;
+реальный PMS2 NotBefore переждан, не backdated. Original36 завершён recovery49/49
+native0 без automatic resumes/waits/retries/non-success;111 сообщений /37 команд
+каждый, Active3/epoch2. Новый strict37 —46/46 PASS/native0 с первой попытки,
+без resumes/waits/retries/non-success;114/38 у каждого. Реальный Linux NTS probe:
+4/4 authenticated observations/families за1.417s; исключение любого одного
+из двух исходных источников оставляет3/3 и кворум за1.298/1.404s.
+Но steady-state fanout32.610→38.480s, receive/ACK19.807→20.881s mean,
+cold batch32.211→44.252s: ускорение относительно strict35 НЕ подтверждено.
+История/authority после succession различаются, это не causal A/B. Следующий
+cursor38 без reset; главный unfinished slice — historical/native/ONION work
+и ACK latency после operational succession, а не новое UI/device направление.
+1–2s, sustained availability, full/package/device/release и S05 acceptance
+остаются открыты. Windows/Android приложения и production не затронуты.
+[Matching evidence и замеры](../deep-cli/docs/testing/cli-nts-activation-ack-2026-10-21.md).
 
 **Предыдущий bounded fanout slice:** issuer-journal attribution установил, что
 12 вместо6 ONION в full30 — это6 необходимых Deposit acquisitions: все прежние
@@ -225,10 +238,10 @@ same-data33/11 local-read means: A746→232ms, B3032→2292ms, C4855→4846ms;
 Следующая работа внутри S05:
 
 - Остаточный ONION/ACK tail, native join и actual protected-head I/O исследовать
-  по numeric receipts:до209 lease checks/11.351s, authority source до4.988s.
-  Proof-observation не ускорился; host constructor не основной bottleneck.
-  Не пропускать реальные проверки ради скорости. Cursor14 восстановлен exact,
-  новые15/16 завершены; следующий17, исходные FAIL и ACK tail сохранять.
+  по matching numeric receipts актуального checkpoint выше. Исторические
+  cursor14–16 и их sampling не являются текущим состоянием аккаунтов.
+  Продолжать только следующий фактически незавершённый cursor на тех же3 CLI;
+  исходные FAIL и ACK tail сохранять. Не пропускать реальные проверки ради скорости.
 - Подключить proactive route renewal; XUR publish/fetch, successor overlap,
   arbitrary missing generations и retained horizon остаются открытыми.
   Explicit same-peer mutual-expiry recovery уже проверен DR-0159. Нельзя

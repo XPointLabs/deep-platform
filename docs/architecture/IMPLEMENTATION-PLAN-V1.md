@@ -233,19 +233,34 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
-Текущий NTS/ACK slice: established-session UDP timeout и observation-quorum miss
-получают следующий bounded poll через2s, не ослабляя signed time, quorum,
-TLS/pin или protected floors; KE failure/restart backoff сохранён. Registry
-обновлён без reset. Те же3 CLI: strict34/35 —46/46 каждый с первой попытки,
-без recovery/waits/retries/non-success;108/36 каждый, Active3/epoch2.
-Go8/Protocol29/Registry53/Dev118+32/CLI67+scope8 PASS/native0 — только matching
-focused scopes. Explicit ReadyToRun CLI publish35: fanout32.610s, ACK19.807s
-mean; против completed33 при тех же6/12 ONION17.2%/9.5% ниже, не causal ABBA.
-Cold original-batch verification не ускорилась. Offline additive source authoring
-принят в DR-0160; mailbox-enabled rollover/activation НЕ реализован и не обойдён,
-действующая политика всё ещё2-of-2. Sustained availability,1–2s delivery,
-full/package/device и S05 acceptance остаются открытыми.
-[Matching evidence](../../deep-cli/docs/testing/cli-nts-quorum-ack-2026-10-21.md).
+Текущий NTS/ACK slice: DR-0161 расширяет обычную offline operational renewal
+явной retained mailbox ceremony. Действующая signed policy теперь4 sources /
+4 independent families, прежний кворум2/2, sample age10s/width30s, прежние
+радиусы/TLS/pin/floors. Prepare/Apply/Up/Verify native0,9 сервисов healthy.
+Зарегистрированные node identities, genesis, CA key, accounts, native journals,
+старые role floors/SQL scopes сохранены; TLS/traffic/role issuer keys ротированы
+обычной подписанной succession. Старый pre-mailbox guard не обойдён.
+DR-0162–0164: exact public-signature arithmetic, purpose-separated historical
+Store issuer facts и key-free receive→ACK scheduling scope без повторного
+catalog lookup; actual ACK signer authority перепроверяется независимо.
+Protocol318, Shared5+21, Node47 Windows /218 Linux, Protocol215 Linux,
+CLI67/scope9/DevOps36 PASS в named focused scopes; actual API graph Release/Debug
+и frozen manifest integrity PASS, не full/package qualification.
+Те же3 CLI без reset: исходный strict36 FAIL на XRA1 expiry сохранён,
+реальная route maintenance выявила и исправила past Store issuer rotation bug;
+NotBefore не ослаблялся. Original36 recovery49 PASS/native0,111/37 у каждого,
+Active3/epoch2, без automatic resumes/waits/retries/non-success.
+Новый strict37 —46/46 PASS/native0 с первой попытки без resumes/waits/retries/
+non-success;114/38 у каждого, recovery не выдаётся за first attempt.
+Реальный Linux observer:4/4 authenticated observations/families за1.417s;
+поочерёдное исключение каждого исходного источника оставляет3/3 и кворум
+за1.298/1.404s. Но fanout32.610→38.480s, ACK19.807→20.881s,
+cold batch32.211→44.252s mean относительно strict35: ускорение НЕ подтверждено,
+разные authority/history, не causal A/B. Следующий cursor38 на тех же профилях;
+устранять historical/native/ONION work и ACK latency, не переходить в UI/device.
+Sustained availability,1–2s delivery, full/package/device и S05 acceptance
+остаются открытыми; UI/production не затронуты.
+[Matching evidence](../../deep-cli/docs/testing/cli-nts-activation-ack-2026-10-21.md).
 
 Предыдущий fanout slice: исходные12 против6 ONION в full30 объяснены шестью
 необходимыми Deposit acquisitions после expiry; duplicate Store не найден.

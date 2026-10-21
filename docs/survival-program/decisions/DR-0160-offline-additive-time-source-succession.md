@@ -27,8 +27,11 @@ sealing the candidate. No environment-variable/runtime policy override, online
 root mount, provisional source, genesis replacement, or reader fallback exists.
 The pre-mailbox operational preparation and retained activation path publishes
 the complete signed successor; a raw file edit is not activation. Mailbox-enabled
-custody remains guarded out: coordinated role-volume/journal and node-floor
-rollover is separate unfinished work, not permission to bypass that guard.
+custody remains guarded out of that original path. Coordinated role-volume,
+journal and node-floor rollover is now specified separately by
+[DR-0161](DR-0161-retained-time-source-activation.md), with historical settlement
+under [DR-0163](DR-0163-historical-store-issuer-succession.md). It requires the
+explicit retained ceremony, not permission to bypass the original guard.
 
 Observation consumers accept two through the exact configured source count,
 verify unique known IDs and at least two configured failure families, and

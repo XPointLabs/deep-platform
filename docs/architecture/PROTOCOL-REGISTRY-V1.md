@@ -4,6 +4,21 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0162](../survival-program/decisions/DR-0162-exact-public-signature-arithmetic.md)
+permits bounded exact public Ed25519 arithmetic reuse, never authority/time/floor
+memoization. [DR-0163](../survival-program/decisions/DR-0163-historical-store-issuer-succession.md)
+defines authenticated original issuer facts after operational key succession;
+current grant/effect checks and all wire/persisted formats remain unchanged.
+[DR-0164](../survival-program/decisions/DR-0164-received-scope-scheduling-handoff.md)
+permits internal key-free receive-scope scheduling handoff only; fresh ACK catalog,
+endpoint, native semantic and protected-custody reconstruction remain mandatory.
+
+[DR-0161](../survival-program/decisions/DR-0161-retained-time-source-activation.md)
+defines bounded retained mailbox activation for an additive time-source
+successor through ordinary full operational renewal: fresh TLS/traffic and issuer
+keys, retained identities/journals, append-only SQL scopes and explicit native
+policy succession. Ordinary enrollment and all wire grammars remain unchanged.
+
 [DR-0160](../survival-program/decisions/DR-0160-offline-additive-time-source-succession.md)
 authorizes an explicit additive source-list input to offline same-key renewal.
 It preserves every old source tuple, root/genesis, thresholds and time limits;
