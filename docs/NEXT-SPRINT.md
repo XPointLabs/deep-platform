@@ -14,7 +14,25 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий bounded fanout slice:** issuer-journal attribution установил, что
+**Текущий NTS/ACK slice:** timeout уже установленной NTS-сессии больше не
+включает10s KE backoff: следующая bounded попытка через2s без изменения
+кворума, signed age/radius, TLS/pin, floor или KE authentication backoff.
+Registry после observation-quorum miss также опрашивает через2s; restart10s
+сохранён. Go8, Protocol29, Registry53, Dev118/32 и CLI67/scope8 PASS/native0
+в своих focused scopes, не full/package/release. Registry обновлён штатным Up;
+те же3 CLI без reset: strict34 и35 —46/46 с первой попытки, ноль resumes,
+waits, retries и HTTP non-success;108 сообщений /36 команд каждый, Active3/epoch2.
+Explicit ReadyToRun CLI publish: fanout mean32.610s, ACK19.807s;
+относительно completed33 при тех же6/12 ONION —17.2%/9.5% ниже, но истории и
+runtime conditions различаются; causal/global gain не заявлен. Cold full-batch
+verification не ускорилась. Доставка1–2s, sustained availability и S05 ещё
+не приняты. [DR-0160](survival-program/decisions/DR-0160-offline-additive-time-source-succession.md)
+покрывает offline additive source authoring; mailbox-enabled activation требует
+отдельного coordinated role-volume/journal/node-floor rollover. Guard НЕ обойдён,
+действующих NTS sources всё ещё2. Windows/Android и production не затронуты.
+[Matching evidence и полные замеры](../deep-cli/docs/testing/cli-nts-quorum-ack-2026-10-21.md).
+
+**Предыдущий bounded fanout slice:** issuer-journal attribution установил, что
 12 вместо6 ONION в full30 — это6 необходимых Deposit acquisitions: все прежние
 grants точного scope истекли. Не duplicate Store. Отдельно устранено бесполезное
 proactive renewal ещё живого Deposit на неизменном current network/PMA/route

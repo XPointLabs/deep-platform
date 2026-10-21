@@ -233,7 +233,21 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
-Текущий fanout slice: исходные12 против6 ONION в full30 объяснены шестью
+Текущий NTS/ACK slice: established-session UDP timeout и observation-quorum miss
+получают следующий bounded poll через2s, не ослабляя signed time, quorum,
+TLS/pin или protected floors; KE failure/restart backoff сохранён. Registry
+обновлён без reset. Те же3 CLI: strict34/35 —46/46 каждый с первой попытки,
+без recovery/waits/retries/non-success;108/36 каждый, Active3/epoch2.
+Go8/Protocol29/Registry53/Dev118+32/CLI67+scope8 PASS/native0 — только matching
+focused scopes. Explicit ReadyToRun CLI publish35: fanout32.610s, ACK19.807s
+mean; против completed33 при тех же6/12 ONION17.2%/9.5% ниже, не causal ABBA.
+Cold original-batch verification не ускорилась. Offline additive source authoring
+принят в DR-0160; mailbox-enabled rollover/activation НЕ реализован и не обойдён,
+действующая политика всё ещё2-of-2. Sustained availability,1–2s delivery,
+full/package/device и S05 acceptance остаются открытыми.
+[Matching evidence](../../deep-cli/docs/testing/cli-nts-quorum-ack-2026-10-21.md).
+
+Предыдущий fanout slice: исходные12 против6 ONION в full30 объяснены шестью
 необходимыми Deposit acquisitions после expiry; duplicate Store не найден.
 Shared suppresses только бесполезное live renewal с тем же current fixed
 ceiling и всё ещё совместимой current PMA policy. Changed issuer/floor/window/

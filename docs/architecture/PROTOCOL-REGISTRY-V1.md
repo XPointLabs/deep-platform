@@ -4,6 +4,12 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0160](../survival-program/decisions/DR-0160-offline-additive-time-source-succession.md)
+authorizes an explicit additive source-list input to offline same-key renewal.
+It preserves every old source tuple, root/genesis, thresholds and time limits;
+no wire/schema/suite change or runtime source override is introduced. Matching
+retained activation and connected qualification remain separate.
+
 [DR-0154](../survival-program/decisions/DR-0154-peer-reservation-preparation.md)
 freezes closed non-mutating peer preparation before independently protected
 write-ahead intent and native commit. No wire/schema/lifetime change.
