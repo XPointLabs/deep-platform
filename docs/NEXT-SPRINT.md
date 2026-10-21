@@ -14,6 +14,35 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
+**Текущий audit slice:** Backend Architect / Performance Benchmarker / Security
+Architect независимо проверили native history, client cost и security fences.
+Добавлены bounded exact-actual-bytes mutation grammar memo, invocation-local
+identity/ACK indexes и native historical-route read snapshot без await/callback
+в SQL-транзакции. Текущие MAC/floor/currentness/file/lease проверки сохранены.
+Node focused48 Windows /107 Linux ARM64,31 DevOps,31 historical Shared +18
+group-refresh Shared,67 CLI PASS/native0; shipping CLI build0 warnings/errors.
+Три узла обновлены без reset. Fresh recipient completion объединяет только
+соседние private post-sign/pre-commit проверки: Store19→18 full joins,
+one-target ACK19→18; cached replay и post-callback fence сохранены.
+Cursor24/25 прерваны из-за реальной NTS authority unavailable; оба исходных
+batch завершены штатным recovery без подмены signed time/TTL/floor. Новый26:
+46/46 PASS, без resumes/waits/retries,81 сообщений /27 команд у каждого CLI.
+На ТОЙ ЖЕ истории ABBA old/new original-batch replay: mean40.259→35.928s
+(-10.8%), CPU39.961→36.016s (-9.9%). Full29 FAIL на final control check при
+EndpointPairDirectoryFloorAdvanced, исходный batch завершён recovery52 PASS,
+90 сообщений /30 команд каждый. Исправлено только pre-control-effect получение
+authority: одна повторная acquisition в independent scope при строго большем
+verified directory floor, после exact network/clock проверок; старые GSR/GSW
+не remint, прочие отказы terminal. Full30 —46/46 PASS/native0 на новом CLI,
+без resumes/waits/non-success HTTP/retries,93 сообщения /31 команда каждый.
+Latest mean receive/ACK25.044→21.671s, но fanout40.648→54.749s с6→12 ONION requests;
+это observational сравнение с28, не общий speedup или контроль той же истории.
+Это не доказательство message latency;1–2s и sustained
+стабильность **не достигнуты**, original FAIL не скрыты. Следующий измеренный
+срез — remaining batch×history/native processing и ACK; NTS2-of-2 требует
+поддерживаемой signed source-update/activation, не ослабления time policy.
+[Аудит, квалификация и отдельные замеры](../deep-cli/docs/testing/cli-retained-native-grammar-audit-2026-10-21.md).
+
 **ONION/ACK: задержки сокращены, цель1–2s и sustained lifecycle ещё не достигнуты.**
 Долгое ONION forwarding в основном ожидало native dispatch, не layer crypto.
 Исправлены Registry IPv6-loopback cold-connect penalty (~2s), повторный JSON

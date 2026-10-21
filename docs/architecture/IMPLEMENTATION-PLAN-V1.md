@@ -233,7 +233,34 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
-Последний node/CLI checkpoint2026-10-21: critical-path attribution отделил
+Текущий bounded native-grammar audit: memo только после полного чтения и hash
+actual bytes, invocation-local identity/ACK indexes; нет кеша authority/floor
+или пропуска lease/file/currentness. Native historical-route selectors разделяют
+одну полную SQL-проверку внутри синхронной read-транзакции, без await/callback;
+outer fresh roots/Reconcile и Store rereads сохранены. Focused48 Windows,
+107 Linux ARM64,31 DevOps,31 historical Shared +18 group-refresh Shared,
+67 CLI PASS/native0. Fresh recipient private completion сокращает Store и
+one-target ACK19→18 full joins каждый, не трогая cached replay/post-callback.
+Три локальных узла
+обновлены без reset. Cursor24/25 остановлены unavailable NTS authority Registry;
+исходные batch завершены retained recovery, без подмены time policy/floor.
+Новый26 —46/46 PASS,81/27 каждый, Active3/epoch2, без resumes/waits/retries.
+ABBA на ТОЙ ЖЕ native истории: replay mean40.259→35.928s, CPU39.961→36.016s.
+Full29 FAIL на final GSR control при EndpointPairDirectoryFloorAdvanced;
+тот же batch завершён recovery52 PASS,90/30 каждый. Pre-control-effect
+directory reacquisition теперь допускает один restart в independent scope
+только после exact network history, обоих clocks и строго большего native
+directory floor; прежние GSR/GSW не reauthor. Остальные/повторные отказы terminal.
+Full30 на новом runtime —46/46 PASS/native0 без resumes/waits/retries/non-success
+HTTP,93/31 каждый. Mean receive/ACK25.044→21.671s относительно28, но mean fanout
+40.648→54.749s при6→12 ONION calls. Overall latency gain не доказан; native
+history и холодные/authority условия различаются. S05 по этим данным не закрыт.
+Это scoped constant-factor gain, не message latency, sustained acceptance
+или доказательство1–2s. NTS redundancy требует supported signed source-list
+update и mailbox-enabled activation, не ручной правки подписанных файлов;
+[полные результаты и latency comparison](../../deep-cli/docs/testing/cli-retained-native-grammar-audit-2026-10-21.md).
+
+Предыдущий node/CLI checkpoint2026-10-21: critical-path attribution отделил
 native dispatch от ONION crypto/forwarding. Исправлены Registry IPv6-loopback
 cold-connect penalty, exact lease-scoped ledger grammar reuse и per-chunk
 WriteThrough только неопубликованного scratch; mandatory complete Flush(true)
