@@ -4,6 +4,23 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0167](../survival-program/decisions/DR-0167-bounded-history-read-availability.md)
+permits one exact read-only history retry per catchup after503 with explicit
+Retry-After1–5s, never429 or an extended authority/deadline. Signed history and
+fresh nonce/floor/time checks remain independent; no format or key changes.
+
+[DR-0166](../survival-program/decisions/DR-0166-replica-assignment-and-local-admission.md)
+replaces only the private contact replica wire with CRQ2/CRS2. It carries exact
+assignment identity, not a remote local-admission lifetime; every receiver still
+mints its own current NETCODEC/time/custody authority. Old wire/route is rejected,
+with a coordinated peer upgrade and no client/account/journal reset.
+
+[DR-0165](../survival-program/decisions/DR-0165-page-authority-and-noop-group-publication.md)
+separates no-op GSR publication discovery from ordinary send and permits one
+fresh public own endpoint within a Retrieve/ordinary-receive page. Actual send
+receipt/head checks and independent fresh ACK acquisition remain mandatory;
+wire, schema and all signed lifetimes are unchanged.
+
 [DR-0162](../survival-program/decisions/DR-0162-exact-public-signature-arithmetic.md)
 permits bounded exact public Ed25519 arithmetic reuse, never authority/time/floor
 memoization. [DR-0163](../survival-program/decisions/DR-0163-historical-store-issuer-succession.md)

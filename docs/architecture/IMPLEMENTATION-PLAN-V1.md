@@ -233,22 +233,37 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
-Текущий post-rotation latency slice: group-authored native replay больше не
-открывает непричастную application SQLCipher БД; direct fallback, actual native/
-group custody, consent и integrity/currentness/floor/Store fences сохранены.
-На одной retained истории ABBA36.585→30.426s cold original batch (-16.8%),
-CPU34.508→28.844s (-16.4%); неподтвердившийся page-cache эксперимент удалён.
-Shared87/87, CLI67/67, actual production graph и frozen manifest integrity
-PASS/native0, zero warnings/errors — не full/package qualification.
-На тех же3 CLI full38 —46/46 PASS/native0; warm delivery39 —40/40 PASS/native0
-без resets/retries/resumes/waits,120 сообщений /40 local commands каждый,
-Active3/epoch2. Fanout/ACK регрессия НЕ устранена:38.480→42.223s /
-20.881→21.317s относительно37 при6/12 ONION. Delivery-only39 не full acceptance.
-Новый acquisition нельзя заменить кешем signed validity window: fresh
-nonce-bound DTT1 остаётся обязательным. Node/Registry images и quotas неизменны.
-Следующий cursor40; remaining client/native history и per-hop proof/source work
-сохраняют S05 открытым. Windows/Android/production не затронуты.
-[Matching evidence](../../deep-cli/docs/testing/cli-authority-regression-2026-10-21.md).
+Текущий fanout/ACK slice — [DR-0165](../survival-program/decisions/DR-0165-page-authority-and-noop-group-publication.md):
+убрать no-op control publication и повторное acquisition PUBLIC own endpoint
+в пределах одной mailbox page, сохраняя actual send/receipt/native checks и
+отдельный independently current ACK после materialization. Matching expanded focused
+Shared93/93 и CLI70/70 PASS; не unfiltered full/package acceptance.
+Diagnostic42 на прежних3 CLI —40/40 delivery-only PASS,129 сообщений /43 local
+commands каждый. Full43/original recovery выявили отдельный отказ: non-current
+resolver result пересылается в success-only private issuer с horizon0. Unknown
+Store сохранён; supported same-peer maintenance и original recovery не являются
+новым first-attempt benchmark. Точный текущий cursor, исходные FAIL и итоговые
+замеры — в [едином repo-checkpoint](../../deep-cli/docs/testing/cli-page-control-latency-2026-10-22.md).
+Fresh nonce-bound DTT1, currentness, quorum и Store fences не ослабляются.
+S05, sustained availability,1–2s, full/package/device/release остаются открыты.
+Recovery43 —49/49 PASS. После отказа44 выполнен [DR-0166](../survival-program/decisions/DR-0166-replica-assignment-and-local-admission.md):
+private CRQ2/CRS2 отделяет exact assignment от independently current local
+admission lifetime. No legacy reader/route. Node262/262 focused и local smoke
+PASS; три локальные ноды обновлены одним образом. Recovery44 —52/52 PASS с
+одним owned mailbox resume/lease wait. Delivery45 —40/40 PASS без resumes/waits/
+network failures,138 сообщений /46 local commands у каждого. Mean fanout58.911s,
+receive+ACK22.135s: общего ускорения относительно diagnostic42 нет.
+По [DR-0167](../survival-program/decisions/DR-0167-bounded-history-read-availability.md)
+исправлено bounded read-only Directory503 recovery с обязательным independent
+fresh nonce-bound proof после valid empty catchup; Shared26/CLI70 focused PASS.
+Original46 recovery отказал до issuer callback: actual protected grant journal
+достиг128 entries. Это lifecycle/capacity blocker, не сетевой timeout. Старые
+entries нельзя удалять только по expiry: необходим signed selection-epoch
+advance и native/dependency closure. Caps, epoch и сохранённая custody не менялись.
+Первый следующий шаг — безопасная sustainable retention/replacement headroom,
+затем recovery исходного46 и новый matched benchmark на тех же3 CLI без reset.
+Production ingress lab остаётся FAIL на Compose Up, не закрыт другими PASS.
+Windows/Android/production, Registry image и quotas не затронуты.
 
 Предыдущий NTS/ACK slice: DR-0161 расширяет обычную offline operational renewal
 явной retained mailbox ceremony. Действующая signed policy теперь4 sources /

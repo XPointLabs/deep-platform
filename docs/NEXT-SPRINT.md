@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-21**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-22**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -14,24 +14,61 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий post-rotation latency slice:** устранено открытие непричастной
-application SQLCipher БД при проверке group-authored native event. Реальный
-native/group history, direct SQL fallback и contact-consent проверяются как
-прежде; integrity/schema/currentness/floor/Store fences не ослаблены.
-На одной истории ABBA old/new/new/old: cold original batch36.585→30.426s
-(-16.8%), CPU34.508→28.844s (-16.4%). Page-cache эксперимент без выигрыша удалён.
-Shared87/87, CLI67/67 и actual production graph/frozen manifest integrity
-PASS/native0, zero build warnings/errors; это focused, не full qualification.
-Те же3 CLI без reset/rekey: full38 —46/46 PASS/native0 с первой попытки;
-warm delivery39 —40/40 PASS/native0, без resumes/waits/retries и abnormal close.
-120 group messages /40 original local commands у каждого, Active3/epoch2.
-**Fanout/ACK НЕ ускорились:** mean38.480→42.223s /20.881→21.317s относительно37,
-при прежних6/12 ONION. Delivery-only39 не заменяет полный steady-state gate.
-Повторная proof/source observation остаётся заметной; кеш нового nonce-bound
-acquisition отвергнут. Node/Registry images и CPU limits не менялись.
-Следующий cursor40 без reset; S05, latency1–2s, sustained/full/package/device/
-release acceptance открыты. Windows/Android и production не затронуты.
-[Замеры, точные границы и retained evidence](../deep-cli/docs/testing/cli-authority-regression-2026-10-21.md).
+**Текущий fanout/ACK slice:** по [DR-0165](survival-program/decisions/DR-0165-page-authority-and-noop-group-publication.md)
+ordinary send не входит в полную GSR publication/rechunking при отсутствии
+незавершённых control writes. Это scheduling hint из actual protected root,
+не permission: actual send независимо проверяет head/membership и все исходные
+GSS receipts до authoring/sequence advance. Retrieve/ordinary receive одной
+страницы могут разделять still-current PUBLIC own endpoint; ACK после
+materialization по-прежнему получает отдельный independent scope. Floor/clock,
+native/SQL integrity, signatures, quorum и captured-loan fences сохранены.
+Итоговый expanded focused Shared93/93 и CLI70/70 PASS/native0, zero
+warnings/errors; не unfiltered full gate.
+Те же3 CLI: diagnostic42 —40/40 PASS/native0 без resumes/waits/retries,
+129 сообщений /43 local commands каждый, Active3/epoch2. До оптимизации
+fanout45.220s / receive+ACK21.513s mean; это delivery-only, не full acceptance.
+Full43 и первая попытка original recovery остановились на Deposit acquisition:
+Registry отклонил CurrentRoute с effective horizon0, неизвестный исход сохранён.
+XRA health всех6 направлений current/no-fault; это не доказательство наличия
+current resolver publication. Штатная maintenance всех3 пар и recovery43
+завершены49/49 PASS без automatic resumes/waits, без reset/rekey/remint.
+Delivery44 остановился на retained-read peer503; выявлена отдельная ошибочная
+связка local ADH lifetime с идентичностью assignment. [DR-0166](survival-program/decisions/DR-0166-replica-assignment-and-local-admission.md)
+делает clean break только private CRQ2/CRS2: wire projection не несёт admission
+deadline и не может дать local authority. Actual independently current NETCODEC,
+clock/request/custody/effect guards сохранены; view/epoch/pair всё ещё exact.
+Node262/262 focused PASS. Все3 локальные ноды обновлены одним образом, ingress
+перезагружен, real3-node smoke PASS. Recovery44 —52/52 PASS, но один owned
+mailbox resume/lease wait: это не first-attempt evidence. Delivery45 —40/40
+PASS/native0 без resumes/waits/network failures,138 сообщений /46 local commands
+каждый. Но fanout mean58.911s / receive+ACK22.135s против45.220s /21.513s
+в diagnostic42: общего ускорения нет; после idle потребовалось больше grants.
+Directory503/history503 остановили следующий46. По
+[DR-0167](survival-program/decisions/DR-0167-bounded-history-read-availability.md)
+добавлены один bounded exact history repeat при503/positive Retry-After<=5s и
+один independent fresh nonce-bound proof после valid empty catchup; история не
+заменяет current proof. Shared26/26 и CLI70/70 focused PASS/native0.
+**Первый оставшийся блокер same-profile recovery46:** лимит128 entries actual
+protected grant journal достигнут до issuer callback. IL1813 однозначно ведёт
+к `Protected retained-read holder custody is full`, не к сетевому timeout.
+Очистка допускается только после independently signed selection-epoch advance
+и dependency/native closure; внутри текущей семидневной эпохи это не разрешение
+удалить expired entries. Сброс, удаление custody, увеличение caps ради прогона
+и искусственное ускорение epoch не делались. Original46 остаётся незавершённым;
+новый47 не запускался. Сначала устранить lifecycle/capacity deadlock с negative
+tests и сохранением replay/unknown-work custody, затем original46 recovery и
+matched delivery timing на тех же3 аккаунтах. Оптимизация latency не закрыта.
+Итоговый cursor и замеры — в [matching report](../deep-cli/docs/testing/cli-page-control-latency-2026-10-22.md).
+Registry image и quotas неизменны; production ingress lab остаётся FAIL на
+Compose Up, без waiver TLS/ACL и без остановки чужого dev-контура. Отдельный
+multi-node rehearsal не квалифицирован: исходный helper несовместим с PS5.1,
+PS7 повтор остановлен180s image-build timeout до startup. Ingress static
+contract PASS;51-command release-gate self-test PASS не заменяет actual
+production-readiness, который blocked на10 отсутствующих evidence inputs.
+S05,1–2s, sustained/full/package/device/
+release acceptance остаются открыты; Windows/Android и production не тронуты.
+Предыдущий [same-history replay gain](../deep-cli/docs/testing/cli-authority-regression-2026-10-21.md)
+не объявляется устранением ordinary fanout/ACK latency.
 
 **Предыдущий NTS/ACK slice:** штатной offline renewal активированы4 signed NTS
 sources /4 независимые families при прежнем кворуме2/2, sample age10s и
