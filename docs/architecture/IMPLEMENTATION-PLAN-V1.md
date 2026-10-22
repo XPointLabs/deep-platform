@@ -233,6 +233,16 @@ evidence или разрешение на GitHub Release.
 
 #### Lifecycle управляющего контура
 
+Native directory-floor amplification исправляется bounded anchored-prefix
+lifecycle по [DR-0170](../survival-program/decisions/DR-0170-anchored-directory-floor-prefix-retirement.md),
+без сброса global revision и с actual native/anchor/index проверками. Original
+Store после ротации использует два строгих historical namespace joins по
+[DR-0171](../survival-program/decisions/DR-0171-original-store-namespace-joins.md).
+Текущий original54 recovery, native/source результаты и latency остаются в
+[едином checkpoint](../../deep-cli/docs/testing/cli-anchored-floor-lifecycle-2026-10-23.md);
+Windows/Android не возобновлять до проверенного CLI пути. Focused не закрывает
+full/package/sustained/S05 acceptance и не доказывает1–2s delivery.
+
 Текущий fanout/ACK slice — [DR-0165](../survival-program/decisions/DR-0165-page-authority-and-noop-group-publication.md):
 убрать no-op control publication и повторное acquisition PUBLIC own endpoint
 в пределах одной mailbox page, сохраняя actual send/receipt/native checks и

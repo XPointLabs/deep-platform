@@ -1782,6 +1782,18 @@ Scale gates are cumulative: 3-member correctness, 20-member/100-device
 integration, then final 100-member/500-device release load. Intermediate gates
 do not reduce the product maximum.
 
+[DR-0172](../survival-program/decisions/DR-0172-pending-group-resume-and-delivery-recovery.md)
+separates pending group resume from completed-history audit. Resume uses the
+ordinary owned pending-only producer: actual protected completed-work hints
+skip old work only, never return a receipt, current permission or retirement
+authority. Unknown/missing/stopped work and every selected native, holder,
+counter, SQL, original request/quorum and current dispatch guard remain required.
+Explicit flush still verifies all retained original Stores. Delivery-only
+recovery runs pending resume for every original sender even when recipients
+already have the semantic copy, then receive/ACK, cold history, dedup and empty
+mailbox checks. It cannot qualify first-attempt latency, full archive/lifecycle,
+retention, device or release acceptance.
+
 ### 13.8 Group invitations
 
 An Owner/Admin sends GIV1 using the invitee's verified DCB1 and pairwise DPE2.

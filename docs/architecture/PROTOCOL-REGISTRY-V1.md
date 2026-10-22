@@ -4,6 +4,21 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0172](../survival-program/decisions/DR-0172-pending-group-resume-and-delivery-recovery.md)
+separates owned pending group resume from full completed-Store audit and marks
+delivery-only recovery separately from latency/full acceptance. Wire, private
+state generations and all current/native/replay guards remain unchanged.
+
+[DR-0171](../survival-program/decisions/DR-0171-original-store-namespace-joins.md)
+connects original Store settlement to the existing owned distinct issuance and
+assignment joins. Protocol's strict pair verifier and all wire/API, current
+dispatch, quorum and replay guards remain unchanged.
+
+[DR-0170](../survival-program/decisions/DR-0170-anchored-directory-floor-prefix-retirement.md)
+defines bounded native directory-floor prefix retirement below the independently
+anchored committed revision. DHF2, signed heads, wire bytes, counters and replay
+guards are unchanged; no reset or compatibility reader is introduced.
+
 [DR-0169](../survival-program/decisions/DR-0169-original-retrieve-namespace-joins.md)
 corrects historical Retrieve facts by authenticating distinct original issuance
 and assignment policy/projection joins in current protected history. Fresh

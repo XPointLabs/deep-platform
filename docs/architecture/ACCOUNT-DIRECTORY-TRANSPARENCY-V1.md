@@ -1061,6 +1061,25 @@ only through the mutation owner, without replacing genesis, reconstructing a
 lost floor or repairing corrupt primary custody. Readiness and proof/history
 reads remain read-only and unavailable while that intent is unfinished.
 
+## Native directory-floor lifecycle
+
+[DR-0170](../survival-program/decisions/DR-0170-anchored-directory-floor-prefix-retirement.md)
+permits the native acquisition owner to retire a fully authenticated contiguous
+prefix strictly below the durably joined independent anchor/current tip/index.
+Global revisions never reset. At most64 old tips are deleted per maintenance,
+in ascending order with each deletion durably flushed before the next. Every
+remaining actual record still passes native protection, path/permissions/EOF,
+canonical filename/revision, network/genesis, signed authority and strict chain
+joins on every observation. A nonzero starting revision requires the actual
+independent anchor inside that suffix; observations additionally require exact
+latest tip/anchor/index equality and never repair or collect. Pending descendants
+must be recovered by the existing owner before retirement. Missing/corrupt
+active custody, interior gaps and journal-only rollback still refuse. Retired
+files are not replay authority; no native mailbox replay state is collected.
+Old binaries expecting a revision-zero prefix require a coherent pre-upgrade
+journal, independent anchor and key-ring snapshot for rollback, never a journal
+reset. Live threshold freshness remains mandatory and separate.
+
 ## Historical DID2 catch-up (DR-0014 candidate freeze)
 
 An expired reader-2 ADH1 is authenticated history, not current authority. A

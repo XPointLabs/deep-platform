@@ -754,13 +754,16 @@ Reset, отсутствующий predecessor или forward-only join без с
 floor недоступны. Совместный
 откат SQL и protected storage остаётся вне локальной гарантии DR-0012.
 
-Для DR-0104 retained Retrieve captured issuance PMA2 может отличаться от PMA2,
+Для DR-0104 retained Retrieve и original Store facts по
+[DR-0171](../survival-program/decisions/DR-0171-original-store-namespace-joins.md)
+captured issuance PMA2 может отличаться от PMA2,
 на которую ссылается original route PMT2. Consumer MUST проверить два exact
 historical joins: issuance PMA2 с retained PMT2, реально называющей её core,
 и original route PMT2 с её собственной named PMA2. Оба проходят существующий
 strict DR-0108 verifier под текущим host/history; raw public records служат только
-bounded lookup inputs, не authority или verification cache. Deposit сохраняет
-единственный original policy/projection join. Missing/substituted metadata не
+bounded lookup inputs, не authority или verification cache. Original Deposit
+также использует оба joins, когда issuance и assignment различаются; это не
+current Store permission и не продление исходного grant. Missing/substituted metadata не
 разрешает cleanup. Captured issuance ceiling, native epoch/floor, actual lease,
 dependencies и completed replacement read остаются независимыми условиями.
 Когда actual issuance policy совпадает с named policy original projection,

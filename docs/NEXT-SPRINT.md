@@ -14,7 +14,30 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий terminal checkpoint:** original52 recovery49/49 PASS; новый53 delivery40/40
+**Текущий slice (2026-10-23):** original54 delivery-recovery49/49 PASS/native0,
+те же3 CLI,165 сообщений/55 original commands каждый, Active3/epoch2.54 не
+переавторить. Новый55 — FAIL первого fanout199.632s: Cancelled в protected-root
+readback; A56 authored/pending, B/C55. Следующий шаг — original55 recovery,
+НЕ новый round/queue/reset. Ускорение fanout/ACK не достигнуто.
+Full/archive54-01 остаётся FAIL на
+cancelled/unknown post-replay sync; delivery-lane не закрывает full acceptance.
+Node lifecycle по
+[DR-0170](survival-program/decisions/DR-0170-anchored-directory-floor-prefix-retirement.md)
+прошёл focused Windows82/Linux124; локальный retained upgrade сохранил volumes
+и текущие revisions,251→1 obsolete-prefix tips на каждой ноде. Ускорение всего
+пути НЕ доказано. Отказ late Store — single-policy join после ротации, исправлен
+подключением существующего owned dual join по
+[DR-0171](survival-program/decisions/DR-0171-original-store-namespace-joins.md).
+Store4/4, scheduling5/5, CLI70/70, scope9/9 PASS. Новый
+[DR-0172](survival-program/decisions/DR-0172-pending-group-resume-and-delivery-recovery.md)
+подключает existing pending-only producer к `group resume`; полный `flush` не
+меняется. Actual resumes0/0/1 доказывают завершение pending C55, а не новый send.
+Fresh55 и canonical full/package/release НЕ квалифицированы;
+см. [живой repo-checkpoint](../deep-cli/docs/testing/cli-anchored-floor-lifecycle-2026-10-23.md).
+Producer checkpoint: Node `5e0946a`, Shared `deafdafb`, CLI `dec15e5`;
+это рабочий source checkpoint с сохранённым FAIL55, не готовый релиз.
+
+**Предыдущий terminal checkpoint:** original52 recovery49/49 PASS; новый53 delivery40/40
 PASS,162 messages/54 original commands каждый, zero resumes/waits/network failures.
 Next retained cursor54, те же3 CLI без reset;52/53 не переавторить. Main blocker —
 O(history) authority/native work: на каждой ноде249 directory-floor tips,132–299
