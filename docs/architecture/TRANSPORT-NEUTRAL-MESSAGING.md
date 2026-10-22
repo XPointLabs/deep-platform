@@ -620,6 +620,14 @@ promotion; incomplete successor не подменяет current. Full bounds з�
 проверяется до нового authored/ratchet work. Никакие интервалы, journal limits,
 wire values или replay/deletion permission этим trigger не изменяются.
 
+Для новой Deposit работы tightening independently verified network/PMA/route
+ceiling ниже expiry выбранного grant либо changed current issuer/floor/window/
+lifetime требует successor даже ДО proportional deadline. Это не разрешение
+принять старый grant за новым ceiling: strict result/dispatch verification
+остаётся неизменной. Только live compatible winner на EXACT неизменном ceiling
+может избежать бесполезной выдачи с тем же expiry; pending successor всегда
+возобновляет exact request. Captured Store/ACK в этот selector не входят.
+
 **Independent authorization after unresolved acquisition — DR-0126.** После
 описанного ниже authenticated closure owner может append отдельный grant
 acquisition для новой работы, сохраняя closed predecessor целиком. Это не retry
@@ -787,6 +795,17 @@ or authorize deletion by itself. The dependency-closed terminal owner below
 still selects and guards every removed working entry; independent authored and
 replay floors remain. Exact local API/layout belongs to Shared custody; current
 source and consumer qualification remain S04 obligations, not activation claims.
+
+**Sealed acquisition working set.** [DR-0168](../survival-program/decisions/DR-0168-sealed-acquisition-working-set.md)
+permits an atomic local MOVE of complete inactive acquisition custody to sealed
+protected storage, with a bounded exact reference in the same current journal.
+This is not grant/holder disposal or namespace retirement: every byte, replay
+floor, original request, SQL/native dependency and accepted-object path remains.
+Unknown/selected/actively referenced work stays in the working set. Bounds do
+not increase. A sealed reference supplies no new-work or effect authority.
+Later restoration uses the exact original, solely for the unchanged signed
+epoch-exclusion/dependency-closed retirement producer. Guarded deletion follows
+that actual retirement, never expiry alone or a serialized terminal assertion.
 
 Перед освобождением working-set slot owner MUST сохранить отдельные protected
 floors: next authored sequence для `(conversation, author device)` и highest

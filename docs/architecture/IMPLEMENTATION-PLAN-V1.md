@@ -256,12 +256,23 @@ receive+ACK22.135s: общего ускорения относительно dia
 По [DR-0167](../survival-program/decisions/DR-0167-bounded-history-read-availability.md)
 исправлено bounded read-only Directory503 recovery с обязательным independent
 fresh nonce-bound proof после valid empty catchup; Shared26/CLI70 focused PASS.
-Original46 recovery отказал до issuer callback: actual protected grant journal
-достиг128 entries. Это lifecycle/capacity blocker, не сетевой timeout. Старые
-entries нельзя удалять только по expiry: необходим signed selection-epoch
-advance и native/dependency closure. Caps, epoch и сохранённая custody не менялись.
-Первый следующий шаг — безопасная sustainable retention/replacement headroom,
-затем recovery исходного46 и новый matched benchmark на тех же3 CLI без reset.
+Original46 capacity deadlock устранён [DR-0168](../survival-program/decisions/DR-0168-sealed-acquisition-working-set.md):
+complete inactive originals atomically tier в sealed protected custody, не
+удаляя replay floors, native/SQL или unknown/captured dependencies и не повышая
+caps. [DR-0169](../survival-program/decisions/DR-0169-original-retrieve-namespace-joins.md)
+исправляет оба original Retrieve historical joins без current-ACK waiver.
+Recovery46 —53/53 PASS/native0,141/47 history/commands каждый; delivery47 —40/40
+first driver attempt PASS,144/48, zero resumes/waits/network failures. Mean
+fanout64.839s / receive+ACK22.114s не доказывают ускорения против45.
+Bounded acquisition batching (до8 originals в одной atomic inventory mutation)
+проверен Shared72/72 и финальным focused69/69, включая source128/129 grants и
+сохранение floors/before-issuer backpressure. Это не unfiltered full.
+Delivery48 functional PASS40/40 содержит один owned mailbox resume/non-success.
+49 на той же сборке PASS40/40 без resumes/waits/network failures:150/50 каждого.
+Fanout47.750s (-18.9% к45), receive/ACK24.125s (+9.0%); grant/idle work отличается,
+не causal A/B. ACK/local native/persistence latency остаётся открытой; следующий
+retained cursor50. Источник статуса и exact receipts —
+[matching report](../../deep-cli/docs/testing/cli-acquisition-lifecycle-2026-10-22.md).
 Production ingress lab остаётся FAIL на Compose Up, не закрыт другими PASS.
 Windows/Android/production, Registry image и quotas не затронуты.
 

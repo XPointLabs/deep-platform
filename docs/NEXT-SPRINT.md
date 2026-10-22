@@ -48,17 +48,33 @@ Directory503/history503 остановили следующий46. По
 добавлены один bounded exact history repeat при503/positive Retry-After<=5s и
 один independent fresh nonce-bound proof после valid empty catchup; история не
 заменяет current proof. Shared26/26 и CLI70/70 focused PASS/native0.
-**Первый оставшийся блокер same-profile recovery46:** лимит128 entries actual
-protected grant journal достигнут до issuer callback. IL1813 однозначно ведёт
-к `Protected retained-read holder custody is full`, не к сетевому timeout.
-Очистка допускается только после independently signed selection-epoch advance
-и dependency/native closure; внутри текущей семидневной эпохи это не разрешение
-удалить expired entries. Сброс, удаление custody, увеличение caps ради прогона
-и искусственное ускорение epoch не делались. Original46 остаётся незавершённым;
-новый47 не запускался. Сначала устранить lifecycle/capacity deadlock с negative
-tests и сохранением replay/unknown-work custody, затем original46 recovery и
-matched delivery timing на тех же3 аккаунтах. Оптимизация latency не закрыта.
-Итоговый cursor и замеры — в [matching report](../deep-cli/docs/testing/cli-page-control-latency-2026-10-22.md).
+**Acquisition lifecycle:** [DR-0168](survival-program/decisions/DR-0168-sealed-acquisition-working-set.md)
+устраняет128-entry working-set deadlock без удаления originals, floors или
+native/SQL: complete inactive custody переходит в sealed protected slots одной
+атомарной bounded транзакцией. Retirement остаётся отдельно закрыт signed epoch,
+original possible-issuance ceiling и всеми native/dependency prerequisites.
+Unknown/current/actively referenced work pinned; прежние caps сохранены.
+[DR-0169](survival-program/decisions/DR-0169-original-retrieve-namespace-joins.md)
+независимо аутентифицирует historical issuance и logical-assignment policy joins
+для original captured Retrieve; fresh current ACK остаётся обязательным.
+New Deposit selector заменяет несовместимый/tightened-ceiling winner до margin,
+не ослабляя strict grant result verification и не меняя captured Store/ACK.
+Original46 recovery завершён53/53 PASS/native0:141 сообщений /47 original local
+commands каждый, Active3/group epoch2, без reset/rekey/remint, automatic resumes
+или lease waits. Новый delivery47 —40/40 PASS с первой driver attempt,
+144 сообщений /48 команд каждый, zero network failures/non-success/resumes/waits.
+После batching (до8 complete originals, один inventory CAS) Shared72/72 и
+финальный focused69/69 PASS; реальные source128/129 grants, все replay floors,
+before-issuer backpressure и cold/atomic handoffs проверены. Это не unfiltered full.
+Delivery48 —40/40 functional PASS с одним owned mailbox resume/non-success;
+не clean no-recovery timing. Последующий49 на SAME runtime —40/40 PASS,
+150 сообщений /50 original commands каждый, zero resumes/waits/network failures/
+non-success. Mean fanout47.750s против58.911s в45 (-18.9%), но receive/ACK24.125s
+против22.135s (+9.0%). Grant/idle work отличается; это не causal A/B и не общее
+ускорение ACK. Local CPU остаётся около176s/round. Главный unfinished slice —
+native/persistence amplification и ACK latency; следующий retained cursor50.
+Точный terminal cursor, gate ledger и сравнение — в
+[новом matching report](../deep-cli/docs/testing/cli-acquisition-lifecycle-2026-10-22.md).
 Registry image и quotas неизменны; production ingress lab остаётся FAIL на
 Compose Up, без waiver TLS/ACL и без остановки чужого dev-контура. Отдельный
 multi-node rehearsal не квалифицирован: исходный helper несовместим с PS5.1,

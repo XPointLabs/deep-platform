@@ -4,6 +4,18 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0169](../survival-program/decisions/DR-0169-original-retrieve-namespace-joins.md)
+corrects historical Retrieve facts by authenticating distinct original issuance
+and assignment policy/projection joins in current protected history. Fresh
+independent ACK authority and all native/SQL/holder checks remain unchanged;
+no wire/API/state-generation or reset changes.
+
+[DR-0168](../survival-program/decisions/DR-0168-sealed-acquisition-working-set.md)
+separates bounded working acquisitions from complete sealed local custody.
+Atomic exact references preserve every replay floor and original byte; existing
+strict epoch/dependency retirement remains mandatory. No client/node wire,
+signed lifetime, algorithm, compatibility reader or reset is introduced.
+
 [DR-0167](../survival-program/decisions/DR-0167-bounded-history-read-availability.md)
 permits one exact read-only history retry per catchup after503 with explicit
 Retry-After1–5s, never429 or an extended authority/deadline. Signed history and
