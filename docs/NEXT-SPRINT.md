@@ -72,10 +72,29 @@ Delivery48 —40/40 functional PASS с одним owned mailbox resume/non-succe
 non-success. Mean fanout47.750s против58.911s в45 (-18.9%), но receive/ACK24.125s
 против22.135s (+9.0%). Grant/idle work отличается; это не causal A/B и не общее
 ускорение ACK. Local CPU остаётся около176s/round. Главный unfinished slice —
-native/persistence amplification и ACK latency; следующий retained cursor50.
+native/persistence amplification и ACK latency; на том checkpoint cursor50.
 Точный terminal cursor, gate ledger и сравнение — в
 [новом matching report](../deep-cli/docs/testing/cli-acquisition-lifecycle-2026-10-22.md).
-Registry image и quotas неизменны; production ingress lab остаётся FAIL на
+**Последующий signed-history slice:** [DR-0162](survival-program/decisions/DR-0162-exact-public-signature-arithmetic.md)
+меняет только bounded residency exact public signature arithmetic: O(1) random
+replacement вместо FIFO, прежние4096/8MiB/64KiB caps, exact-byte hits, positive
+native insertion и все current/replay/native checks сохранены. Protocol319/319,
+CLI70/70 и Linux ARM64 Node218/Protocol218 focused PASS; это не unfiltered full.
+Original50 завершён51/51 recovery PASS,153 messages/51 original commands каждый,
+с одним mailbox resume/lease wait, без reset/rekey/re-authoring. Новый51 —40/40
+PASS с первой driver attempt, zero resumes/waits/network failures/non-success,
+156/52 каждого. ACK24.125→22.151s (-8.2%), CLI CPU176.349→146.997s (-16.6%),
+но fanout47.750→52.055s (+9.0%) и active331.734→337.379s: общего ускорения нет.
+Work differs (fanout ONION6→7, ACK13→12), не causal A/B;1–2s не достигнуты.
+Supported LOCAL Build/Up/Verify обновили shared Protocol consumers;9 healthy,
+28 existing volumes/zero new. Auxiliary whole-mount JSON equality assertion
+FAIL не квалифицирует custody equality и не переименован в PASS.
+Current terminal cursor и полная таблица —
+[matching report](../deep-cli/docs/testing/cli-signed-history-memo-2026-10-23.md).
+Следующий retained cursor52; original50/51 не создавать заново. Remaining slice:
+ONION/authority waiting, native/persistence amplification и automatic idle-route/
+NotBefore scheduling, без waiver currentness/replay. Production/Windows/Android
+и quotas не затронуты; production ingress lab остаётся FAIL на
 Compose Up, без waiver TLS/ACL и без остановки чужого dev-контура. Отдельный
 multi-node rehearsal не квалифицирован: исходный helper несовместим с PS5.1,
 PS7 повтор остановлен180s image-build timeout до startup. Ingress static

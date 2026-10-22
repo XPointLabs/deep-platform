@@ -271,10 +271,24 @@ Delivery48 functional PASS40/40 содержит один owned mailbox resume/n
 49 на той же сборке PASS40/40 без resumes/waits/network failures:150/50 каждого.
 Fanout47.750s (-18.9% к45), receive/ACK24.125s (+9.0%); grant/idle work отличается,
 не causal A/B. ACK/local native/persistence latency остаётся открытой; следующий
-retained cursor50. Источник статуса и exact receipts —
+на этом checkpoint retained cursor50. Источник статуса и exact receipts —
 [matching report](../../deep-cli/docs/testing/cli-acquisition-lifecycle-2026-10-22.md).
+Последующий [DR-0162](../survival-program/decisions/DR-0162-exact-public-signature-arithmetic.md)
+slice: bounded exact-public signature memo использует O(1) random replacement,
+без изменения caps/authority/currentness/replay. Protocol319/CLI70 и реальный
+Linux ARM64 Node218/Protocol218 focused PASS. Supported LOCAL Build/Up/Verify
+обновили Registry/publisher/3 nodes;9 healthy,28 existing volumes, zero new.
+Отдельный auxiliary whole-mount JSON equality FAIL не квалифицирован как PASS.
+Original50 recovery51/51 PASS,153/51 каждый, один mailbox resume/lease wait;
+новый51 delivery40/40 PASS,156/52 каждый, zero resumes/waits/network failures.
+ACK24.125→22.151s и CPU176.349→146.997s, но fanout47.750→52.055s и active
+331.734→337.379s: общего ускорения нет, work differs, не causal A/B. Next52;
+original50/51 не переавторить. ONION/authority/native waiting, automatic idle
+peer-route/NotBefore scheduling и1–2s цель остаются открытыми. Exact ledger и
+таблица всех операций — в
+[matching report](../../deep-cli/docs/testing/cli-signed-history-memo-2026-10-23.md).
 Production ingress lab остаётся FAIL на Compose Up, не закрыт другими PASS.
-Windows/Android/production, Registry image и quotas не затронуты.
+Windows/Android/production и quotas не затронуты.
 
 Предыдущий NTS/ACK slice: DR-0161 расширяет обычную offline operational renewal
 явной retained mailbox ceremony. Действующая signed policy теперь4 sources /
