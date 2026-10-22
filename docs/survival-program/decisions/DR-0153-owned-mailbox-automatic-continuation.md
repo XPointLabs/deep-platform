@@ -1,7 +1,7 @@
 # DR-0153 — bounded automatic owned mailbox continuation
 
 Status: accepted for connected client orchestration; live qualification is separate
-Date: 2026-10-19
+Date: 2026-10-19; bounded ceiling refresh2026-10-23
 Owner: Mr. X (delegated architecture authority)
 
 The normative owner is
@@ -21,6 +21,18 @@ The helper authors neither replacement ciphertext nor a transport successor. Uns
 binding, expiry, rollback or revocation rejects; no silent destination/profile
 fallback or relaxed guard policy is introduced. Fresh outer ONION framing is not
 a replacement semantic message or permission to change captured inner bytes.
+
+The exact built-in `CryptographicException` with the closed Protocol label
+`Deep.MailboxGrant.Check=RouteExpiry` may schedule ONE uncaptured-authority
+discard and re-entry of the SAME already-owned operation. Client and issuer can
+have different independently acquired signed-closure ceilings. The denial does
+not authenticate the response, prove absence of effects or permit adopting it.
+Fresh proof/network acquisition and all original owner/result/expiry/signature
+checks remain mandatory. No queue/create/group action, captured bytes, custody,
+replay floor, holder key or signed interval is reset by this scheduling hint.
+Repeated ceiling denial, any other crypto failure and cancellation stop; this
+branch has no recursive retry, lease wait or added successor/remint authority.
+It is counted as an owned resume, not no-recovery/first-wire-attempt evidence.
 
 An existing protected retry lease may cause one bounded35s scheduling wait before
 the owner checks it again. The wait does not authorize replay or change any

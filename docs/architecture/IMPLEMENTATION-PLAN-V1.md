@@ -287,6 +287,21 @@ original50/51 не переавторить. ONION/authority/native waiting, aut
 peer-route/NotBefore scheduling и1–2s цель остаются открытыми. Exact ledger и
 таблица всех операций — в
 [matching report](../../deep-cli/docs/testing/cli-signed-history-memo-2026-10-23.md).
+Следующий native-floor slice: Node66 Windows/108 Linux focused PASS, native
+Build/Up/Verify9 healthy/unchanged native-volume bindings. At16+ head files,
+bounded4-worker acquisition сохраняет actual file/Unprotect/chain/anchor/index
+checks. Обычный RPC выполняет132–299 lease checks на фоне249 floor tips EACH;
+это структурный O(history) bottleneck, batching его не устраняет. DR-0153 разрешает
+один uncaptured-authority discard/re-entry после точного GrantRouteExpiry,
+без waiver/нового authoring/captured-byte changes; финальные Shared21/CLI70 PASS.
+Original52 recovery49/49 PASS (один mailbox resume/wait),159/53 каждый; новый53
+delivery40/40 PASS без resumes/waits/network failures,162/54 каждый. К51 fanout
+52.055→51.299s, ACK22.151→24.541s, active337.379→350.329s: общего ускорения нет.
+Live ceiling-refresh branch не наблюдалась: scheduling unit evidence отдельно.
+Next54;52/53 не переавторить. Приоритет — bounded current-floor/public-closure
+validation с review invariants/crash/rollback proof, не permission TTL cache.
+Точный scope/FAIL/native ledger/полная таблица —
+[matching report](../../deep-cli/docs/testing/cli-node-floor-read-batching-2026-10-23.md).
 Production ingress lab остаётся FAIL на Compose Up, не закрыт другими PASS.
 Windows/Android/production и quotas не затронуты.
 

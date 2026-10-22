@@ -497,6 +497,11 @@ This business-boundary amendment is recorded in
 [DR-0153](../survival-program/decisions/DR-0153-owned-mailbox-automatic-continuation.md);
 the adapter's single-attempt contract and captured binding remain unchanged.
 
+DR-0153 also permits one uncaptured-authority refresh after the exact closed
+`GrantRouteExpiry` denial. This is only scheduling for the same owned operation,
+not authentication of the denied result or a grant-expiry exception. All strict
+checks rerun under freshly acquired evidence; repeated/other denial stops.
+
 - Retry одного adapter MUST повторять byte-identical prepared attempt, пока его
   протокол этого требует.
 - До подтверждённого forwarding (`BeforeForward`) policy MAY создать новую

@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-22**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-23**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -14,7 +14,25 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий fanout/ACK slice:** по [DR-0165](survival-program/decisions/DR-0165-page-authority-and-noop-group-publication.md)
+**Текущий terminal checkpoint:** original52 recovery49/49 PASS; новый53 delivery40/40
+PASS,162 messages/54 original commands каждый, zero resumes/waits/network failures.
+Next retained cursor54, те же3 CLI без reset;52/53 не переавторить. Main blocker —
+O(history) authority/native work: на каждой ноде249 directory-floor tips,132–299
+lease checks per RPC, плюс повторное полное чтение/клонирование public closure.
+Candidate IO batching сохраняет каждый native/Unprotect/anchor/index guard;
+целевые Node66 Windows/108 Linux, финальные Shared21/CLI70 PASS. Общее ускорение НЕ доказано:
+к51 fanout52.055→51.299s, ACK22.151→24.541s, active337.379→350.329s. Work differs.
+[DR-0153](survival-program/decisions/DR-0153-owned-mailbox-automatic-continuation.md)
+добавляет один bounded uncaptured-authority refresh только после `GrantRouteExpiry`;
+strict result/route/replay checks остаются. В live52/53 эта новая ветка не сработала;
+её scheduling проверен source tests, не объявлять end-to-end qualification.
+Следующий slice — bounded current-floor/closure validation с явным proof invariants
+и crash/rollback coverage, НЕ TTL permission-cache или ещё один arithmetic memo.
+Все таблицы и исходные FAIL — в
+[matching report](../deep-cli/docs/testing/cli-node-floor-read-batching-2026-10-23.md).
+Windows/Android/production и GitHub Releases не тронуты;1–2s/full/release open.
+
+**Предыдущий page/control slice:** по [DR-0165](survival-program/decisions/DR-0165-page-authority-and-noop-group-publication.md)
 ordinary send не входит в полную GSR publication/rechunking при отсутствии
 незавершённых control writes. Это scheduling hint из actual protected root,
 не permission: actual send независимо проверяет head/membership и все исходные
@@ -91,7 +109,7 @@ Supported LOCAL Build/Up/Verify обновили shared Protocol consumers;9 hea
 FAIL не квалифицирует custody equality и не переименован в PASS.
 Current terminal cursor и полная таблица —
 [matching report](../deep-cli/docs/testing/cli-signed-history-memo-2026-10-23.md).
-Следующий retained cursor52; original50/51 не создавать заново. Remaining slice:
+На том checkpoint retained cursor52; original50/51 не создавать заново. Remaining slice:
 ONION/authority waiting, native/persistence amplification и automatic idle-route/
 NotBefore scheduling, без waiver currentness/replay. Production/Windows/Android
 и quotas не затронуты; production ingress lab остаётся FAIL на
