@@ -238,7 +238,13 @@ lifecycle по [DR-0170](../survival-program/decisions/DR-0170-anchored-director
 без сброса global revision и с actual native/anchor/index проверками. Original
 Store после ротации использует два строгих historical namespace joins по
 [DR-0171](../survival-program/decisions/DR-0171-original-store-namespace-joins.md).
-Текущий original54 recovery, native/source результаты и latency остаются в
+Original55 recovery43/43 и новый56 delivery40/40 PASS на тех же3 CLI без reset;
+следующий retained cursor57. [DR-0173](../survival-program/decisions/DR-0173-idle-authority-scheduling.md)
+устраняет полный borrow из idle due-check, не меняя actual business guards.
+Fanout49.370s, receive+ACK19.736s;1–2s/full/package/release остаются open.
+Точные current receipts и ограничения — в
+[новом checkpoint](../../deep-cli/docs/testing/cli-idle-authority-scheduling-2026-10-23.md).
+Предыдущий original54 recovery, native/source результаты и latency остаются в
 [едином checkpoint](../../deep-cli/docs/testing/cli-anchored-floor-lifecycle-2026-10-23.md);
 Windows/Android не возобновлять до проверенного CLI пути. Focused не закрывает
 full/package/sustained/S05 acceptance и не доказывает1–2s delivery.

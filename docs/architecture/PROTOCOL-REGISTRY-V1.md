@@ -4,6 +4,10 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0173](../survival-program/decisions/DR-0173-idle-authority-scheduling.md)
+separates a denial-only idle due hint from actual public-authority borrow.
+Business protected/freshness/replay checks, wire and state formats are unchanged.
+
 [DR-0172](../survival-program/decisions/DR-0172-pending-group-resume-and-delivery-recovery.md)
 separates owned pending group resume from full completed-Store audit and marks
 delivery-only recovery separately from latency/full acceptance. Wire, private

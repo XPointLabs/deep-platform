@@ -14,7 +14,24 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий slice (2026-10-23):** original54 delivery-recovery49/49 PASS/native0,
+**Текущий slice (2026-10-23):** original55 delivery recovery43/43 PASS/native0,
+те же3 CLI без reset;168 сообщений/56 original commands каждый. Новый56 —
+40/40 PASS с первой попытки,171 сообщений/57 commands каждый, Active3/epoch2.
+Zero failed/nonSuccess network, automatic resumes/waits и maintenance failures.
+Следующий retained cursor57;55/56 НЕ переавторить. По
+[DR-0173](survival-program/decisions/DR-0173-idle-authority-scheduling.md) idle
+due-check больше не делает полный protected/network borrow и не приобретает
+отсутствующий memo; actual business validation и replay guards неизменны.
+Shared13/13, CLI70/70 focused PASS; source checkpoints Shared `4aa5715`,
+CLI `2ade561`. Fanout mean49.370s против51.299s в53 (−3.8%),
+receive+ACK19.736s против24.541s (−19.6%); active315.769s против350.329s.
+Это observed comparison, не causal A/B и не1–2s: ONION/native/authority overhead
+остаётся. Полная таблица и точные immutable receipts —
+[checkpoint](../deep-cli/docs/testing/cli-idle-authority-scheduling-2026-10-23.md).
+Full/archive54, canonical full/package/rehearsal/device/release остаются open;
+Windows/Android/production и GitHub Releases не тронуты.
+
+**Предыдущий checkpoint:** original54 delivery-recovery49/49 PASS/native0,
 те же3 CLI,165 сообщений/55 original commands каждый, Active3/epoch2.54 не
 переавторить. Новый55 — FAIL первого fanout199.632s: Cancelled в protected-root
 readback; A56 authored/pending, B/C55. Следующий шаг — original55 recovery,

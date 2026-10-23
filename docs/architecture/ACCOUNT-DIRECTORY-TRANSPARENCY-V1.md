@@ -846,6 +846,15 @@ or queue unbounded refreshes. Failed refresh grants no stale fallback. Expired
 uncaptured authority may be reacquired for new work; captured requests/loans
 retain their exact bytes and original deadline. No delivery retry is implied.
 
+Under [DR-0173](../survival-program/decisions/DR-0173-idle-authority-scheduling.md),
+an idle due check is only a scheduling hint from the retained public deadline,
+not an authority borrow or availability assertion. Missing memo does no work;
+the next business operation acquires it on demand. Not-yet-due checks avoid
+protected/network validation, while preserving active scope, cancellation and
+same-boot nondecreasing clock even after discard. Due refresh uses the complete
+existing producer; every business borrow still rejoins actual protected custody
+and all freshness/issuer guards above. No successful check or deadline is cached.
+
 For a node's observational verifier, an exact immutable signature result need
 not be recomputed merely because ten resource-clock seconds elapsed. Reuse
 still requires the original live capability, exact actual source bytes and
