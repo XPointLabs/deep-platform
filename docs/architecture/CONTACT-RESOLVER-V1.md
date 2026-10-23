@@ -8,6 +8,15 @@ result with XMC2 carrying MCG3. Historical exact V1 tables below do not authoriz
 old producers/readers; current machine registry and accepted decisions prevail.
 Implementation order is owned only by [the unified plan](IMPLEMENTATION-PLAN-V1.md).
 
+[DR-0174](../survival-program/decisions/DR-0174-connection-contact-maintenance.md)
+composes the existing proactive publication owner, one ordinary receive/ACK
+page and native advertisement to all retained accepted device scopes in one
+connection cycle. Faulted peers always defer; expired peers remain deferred until
+actual receive, but a caller-known descriptor may carry ONLY the existing strict
+DR-0159 native re-introduction control. Result counts are not readiness or
+permission. This consumer does not infer a missing
+resolver capability, change signed windows, or qualify periodic/device operation.
+
 This contract closes the service side of arbitrary-contact bootstrap. It is a
 clean-break protocol: the Registry is not an invite directory, a bare account ID
 is not resolvable, and a short-lived deposit route is not embedded in a long-lived

@@ -14,7 +14,29 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий slice (2026-10-23):** full retained57 —46/46 PASS/native0, НЕ delivery-only:
+**Текущий slice (2026-10-23):** connection cycle по
+[DR-0174](survival-program/decisions/DR-0174-connection-contact-maintenance.md)
+прошёл33 команды/native0 на тех же3 CLI: все6 native peer-route directions
+актуальны,3 controls доставлены/ACK, quiescent replay без новых controls/dedup.
+Старые offline relationships сохранены и явно deferred; descriptors — реальные
+caller-known данные, не authority. Новый59 delivery —40/40 PASS/native0,
+180 group messages/60 original local commands каждый, Active3/epoch2.
+Следующий retained cursor60;55–59 НЕ переавторить. В59 zero network
+failed/nonSuccess, automatic resumes/waits. Fanout46.312s (57:49.001s),
+receive+ACK20.894s (57:18.092s): fanout лучше, ACK хуже,1–2s НЕ достигнуты.
+58 тоже завершён40/40, но с1 Store resume/1 lease wait и fanout70.945s;
+это НЕ first-wire/no-recovery evidence. Убрано лишнее полное35s ожидание:
+adapter передаёт только оставшийся denial interval0..35s; каждый retry всё равно
+проверяет actual protected lease/custody. Shared23+45, CLI87, scenario22/9 PASS.
+Точные receipts, таблица всех операций, сохранённые FAIL и ограничения —
+[checkpoint](../deep-cli/docs/testing/cli-contact-maintenance-2026-10-23.md).
+**Следующие обязательные шаги:** снизить измеренные ONION/native/authority и ACK
+costs, безопасный periodic lifecycle, durable descriptor exchange/address book.
+Connected command сам по себе не закрывает background liveness/S05 acceptance.
+Windows/Android/production и GitHub Releases не тронуты; canonical full/package/
+device/release остаются open.
+
+**Предыдущий full checkpoint:** retained57 —46/46 PASS/native0, НЕ delivery-only:
 все3 cold Store audits (124/117/117 элементов), post-replay empty/dedup и
 GSR/control replay прошли.174 group messages/58 original commands каждый,
 Active3/epoch2; следующий retained cursor58,57 НЕ переавторить. Zero network

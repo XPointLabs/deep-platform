@@ -1,7 +1,7 @@
 # DR-0153 — bounded automatic owned mailbox continuation
 
 Status: accepted for connected client orchestration; live qualification is separate
-Date: 2026-10-19; bounded ceiling refresh2026-10-23
+Date: 2026-10-19; bounded ceiling refresh/remaining-lease scheduling2026-10-23
 Owner: Mr. X (delegated architecture authority)
 
 The normative owner is
@@ -34,8 +34,14 @@ Repeated ceiling denial, any other crypto failure and cancellation stop; this
 branch has no recursive retry, lease wait or added successor/remint authority.
 It is counted as an owned resume, not no-recovery/first-wire-attempt evidence.
 
-An existing protected retry lease may cause one bounded35s scheduling wait before
-the owner checks it again. The wait does not authorize replay or change any
+An existing protected retry lease may cause one scheduling wait of AT MOST35s
+before the owner checks it again. The adapter captures the remaining interval
+from its own exact denial clock reading and retained NotBefore; the scheduler
+does not restart another full35s after expensive recovery preparation. Clamp
+this hint to0..35s. Without that captured reading, the bounded35s delay remains.
+The remaining interval is denial-only metadata, never replay permission; a clock
+change or still-active lease must fail at the next actual owner, without another
+wait/loop. The wait does not authorize replay or change any
 deadline. Another unknown or denied authority remains pending/unknown. Cancellation
 stops without resetting custody. Driver-attempt1 is reported separately from owned
 automatic resumes and waits, never advertised as wire-attempt1.

@@ -241,10 +241,25 @@ Store после ротации использует два строгих histo
 Полный retained57 —46/46 PASS: current cold Store audit и GSR/control replay
 проверены на всех3 CLI. Attachment document/PNG прошли через ту же retained пару,
 включая возобновление original offer после явного authenticated route repair.
-Proactive publication/route lifecycle для всех контактов всё ещё обязателен:
-не считать явный repair автоматическим product fix. Точные current receipts —
+Shared connection consumer по
+[DR-0174](../survival-program/decisions/DR-0174-connection-contact-maintenance.md)
+прошёл33 команды/native0: same3 CLI, все6 peer-route directions current,
+реальные supplied descriptors и native re-introduction, quiescent no-op без
+дубликатов. Старые offline contacts остаются явно deferred. Periodic/background
+lifecycle и durable descriptor exchange/address book всё ещё обязательны;
+connected cycle или явный repair сами по себе их не закрывают. Точные full57 receipts —
 [checkpoint](../../deep-cli/docs/testing/cli-full-retained-and-attachments-2026-10-23.md).
-Следующий retained group cursor58; Windows/Android пока не возобновлять.
+Новый58 delivery40/40 завершён с1 Store resume/1 lease wait; новый59 —40/40
+PASS без network failures, resumes/waits:180 messages/60 original commands каждый.
+Следующий retained group cursor60;55–59 не переавторить. Fanout59 mean46.312s
+против49.001s в57, receive+ACK20.894s против18.092s (хуже). Убрано повторное
+полное35s ожидание в owned recovery: remaining denial interval0..35s, actual
+protected retry checks неизменны (amended DR-0153). Shared focused23+45 и CLI87
+PASS; это не canonical full/source/package/release. Точные source/runtime inputs,
+таблица всех операций и ограничения —
+[current checkpoint](../../deep-cli/docs/testing/cli-contact-maintenance-2026-10-23.md).
+Следующие шаги: измеренные ONION/native/authority costs и ACK, затем безопасный
+periodic lifecycle; Windows/Android пока не возобновлять.
 Предыдущие original55 recovery43/43 и новый56 delivery40/40 PASS на тех же3 CLI без reset.
 [DR-0173](../survival-program/decisions/DR-0173-idle-authority-scheduling.md)
 устраняет полный borrow из idle due-check, не меняя actual business guards.

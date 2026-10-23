@@ -487,7 +487,11 @@ waive a signed window or change transport/privacy profile. A live prepared
 attempt remains byte-identical. Existing owner-only authenticated retirement /
 transport-successor rules are neither bypassed nor expanded by this helper;
 retained audit tails and semantic dedup remain mandatory. If the original retry lease
-still blocks dispatch, one bounded35s scheduling wait is allowed; the next owner
+still blocks dispatch, one scheduling wait of at most35s is allowed. The adapter's
+remaining interval from the SAME denial clock reading and retained NotBefore
+avoids restarting a full35s after preparation. It is clamped to0..35s; absent that
+captured reading, the bound remains35s. This is a denial-only scheduling hint,
+not a wall-clock/currentness or lease-expiry assertion; the next owner
 check, not the wait or OS wall clock, must authorize replay. A second unknown,
 failed authority or cancellation stops with original custody retained. No failed
 attempt is relabelled success. CLI receipts expose owned Store/mailbox resumes
