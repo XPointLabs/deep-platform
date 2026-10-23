@@ -14,7 +14,28 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Текущий slice (2026-10-23):** original55 delivery recovery43/43 PASS/native0,
+**Текущий slice (2026-10-23):** full retained57 —46/46 PASS/native0, НЕ delivery-only:
+все3 cold Store audits (124/117/117 элементов), post-replay empty/dedup и
+GSR/control replay прошли.174 group messages/58 original commands каждый,
+Active3/epoch2; следующий retained cursor58,57 НЕ переавторить. Zero network
+failed/nonSuccess, automatic resumes/waits; fanout49.001s, receive+ACK18.092s.
+Документ524325 bytes A→B и PNG68 bytes B→A прошли CLI E2E26 commands/native0:
+полные output SHA256, cold prepare/download, exact Store retry, dedup и две
+ожидаемые overwrite refusals. Исходный document offer возобновлён, не заменён.
+Проверки сценариев15+9+4 PASS; application runtime неизменен, без пересборки.
+CLI harness/evidence checkpoint `e4493cf`; Shared `4aa5715` не менялся.
+**Следующий обязательный product slice:** proactive автоматический lifecycle
+publication/route для всех retained contacts. Attachment-send корректно отказал
+на истёкшем XRA1; штатный явный repair6/6 PASS обновил Bob→Alice, но потребовал
+Store resume1/mailbox resume1/lease waits2. Это НЕ автоматическое решение liveness.
+Повторять тот же asset/offer, не обходить expiry и не сбрасывать аккаунты.
+Полные таблицы, receipts и ограничения —
+[checkpoint](../deep-cli/docs/testing/cli-full-retained-and-attachments-2026-10-23.md).
+Full/archive54 остаётся историческим FAIL; текущий полный57 закрывает matching
+cold-audit/control path, но не GSR long-offline/full source/package/device/release.
+Windows/Android/production и GitHub Releases не тронуты.
+
+**Предыдущий delivery checkpoint:** original55 delivery recovery43/43 PASS/native0,
 те же3 CLI без reset;168 сообщений/56 original commands каждый. Новый56 —
 40/40 PASS с первой попытки,171 сообщений/57 commands каждый, Active3/epoch2.
 Zero failed/nonSuccess network, automatic resumes/waits и maintenance failures.
