@@ -24,6 +24,77 @@
 а не сохранение дефектной архитектуры ради малого числа изменённых строк.
 Это уточнение S05 единого плана, не параллельный backlog.
 
+**Коррекция по измерениям: DR-0175 не принят как ускорение.** Проверка
+выбранного события на одном actual native provider/file, три чередующихся
+повтора; медианы wall time из isolated focused03:
+
+| Archived rows | Прежний full verifier | Active map + full cipher scan |
+| --- | ---: | ---: |
+| 100 | 2.72ms | 6.92ms |
+| 1000 | 18.97ms | 51.34ms |
+| 10000 | 1175.74ms | 1907.05ms |
+
+Это structural native microbenchmark, не время доставки и не сравнение с
+Signal. Сокращение payload verifications N→1 не окупило полный cipher scan и
+обход metadata. На этой машине одна такая проверка10k уже превышает1s;
+повторение её на каждом boundary не может дать ограниченную стоимость при
+росте истории. Correctness tests не превращают этот результат в performance
+acceptance. Production rollout этого кандидата как ускорения запрещён.
+Код correctness/диагностик зафиксирован в Shared `dd07787`, CLI `d0e19a5`;
+Node baseline нового пакета — `e9222d7`. Shared focused02 сохранил55PASS/3FAIL;
+исправленные03:8PASS и LocalHistory04:2PASS, CLI41PASS, pure harness40+9PASS.
+Builds без warnings/errors; exact receipts и ограничения —
+[Shared checkpoint](../deep-client-shared/docs/testing/dr0175-active-native-correctness-and-cost-2026-10-26.md),
+[CLI checkpoint](../deep-cli/docs/testing/cli-concurrent-engineering-driver.md).
+Это не full/package/release acceptance. Новый connected round ещё не выполнен.
+Actual retained file metadata перед диагностикой: protected aggregate2.13–2.90MB
+на роль,7–8 native SQL файлов/8.80–10.51MB. Содержимое не читалось. Это размеры
+файлов, не измеренные traffic/allocated bytes; умножение на старые counts не
+выдавать за runtime byte measurements.
+
+**Следующий архитектурный шаг P1 — ограниченный active state и authenticated
+archive index.** Не продолжать косметические оптимизации полного обхода.
+
+1. Перед новым форматом выполнить один короткий локальный диагностический
+   раунд на тех же3 CLI: `Rounds=1`, population3, следующий cursor60. Его цель —
+   фактические counts/bytes/CPU полного пути и remaining protected-aggregate
+   costs; это не квалификация p95. Сначала согласованный source/security пакет
+   и actual retained preflight. Не сбрасывать профили, не переавторять55–59.
+2. Спроектировать один закрытый private checkpoint/index contract: bounded
+   текущий TRS/working suffix и независимо защищённый SHA-256 root индекса в
+   том же SQLCipher. Flat HistoryDigest не доказывает membership/absence без
+   чтения всего prefix. Нужны проверяемые membership/nonmembership paths для
+   operation ID, event hash и точных порядковых ссылок; неизвестный/missing
+   referenced node — отказ, SQL negative — не отсутствие. Новые крипто/DB
+   зависимости не вводить. Форматы и owner contract фиксируются до кода.
+3. Отдельно закрыть route head/fault/consent/predecessor и Braid consumers:
+   opID-index сам по себе их не заменяет. Сохранять exact Store/ACK originals,
+   quorum receipts, unknown outcomes и lifetime collision semantics. Root,
+   key, registration, floor, time и revoke читаются реально на необходимых
+   callback/effect границах; proof/permission через callback не кешируется.
+4. Подготовить явное resumable enrollment тех же сохранённых аккаунтов через
+   полный authenticated source audit и существующий prefix-plan owner:
+   protected progress → bounded node batches → final exact source/index audit
+   → guarded root adoption. Ключи, instance, originals и counters сохраняются.
+   Ordinary indexed runtime имеет один контракт; нет legacy ordinary fallback,
+   fresh-account обхода или восстановления пропавшего уже-enrolled anchor из
+   SQL. Это пока проект, а не готовая безопасная процедура преобразования.
+5. Явно изменить требование к неиспользуемому архиву: полный физический и
+   semantic audit выполняется при cold/full audit и обслуживании; используемые
+   страницы/записи проверяются при доступе по independently anchored proof.
+   Немедленное обнаружение повреждения любого неиспользуемого archive byte
+   больше не обещается. Это изменение времени обнаружения, не эквивалентная
+   замена прежнего full-scan требования. AEAD/PQ, аутентификация используемых
+   данных, antirollback, replay и two-replica durability сохраняются. До
+   принятия точного нормативного контракта и негативных тестов новый путь
+   не включать; один cached SQLite page не доказывает actual selected read.
+6. Проверить оставшиеся линейные расходы: `JournaledDeepSecureStorage.Load`
+   читает/Unprotect/Decode весь aggregate даже для ReadOwnedBatch; Commit
+   переписывает aggregate. Изолировать bounded current roots от больших данных
+   и объединить consumers одного closed owned участка. Не объявлять O(1)
+   или≤1s лишь после добавления native index. Затем P3/P4 ниже и повторные
+   реальные измерения; full audits/enrollment остаются отдельными затратами.
+
 **Основание.** В успешном retained59: fanout двум получателям46.312s,
 receive+ACK20.894s; CPU отправителя27.8–32.6s,1993–2450 StorageLoad и58–64
 application SQL opens/integrity checks на fanout. В sampled node RPC209.1

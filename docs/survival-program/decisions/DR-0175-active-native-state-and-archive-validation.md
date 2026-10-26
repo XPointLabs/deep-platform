@@ -1,7 +1,12 @@
 # DR-0175 — active native state and archived payload validation
 
-Date: 2026-10-26. Owner: Mr. X. Status: accepted design correction;
-implementation, hostile-state tests and connected latency remain unqualified.
+Date: 2026-10-26. Owner: Mr. X. Status: accepted correctness contract;
+focused source evidence exists, full qualification and connected latency remain
+unqualified. The active-map candidate is **rejected as a demonstrated performance
+improvement**: isolated measurements are slower than the prior full verifier.
+See [NEXT-SPRINT](../../NEXT-SPRINT.md) for the bounded-state/index redesign and
+the separately declared unused-archive detection-timing change it would require.
+This decision does not authorize production rollout as a latency fix.
 
 ## Decision and scope
 
