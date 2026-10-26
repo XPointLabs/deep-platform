@@ -142,6 +142,14 @@ production rollout, release publication и main merge этим планом не
 consumer map и отрицательные тесты; ciphertext-image cache после callbacks
 отклонён из-за недоказанной защиты от A→B→A. Это конкретный structural slice,
 а не очередной общий пункт «ускорить authority».
+Проверка applicability выявила обязательную зависимость: native prefix compaction
+сейчас вызывается только тестами, а retained59 не содержит HistoryCount/Basis
+замеров. Нельзя предполагать, что его история уже архивирована. Поэтому сначала
+подключить существующий authenticated prefix-maintenance owner к реальному
+account/session lifecycle с bounded batch и amortized trigger, сохранив original
+pending plan/recovery. Добавить working/archive counts в безопасные диагностики.
+Не оптимизировать неиспользуемый archive path и не вызывать полный compaction
+на каждом сообщении. Warm maintenance pauses входят в измерения, не вырезаются.
 
 **Статус:** план принят к реализации; P0–P5 открыты, целевое время не доказано.
 Retained59 ниже — baseline, а не результат нового owner architecture.

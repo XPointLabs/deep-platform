@@ -71,6 +71,14 @@ Pending original operations are not reauthored after lookup or proof failure.
 
 ## Cold, audit and lifecycle
 
+The runtime must first use the existing authenticated prefix compaction owner:
+current source has only test callers, so an archived prefix in the retained CLI
+cohort cannot be assumed. Wire bounded, amortized maintenance into the actual
+per-session account lifecycle. Prepare/stage/resume the same protected plan;
+respect all pinned original operations and preserve counts/ordinals. Do not
+compact on every message, remove obligations to meet a threshold, or hide a
+maintenance pause from warm latency samples. Record working/archive counts.
+
 The first command on a real account-runtime owner performs full native catalog/
 session archive validation. Existing persistent CLI profiles retain that owner;
 network-context invalidation does not create a new account. A genuinely new
@@ -85,6 +93,9 @@ Explicit full audit, checkpoint production and recovery of an interrupted
 checkpoint/compaction continue authenticating all required original payloads.
 Use the existing exact intent/SQL/root adoption protocol; no root is reconstructed
 from incomplete state and no reset changes ordinals, ratchet state or custody.
+Finish the existing exact pending-plan recovery before cold full-audit admission;
+a legitimate interrupted before/after prefix is not silently discarded or
+classified as unrecoverable merely because the audit ran out of order.
 
 ## Explicit guarantee change
 
