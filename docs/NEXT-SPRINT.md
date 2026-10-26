@@ -47,6 +47,20 @@ Builds без warnings/errors; exact receipts и ограничения —
 [Shared checkpoint](../deep-client-shared/docs/testing/dr0175-active-native-correctness-and-cost-2026-10-26.md),
 [CLI checkpoint](../deep-cli/docs/testing/cli-concurrent-engineering-driver.md).
 Это не full/package/release acceptance. Новый connected round ещё не выполнен.
+Локальные supported Build/Up/Verify завершились native0; все9 сервисов healthy,
+ключи и named volumes сохранены. Дополнительный upgrade wrapper сохранил
+native1/Accepted=false: равенство всех bind mounts не подтверждено. Это допускает
+локальную диагностику, но не квалифицирует upgrade или production rollout.
+Retained preflight подтвердил те же3 профиля, group revision11/epoch2,180 событий
+и60 локальных команд у каждого; все6 contact routes истекли. Обычный
+ConnectionCycle обновил публикацию первой роли, затем остановился на второй:
+`ProtectedState / RouteTimePMS2NotBefore` в проверке retained threshold.
+Групповых сообщений не создано, следующий cursor остаётся60. Сначала исправить
+причину несогласованности issued PMS2 и доверенного времени, сохранив original
+pending state и строгую проверку интервала; затем продолжить тот же diagnostic.
+Источник: CLI `artifacts/concurrent-engineering-driver-20261026/blocked01.terminal.json`
+(source inputs unchanged; visibility/ACK не наблюдались). Время maintenance
+не считать warm message latency; не запускать новый раунд ради обхода отказа.
 Actual retained file metadata перед диагностикой: protected aggregate2.13–2.90MB
 на роль,7–8 native SQL файлов/8.80–10.51MB. Содержимое не читалось. Это размеры
 файлов, не измеренные traffic/allocated bytes; умножение на старые counts не

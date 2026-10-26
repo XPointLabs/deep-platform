@@ -8,6 +8,11 @@ result with XMC2 carrying MCG3. Historical exact V1 tables below do not authoriz
 old producers/readers; current machine registry and accepted decisions prevail.
 Implementation order is owned only by [the unified plan](IMPLEMENTATION-PLAN-V1.md).
 
+[DR-0078](../survival-program/decisions/DR-0078-did2-owned-publication-renewal.md#2026-10-26--bounded-admission-of-an-exact-future-start-threshold)
+permits bounded waiting for an authenticated exact renewal threshold to enter
+the client's conservative time window, within the original acquisition deadline.
+It never relaxes signed starts/expiry or authorizes another request/winner.
+
 [DR-0174](../survival-program/decisions/DR-0174-connection-contact-maintenance.md)
 composes the existing proactive publication owner, one ordinary receive/ACK
 page and native advertisement to all retained accepted device scopes in one

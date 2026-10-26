@@ -62,3 +62,42 @@ atomic promotion and callback-free reopen on the same account/address. In-proces
 signed replicas are explicitly not physical or server durability evidence.
 Registry publication predecessor transport/generation reservation, matched
 provision/builds and same-account Windows/Android delivery remain release gates.
+
+## 2026-10-26 — bounded admission of an exact future-start threshold
+
+A freshly signed threshold can start after the recipient's conservative lower
+time bound while remaining inside its independently verified uncertainty window.
+Server issuance and client admission use different authenticated time anchors;
+rereading the same live clock does not make those bounds identical. This is not
+permission to accept a threshold before its signed start.
+
+After fetching the exact phase1 response, the owner MAY schedule bounded natural
+convergence under the ORIGINAL linked acquisition deadline, including time
+already spent fetching. It MUST retain the same request, nonce and response;
+no refetch, new issuance, backdating, local UTC, skew allowance or deadline reset.
+The scheduling condition is a closed Protocol-produced result, never exception
+message matching or a generic cryptographic-error retry. Before producing it,
+Protocol MUST authenticate all exact request/response, scope, predecessor,
+issuance-head and threshold signatures and check every other time constraint.
+Every future start MUST lie at/below the current trusted upper bound; invalid
+intervals, expiry, changed authority, bad signatures and unrelated failures
+still reject immediately. A future start must not hide another record's expiry
+or invalid signature. The result carries only a bounded scheduling duration,
+never authority or a reusable verified context.
+
+Each wait is cancellable and bounded by the remaining original deadline and a
+finite attempt limit. Following a wait, the owner reacquires actual protected
+custody/floor, current key/authority/revocation and same-boot trusted time before
+repeating full verification of the SAME response. Actual success still requires
+`start <= trustedLower && trustedUpper < expiry` for every required record,
+followed by the existing guarded adoption and independent readback. No positive
+permission or private key loan crosses the wait. Exhaustion, cancellation or
+any changed guard preserves the exact pending proposal and fails closed; a later
+explicit resume remains subject to the original winner and normal custody rules.
+
+This changes scheduling only. Wire bytes, private journal versions, signed
+lifetimes, replay protection and threshold quorum remain unchanged. Tests must
+cover genuine future-start convergence, mixed expiry/invalid-signature rejection,
+deadline exhaustion, cancellation, boot/revoke/root changes after the wait and
+one exact fetch/adoption. Connected qualification is separate; this lifecycle
+wait is never subtracted from an observed maintenance/command duration.
