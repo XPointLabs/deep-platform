@@ -61,6 +61,21 @@ pending state и строгую проверку интервала; затем 
 Источник: CLI `artifacts/concurrent-engineering-driver-20261026/blocked01.terminal.json`
 (source inputs unchanged; visibility/ACK не наблюдались). Время maintenance
 не считать warm message latency; не запускать новый раунд ради обхода отказа.
+Для этого отказа реализован кандидат bounded convergence из уточнения
+[DR-0078](survival-program/decisions/DR-0078-did2-owned-publication-renewal.md#2026-10-26--bounded-admission-of-an-exact-future-start-threshold):
+тот же authenticated response, максимум3 проверки/2 ожидания внутри исходного
+30s deadline, без повторной выдачи и ослабления signed windows. Protocol
+`2841c35`:34 focused PASS, production graph/build native0,0 warnings/errors.
+Shared candidate `84f47d2`, run `owned-renewal-threshold-convergence-20261026-02`: build native0/0 warnings,
+**18PASS/1FAIL/0skip, test native1**,2208 inputs unchanged. Единственный FAIL —
+`FullSignedRetainedEntryKeepsEveryAuthorityCheck(mode:1)`: fixture получает
+`ClosureReferenceMismatch` до требуемой проверки XRC witness signature.
+Этот пробел не закрыт и не исключён из гейта. Автоматическая проверка безопасности
+прервала дальнейшую работу субагента; отклонённое изменение не повторялось.
+Кандидат Shared не квалифицирован и в connected runtime не активирован.
+Сначала закрыть этот конкретный тестовый пробел разрешённым способом и пройти
+тот же ограниченный пакет; затем fresh CLI publish `--no-restore`, продолжение
+SAME pending maintenance и retained preflight перед тремя сообщениями.
 Actual retained file metadata перед диагностикой: protected aggregate2.13–2.90MB
 на роль,7–8 native SQL файлов/8.80–10.51MB. Содержимое не читалось. Это размеры
 файлов, не измеренные traffic/allocated bytes; умножение на старые counts не
@@ -108,6 +123,30 @@ archive index.** Не продолжать косметические оптим
    и объединить consumers одного closed owned участка. Не объявлять O(1)
    или≤1s лишь после добавления native index. Затем P3/P4 ниже и повторные
    реальные измерения; full audits/enrollment остаются отдельными затратами.
+
+**Конкретизация следующего storage design review (ещё не разрешение формата).**
+Предпочтительный вариант P1.1 — один небольшой фактически прочитанный protected
+manifest как общая точка commit и полная карта slot membership/absence; большие
+значения — отдельно аутентифицированные ограниченные объекты. Manifest связывает
+scope/instance, exact object identity/type/version/length/hash и случайные
+per-object keys. Один actual platform `Unprotect` на inventory admission,
+затем локальная проверка выбранных объектов через уже используемый .NET AES-GCM;
+новую библиотеку или второй E2EE stack не добавлять. Не выполнять отдельные
+произвольные provider callbacks между корнями одного atomic batch.
+
+Сохранить существующие process lease, exact CAS/insert/delete и одну атомарную
+замену authoritative manifest: сначала durable staging новых объектов, затем
+guarded manifest adoption. Missing referenced object — corruption, не absence;
+revision сам по себе не antirollback anchor. Независимые floors и actual
+post-callback checks остаются. Удаление ссылки не заменяет actual durable cleanup
+retired secrets: до сообщения об успешном retirement закрыть точные cleanup
+obligations, не удаляя pinned Store/ACK originals. Нужны новый точный private
+format/AAD/nonce contract и explicit resumable enrollment прежних профилей;
+ordinary legacy fallback, reset и восстановление потерянного adopted root
+запрещены. Existing1024-slot cap ограничивает manifest, но не делает его1KiB;
+размеры/bytes/calls измерить отдельно. Это выбранное направление review, а не
+готовый storage engine или обещание≤1s. P1.2 — authenticated native archive index
+из шагов2–5; оба изменения нужны до утверждения bounded ordinary state path.
 
 **Основание.** В успешном retained59: fanout двум получателям46.312s,
 receive+ACK20.894s; CPU отправителя27.8–32.6s,1993–2450 StorageLoad и58–64
