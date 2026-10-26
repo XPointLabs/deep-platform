@@ -124,14 +124,52 @@ archive index.** Не продолжать косметические оптим
    или≤1s лишь после добавления native index. Затем P3/P4 ниже и повторные
    реальные измерения; full audits/enrollment остаются отдельными затратами.
 
+**Уточнение P1.2 после сверки владельцев Shared/SQL:** индексировать только
+архив, а текущий suffix проверять полностью с жёстким пределом64 записи.
+Единый typed Patricia index в существующем SQLCipher должен доказывать opID
+во всех направлениях, первый incoming eventHash, ordinal и authored position
+`(conversation, sender sequence)`. Для последнего сохранить первый exact event
+и sticky witness второго отличающегося события: один max-sequence/first-hash
+не сохраняет существующую collision semantics. Отдельный bounded reducer при
+архивной basis связывает consent, own/peer route head+previous, первый fault и
+максимальный authenticated peer SCKA epoch. Итоговые факты выводятся из archive
+proof/summary и полного ограниченного suffix; summary не заменяет свежую authority.
+
+Root связывает исходный304-byte checkpoint, архивную basis188, count, index и
+reducer. Current floor присоединяется проверенной цепочкой basis→floor. Ordinary
+pending→SQL→cleanup→stable не получает новый per-message index-intent/CAS:
+root меняется только через существующий prefix-plan, не более32 записей за batch.
+Перед кодом зафиксировать точные новые bytes/root ownership и bounded-delta
+adoption/recovery; нынешние `CaptureHistoryPrefixEffects`/`CompleteSqlProjection`
+всё ещё обходят историю и не могут остаться на ordinary maintenance пути.
+
+Hard bound требуется для всех append paths: fresh DPE2 и DBR2 обслуживаются
+при63 записях, оставляя64-ю для существующего terminal changed-send latch.
+Exact retries и pending recovery не авторят новую операцию и не запускают
+переавторение ради лимита. Enrollment сначала закрывает старый suffix до≤63
+обычным authenticated prefix owner без удаления events/Store/ACK originals.
+Первый indexed root публикуется атомарно с независимым protected enrollment
+marker; после этого missing root отвергается и explicit enrollment, не
+восстанавливается из SQL. Optional slot или SQL-флаг таким marker не являются.
+Full cold audit должен воспроизводить и семантические reducers, а не только
+проверять hashes. Физически свежие selected SQL reads после callbacks остаются
+отдельным обязательным доказательством. Ограничить и actual query work:
+`events NOT INDEXED WHERE ordinal...` может сканировать всю таблицу даже для64
+результатов. Выводить ожидаемые op/ordinal/metadata из authenticated suffix,
+искать bounded locator и читать actual table row по нему с exact сравнениями;
+locator/covered index не authority, отсутствие ожидаемой строки — отказ.
+Удалить ordinary lifetime COUNT/eventHash substring scans; подтвердить actual
+query plan и selected-page поведение. Это уточнённый план, не принятый wire
+или включённый indexed runtime; opID-only реализация этот срез не закрывает.
+
 **Контракт следующего storage slice:**
 [DR-0176](survival-program/decisions/DR-0176-bounded-protected-storage-inventory.md)
 принят для реализации P1.1; активация и конверсия retained profiles ещё не разрешены
 без описанных проверок. Ниже — rationale, точные bytes/lifecycle принадлежат DR.
-Предпочтительный вариант P1.1 — один небольшой фактически прочитанный protected
+Вариант P1.1 — один небольшой фактически прочитанный protected
 manifest как общая точка commit и полная карта slot membership/absence; большие
 значения — отдельно аутентифицированные ограниченные объекты. Manifest связывает
-scope/instance, exact object identity/type/version/length/hash и случайные
+случайный storage ID, exact object identity/type/version/length/hash и случайные
 per-object keys. Один actual platform `Unprotect` на inventory admission,
 затем локальная проверка выбранных объектов через уже используемый .NET AES-GCM;
 новую библиотеку или второй E2EE stack не добавлять. Не выполнять отдельные
@@ -147,9 +185,46 @@ obligations, не удаляя pinned Store/ACK originals. Нужны новый
 format/AAD/nonce contract и explicit resumable enrollment прежних профилей;
 ordinary legacy fallback, reset и восстановление потерянного adopted root
 запрещены. Existing1024-slot cap ограничивает manifest, но не делает его1KiB;
-размеры/bytes/calls измерить отдельно. Это принятый implementation contract, а не
-готовый storage engine или обещание≤1s. P1.2 — authenticated native archive index
+размеры/bytes/calls измерить отдельно. Account/instance binding остаётся в
+существующих higher-level records: storage создаётся до аккаунта. Это принятый
+implementation contract, не обещание≤1s. P1.2 — authenticated native archive index
 из шагов2–5; оба изменения нужны до утверждения bounded ordinary state path.
+
+**P1.1 source checkpoint:** Shared реализовал manifest/object backend и явные
+CreateNew/OpenExisting/Enroll lifecycle; первый focused пакет143PASS. CLI
+интеграция выявила6 отказов из29 из-за Windows packaged LocalAppData mapping.
+Исправление связывает actual parent handle и точное имя файла, сохраняя link/
+reparse/volume checks; повторный Shared path пакет10PASS, CLI29PASS. Сборки
+без warnings/errors, captured inputs unchanged. Disposable настоящий DID2
+аккаунт сохранил все logical slots, actual SQLCipher bytes и address/status при
+конверсии через constructed DSS1 fixture. Это не исторический old-binary E2E
+и не перенос трёх retained профилей. Полные source/release gates, retained
+conversion и connected delivery остаются открыты; прежний contact FAIL не снят.
+Доказательства: [Shared](../deep-client-shared/docs/testing/dr0176-protected-inventory-2026-10-26.md),
+[CLI](../deep-cli/docs/testing/cli-storage-manifest-adapter.md).
+
+**P1.1 performance FAIL — следующий приоритет до P1.2 code/enrollment.**
+Matched baseline04/candidate01: по141 успешной операции на actual Windows
+protector/filesystem, одинаковые helpers, unchanged captured inputs. Все9 пар
+single/batch/atomic при16/256/1024 slots стали медленнее. Для1024 slots:
+
+| Операция | Прежний aggregate, median | Manifest candidate, median |
+| --- | ---: | ---: |
+| Чтение одного значения | 2.767ms | 9.745ms |
+| Batch read | 3.416ms | 11.011ms |
+| Atomic register + guarded delete | 58.959ms | 448.725ms |
+
+Atomic cycle:2→43 actual native Unprotect,109 raw manifest reads и30 object reads.
+Меньшее число прочитанных bytes не окупило новую работу. Cold/seed и все9 пар,
+allocations и bytes сохранены в CLI checkpoint; это не delivery latency/SLO.
+**Кандидат не принимать как ускорение, retained profiles не конвертировать.**
+Сначала устранить выявленную amplification:32K-char буферы при каждом actual
+Windows path query; дублирующие проверки parent/ancestors; repeated admission
+при закрытом staging/cleanup. Первая минимальная правка — bounded small/grow
+path buffer с прежними actual calls и exact guards. Для следующего сокращения
+admission сначала доказать closed owner boundaries; actual post-callback key
+policy/source и commit guards не заменять cached permission. После законченной
+правки — тот же matched benchmark, затем принимать следующий шаг по измерениям.
 
 **Основание.** В успешном retained59: fanout двум получателям46.312s,
 receive+ACK20.894s; CPU отправителя27.8–32.6s,1993–2450 StorageLoad и58–64

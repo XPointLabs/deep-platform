@@ -5,6 +5,14 @@ Status: accepted implementation contract; conversion, activation, performance
 and release remain unqualified. This implements P1.1 of S05 in
 [NEXT-SPRINT](../../NEXT-SPRINT.md), not a parallel execution sequence.
 
+The first implementation is **rejected as a performance improvement**. Matched
+actual-provider measurements were slower for every single/batch read and atomic
+write cycle at16/256/1024 slots; the atomic cycle expanded native Unprotect calls
+from2 to43. Correctness evidence does not authorize retained conversion or
+activation of that candidate. Keep its measurements and fix the measured work
+amplification before proceeding; see the
+[CLI comparison](../../../deep-cli/docs/testing/cli-storage-manifest-adapter.md).
+
 ## Decision and boundary
 
 Replace the full value aggregate inside `JournaledDeepSecureStorage` with one
@@ -146,6 +154,19 @@ and absence, atomic cross-slot winners, callback guards, crash/cancel cutpoints,
 cleanup recovery, process races, strict missing-root lifecycle, unchanged
 enrollment and independent SQL joins. Reuse existing unchanged-semantic tests.
 The unrelated contact-threshold test refusal remains recorded, never waived.
+
+One obsolete implementation-specific test has an explicit replacement for the
+canonical full-gate reference union:
+
+- `Deep.Client.Shared.Production.Tests.SecureStorageCompareExchangeTests.SelectedDecodeAvoidsUnrequestedValueBuffersWhileFullMutationDecodeRetainsThem`
+  is replaced by
+  `Deep.Client.Shared.Production.Tests.SecureStorageCompareExchangeTests.SelectedReadLoadsBoundedManifestWithoutUnrequestedObjectPayloads`.
+
+The former measured the retired aggregate decoder's allocation strategy. The
+replacement exercises actual manifest/object storage with a large unselected
+value, one fresh inventory Unprotect, selected membership/absence, zeroization
+and preservation across CAS. It must pass; this binding waives no failed or
+skipped case. Existing malformed-unselected framing cases remain required.
 
 Measure actual manifest/object bytes and crypto calls using closed scalar
 counters outside private scopes. Compare disposable synthetic inventories with
