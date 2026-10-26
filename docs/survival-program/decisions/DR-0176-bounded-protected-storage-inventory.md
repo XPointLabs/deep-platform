@@ -39,6 +39,8 @@ The existing constructor is **OpenExisting**: missing committed state rejects.
 Add explicit asynchronous CreateNew and EnrollAggregate entry points. CreateNew
 requires exclusive ownership and absence of current/pending/backup/object state;
 it durably creates the empty manifest before returning an ordinary owner. A
+fresh publication uses an atomic no-replace operation and rechecks absence
+after provider callbacks; it cannot overwrite a root that appeared meanwhile. A
 missing path/random ID/loose object never authorizes repair of an enrolled store.
 Normal reads cannot decode DSS1 or call enrollment. The backend exists before
 account creation, so do not invent account/network scope fields; higher records
