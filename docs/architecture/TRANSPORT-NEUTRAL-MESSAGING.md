@@ -203,6 +203,17 @@ projection фиксируются точными digest до/после исхо
 clock continuity и signed route windows проверяются независимо. Этот read fence
 не переживает lease и не является кешем authority между commands.
 
+[DR-0175](../survival-program/decisions/DR-0175-active-native-state-and-archive-validation.md)
+уточняет границу archived native payload: ordinary verification проверяет полный
+независимо committed metadata map, current TRS/suffix и actual native cipher pages;
+каждый используемый payload сверяется с exact tuple из проверенного map. Отрицательный
+SQL lookup сам по себе не доказывает fresh/absence. Full cold/audit/producer и
+невыведенные route/Braid dependencies сохраняют полную проверку payload. Решение
+явно меняет время обнаружения несвязанной validly reencrypted semantic corruption,
+но не разрешает использовать её как сообщение/authority или пропускать raw-page,
+floor, source, time и callback проверки. До полной реализации consumer map и
+отрицательных тестов облегчённый путь не считается квалифицированным.
+
 Замер отделяет cold bootstrap, logical queue, encrypt/Store, recipient durable
 receive/materialization, tombstone ACK и historical audit. Profiling, recovery,
 разные размеры страниц и полный group fanout не выдаются за сопоставимый замер

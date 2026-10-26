@@ -135,6 +135,14 @@ rollback, crash до/после каждого durable boundary и lost response
 обновляет статус, затем выдаёт следующий bounded task. Windows/Android,
 production rollout, release publication и main merge этим планом не запускаются.
 
+**Следующий архитектурный срез P1:**
+[DR-0175](survival-program/decisions/DR-0175-active-native-state-and-archive-validation.md)
+разделяет полный active metadata map и selected archived payload. До включения
+нужны full native cipher-page authentication, captured-selector proof, полный
+consumer map и отрицательные тесты; ciphertext-image cache после callbacks
+отклонён из-за недоказанной защиты от A→B→A. Это конкретный structural slice,
+а не очередной общий пункт «ускорить authority».
+
 **Статус:** план принят к реализации; P0–P5 открыты, целевое время не доказано.
 Retained59 ниже — baseline, а не результат нового owner architecture.
 

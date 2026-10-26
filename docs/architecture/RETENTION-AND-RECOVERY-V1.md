@@ -12,6 +12,16 @@ are the machine contract in
 
 ## 1. Service and protocol retention
 
+Native archive validation follows
+[DR-0175](../survival-program/decisions/DR-0175-active-native-state-and-archive-validation.md).
+Archival metadata with replay/ordering meaning remains active, complete and
+independently authenticated. Every selected payload is checked against its
+committed metadata before use; expected missing/corrupt content never becomes
+successful empty history. The decision explicitly changes detection timing for
+unrelated, validly reencrypted semantic payload corruption during ordinary work;
+full cold/audit/producer validation and proven raw-page authentication remain.
+It grants no new deletion, retention, replay retirement or unknown-outcome repair.
+
 | Data class | Default / maximum | After delivery or supersession | Replication / owner | User-visible claim |
 |---|---|---|---|---|
 | mailbox text/control ciphertext | 30 d / 30 d | delete at signed expiry | PMT2-selected mailbox pair / XNode | offline delivery up to 30 d, not guaranteed after expiry |

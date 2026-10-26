@@ -4,6 +4,12 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0175](../survival-program/decisions/DR-0175-active-native-state-and-archive-validation.md)
+defines active native metadata versus archived payload validation boundaries.
+No wire, digest, schema, crypto suite or identity generation changes. Full
+consumer/security implementation is required before qualifying the new path;
+source tests, connected latency and release acceptance remain separate.
+
 [DR-0174](../survival-program/decisions/DR-0174-connection-contact-maintenance.md)
 composes existing publication, ordinary receive/ACK and accepted-contact route
 maintenance. Optional known descriptors remain data, not authority; native
