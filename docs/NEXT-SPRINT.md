@@ -14,6 +14,32 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
+### Пауза по запросу владельца — 2026-10-27
+
+Работы и субагенты остановлены из-за лимита. Сетевые/device/retained действия
+не выполнялись. Рабочие ветки возвращены на локально закоммиченные checkpoints:
+Shared `2548b1c`, CLI `1c3b79f`; это измеренные, но **не принятые для активации**
+candidates с описанными ниже regression/cleanup blockers.
+
+Незавершённый следующий срез сохранён отдельно в Shared:
+`wip/dr0176-closed-operations-20261027`, commit
+`0fb440316a207dd1c5ae2e73da2ccd111060dcb1` (6 файлов, **не собран и не протестирован**).
+Он содержит частичные read-final-fence/operation-lifetime/guard changes и
+адаптацию тестов; cleanup/publication handoff и directory scope не завершены.
+Не cherry-pick как готовое исправление и не активировать на retained профилях.
+После явного возобновления продолжить эту WIP-ветку по принятому разделу
+[DR-0176](survival-program/decisions/DR-0176-bounded-protected-storage-inventory.md#closed-operation-admissions--2026-10-27),
+затем один согласованный focused package и matched benchmark неизменными helpers.
+
+Перед завершением реализации разрешить exceptional flow: если вызов сначала
+закрывает старую cleanup obligation, последующий Protect новой мутации снова
+пересекает внешний callback. Предложение возвращать recovery-completed IOException
+для нового exact retry **не утверждено**; не вводить такой отказ молча и не
+переполнять1024-ID bound объединением старых/новых obligations. Final closure
+должна покрывать outer operation, включая `Admit` и все последующие callbacks.
+Предыдущий contact-threshold FAIL/автоматическое отклонение остаётся отдельным
+незакрытым условием; WIP его не меняет. P1.2 index ещё не реализовывать.
+
 ### Корректировка архитектуры доставки — 2026-10-26
 
 **Решение Mr. X:** переработать общий путь Shared/XNode, а не продолжать
