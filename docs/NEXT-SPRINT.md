@@ -190,6 +190,17 @@ actual admission на входе/выходе. Synthetic scaling0/1/100/1000/100
 исходные build/test FAIL сохранены, full gate и connected ускорение не заявлены.
 [Checkpoint](../xnode/docs/testing/s05-store-prefix-read-segment-2026-10-26.md).
 
+**Следующий P2 candidate, после замера согласованного пакета:** fresh Store
+дважды проверяет settled prefix; границы разделены replay/reservation и не
+объединяются в cached permission. Сейчас это4N actual host-clock samples
+(на Linux8N procfs opens), отдельно от actual source/floor admission, и не менее
+10N проверок подписей. Если эта стадия остаётся значимой, рассмотреть закрытые
+bounded batches чистых historical facts с actual time на входе/выходе каждого
+batch и прежним final source/floor/document rejoin. Mixed pending/expiry-exclusion
+пока остаются на прежнем пути. Это ещё не принятый Protocol API: контракт,
+полный callback/effect map и hostile-state tests нужны до включения. Новый cache
+всего settlement не разрешён; существующий exact-signature memo не дублировать.
+
 **Статус:** P0–P5 открыты; цель чата не завершена, целевое время не доказано.
 Retained59 ниже — baseline, а не результат нового owner architecture.
 
