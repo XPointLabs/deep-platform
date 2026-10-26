@@ -197,6 +197,16 @@ unknown outcome; cold reopen и crash на каждом compaction/handover ша
 
 #### CLI-first — первый приоритет внутри S05
 
+Корректировка исполнения от2026-10-26: прежде дальнейших latency rounds
+выполнить P0→P1/P2→P3/P4→P5 из
+[текущей очереди](../NEXT-SPRINT.md#корректировка-архитектуры-доставки--2026-10-26).
+Это детализация данного S05: Shared/XNode owner scopes и горячий путь состояния,
+затем независимый dispatch и постоянный receive/ACK. Security semantics меняются
+только через соответствующий нормативный owner с доказательствами, не через
+TTL/trust cache. Цель warm local p95≤1s пока не доказана; release SLO и S06–S13
+не объявляются выполненными. Реализацию выполняют GPT-6.1 Sol / High с
+ограниченным владением файлами; coordinator принимает последовательные slices.
+
 **Владельцы:** `deep-cli` — console adapter, профили, команды и black-box driver;
 Shared — единственный portable business/runtime owner; Protocol — существующие
 codecs/crypto; DevOps — локальный настоящий Registry/три XNode. Это способ

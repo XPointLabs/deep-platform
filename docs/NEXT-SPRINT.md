@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-23**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-26**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -13,6 +13,130 @@
 [исторической редакции](NEXT-SPRINT-CHECKPOINTS-2026-10-13.md) и repo-checkpoints.
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
+
+### Корректировка архитектуры доставки — 2026-10-26
+
+**Решение Mr. X:** переработать общий путь Shared/XNode, а не продолжать
+микрооптимизации вокруг полного восстановления на каждом сообщении. Clean-break
+и breaking changes разрешены; альтернативного legacy пути не добавлять.
+Реализацию выполняют **GPT-6.1 Sol / High**, владелец координации и review —
+основной Astra. Минимальный diff означает законченный необходимый механизм,
+а не сохранение дефектной архитектуры ради малого числа изменённых строк.
+Это уточнение S05 единого плана, не параллельный backlog.
+
+**Основание.** В успешном retained59: fanout двум получателям46.312s,
+receive+ACK20.894s; CPU отправителя27.8–32.6s,1993–2450 StorageLoad и58–64
+application SQL opens/integrity checks на fanout. В sampled node RPC209.1
+lease checks/2499ms. Вложенные timings не складывать. Клиент многократно
+расшифровывает агрегат и проверяет SQL history; node повторяет глобальный
+recovery/inventory scan. Fanout держит account lock во время сети; CLI driver
+запускает получение после завершения отправки. Это не замер send→visible.
+Доказательства и исходный runtime —
+[retained59](../deep-cli/docs/testing/cli-contact-maintenance-2026-10-23.md).
+
+**Опыт Signal, без новой зависимости:**
+[Sesame](https://signal.org/docs/specifications/sesame/) хранит active session
+для устройства и отдельно обрабатывает создание/замену сессии, недоставку и
+повторы; [Double Ratchet](https://signal.org/docs/specifications/doubleratchet/)
+продвигает сохраняемое состояние при сообщении. Применяем разделение обычного
+message transition и lifecycle/recovery, durable queues и ограниченную работу
+на сообщение. Это вывод для нашего дизайна, не утверждение о внутреннем
+хранилище Signal или сравнительный benchmark. Наши DID2/PQ, три ONION hop,
+две независимые durable реплики и privacy identity boundaries сохраняются.
+
+**Целевая метрика:** warm-online текст до1KiB, установленные контакты/группа
+из3 участников, действующие routes/authority, одновременно работающие клиенты
+на локальном настоящем Docker-контуре. Цель **p95 ≤1000ms** от принятия команды
+отправителя до authenticated durable readable event каждого получателя.
+Отдельно: durable outbox, Store quorum, первый/все получатели, tombstone ACK,
+authenticated application receipt. Timestamp берёт общий monotonic controller
+на реальном событии, не по ответу ACK.20 warmups,200 measured сообщений в
+каждом из3 independent runs; nearest-rank; ошибки/timeout=+infinity, без удаления
+выбросов. Сначала короткий10-message engineering run, затем квалификация.
+Cold start, offline/recovery, expiration и WAN — отдельные профили, их не
+выдавать за warm успех и не исключать из соответствующей отчётности.
+Это новая цель разработки; существующий release `PERF-TEXT-WARM-V1`
+p50≤1500/p95≤3000/p99≤8000ms не считается заменённым или пройденным.
+
+**Нормативные границы.** Этот план сам не разрешает пропуск actual custody
+checks. Их владельцы — [ACCOUNT-DIRECTORY](architecture/ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md),
+[TRANSPORT-NEUTRAL](architecture/TRANSPORT-NEUTRAL-MESSAGING.md),
+[XPOINT-NETWORK](architecture/XPOINT-NETWORK-V1.md), DR-0083/0144/0170.
+Новый owner contract принимается в соответствующем нормативном владельце
+до подключения меняющего semantics кода. Обязательны independent antirollback
+anchor, intent-before-effect, exact original request/ciphertext, per-session
+ordering, current signed deadlines, same-boot time и revocation после callbacks.
+Нельзя заменить actual file authentication TTL, mtime, watcher или флагом
+"verified"; нельзя задержать вступление revoke на всё время сетевого RPC.
+Сдвиг обнаружения подмены произвольного retained state на последующее чтение
+не считать эквивалентным текущей защите. Если bounded owner не доказывает
+эквивалентность, остановить именно этот design и представить альтернативу.
+
+**Порядок реализации и критерии завершения:**
+
+1. **Измерение и границы (Shared/CLI, P0).** Выделить реальные durable-visible
+   события и exclusive/inclusive стадии; считать storage opens/full scans,
+   native checks, lock wait, fsync, network/authority calls. Closed diagnostics
+   без payload/keys/addresses. Уточнить callback/effect map существующих owners.
+   Готово: тесты event ordering и harness; метрики не смешивают Store/ACK/visible.
+2. **Клиентское состояние (Shared, P1).** Один ограниченный transaction/owner
+   scope для согласованной ревизии; повторные внутренние consumers используют
+   общий проверенный набор. Убрать повторные SQL opens/full integrity/history
+   replay внутри неизменившегося owned участка. Переходы проверяют affected
+   authenticated records и защищённый root согласно принятому контракту;
+   cold reopen/crash/recovery полностью проверяются. Сохранить обнаружение
+   внешней подмены и смены floor после каждого допускающего их callback.
+   Сначала доказать scope и подключить к реальному send/receive, затем tests;
+   не создавать неиспользуемый новый storage framework.
+3. **Состояние нод (XNode, P2).** Отделить startup/recovery от обычного RPC:
+   не запускать InitializeCurrent/полный mutation+blob inventory из каждого
+   вложенного EnsureCurrent. Один owned admission context с точными roots,
+   source bytes и deadlines; pure helpers не приобретают authority повторно.
+   Актуальность проверяется на настоящих callback/effect/commit границах.
+   Сохраняются durable per-hop replay до forwarding, source durability до peer
+   mutation, two-replica quorum и независимо anchored uncertain operations.
+   Убрать whole-history amplification через минимальное изменение существующего
+   storage owner. Доказать tamper/missing/rollback и crash closure до включения.
+4. **Сетевые loans и fanout (Shared/XNode, P3; после P1/P2).** Короткая атомарная
+   reservation всех targets → независимый network dispatch → проверенный commit
+   результата. Не удерживать глобальный account lock на всём network await;
+   сохранить ratchet/cursor order, fences, exact pending retry и partial fanout.
+   Пул pinned peer connections связывать с actual admitted peer/network/SPKI
+   и сроком сертификата; не кешировать admission. Обычный ONION pooling уже
+   существует: не реализовывать его заново. Новые crypto/DB/network библиотеки
+   не вводить без установленной необходимости.
+5. **Постоянный приём и ACK (Shared/CLI, P4; после P1/P2).** Общий bounded
+   scheduler single-flight, cancellation/backpressure; foreground receive через
+   разрешённый long-poll/stream либо bounded fallback того же privacy carrier.
+   После durable semantic receive публиковать visible event, сохранять ACK
+   obligation; независимый authenticated ACK не блокирует видимость. После
+   restart ACK продолжается без повторной материализации. CLI только адаптер;
+   бизнес-реализация не дублируется. Delivered отправителю — только реальный
+   authenticated application receipt, а не локальный event или tombstone.
+6. **Интеграция и приёмка (P5).** Тот же retained cohort, следующий cursor60;
+   55–59 не переавторить и профили не сбрасывать ради PASS. Сначала direct и
+   three-client group send/receive, затем документ/PNG, rotation/expiry,
+   restart, lost response, dedup, partial fanout и retained original recovery.
+   Показать масштабирование стоимости при росте unrelated history:100/1000/10000
+   записей в отдельных тестовых fixtures, без изменения retained аккаунтов.
+   Если целевой budget не достигнут, следующий diff адресует измеренную главную
+   стадию; очередные E2E rounds без изменения причин не запускать.
+
+**Исполнение.** P0 и независимые исследования/изменения P1/P2 разрешены
+параллельно с раздельным владением файлами; их выходы принимаются последовательно
+перед P3/P4. Один агент владеет Shared persistence, один XNode, один CLI diagnostics.
+Сначала законченный slice, потом focused tests; heavy/full, publish и connected
+прогоны строго по одному и на неизменных inputs. Во время immutable gate код
+не менять. Обязательные repo gates выполняются на согласованном пакете, не
+после каждой строки. Отдельно security review: swapped/corrupt/missing state,
+same-length replacement, floor/revoke during callback, expiry, reboot/clock
+rollback, crash до/после каждого durable boundary и lost response. Не ослаблять
+существующие assertions. Контролирующий агент принимает diff и доказательства,
+обновляет статус, затем выдаёт следующий bounded task. Windows/Android,
+production rollout, release publication и main merge этим планом не запускаются.
+
+**Статус:** план принят к реализации; P0–P5 открыты, целевое время не доказано.
+Retained59 ниже — baseline, а не результат нового owner architecture.
 
 **Текущий slice (2026-10-23):** connection cycle по
 [DR-0174](survival-program/decisions/DR-0174-connection-contact-maintenance.md)
@@ -30,8 +154,8 @@ adapter передаёт только оставшийся denial interval0..35s
 проверяет actual protected lease/custody. Shared23+45, CLI87, scenario22/9 PASS.
 Точные receipts, таблица всех операций, сохранённые FAIL и ограничения —
 [checkpoint](../deep-cli/docs/testing/cli-contact-maintenance-2026-10-23.md).
-**Следующие обязательные шаги:** снизить измеренные ONION/native/authority и ACK
-costs, безопасный periodic lifecycle, durable descriptor exchange/address book.
+**Следующие обязательные шаги:** P0–P5 выше; затем оставшийся безопасный
+periodic contact lifecycle и durable descriptor exchange/address book.
 Connected command сам по себе не закрывает background liveness/S05 acceptance.
 Windows/Android/production и GitHub Releases не тронуты; canonical full/package/
 device/release остаются open.
