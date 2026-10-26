@@ -181,6 +181,15 @@ Cold audit выполняется перед первым native messaging admis
 Обслуживание prefix — не более одного bounded batch перед Dpe2 transition,
 без дублирования на стадии подготовки draft.
 
+**Законченный Store срез P2:** Node `e9222d7` убирает повторное приобретение
+authority для каждой записи внутри закрытого native intent walk: N+2→2 checks,
+с фактическим чтением всех записей, cancellation/liveness на каждой итерации и
+actual admission на входе/выходе. Synthetic scaling0/1/100/1000/10000 отделён от
+реального signed Store с локальной durability до HTTP и двумя репликами.
+Приняты24 unaffected PASS из focused02 +1 исправленный genuine witness из03;
+исходные build/test FAIL сохранены, full gate и connected ускорение не заявлены.
+[Checkpoint](../xnode/docs/testing/s05-store-prefix-read-segment-2026-10-26.md).
+
 **Статус:** P0–P5 открыты; цель чата не завершена, целевое время не доказано.
 Retained59 ниже — baseline, а не результат нового owner architecture.
 
