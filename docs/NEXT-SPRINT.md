@@ -50,9 +50,12 @@ message transition и lifecycle/recovery, durable queues и ограниченн
 отправителя до authenticated durable readable event каждого получателя.
 Отдельно: durable outbox, Store quorum, первый/все получатели, tombstone ACK,
 authenticated application receipt. Timestamp берёт общий monotonic controller
-на реальном событии, не по ответу ACK.20 warmups,200 measured сообщений в
-каждом из3 independent runs; nearest-rank; ошибки/timeout=+infinity, без удаления
-выбросов. Сначала короткий10-message engineering run, затем квалификация.
+на реальном событии, не по ответу ACK.20 warmups и200 measured сообщений от
+каждой роли в каждом из3 independent runs; nearest-rank по каждой направленной
+паре/роли; ошибки/timeout=+infinity, без удаления выбросов. Сначала короткий
+engineering run из4 полных раундов (12 сообщений, по4 от роли), затем квалификация.
+Равные раунды сохраняют согласованный retained cursor; среднее по всем ролям
+не скрывает более медленного участника.
 Cold start, offline/recovery, expiration и WAN — отдельные профили, их не
 выдавать за warm успех и не исключать из соответствующей отчётности.
 Это новая цель разработки; существующий release `PERF-TEXT-WARM-V1`
