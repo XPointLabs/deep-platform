@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-26**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-27**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -225,6 +225,27 @@ path buffer с прежними actual calls и exact guards. Для следу�
 admission сначала доказать closed owner boundaries; actual post-callback key
 policy/source и commit guards не заменять cached permission. После законченной
 правки — тот же matched benchmark, затем принимать следующий шаг по измерениям.
+
+Первый bounded-buffer fix выполнен и прошёл3 path regressions; отдельный
+baseline05/candidate02 снова дал141/141 успешных операций с unchanged inputs,
+но **все9 latency comparisons по-прежнему хуже aggregate**. Для1024 slots:
+single2.319→6.175ms, batch3.273→7.571ms, atomic83.771→340.778ms. Allocations
+снизились;43 Unprotect/109 manifest reads/30 object reads на atomic cycle
+остались. Это source finding + microbenchmark, не скорость сообщений.
+
+Дополнительно найдена незакрытая named-retirement граница: provider callbacks
+при обработке следующего cleanup ID, при Protect cleanup-free successor или
+при final Unprotect после adoption могут восстановить ранее удалённый объект,
+после чего current root уже не содержит obligation. Новая реализация пока
+не квалифицирована и по этому условию. Следующий законченный срез должен
+одновременно устранить amplification и закрыть все эти callbacks: подготовить
+successor до очистки, заново допустить actual cleanup-bearing root, выполнить
+всю durable cleanup и final adoption/readback без внешних callbacks; после
+каждого retry/callback повторять весь authorized cleanup set. Final readback
+использует exact bytes/path ранее authenticated candidate, не новый provider
+callback после удаления obligation. Новый owner contract и meaningful restore/
+retry/restart tests обязательны до кода/активации. Persistent test observers
+тоже являются callbacks и не могут молча считаться чистыми helpers.
 
 **Основание.** В успешном retained59: fanout двум получателям46.312s,
 receive+ACK20.894s; CPU отправителя27.8–32.6s,1993–2450 StorageLoad и58–64

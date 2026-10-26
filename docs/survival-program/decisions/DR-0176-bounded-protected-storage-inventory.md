@@ -12,6 +12,12 @@ from2 to43. Correctness evidence does not authorize retained conversion or
 activation of that candidate. Keep its measurements and fix the measured work
 amplification before proceeding; see the
 [CLI comparison](../../../deep-cli/docs/testing/cli-storage-manifest-adapter.md).
+Source review also found incomplete named retirement: later provider callbacks
+can restore an already retired object before the operation finishes, while the
+cleanup-free root loses that obligation. This remains unqualified independently
+of performance; the closed-operation implementation must close every such edge,
+including final post-adoption callbacks. See the
+[Shared checkpoint](../../../deep-client-shared/docs/testing/dr0176-protected-inventory-2026-10-26.md).
 
 ## Decision and boundary
 
