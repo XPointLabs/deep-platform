@@ -79,15 +79,21 @@ respect all pinned original operations and preserve counts/ordinals. Do not
 compact on every message, remove obligations to meet a threshold, or hide a
 maintenance pause from warm latency samples. Record working/archive counts.
 
-The first command on a real account-runtime owner performs full native catalog/
-session archive validation. Existing persistent CLI profiles retain that owner;
+Before the first native messaging admission can use the active verifier, the
+real account-runtime owner performs full native catalog/session archive validation.
+This boundary belongs to its private native opener under the existing account
+lease, not to unrelated account metadata reads. Those reads retain their current
+checks and do not enable active verification. Lower source/bootstrap/compaction
+openers and unmapped consumers retain full verification by default; no caller
+can supply an unchecked skip-audit flag. Existing persistent CLI profiles retain that owner;
 network-context invalidation does not create a new account. A genuinely new
 owner, account-instance change or restart starts unaudited. Failure/cancellation
 never records successful audit. Completion is scheduling state only: subsequent
 ordinary checks still perform all actual proofs above. A helper opening a SQL
 connection is not itself a new account runtime or permission to skip checks.
 No private buffer, key, transaction or authority is retained by the audit marker.
-Standalone per-command CLI invocations remain cold; measure them separately.
+Standalone per-command CLI invocations that enter native messaging remain cold;
+measure them separately.
 
 Explicit full audit, checkpoint production and recovery of an interrupted
 checkpoint/compaction continue authenticating all required original payloads.

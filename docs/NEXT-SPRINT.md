@@ -170,7 +170,18 @@ eager Linux-clock resolution в выключенном Blob dispatcher; те ж�
 Это первые законченные части P0/P1/P2, не завершение этих этапов. Нового connected
 прогона, измеренного ускорения доставки или production rollout пока нет.
 
-**Статус:** P0–P5 открыты; цель чата активна, целевое время не доказано.
+**Подтверждённая предпосылка DR-0175:** Shared `be306d8` проверяет фактический
+SQLCipher provider:8/8 PASS на свежем, повторном, прогретом соединении и после
+callback; повреждение доказанной overflow-page обнаружено без восстановления
+файла. Исходные два FAIL сохранены в
+[checkpoint](../deep-client-shared/docs/testing/dr0175-native-overflow-provider-proof-2026-10-26.md).
+Это проверка provider, не включение нового runtime и не измеренное ускорение.
+Cold audit выполняется перед первым native messaging admission данного owner,
+до active verifier; unrelated account metadata APIs сохраняют прежние проверки.
+Обслуживание prefix — не более одного bounded batch перед Dpe2 transition,
+без дублирования на стадии подготовки draft.
+
+**Статус:** P0–P5 открыты; цель чата не завершена, целевое время не доказано.
 Retained59 ниже — baseline, а не результат нового owner architecture.
 
 **Текущий slice (2026-10-23):** connection cycle по
