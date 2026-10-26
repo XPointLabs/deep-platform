@@ -151,7 +151,23 @@ pending plan/recovery. Добавить working/archive counts в безопас
 Не оптимизировать неиспользуемый archive path и не вызывать полный compaction
 на каждом сообщении. Warm maintenance pauses входят в измерения, не вырезаются.
 
-**Статус:** план принят к реализации; P0–P5 открыты, целевое время не доказано.
+**Первый проверенный пакет (2026-10-26):** Shared `b872250` объединяет actual
+protected inventory reads внутри одного этапа и публикует закрытые diagnostic
+events после final guard/private scope release. CLI `c4ac14b` добавляет общий
+monotonic controller, concurrent command handles и обязательное завершение
+event streams с overflow evidence; scheduler пока не реализован. Initial
+Shared29/CLI108 PASS; после двух review fixes повторены affected Shared3/CLI31,
+native0/unchanged inputs, builds без warnings/errors. Exact receipts, исходный
+compile FAIL и ограничения — [P0 checkpoint](../deep-cli/docs/testing/cli-durable-visibility-events-2026-10-26.md).
+Node `b3656f9` сократил actual lease checks4→2 внутри одного ordinary custody
+fence с сохранением всех actual file reads;13 новых тестов PASS. Широкий matrix
+остановлен как INTERRUPTED/UNQUALIFIED, не полный PASS. Node `f774383` исправил
+eager Linux-clock resolution в выключенном Blob dispatcher; те же4 health
+проверки+3 clock guards PASS. [Node evidence](../xnode/docs/testing/s05-current-custody-read-scope-2026-10-26.md).
+Это первые законченные части P0/P1/P2, не завершение этих этапов. Нового connected
+прогона, измеренного ускорения доставки или production rollout пока нет.
+
+**Статус:** P0–P5 открыты; цель чата активна, целевое время не доказано.
 Retained59 ниже — baseline, а не результат нового owner architecture.
 
 **Текущий slice (2026-10-23):** connection cycle по
