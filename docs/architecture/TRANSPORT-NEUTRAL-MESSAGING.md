@@ -4,6 +4,11 @@
 
 Актуально: 2026-10-20
 
+[DR-0176](../survival-program/decisions/DR-0176-bounded-protected-storage-inventory.md)
+определяет новый private storage manifest и выбранные value objects, сохраняя
+атомарность slot operations и независимо проверяемые semantic floors. Conversion,
+runtime activation и latency acceptance требуют отдельных доказательств.
+
 ## 1. Назначение и приоритет
 
 Этот документ определяет границу между Deep-native прикладным протоколом и

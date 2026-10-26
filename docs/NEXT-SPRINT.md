@@ -124,7 +124,10 @@ archive index.** Не продолжать косметические оптим
    или≤1s лишь после добавления native index. Затем P3/P4 ниже и повторные
    реальные измерения; full audits/enrollment остаются отдельными затратами.
 
-**Конкретизация следующего storage design review (ещё не разрешение формата).**
+**Контракт следующего storage slice:**
+[DR-0176](survival-program/decisions/DR-0176-bounded-protected-storage-inventory.md)
+принят для реализации P1.1; активация и конверсия retained profiles ещё не разрешены
+без описанных проверок. Ниже — rationale, точные bytes/lifecycle принадлежат DR.
 Предпочтительный вариант P1.1 — один небольшой фактически прочитанный protected
 manifest как общая точка commit и полная карта slot membership/absence; большие
 значения — отдельно аутентифицированные ограниченные объекты. Manifest связывает
@@ -144,7 +147,7 @@ obligations, не удаляя pinned Store/ACK originals. Нужны новый
 format/AAD/nonce contract и explicit resumable enrollment прежних профилей;
 ordinary legacy fallback, reset и восстановление потерянного adopted root
 запрещены. Existing1024-slot cap ограничивает manifest, но не делает его1KiB;
-размеры/bytes/calls измерить отдельно. Это выбранное направление review, а не
+размеры/bytes/calls измерить отдельно. Это принятый implementation contract, а не
 готовый storage engine или обещание≤1s. P1.2 — authenticated native archive index
 из шагов2–5; оба изменения нужны до утверждения bounded ordinary state path.
 
