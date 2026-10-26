@@ -144,6 +144,80 @@ of its bounded newly staged IDs under exact store/predecessor joins, excluding
 EVERY current active/cleanup reference. Ambiguity rejects. No ordinary directory
 GC. After adoption resume only current cleanup and existing semantic owners.
 
+## Closed operation admissions — 2026-10-27
+
+Accepted for the next implementation; the measured candidates do not implement
+this section. Keep the format, limits, durability and current dependency checks.
+Replace manufactured per-object provider callbacks with private, bounded operation
+segments under the existing gate/process lease. This is no process-lifetime cache,
+TTL, unchecked skip flag or caller-supplied permission. The protector API has no
+atomic global policy transaction; permission must be freshly admitted at actual
+provider/callback/wait edges, not inferred from unchanged file bytes across them.
+
+**Selected reads.** After one actual manifest Unprotect, a dedicated private read
+owner may decode the complete inventory, verify selected objects and perform a
+required cold audit without another external callback or effect. One final actual
+source-byte/path rejoin and cancellation check must precede EVERY result, including
+null/all-absent. No intermediate inventory/result escapes before that fence; failed
+admission clears all private buffers and must not consume the cold-audit marker.
+This does not remove the immediate source joins used by other recovery/mutation
+paths through a generic boolean or delegate.
+
+**Staging/publication.** Prepare exact new objects and candidate bytes from actual
+current state. Protect and candidate verification are external edges; dispose
+admitted loans and freshly Unprotect/rejoin the actual predecessor, guard and file
+family afterwards. A closed synchronous segment may stage multiple immutable,
+unreferenced objects without per-object Unprotect. Before EACH filesystem effect,
+retain actual source/guard/pending-byte joins, exact file identity/hash/length/EOF,
+newness/nonactive checks and durable ordering. Staging grants no live authority;
+only the guarded atomic manifest adoption commits. Any sharing wait or real hook
+ends the segment; re-admit actual policy/source before another effect. Source/guard
+mismatch or policy refusal fails; it never retries against a different predecessor.
+
+Directory ownership may be consolidated only inside that same segment using
+verified, pinned directory handles. Each actual leaf access still checks its
+regular-file/single-link/reparse identity, current handle-bound parent/path and
+exact bytes. No cached path string establishes ownership or defeats ABA. Drop
+the context and freshly join logical/physical directory identities after every
+provider/callback/wait edge; do not retain handles as cross-operation permission.
+
+**Retirement and final boundary.** Prepare/protect/authenticate the cleanup-free
+candidate BEFORE retiring names, then freshly admit the ACTUAL cleanup-bearing
+current root. Within one closed segment, durably tombstone/unlink ALL authorized
+nonactive IDs and adopt the exact prepared cleanup-free root. Every effect still
+checks actual source/guard/pending bytes, nonactive membership, owned paths and exact
+empty tombstone bytes. Any intervening callback/wait invalidates completion for
+the ENTIRE set: repeat durable retirement of every authorized ID, including
+already absent/empty ones. A cursor or an earlier unlink is not completion proof.
+
+No external provider/hook/await edge may follow the final retirement/adoption
+before the OUTERMOST storage-operation return. Final readback is callback-free:
+actual committed protected bytes/path must match the candidate authenticated
+before the segment; selected objects and returned values remain fully verified.
+An outer `Admit` loop must not silently add another Unprotect after this boundary.
+Any internal handoff remains in this same closed owner, never cached permission
+for a later operation. The next independent operation still actually Unprotects.
+Failures after primary adoption remain committed/incomplete with durable cleanup
+obligations; never report CAS=false or successful retirement early.
+
+Use one caller cancellation token and one shared two-second retry/invalidation
+budget, starting at the first retry/invalidating edge and never resetting per file
+or full-set replay. Keep existing sharing backoff. Bound immediate test-hook
+invalidations separately (maximum eight); do not shorten ordinary sharing attempts
+to that count. Normal ordered Protect/Unprotect phases are not restarts. This does
+not promise that a blocked filesystem syscall finishes within two seconds.
+
+Test hooks select an explicit point before invoking code and consume one-shot
+callbacks before invocation. Even no-op callbacks invalidate admission. Final
+post-adoption crash injection must be a fixed internal exception, not an arbitrary
+delegate; distinguish primary publication from final cleanup publication. Retain
+the existing crash/reopen assertions, creation-after-precheck witness and actual
+zero-tombstone observations. Add real saved-object restoration at later-ID,
+cleanup-candidate and retry boundaries; verify full-set replay, budget exhaustion,
+all read return paths and failed-audit-marker preservation. Test no-retry admission
+counts at different batch sizes, then remeasure all operations with unchanged
+helpers. Neither a lower count nor focused PASS proves latency/release acceptance.
+
 ## Retained enrollment and qualification
 
 Explicit enrollment fully authenticates/decodes the actual DSS1 source under
