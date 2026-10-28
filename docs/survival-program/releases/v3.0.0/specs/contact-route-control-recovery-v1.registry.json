@@ -1,0 +1,88 @@
+{
+  "$schema": "contact-route-control-recovery-v1.registry.schema.json",
+  "package": "CONTACT-ROUTE-CONTROL-RECOVERY-01",
+  "decision": "DR-0110",
+  "amendmentDate": "2026-10-28",
+  "historyDecision": "DR-0078",
+  "runtimeActivation": false,
+  "record": {
+    "magic": "DMC2",
+    "kind": 14,
+    "ordinaryCount": 6,
+    "recoveredCount": 7,
+    "maximumOrdinaryPayloadBytes": 23367,
+    "maximumPayloadBytes": 32768,
+    "maximumRouteControlRecordBytes": 33050,
+    "maximumGlobalDmc2RecordBytes": 33082,
+    "requiredFlags": 0,
+    "replyFieldBytes": 0,
+    "payloadPrefixBytes": 72,
+    "routeClosureCountOffset": 72,
+    "sixRecords": [
+      "XRR1",
+      "XRA1",
+      "XRC1",
+      "XSS1",
+      "PMT2",
+      "PMS2"
+    ],
+    "witness": "one LP32 after the six unchanged LP32 records; no further extension"
+  },
+  "witness": {
+    "version": 1,
+    "minimumPairs": 1,
+    "maximumPairs": 3,
+    "minimumBytes": 3825,
+    "maximumBytes": 28549,
+    "fixedBytes": 615,
+    "pairFixedBytes": 626,
+    "offsets": {
+      "version": 0,
+      "pairCount": 1,
+      "reservedZeroU16": 2,
+      "completedAnchorXir1V2": 4,
+      "pairs": 615
+    },
+    "pairOffsets": {
+      "originalNonce": 0,
+      "minimumAdhGeneration": 32,
+      "minimumAdhCoreHash": 40,
+      "exactXra1": 72,
+      "responseLength": 622,
+      "exactOrdinaryV3Response": 626
+    },
+    "completedAnchorBytes": 611,
+    "exactXra1Bytes": 550,
+    "minimumResponseBytes": 2584,
+    "maximumResponseBytes": 15179,
+    "requestReconstruction": [
+      "independently verified network16",
+      "original nonce32",
+      "independently verified subject directory lookup32",
+      "original minimum ADH generation8/hash32",
+      "independently verified exact DCA473",
+      "original exact XRA550",
+      "carried exact completed XIR611",
+      "actual native previous six-record closure"
+    ],
+    "noNewSignatureDomain": true
+  },
+  "verification": {
+    "anchor": "verify carried completed XIR against exact actual native previous closure; original Hello/Accept XIR cannot substitute for a later anchor",
+    "proposalChain": "reuse closed DR-0078 fact; every immediate signed proposal and original authority/ADH checked",
+    "completedChain": "actual native previous XRR plus one, previous core and stable scope unchanged",
+    "ordinarySubsequent": "adjacent proposals and completed routes keep their independent offset with count6 and no repeated witness",
+    "currentness": "all signed current candidate windows, authority, device, consent and final native floor checks remain mandatory",
+    "historical": "native original accepted outcome plus original signatures/scope/creation/lineage only; no current dispatch or ACK from history alone",
+    "exactRouteProperty": "separately encoded count6 closure only; whole count7 payload is not a route",
+    "localFailure": "native/consent/floor/key/time prerequisites remain outside remote malformed-control classification"
+  },
+  "capacity": {
+    "aggregateBeforeEffects": true,
+    "counterNativeSqlCiphertextCapsUnchanged": true,
+    "truncateHistory": false,
+    "maximalThreePairCombinationGuaranteed": false,
+    "pagedHistoryAllocated": false
+  },
+  "vectors": "contact-route-control-recovery-v1.vectors.json"
+}

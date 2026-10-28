@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "package",
+    "decision",
+    "runtimeActivation",
+    "publicDeviceSigningKeyHex",
+    "records",
+    "anchoredCases",
+    "consumerOwners",
+    "closureHostile"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "contact-prekey-lineage-v2.vectors.schema.json"
+    },
+    "package": {
+      "const": "CONTACT-PREKEY-LINEAGE-02"
+    },
+    "decision": {
+      "const": "DR-0129"
+    },
+    "runtimeActivation": {
+      "const": false
+    },
+    "publicDeviceSigningKeyHex": {
+      "const": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8"
+    },
+    "records": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "exactHex",
+          "sha256"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "five",
+              "six",
+              "seven",
+              "eight",
+              "foreign-six",
+              "dangling-six",
+              "cyclic-six",
+              "wrong-policy-six",
+              "bad-signature-six"
+            ]
+          },
+          "exactHex": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{704}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "anchoredCases": {
+      "const": [
+        {
+          "id": "unchanged",
+          "prior": "five",
+          "current": "five",
+          "history": [],
+          "accept": true
+        },
+        {
+          "id": "direct",
+          "prior": "five",
+          "current": "six",
+          "history": [],
+          "accept": true
+        },
+        {
+          "id": "five-six-seven",
+          "prior": "five",
+          "current": "seven",
+          "history": [
+            "six"
+          ],
+          "accept": true
+        },
+        {
+          "id": "omission",
+          "prior": "five",
+          "current": "seven",
+          "history": [],
+          "accept": false
+        },
+        {
+          "id": "foreign",
+          "prior": "five",
+          "current": "seven",
+          "history": [
+            "foreign-six"
+          ],
+          "accept": false
+        },
+        {
+          "id": "duplicate",
+          "prior": "five",
+          "current": "seven",
+          "history": [
+            "six",
+            "six"
+          ],
+          "accept": false
+        },
+        {
+          "id": "cycle",
+          "prior": "five",
+          "current": "seven",
+          "history": [
+            "cyclic-six"
+          ],
+          "accept": false
+        },
+        {
+          "id": "dangling",
+          "prior": "five",
+          "current": "seven",
+          "history": [
+            "dangling-six"
+          ],
+          "accept": false
+        },
+        {
+          "id": "unused",
+          "prior": "five",
+          "current": "seven",
+          "history": [
+            "six",
+            "eight"
+          ],
+          "accept": false
+        },
+        {
+          "id": "endpoint",
+          "prior": "five",
+          "current": "seven",
+          "history": [
+            "six",
+            "seven"
+          ],
+          "accept": false
+        },
+        {
+          "id": "signature",
+          "prior": "five",
+          "current": "seven",
+          "history": [
+            "bad-signature-six"
+          ],
+          "accept": false
+        },
+        {
+          "id": "policy",
+          "prior": "five",
+          "current": "seven",
+          "history": [
+            "wrong-policy-six"
+          ],
+          "accept": false
+        },
+        {
+          "id": "unnecessary-prefix",
+          "prior": "six",
+          "current": "seven",
+          "history": [
+            "five"
+          ],
+          "accept": false
+        },
+        {
+          "id": "unchanged-with-history",
+          "prior": "seven",
+          "current": "seven",
+          "history": [
+            "six"
+          ],
+          "accept": false
+        },
+        {
+          "id": "direct-with-history",
+          "prior": "five",
+          "current": "six",
+          "history": [
+            "six"
+          ],
+          "accept": false
+        }
+      ]
+    },
+    "consumerOwners": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol",
+        "closure",
+        "ownedAndIndependentIssuer"
+      ],
+      "properties": {
+        "protocol": {
+          "const": "deep-protocol/tests/Deep.Protocol.Tests/ContactV2/DeepIdV2PreKeyServiceHistoryTests.cs"
+        },
+        "closure": {
+          "const": "deep-protocol/tests/Deep.Protocol.Tests/ApplicationCore/ApplicationCoreVerificationTests.cs"
+        },
+        "ownedAndIndependentIssuer": {
+          "const": "deep-client-shared/tests/Deep.Client.Shared.Production.Tests/DeepIdV2ContactPathAuthoritySourceTests.ContactPublicationSuccessors.cs"
+        }
+      }
+    },
+    "closureHostile": {
+      "const": [
+        "unknown-kind",
+        "wrong-width",
+        "duplicate",
+        "order",
+        "trailing",
+        "foreign",
+        "cycle",
+        "dangling",
+        "unused",
+        "endpoint",
+        "signature",
+        "current-endpoint-expired"
+      ]
+    }
+  }
+}

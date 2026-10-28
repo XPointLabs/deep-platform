@@ -14,6 +14,14 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
+Отдельный [аудит требований Astra Ultra от2026-10-28](architecture/REQUIREMENTS-AUDIT-2026-10-28.md)
+подтвердил порядок: закончить current recovery и retained round60 → P1.2 с
+явным timing contract для неиспользуемого архива → completed-lineage checkpoint/
+retirement. Полный scan уже измеренно превышает warm бюджет; дополнительные
+криптографические стеки это не устранят. Ограничения трёх recorded recoveries
+и bounded XPS support остаются availability blockers для sustained/long-offline
+claims. Не обходить их cap increase, reset или стиранием replay/fork evidence.
+
 ### Возобновление сохранённой WIP — 2026-10-28
 
 Владелец возобновил работу с той же WIP-ветки: закрыть дефекты очистки и
@@ -49,34 +57,56 @@ bounded signed XPS lineage с проверкой каждого соседнег
 fresh-authorized получение сохранённого expired threshold как historical evidence.
 Нельзя ослаблять immediate-hop verifier, публиковать expired service, переиспользовать
 generation reservation или выдумывать промежуточную completed publication.
-Точные producer/consumer contracts должны быть зафиксированы до следующего кода;
-источник фактов и времена maintenance — CLI checkpoint, не warm delivery evidence.
+Bounded XPS carrier принят в уточнении
+[DR-0129](survival-program/decisions/DR-0129-owned-prekey-service-succession.md#2026-10-28--bounded-service-lineage-across-interrupted-publication);
+Protocol/Shared producer, independent issuer и matching tests реализуются одним
+пакетом. Recorded-winner recovery принят отдельным точным уточнением
+[DR-0078](survival-program/decisions/DR-0078-did2-owned-publication-renewal.md#2026-10-28--recorded-positive-winner-after-interrupted-renewal):
+fresh-authorized target6, положительная сохранённая история, раздельные proposal/
+completed chains и атомарное сохранение original с одной новой попыткой; обычные
+Route V3, publication wire и journal10 остаются прежними. Реализация делится
+между Protocol/Shared и Registry/XNode, с отдельным владельцем тестов. После
+законченного пакета — общий focused/build прогон, matched local dev build,
+продолжение исходного pending и раунд60 на тех же3 CLI. P1.2 и устройства ждут.
+Источник фактов и времена maintenance — CLI checkpoint, не warm delivery evidence.
 
-### Сохранённая точка паузы — 2026-10-27
+Текущий A/B focused: Protocol127PASS, Shared53PASS, сборки без warnings,
+1715/2237 inputs unchanged. Исходные FAIL и catalog rejection сохранены;
+Shared53 имеет retrospective mapping, не predeclared full acceptance. Новые
+machine JSON/schema пары проверены Test-Json. Registry/Node gates, retained XNA
+rotation и connected qualification ещё открыты. Полный consumer trace выявил
+дополнительный blocker: private route update всё ещё отвергал recovered proposal
+gap после успешной publication. Принят компактный authenticated witness в
+[DR-0110](survival-program/decisions/DR-0110-did2-private-route-update-custody.md#2026-10-28--private-recorded-proposal-witness);
+Sol-владельцы отдельно реализуют producer/всех consumers и независимые тесты.
+Коррекция прошла focused native: Protocol19 новых witness cases и14 обычных
+codec cases; Shared12 исправленных cases и17 неизменённых из предыдущего capture.
+Shared сценарий проверил actual receive, local custody failure без peer fault,
+cold Store/ACK и следующий обычный offset. Registry49 cases квалифицированы
+как48PASS + исправленная ceremony1PASS, XNode108PASS. Все matched builds без
+warnings/errors; исходные FAIL receipts сохранены. Это локальные native/provider
+тесты, не три CLI, не full/package/release qualification. Следующий шаг —
+matched local Build/Up/Verify и retained round60 с независимым RAM witness.
 
-Работы и субагенты остановлены из-за лимита. Сетевые/device/retained действия
-не выполнялись. Рабочие ветки возвращены на локально закоммиченные checkpoints:
-Shared `2548b1c`, CLI `1c3b79f`; это измеренные, но **не принятые для активации**
-candidates с описанными ниже regression/cleanup blockers.
+Проверенный source-пакет сохранён локально: Protocol `247a483`, Shared recovery
+`40acd80`, Registry `5e9ea01`, XNode `28b7ef1`. Изолированные неактивные P1.2
+codecs — отдельный Shared `5c6c28b`; это не исправление скорости в runtime.
+Push/full gates/три retained CLI этим checkpoint не подтверждаются.
 
-Незавершённый следующий срез сохранён отдельно в Shared:
-`wip/dr0176-closed-operations-20261027`, commit
-`0fb440316a207dd1c5ae2e73da2ccd111060dcb1` (6 файлов, **не собран и не протестирован**).
-Он содержит частичные read-final-fence/operation-lifetime/guard changes и
-адаптацию тестов; cleanup/publication handoff и directory scope не завершены.
-Не cherry-pick как готовое исправление и не активировать на retained профилях.
-После явного возобновления продолжить эту WIP-ветку по принятому разделу
-[DR-0176](survival-program/decisions/DR-0176-bounded-protected-storage-inventory.md#closed-operation-admissions--2026-10-27),
-затем один согласованный focused package и matched benchmark неизменными helpers.
+### Локально сохранённый проверенный срез — 2026-10-28
 
-Перед завершением реализации разрешить exceptional flow: если вызов сначала
-закрывает старую cleanup obligation, последующий Protect новой мутации снова
-пересекает внешний callback. Предложение возвращать recovery-completed IOException
-для нового exact retry **не утверждено**; не вводить такой отказ молча и не
-переполнять1024-ID bound объединением старых/новых obligations. Final closure
-должна покрывать outer operation, включая `Admit` и все последующие callbacks.
-Предыдущий contact-threshold FAIL/автоматическое отклонение остаётся отдельным
-незакрытым условием; WIP его не меняет. P1.2 index ещё не реализовывать.
+Shared `6d5a185` на исходной `wip/dr0176-closed-operations-20261027`,
+CLI `8b247dd`, root `18ec27b`. Исходный незавершённый WIP `0fb4403` сохранён
+в Git; его ограничения не являются текущим статусом. Новый срез включает
+207/29 focused PASS и lossless enrollment, но не full/performance/release PASS.
+Решение exceptional cleanup→mutation — в
+[DR-0176](survival-program/decisions/DR-0176-bounded-protected-storage-inventory.md).
+P1.2 runtime включать после retained recovery и следующего настоящего раунда60.
+По запросу владельца исправить замечания аудита изолированный codec готовится
+параллельно отдельным Sol/High владельцем по
+[DR-0177](survival-program/decisions/DR-0177-authenticated-native-archive-index.md).
+Schema/catalog/enrollment/adoption ещё не выделены; unused codec не закрывает
+замечание о полных обходах. Ничего не опубликовано и не запушено.
 
 ### Корректировка архитектуры доставки — 2026-10-26
 
@@ -134,12 +164,10 @@ Shared candidate `84f47d2`, run `owned-renewal-threshold-convergence-20261026-02
 **18PASS/1FAIL/0skip, test native1**,2208 inputs unchanged. Единственный FAIL —
 `FullSignedRetainedEntryKeepsEveryAuthorityCheck(mode:1)`: fixture получает
 `ClosureReferenceMismatch` до требуемой проверки XRC witness signature.
-Этот пробел не закрыт и не исключён из гейта. Автоматическая проверка безопасности
-прервала дальнейшую работу субагента; отклонённое изменение не повторялось.
-Кандидат Shared не квалифицирован и в connected runtime не активирован.
-Сначала закрыть этот конкретный тестовый пробел разрешённым способом и пройти
-тот же ограниченный пакет; затем fresh CLI publish `--no-restore`, продолжение
-SAME pending maintenance и retained preflight перед тремя сообщениями.
+Этот исходный FAIL сохранён. После явного разрешения владельца исправлена только
+fixture: XSS ссылается на изменённый XRC, чья неверная подпись по-прежнему должна
+отклоняться. Все19 contact cases прошли в текущем Shared focused05; новые
+retained blockers указаны выше. Runtime/performance claim из этого теста не следует.
 Actual retained file metadata перед диагностикой: protected aggregate2.13–2.90MB
 на роль,7–8 native SQL файлов/8.80–10.51MB. Содержимое не читалось. Это размеры
 файлов, не измеренные traffic/allocated bytes; умножение на старые counts не

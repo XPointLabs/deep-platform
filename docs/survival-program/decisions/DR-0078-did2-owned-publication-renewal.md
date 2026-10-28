@@ -101,3 +101,159 @@ cover genuine future-start convergence, mixed expiry/invalid-signature rejection
 deadline exhaustion, cancellation, boot/revoke/root changes after the wait and
 one exact fetch/adoption. Connected qualification is separate; this lifecycle
 wait is never subtracted from an observed maintenance/command duration.
+
+## 2026-10-28 — recorded positive winner after interrupted renewal
+
+Accepted by Mr. X's delegated architecture authority. This narrowly supersedes
+the prohibition on closing an expired incomplete proposal when its exact
+positive threshold winner is durably recorded and independently authenticated.
+Unknown/NULL outcomes, absent evidence and conflicting reservations still fail
+closed. Ordinary Route V3, publication bytes, protected journal version10 with
+15 records, global carrier caps and permanent generation fences stay unchanged.
+No expired XRR/XIR, fictitious intermediate publication or negative evidence is
+created. Original requests, private route material and signatures are retained.
+
+### Closed recovery carrier
+
+Allocate XCA2/XCS2 target6 `RouteRecovery`; retired targets3/4 remain retired.
+`DeepIdV2ContactRouteRecoveryWireCodec` uses request/response version1 and two
+closed modes:1 `ReadRecordedWinner`,2 `IssueAfterRecordedHistory`. Reuse the
+existing authenticated private coordination transport, current network/view,
+placement and subject-device authentication. No direct client-to-Registry API
+shortcut, unauthenticated journal oracle or new primitive is allocated.
+
+All integers are big-endian. Request offsets are:
+
+| Offset | Value |
+| --- | --- |
+| 0 | version:u16=1, mode:u8=1/2, reserved:u8=0, total:u32 |
+| 8 | network16 |
+| 24 | fresh outer nonce32 |
+| 56 | directory lookup32 |
+| 88 | minimum ADH generation:u64 |
+| 96 | minimum ADH core hash32 |
+| 128 | current view hash32 |
+| 160 | outer issued:u64, outer expiry:u64 |
+| 176 | ordinary V3 request length:u32, exact request |
+| following request | history count:u8, three reserved zero bytes |
+| following count | flat pairs: request length:u32/request, response length:u32/response |
+| final64 | current subject-device signature |
+
+Sign the entire unsigned envelope including its final total-length value using
+the existing device-signature construction and domain
+`Deep/ContactResolver/V2/route-recovery-request`. Derive the fresh gateway from
+network16||outerNonce32 with existing gateway construction and domain
+`Deep/ContactResolver/V2/route-recovery-gateway`. The outer signed interval is at
+most120 seconds, within independently current authority/placement. It, not the
+expired inner XRA, controls target6 carrier admission. Every inner request is
+the unchanged canonical successor V3 form with an exact completed predecessor.
+
+Mode1 carries zero..2 prior pairs and reads the exact base request's positive
+winner. Mode2 carries1..3 pairs and issues a fresh base request after that history.
+Pairs are flat, never recursive wrappers. Maximum pair is40,252 bytes; fixed
+request overhead248; maximum mode1 request105,817 and mode2 request146,069.
+With XCA2 header the maximum is146,081, below the existing171,870 global cap.
+Response is version:u16/mode:u8/reserved:u8/total:u32, network16, outerNonce32,
+SHA256(exact base request)32, responseLength:u32, exact ordinary V3 response;
+maximum15,271 bytes. Unknown mode/version, reserved bits, noncanonical encoding,
+oversize, trailing data and binding mismatches reject before effects.
+Media types are `application/vnd.deep.contact-route-recovery-request.v1+octet-stream`
+and `application/vnd.deep.contact-route-recovery-response.v1+octet-stream`.
+
+Mode1 is callback-free journal reading under the existing lock: exact request
+match and non-NULL response are required; it never reserves, signs or calls
+GetOrIssue. Mode2 authenticates and matches EVERY history pair against Registry's
+own permanent rows before reservation and on replay. Registry persists only
+the exact base V3 request/response, never the fresh recovery wrapper. A new outer
+nonce cannot change an already reserved generation/body or excuse a SQL gap.
+
+### Historical fact and two independent chains
+
+Allocate one closed `VerifiedDeepIdV2ContactRouteRecordedHistory`, produced only
+by Protocol verification of fresh current authorization/network/time, the actual
+authenticated completed predecessor, and bounded exact request/response pairs.
+It has no current-route, dispatch, grant or generic-signing capability.
+
+All pairs name the SAME completed predecessor XIR/closure. The first proposal
+immediately succeeds it; every later proposal immediately succeeds the previous
+recorded proposal. Validate all original signatures, nonce/scope/DCA/lookup,
+XRA/PMS/XRC/XSS graph, immediate generation/hash links, original signed windows
+and issuance ADH. Resolve the original XNA through independently authenticated
+retained network authority; verify the ADH under that original policy, with
+original minimum-floor and current same-generation hash checks. Old ADH is not
+current freshness. Current context/boot/floor/revocation must be rechecked after
+callbacks. No caller clock, ignore-expiry switch or ordinary live issuance fact
+may stand in for historical verification.
+
+After complete authentication, closure requires current trusted lower time
+at/after min(XRA.tag13,PMS.tag9,XRC.tag18,XSS.tag11). Issuance-ADH expiry is NOT
+included. The initial owner entry point is explicit authenticated XRA expiry
+in retained phase1; current-XRA work retains its existing live path. Exceptions
+from that live path do not authorize a recovery fallback. Recovery of a still
+current XRA with an expired threshold requires its own typed history admission
+and is outside this increment.
+
+Fresh authoring/verification/completion and publication lineage accept the
+closed history through explicit APIs. In the observed case recorded proposal6
+is followed by fresh XRA/XRC7, while actual completed XRR/XIR/DCB/publication5
+is followed once by6. Preserve completed predecessors and all ordinary checks;
+do not merely permit a generation gap. Subsequent normal proposal and publication
+chains each increment once, retaining their independent offsets.
+
+### Atomic protected closure without a journal migration
+
+Keep the entire original phase1 entry byte-identical in immutable protected
+custody. Allocate keys `deep.store.v2.contact-renewal-closed/<oldIntentHex>` and
+`deep.store.v2.contact-renewal-origin/<SHA256(exactNextBaseV3Request)>`.
+The closure has an8-byte header(version:u8=1,state:u8=1,reserved:u16=0,total:u32),
+then network16,account32,instance32,permanentIntent32,completedBaseEntryHash32,
+oldIntent32,nextIntent32,nextBaseRequestHash32, then length:u32/exactOldPhase1,
+length:u32/exactRecordedResponse. Maximum41,753 bytes. The origin index has an
+8-byte version1 header, network16,account32,instance32,nextRequestHash32,
+oldIntent32,closureRecordHash32; exact184 bytes. Neither contains exportable
+authority; original private scalar never enters the recovery wire or artifacts.
+
+Next intent is SHA256 of ASCII
+`Deep/Client/DID2/contact-renewal-recorded-successor/v1`, zero byte, network,
+account, instance, permanentIntent, completedBaseEntryHash,
+SHA256(exactOldPhase1), SHA256(exactRecordedResponse), in that order.
+Use the existing CompareExchangeAndInsertAsync: guard exact entire old journal;
+replace its old pending with one new ordinary phase1 under nextIntent; atomically
+insert BOTH sidecars. New nonce/scalar/request are persisted once before external
+issuance. Independently read back all three keys atomically. Conflict/uncertain
+completion reopens actual custody and never signs an alternative candidate.
+The last committed publication remains unchanged until two genuine new receipts.
+
+Forward resolution starts at the existing derived renewal intent, following
+closed/<intent>.nextIntent only if the active entry is absent, at most3 links.
+After a link, missing next entry AND next closure is corruption, not genesis.
+Restore finds origin by exact request hash and follows archived originals
+backwards; this remains valid after ordinary completed-intent promotion.
+When that promotion has rebound the retained completed entry's local intent,
+compare its base hash after restoring ONLY that authorized prefix to the stored
+permanent intent; all other exact bytes must match. A sidecar's claimed base
+hash alone is not proof of an actual retained completed entry.
+Every retained issuance restoration caller must use this custody, not only
+renewal. Three consecutive recorded winners are bounded; a fourth rejects with
+custody intact. Moving the old entry frees its active maximum reservation only
+in the atomic closure transaction. No terminal journal phase or deletion of
+retained evidence is allocated.
+
+### Independent issuer and qualification
+
+Publication bytes remain unchanged. Registry first authenticates the actual
+previous publication/route anchor, then walks from the candidate XRA predecessor
+through at most3 positive exact journal pairs. Stop only at that authenticated
+anchor, never at a missing SQL row. Protocol builds the same history fact used
+by the owner's protected sidecars. A database record supplies candidate evidence,
+not authority. Ordinary adjacent publication needs no recovery lookup.
+
+Freeze matching machine bounds/vectors and producer/consumer changes together.
+Required tests cover recorded6/completed5→live7/completed6, original retained
+authority/ADH and foreign authority rejection, all bindings/order/omissions,
+NULL/missing/conflicting rows, no issuance on read, unchanged permanent fences,
+callback cancellation/expiry/boot/revoke changes, atomic closure crash/readback,
+restart after promotion, three chained recoveries and closed fourth-capacity
+failure, and matching owner/independent-issuer acceptance. Existing phase2..6
+recovery is unchanged. Same3 CLI without resets and fresh latency measurements
+remain required; source tests do not establish delivery or release acceptance.

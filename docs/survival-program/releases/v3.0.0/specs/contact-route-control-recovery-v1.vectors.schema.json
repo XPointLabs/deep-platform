@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "package",
+    "decision",
+    "runtimeActivation",
+    "wireCases",
+    "independentCases",
+    "consumerOwners",
+    "evidenceBoundary"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "contact-route-control-recovery-v1.vectors.schema.json"
+    },
+    "package": {
+      "const": "CONTACT-ROUTE-CONTROL-RECOVERY-01"
+    },
+    "decision": {
+      "const": "DR-0110"
+    },
+    "runtimeActivation": {
+      "const": false
+    },
+    "wireCases": {
+      "const": [
+        "ordinary-count6-minimum-unchanged",
+        "ordinary-count6-maximum-unchanged",
+        "count7-one-public-pair",
+        "count7-three-public-pairs",
+        "exact-six-route-excludes-witness",
+        "unknown-count",
+        "unknown-witness-version",
+        "zero-pairs",
+        "four-pairs",
+        "reserved",
+        "missing-tail",
+        "count6-with-tail",
+        "tail-length",
+        "response-length",
+        "nonce-response-binding",
+        "foreign-network",
+        "trailing",
+        "aggregate-over32768-before-effects"
+      ]
+    },
+    "independentCases": {
+      "const": [
+        "completed5-recorded6-candidate7",
+        "actual-native-anchor5-not-initial-anchor0",
+        "omitted-witness",
+        "wrong-completed-anchor",
+        "original-signature",
+        "original-floor",
+        "subsequent-ordinary-offset-count6",
+        "historical-reopen-after-expiry",
+        "actual-native-receive-accepted",
+        "cold-original-Store-selection",
+        "Send-and-ACK",
+        "local-state-failure-does-not-create-peer-fault"
+      ]
+    },
+    "consumerOwners": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "codec",
+        "signedAuthorVerifier",
+        "nativeReceiveAndSendAck"
+      ],
+      "properties": {
+        "codec": {
+          "const": "deep-protocol/tests/Deep.Protocol.Tests/ContactV2/DeepIdV2ContactRouteRecoveryWitnessCodecTests.cs"
+        },
+        "signedAuthorVerifier": {
+          "const": "deep-client-shared/tests/Deep.Client.Shared.Production.Tests/DeepIdV2ContactPathAuthoritySourceTests.ContactPublicationSuccessors.cs"
+        },
+        "nativeReceiveAndSendAck": {
+          "const": "deep-client-shared/tests/Deep.Client.Shared.Production.Tests/DeepIdV2ContactPathAuthoritySourceTests.RecordedRouteControl.cs"
+        }
+      }
+    },
+    "evidenceBoundary": {
+      "const": "public structural codec candidates are not authenticated history; actual signed/native fixtures are not socket, retained-profile or device evidence"
+    }
+  }
+}

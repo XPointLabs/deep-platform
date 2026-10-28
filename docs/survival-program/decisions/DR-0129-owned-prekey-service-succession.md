@@ -68,3 +68,49 @@ requires positive and invalid-signature coverage. Predicate-only tests are not
 native owner/issuer evidence. Protected crash/CAS/reopen, old pending Hello,
 replica lineage, source/package gates and same-account physical Windows/Android
 recovery remain separate mandatory requirements; this is not release approval.
+
+## 2026-10-28 — bounded service lineage across interrupted publication
+
+Accepted by Mr. X's delegated architecture authority. This amendment supersedes
+the direct-contact-hop restriction above, not the per-hop XPS predicate. Retained
+contact publication may lag independently committed prekey maintenance. A signed
+intermediate XPS is historical lineage evidence, never a current service or a
+reason to accept expired inventory. The actual retained case is contact XPS5,
+signed XPS6 and current committed XPS7; signing another XPS6 is forbidden.
+
+Allocate DCR1 V2 support kind3 to one exact 352-byte XPS1 V2. Keep the existing
+u16 kind/u32 length framing, strict kind then raw SHA256 ordering, 16,384-byte
+support cap, 65,535-byte DCR cap and 171,614-byte publication cap. Unknown kinds,
+wrong widths, duplicates and trailing bytes reject. The count is exactly one
+DRS1, one DPD1 per active device and the bounded intermediate XPS entries;
+the existing byte cap permits at most45 intermediates before other support.
+DCB tag12 still contains exactly one current XPS per active device. No new
+primitive, outer publication version, compatibility reader or larger cap.
+
+Each intermediate must belong to an active device, preserve its exact network,
+service capability, DPD reference, suite and signed policy, and participate once
+in a contiguous generation/hash chain ending at that device's current DCB XPS.
+Every adjacent pair uses the unchanged VerifyServiceTransition predicate and
+the independently current device key. Foreign, dangling, cyclic, duplicate,
+unused or endpoint witnesses reject. Generic resolve authenticates this suffix
+but cannot infer that its left boundary was a published contact: that boundary
+reference alone is not publication evidence.
+
+Both owned successor author and independent publication issuer additionally
+anchor the full chain in their actual authenticated prior DCR. The witness set
+is exactly the strict intermediates between that prior XPS and the candidate;
+no omitted hop, unnecessary prefix or witnesses for an unchanged/direct-adjacent
+service are allowed. Current endpoint freshness, authority, policy, inventory
+and the two exact replica receipts remain independently mandatory. Historical
+intermediates need signed structural verification, not fabricated old AccountProofs
+or live validity. Their expired intervals are neither extended nor published.
+
+Shared selects this exact chain from authenticated protected prekey history,
+deduplicating identical XPS records repeated across inventory epochs. It retains
+all original keys and contact intents. Protocol, Shared, Registry and XNode must
+build with the same allocation; no one-sided runtime activation. Frozen machine
+inputs and matching hostile vectors must be updated before connected testing.
+Qualification includes unchanged/direct-hop cases, signed5→6→7 owned author and
+independent issuer, and omission/foreign/duplicate/order/cycle/dangling/unused/
+signature negatives. This allocation does not resolve an expired threshold
+reservation; that distinct lifecycle belongs to DR-0078.

@@ -203,3 +203,70 @@ Whole-path current/negative/fork/cold/crash/cancellation cases, public API/graph
 qualification, frozen repins and downstream compilation precede acceptance.
 Scheduler, XUR distribution, deployment, physical delivery and release remain
 their existing later-stage gates. This contract is not their activation.
+
+## 2026-10-28 — private recorded-proposal witness
+
+Accepted by Mr. X's delegated architecture authority. This narrowly extends
+DMC2/14 carriage for [DR-0078 recorded recovery](DR-0078-did2-owned-publication-renewal.md#2026-10-28--recorded-positive-winner-after-interrupted-renewal).
+It supersedes the unchanged-six-record grammar assertion above only as follows.
+Ordinary controls retain count6 and their exact bytes. Count7 means the same six
+length-prefixed route records followed by one length-prefixed recovery witness.
+No other count, extension, extra record, flags or trailing bytes is accepted.
+The final route still advances the actual native-advertised XRR exactly once.
+Its proposal XRA may cross expired positive winners only after independent
+verification of every recorded proposal. There is no numeric-gap exception.
+
+Integers are big-endian. The witness has exactly this closed layout:
+
+| Offset | Value |
+| --- | --- |
+| 0 | version:u8=1, pairCount:u8=1..3, reserved:u16=0 |
+| 4 | exact completed-anchor XIR1V2,611 bytes |
+| 615 | ordered pairs, each nonce32, minimum ADH generation:u64, minimum ADH core hash32, exact XRA1:550 bytes, responseLength:u32, exact ordinary RouteV3 response |
+
+The ordinary response retains its existing canonical bounds2584..15179. Each
+request is reconstructed using the exact authenticated prior route closure and
+carried completed-anchor XIR, original nonce/floor/XRA, and independently verified
+subject DCA/network/directory lookup. Reconstruction must equal the original
+ordinary canonical V3 request; no fresh request, changed floor or substituted
+authority is signed or inferred. The original positive response, including its
+issuance ADH and threshold signatures, is unmodified. The witness is transported
+inside the existing authenticated encrypted native control; it introduces no
+new public signer, domain, primitive or trust in the sender's verified flag.
+
+The common DMC2 payload limit32768 remains mandatory for the entire payload,
+including the original header, six records, witness length and witness bytes.
+Count and aggregate-size bounds are independent. Reject oversize before authored
+counter/native effects; do not truncate history or increase SQL/ciphertext caps.
+The route-control event bound becomes33050 with its mandatory empty reply field;
+the global DMC2 record bound33082 is unchanged. Count6 remains bounded23367.
+This allocation does not guarantee that every maximal three-pair combination
+fits. Such cases remain a declared capacity failure pending paged history; this
+bounded correction does not close the sustained-recovery audit finding.
+
+The receiver first independently authenticates the carried completed XIR against
+the EXACT actual native previous closure. The initial Hello/Accept XIR must not
+stand in for a later completed anchor. Reuse the closed DR-0078 historical
+verifier, its original-authority resolution and all immediate proposal links.
+Every pair names that same completed anchor; the candidate proposal immediately
+follows the last positive winner. Keep XRR generation+1, previous core hash,
+stable scope, original creation containment and current signed route windows.
+Omitted, foreign, conflicting or substituted evidence is not a valid update.
+The subsequent ordinary proposal retains its normal adjacent proposal and
+completed-route transitions without repeatedly attaching historical evidence.
+
+Authoring, fresh encryption admission, incoming processing, historical native
+reopen, historical Store selection and current Send/ACK consumers use the same
+augmented verifier. The payload parser exposes a separately encoded EXACT
+six-record route closure: slicing the whole count7 payload is not a route.
+Local native/consent/floor/key/time failures remain outside remote malformed-
+control classification and cannot create peer-fault evidence. Remote rejection
+retains the existing authenticated rejected outcome; historical evidence alone
+never creates current route authority, a ratchet operation, ACK or deletion.
+
+Independent qualification covers completed5/recorded6/candidate7, its subsequent
+ordinary offset, author and receiver, cold historical restoration and Send/ACK,
+exact native previous-anchor substitution, signature/ordering/omission failures,
+aggregate capacity before effects and unchanged normal count6 parsing. Existing
+accounts, keys, native originals and floors remain intact; no reset or enrollment
+is allocated by this extension.

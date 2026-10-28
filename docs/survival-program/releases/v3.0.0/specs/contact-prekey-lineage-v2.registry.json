@@ -1,0 +1,68 @@
+{
+  "$schema": "contact-prekey-lineage-v2.registry.schema.json",
+  "package": "CONTACT-PREKEY-LINEAGE-02",
+  "decision": "DR-0129",
+  "amendmentDate": "2026-10-28",
+  "runtimeActivation": false,
+  "record": {
+    "magic": "DCR1",
+    "version": 2,
+    "suite": 769,
+    "maximumBytes": 65535,
+    "maximumSupportBytes": 16384,
+    "maximumPublicationRequestBytes": 171614
+  },
+  "support": {
+    "framing": "kind:u16be || length:u32be || exactBytes",
+    "order": "strict kind then unsigned raw SHA256(exactBytes)",
+    "count": "one DRS1 plus one DPD1 per active device plus exact intermediate XPS1 records",
+    "kinds": [
+      {
+        "kind": 1,
+        "magic": "DRS1",
+        "version": 1
+      },
+      {
+        "kind": 2,
+        "magic": "DPD1",
+        "version": 1,
+        "exactBytes": 776
+      },
+      {
+        "kind": 3,
+        "magic": "XPS1",
+        "version": 2,
+        "exactBytes": 352
+      }
+    ],
+    "maximumIntermediateCount": 45,
+    "byteCapRemainsIndependent": true
+  },
+  "lineage": {
+    "endpoint": "exactly one current XPS1 per active device in DCB1 tag12",
+    "generic": "authenticate contiguous signed suffix ending at current device endpoint; left reference is not publication evidence",
+    "ownerAndIssuer": "exact strict intermediates anchored in actual authenticated prior DCR1; unchanged and direct adjacent services require no witnesses",
+    "adjacentPredicate": "VerifyServiceTransition",
+    "historicalTime": "structural signed verification only; historical expiry does not authorize current service or inventory",
+    "currentEndpoint": "independently current device authority, policy, freshness, inventory and exact two replica receipts"
+  },
+  "reject": [
+    "unknown-kind",
+    "wrong-width",
+    "duplicate",
+    "order",
+    "trailing",
+    "omission",
+    "foreign",
+    "cycle",
+    "dangling",
+    "unused",
+    "endpoint",
+    "signature",
+    "policy",
+    "scope",
+    "generation-gap",
+    "current-endpoint-expired"
+  ],
+  "vectors": "contact-prekey-lineage-v2.vectors.json"
+}

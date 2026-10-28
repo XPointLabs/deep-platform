@@ -4,6 +4,26 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0129's 2026-10-28 amendment](../survival-program/decisions/DR-0129-owned-prekey-service-succession.md#2026-10-28--bounded-service-lineage-across-interrupted-publication)
+allocates bounded intermediate XPS1 V2 support in DCR1 V2. The current DID2
+machine owner is [CONTACT-PREKEY-LINEAGE-02](../survival-program/releases/v3.0.0/specs/contact-prekey-lineage-v2.registry.json),
+with its [schema](../survival-program/releases/v3.0.0/specs/contact-prekey-lineage-v2.registry.schema.json)
+and [signed corpus](../survival-program/releases/v3.0.0/specs/contact-prekey-lineage-v2.vectors.json).
+Source, connected custody and retained recovery qualification remain separate.
+
+[DR-0078's recorded-winner amendment](../survival-program/decisions/DR-0078-did2-owned-publication-renewal.md#2026-10-28--recorded-positive-winner-after-interrupted-renewal)
+allocates target6 `RouteRecovery` and bounded immutable protected closure custody.
+The exact allocation is [CONTACT-ROUTE-RECOVERY-01](../survival-program/releases/v3.0.0/specs/contact-route-recovery-v1.registry.json),
+with its [schema](../survival-program/releases/v3.0.0/specs/contact-route-recovery-v1.registry.schema.json)
+and [public primitive and hostile corpus](../survival-program/releases/v3.0.0/specs/contact-route-recovery-v1.vectors.json).
+Ordinary route/publication bytes, journal version10 and permanent fences remain unchanged.
+
+[DR-0110's private recovery witness](../survival-program/decisions/DR-0110-did2-private-route-update-custody.md)
+allocates [CONTACT-ROUTE-CONTROL-RECOVERY-01](../survival-program/releases/v3.0.0/specs/contact-route-control-recovery-v1.registry.json),
+its [schema](../survival-program/releases/v3.0.0/specs/contact-route-control-recovery-v1.registry.schema.json)
+and [public framing and consumer obligations](../survival-program/releases/v3.0.0/specs/contact-route-control-recovery-v1.vectors.json).
+The unchanged DMC2 payload cap applies before private route-control effects.
+
 [DR-0175](../survival-program/decisions/DR-0175-active-native-state-and-archive-validation.md)
 defines active native metadata versus archived payload validation boundaries.
 No wire, digest, schema, crypto suite or identity generation changes. Full

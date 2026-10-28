@@ -1,0 +1,311 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "package",
+    "decision",
+    "amendmentDate",
+    "historyDecision",
+    "runtimeActivation",
+    "record",
+    "witness",
+    "verification",
+    "capacity",
+    "vectors"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "contact-route-control-recovery-v1.registry.schema.json"
+    },
+    "package": {
+      "const": "CONTACT-ROUTE-CONTROL-RECOVERY-01"
+    },
+    "decision": {
+      "const": "DR-0110"
+    },
+    "amendmentDate": {
+      "const": "2026-10-28"
+    },
+    "historyDecision": {
+      "const": "DR-0078"
+    },
+    "runtimeActivation": {
+      "const": false
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "magic",
+        "kind",
+        "ordinaryCount",
+        "recoveredCount",
+        "maximumOrdinaryPayloadBytes",
+        "maximumPayloadBytes",
+        "maximumRouteControlRecordBytes",
+        "maximumGlobalDmc2RecordBytes",
+        "requiredFlags",
+        "replyFieldBytes",
+        "payloadPrefixBytes",
+        "routeClosureCountOffset",
+        "sixRecords",
+        "witness"
+      ],
+      "properties": {
+        "magic": {
+          "const": "DMC2"
+        },
+        "kind": {
+          "const": 14
+        },
+        "ordinaryCount": {
+          "const": 6
+        },
+        "recoveredCount": {
+          "const": 7
+        },
+        "maximumOrdinaryPayloadBytes": {
+          "const": 23367
+        },
+        "maximumPayloadBytes": {
+          "const": 32768
+        },
+        "maximumRouteControlRecordBytes": {
+          "const": 33050
+        },
+        "maximumGlobalDmc2RecordBytes": {
+          "const": 33082
+        },
+        "requiredFlags": {
+          "const": 0
+        },
+        "replyFieldBytes": {
+          "const": 0
+        },
+        "payloadPrefixBytes": {
+          "const": 72
+        },
+        "routeClosureCountOffset": {
+          "const": 72
+        },
+        "sixRecords": {
+          "const": [
+            "XRR1",
+            "XRA1",
+            "XRC1",
+            "XSS1",
+            "PMT2",
+            "PMS2"
+          ]
+        },
+        "witness": {
+          "const": "one LP32 after the six unchanged LP32 records; no further extension"
+        }
+      }
+    },
+    "witness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "minimumPairs",
+        "maximumPairs",
+        "minimumBytes",
+        "maximumBytes",
+        "fixedBytes",
+        "pairFixedBytes",
+        "offsets",
+        "pairOffsets",
+        "completedAnchorBytes",
+        "exactXra1Bytes",
+        "minimumResponseBytes",
+        "maximumResponseBytes",
+        "requestReconstruction",
+        "noNewSignatureDomain"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "minimumPairs": {
+          "const": 1
+        },
+        "maximumPairs": {
+          "const": 3
+        },
+        "minimumBytes": {
+          "const": 3825
+        },
+        "maximumBytes": {
+          "const": 28549
+        },
+        "fixedBytes": {
+          "const": 615
+        },
+        "pairFixedBytes": {
+          "const": 626
+        },
+        "offsets": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "pairCount",
+            "reservedZeroU16",
+            "completedAnchorXir1V2",
+            "pairs"
+          ],
+          "properties": {
+            "version": {
+              "const": 0
+            },
+            "pairCount": {
+              "const": 1
+            },
+            "reservedZeroU16": {
+              "const": 2
+            },
+            "completedAnchorXir1V2": {
+              "const": 4
+            },
+            "pairs": {
+              "const": 615
+            }
+          }
+        },
+        "pairOffsets": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "originalNonce",
+            "minimumAdhGeneration",
+            "minimumAdhCoreHash",
+            "exactXra1",
+            "responseLength",
+            "exactOrdinaryV3Response"
+          ],
+          "properties": {
+            "originalNonce": {
+              "const": 0
+            },
+            "minimumAdhGeneration": {
+              "const": 32
+            },
+            "minimumAdhCoreHash": {
+              "const": 40
+            },
+            "exactXra1": {
+              "const": 72
+            },
+            "responseLength": {
+              "const": 622
+            },
+            "exactOrdinaryV3Response": {
+              "const": 626
+            }
+          }
+        },
+        "completedAnchorBytes": {
+          "const": 611
+        },
+        "exactXra1Bytes": {
+          "const": 550
+        },
+        "minimumResponseBytes": {
+          "const": 2584
+        },
+        "maximumResponseBytes": {
+          "const": 15179
+        },
+        "requestReconstruction": {
+          "const": [
+            "independently verified network16",
+            "original nonce32",
+            "independently verified subject directory lookup32",
+            "original minimum ADH generation8/hash32",
+            "independently verified exact DCA473",
+            "original exact XRA550",
+            "carried exact completed XIR611",
+            "actual native previous six-record closure"
+          ]
+        },
+        "noNewSignatureDomain": {
+          "const": true
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "anchor",
+        "proposalChain",
+        "completedChain",
+        "ordinarySubsequent",
+        "currentness",
+        "historical",
+        "exactRouteProperty",
+        "localFailure"
+      ],
+      "properties": {
+        "anchor": {
+          "const": "verify carried completed XIR against exact actual native previous closure; original Hello/Accept XIR cannot substitute for a later anchor"
+        },
+        "proposalChain": {
+          "const": "reuse closed DR-0078 fact; every immediate signed proposal and original authority/ADH checked"
+        },
+        "completedChain": {
+          "const": "actual native previous XRR plus one, previous core and stable scope unchanged"
+        },
+        "ordinarySubsequent": {
+          "const": "adjacent proposals and completed routes keep their independent offset with count6 and no repeated witness"
+        },
+        "currentness": {
+          "const": "all signed current candidate windows, authority, device, consent and final native floor checks remain mandatory"
+        },
+        "historical": {
+          "const": "native original accepted outcome plus original signatures/scope/creation/lineage only; no current dispatch or ACK from history alone"
+        },
+        "exactRouteProperty": {
+          "const": "separately encoded count6 closure only; whole count7 payload is not a route"
+        },
+        "localFailure": {
+          "const": "native/consent/floor/key/time prerequisites remain outside remote malformed-control classification"
+        }
+      }
+    },
+    "capacity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "aggregateBeforeEffects",
+        "counterNativeSqlCiphertextCapsUnchanged",
+        "truncateHistory",
+        "maximalThreePairCombinationGuaranteed",
+        "pagedHistoryAllocated"
+      ],
+      "properties": {
+        "aggregateBeforeEffects": {
+          "const": true
+        },
+        "counterNativeSqlCiphertextCapsUnchanged": {
+          "const": true
+        },
+        "truncateHistory": {
+          "const": false
+        },
+        "maximalThreePairCombinationGuaranteed": {
+          "const": false
+        },
+        "pagedHistoryAllocated": {
+          "const": false
+        }
+      }
+    },
+    "vectors": {
+      "const": "contact-route-control-recovery-v1.vectors.json"
+    }
+  }
+}

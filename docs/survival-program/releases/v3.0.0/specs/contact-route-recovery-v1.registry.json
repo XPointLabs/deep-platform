@@ -1,0 +1,158 @@
+{
+  "$schema": "contact-route-recovery-v1.registry.schema.json",
+  "package": "CONTACT-ROUTE-RECOVERY-01",
+  "decision": "DR-0078",
+  "amendmentDate": "2026-10-28",
+  "runtimeActivation": false,
+  "coordination": {
+    "target": 6,
+    "name": "RouteRecovery",
+    "outerVersion": 2,
+    "outerHeaderBytes": 12,
+    "globalRequestMaximumBytes": 171870,
+    "targetRequestMaximumBytes": 146081,
+    "retiredTargets": [
+      3,
+      4
+    ]
+  },
+  "wire": {
+    "requestVersion": 1,
+    "responseVersion": 1,
+    "requestFixedOverheadBytes": 248,
+    "responseFixedOverheadBytes": 92,
+    "maximumPairBytes": 40252,
+    "maximumResponseBytes": 15271,
+    "outerMaximumValiditySeconds": 120,
+    "requestMediaType": "application/vnd.deep.contact-route-recovery-request.v1+octet-stream",
+    "responseMediaType": "application/vnd.deep.contact-route-recovery-response.v1+octet-stream",
+    "signatureDomain": "Deep/ContactResolver/V2/route-recovery-request",
+    "gatewayDomain": "Deep/ContactResolver/V2/route-recovery-gateway",
+    "modes": [
+      {
+        "id": 1,
+        "name": "ReadRecordedWinner",
+        "minimumPairs": 0,
+        "maximumPairs": 2,
+        "minimumRequestBytes": 6161,
+        "maximumRequestBytes": 105817,
+        "effect": "exact non-NULL positive winner read only; no reserve/sign/GetOrIssue"
+      },
+      {
+        "id": 2,
+        "name": "IssueAfterRecordedHistory",
+        "minimumPairs": 1,
+        "maximumPairs": 3,
+        "minimumRequestBytes": 14666,
+        "maximumRequestBytes": 146069,
+        "effect": "match every exact pair to permanent rows before reservation and on replay; persist only base V3"
+      }
+    ],
+    "requestOffsets": {
+      "version": 0,
+      "mode": 2,
+      "reserved": 3,
+      "total": 4,
+      "network": 8,
+      "outerNonce": 24,
+      "directoryLookup": 56,
+      "minimumAdhGeneration": 88,
+      "minimumAdhHash": 96,
+      "viewHash": 128,
+      "issued": 160,
+      "expiry": 168,
+      "baseRequestLength": 176,
+      "baseRequest": 180,
+      "historyCount": "after exact base request; followed by three zero bytes",
+      "pairs": "flat LP32 request then LP32 response",
+      "signature": "final64; entire unsigned envelope including final total is signed"
+    },
+    "responseOffsets": {
+      "version": 0,
+      "mode": 2,
+      "reserved": 3,
+      "total": 4,
+      "network": 8,
+      "outerNonce": 24,
+      "baseRequestHash": 56,
+      "responseLength": 88,
+      "response": 92
+    }
+  },
+  "history": {
+    "maximumPairs": 3,
+    "anchor": "actual independently authenticated completed predecessor XIR and six-record closure; every pair names same anchor",
+    "proposalChain": "first proposal immediately succeeds completed proposal; every later proposal immediately succeeds previous recorded proposal",
+    "completionChain": "completed XRR/XIR/DCB/publication increments once independently of proposal offset",
+    "closedAt": "trustedLower >= min(XRA.tag13,PMS.tag9,XRC.tag18,XSS.tag11)",
+    "excludedFromClosure": "issuance ADH expiry",
+    "originalAuthority": "resolve original XNA through authenticated retained authority and verify issuance ADH under original policy/minimum floor/current same-generation hash",
+    "initialEntry": "explicit authenticated expired XRA in retained phase1 only",
+    "notAuthority": [
+      "current route",
+      "dispatch",
+      "grant",
+      "generic signing",
+      "old ADH freshness",
+      "SQL row alone"
+    ]
+  },
+  "custody": {
+    "journalVersion": 10,
+    "journalRecordCount": 15,
+    "closedKeyPrefix": "deep.store.v2.contact-renewal-closed/",
+    "originKeyPrefix": "deep.store.v2.contact-renewal-origin/",
+    "closureVersion": 1,
+    "closureState": 1,
+    "closureMaximumBytes": 41753,
+    "closureHeaderBytes": 8,
+    "closureFixedBytesBeforeLengths": 248,
+    "closureFields": [
+      "network16",
+      "account32",
+      "instance32",
+      "permanentIntent32",
+      "completedBaseEntryHash32",
+      "oldIntent32",
+      "nextIntent32",
+      "nextBaseRequestHash32",
+      "LP32 exactOldPhase1",
+      "LP32 exactRecordedResponse"
+    ],
+    "originVersion": 1,
+    "originExactBytes": 184,
+    "originFields": [
+      "header8",
+      "network16",
+      "account32",
+      "instance32",
+      "nextRequestHash32",
+      "oldIntent32",
+      "closureRecordHash32"
+    ],
+    "nextIntentDomain": "Deep/Client/DID2/contact-renewal-recorded-successor/v1",
+    "nextIntentProjection": [
+      "network16",
+      "account32",
+      "instance32",
+      "permanentIntent32",
+      "completedBaseEntryHash32",
+      "SHA256(exactOldPhase1)",
+      "SHA256(exactRecordedResponse)"
+    ],
+    "atomicity": "whole old journal CAS and both insert-only sidecars in CompareExchangeAndInsertAsync; atomic independent three-key readback",
+    "maximumForwardLinks": 3,
+    "fourth": "reject with exact custody intact",
+    "promotion": "actual retained base entry allows only authorized local intent prefix normalization back to permanent intent; all remaining bytes exact"
+  },
+  "unchanged": [
+    "ordinary Route V3",
+    "publication wire",
+    "global carrier caps",
+    "permanent generation fences",
+    "phase2..6 recovery",
+    "original private route material",
+    "same account and keys"
+  ],
+  "vectors": "contact-route-recovery-v1.vectors.json"
+}

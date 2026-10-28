@@ -392,18 +392,12 @@ never cross either authority boundary as trusted values. Both exchanges are
 one-operation, bounded, non-enumerable and durable-exact-replay; a changed replay
 conflicts.
 
-The threshold half uses a single canonical request/response envelope at the
-authority terminal. [DR-0036](../survival-program/decisions/DR-0036-did2-route-threshold-coordination.md)
-replaces the envelope with version 2 and DCA1 V2 only, with no V1 reader.
-The request media type is
-`application/vnd.deep.contact-route-authority-request.v2+octet-stream` and is
-exactly 1,151 bytes: `version:u16be || flags:u16be(0) || total:u32be ||
-networkId16 || requestNonce32 || directoryLookupKey32 ||
-minimumADH1Generation:u64be || minimumADH1CoreHash32 || exactDCA1[473] ||
-exactXRA1[550]`. The response media type is
-`application/vnd.deep.contact-route-authority-response.v2+octet-stream`, is
-2,151..11,079 bytes, repeats the exact network and nonce, then carries only
-`LP32(exactPMS2) || LP32(exactXRC1) || LP32(exactXSS1)`. The authority obtains
+The threshold half uses the exact ordinary Route V3 request/response in
+[CONTACT-COORDINATION-02](../survival-program/releases/v3.0.0/specs/contact-coordination-v2.registry.json),
+including authenticated completed-predecessor and issuance-head custody.
+Its original DID2 boundary follows
+[DR-0036](../survival-program/decisions/DR-0036-did2-route-threshold-coordination.md).
+The authority obtains
 the current directory/network closure from its protected canonical source,
 not from caller bytes, and signs only after verifying the active DCA1/device
 and XRA1. The client independently rehydrates and verifies all three threshold
@@ -417,6 +411,18 @@ Client exact pending custody follows
 The saved request minimum is retained byte-for-byte on unknown completion/reopen;
 independently fresh current proof/protected floors still authorize each retry.
 It is neither a cached current proof nor permission to rewrite a reserved nonce.
+
+[DR-0078's recorded positive winner amendment](../survival-program/decisions/DR-0078-did2-owned-publication-renewal.md#2026-10-28--recorded-positive-winner-after-interrupted-renewal)
+defines bounded recovery of an authenticated expired phase1 proposal. Its exact
+target6 carrier, immutable closure custody and independent proposal/completion
+chains belong to [CONTACT-ROUTE-RECOVERY-01](../survival-program/releases/v3.0.0/specs/contact-route-recovery-v1.registry.json)
+and the matching [public primitive and hostile corpus](../survival-program/releases/v3.0.0/specs/contact-route-recovery-v1.vectors.json).
+An absent or NULL winner remains unknown; old positive evidence does not authorize
+current dispatch or replace independently current authority and both new receipts.
+
+Private route controls carry bounded recovery evidence under [DR-0110](../survival-program/decisions/DR-0110-did2-private-route-update-custody.md)
+and [CONTACT-ROUTE-CONTROL-RECOVERY-01](../survival-program/releases/v3.0.0/specs/contact-route-control-recovery-v1.registry.json).
+The witness must join the actual native predecessor; its parsed data grants no delivery authority.
 
 Before publication, the client obtains exact `XPA1` from the account-directory
 threshold over the XPoint/OHTTP path. The threshold validates current
@@ -892,8 +898,13 @@ signature domains; the V1 descriptor above is not a compatibility input.
 
 [DR-0129](../survival-program/decisions/DR-0129-owned-prekey-service-succession.md)
 defines the closed same-device XPS1 service transition inside a successor
-contact object. Both exact signatures and the immediate generation/hash link
-are required; scope/capability/policy stay fixed. Existing object/publication
+contact object, including bounded intermediate service history after interrupted
+publication. The exact DCR1 V2 kind3 framing, unchanged byte caps and signed
+suffix versus authenticated prior-contact anchor are frozen in
+[CONTACT-PREKEY-LINEAGE-02](../survival-program/releases/v3.0.0/specs/contact-prekey-lineage-v2.registry.json)
+and its [signed positive/hostile corpus](../survival-program/releases/v3.0.0/specs/contact-prekey-lineage-v2.vectors.json).
+Both exact signatures and the immediate generation/hash link remain required
+at every adjacent hop; scope/capability/policy stay fixed. Existing object/publication
 lineage, independently current time and native inventory custody remain separate.
 A new object can contain a current later-generation signed service; object
 genesis is not prekey-service genesis. No expired inventory is renewed by parsing

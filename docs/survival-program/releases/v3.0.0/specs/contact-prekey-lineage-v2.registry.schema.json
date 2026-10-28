@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "package",
+    "decision",
+    "amendmentDate",
+    "runtimeActivation",
+    "record",
+    "support",
+    "lineage",
+    "reject",
+    "vectors"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "contact-prekey-lineage-v2.registry.schema.json"
+    },
+    "package": {
+      "const": "CONTACT-PREKEY-LINEAGE-02"
+    },
+    "decision": {
+      "const": "DR-0129"
+    },
+    "amendmentDate": {
+      "const": "2026-10-28"
+    },
+    "runtimeActivation": {
+      "const": false
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "magic",
+        "version",
+        "suite",
+        "maximumBytes",
+        "maximumSupportBytes",
+        "maximumPublicationRequestBytes"
+      ],
+      "properties": {
+        "magic": {
+          "const": "DCR1"
+        },
+        "version": {
+          "const": 2
+        },
+        "suite": {
+          "const": 769
+        },
+        "maximumBytes": {
+          "const": 65535
+        },
+        "maximumSupportBytes": {
+          "const": 16384
+        },
+        "maximumPublicationRequestBytes": {
+          "const": 171614
+        }
+      }
+    },
+    "support": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "framing",
+        "order",
+        "count",
+        "kinds",
+        "maximumIntermediateCount",
+        "byteCapRemainsIndependent"
+      ],
+      "properties": {
+        "framing": {
+          "const": "kind:u16be || length:u32be || exactBytes"
+        },
+        "order": {
+          "const": "strict kind then unsigned raw SHA256(exactBytes)"
+        },
+        "count": {
+          "const": "one DRS1 plus one DPD1 per active device plus exact intermediate XPS1 records"
+        },
+        "kinds": {
+          "const": [
+            {
+              "kind": 1,
+              "magic": "DRS1",
+              "version": 1
+            },
+            {
+              "kind": 2,
+              "magic": "DPD1",
+              "version": 1,
+              "exactBytes": 776
+            },
+            {
+              "kind": 3,
+              "magic": "XPS1",
+              "version": 2,
+              "exactBytes": 352
+            }
+          ]
+        },
+        "maximumIntermediateCount": {
+          "const": 45
+        },
+        "byteCapRemainsIndependent": {
+          "const": true
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "endpoint",
+        "generic",
+        "ownerAndIssuer",
+        "adjacentPredicate",
+        "historicalTime",
+        "currentEndpoint"
+      ],
+      "properties": {
+        "endpoint": {
+          "const": "exactly one current XPS1 per active device in DCB1 tag12"
+        },
+        "generic": {
+          "const": "authenticate contiguous signed suffix ending at current device endpoint; left reference is not publication evidence"
+        },
+        "ownerAndIssuer": {
+          "const": "exact strict intermediates anchored in actual authenticated prior DCR1; unchanged and direct adjacent services require no witnesses"
+        },
+        "adjacentPredicate": {
+          "const": "VerifyServiceTransition"
+        },
+        "historicalTime": {
+          "const": "structural signed verification only; historical expiry does not authorize current service or inventory"
+        },
+        "currentEndpoint": {
+          "const": "independently current device authority, policy, freshness, inventory and exact two replica receipts"
+        }
+      }
+    },
+    "reject": {
+      "const": [
+        "unknown-kind",
+        "wrong-width",
+        "duplicate",
+        "order",
+        "trailing",
+        "omission",
+        "foreign",
+        "cycle",
+        "dangling",
+        "unused",
+        "endpoint",
+        "signature",
+        "policy",
+        "scope",
+        "generation-gap",
+        "current-endpoint-expired"
+      ]
+    },
+    "vectors": {
+      "const": "contact-prekey-lineage-v2.vectors.json"
+    }
+  }
+}
