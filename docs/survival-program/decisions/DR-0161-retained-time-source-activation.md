@@ -45,3 +45,22 @@ predecessor/key/horizon/input tests, preservation across native cold reopen,
 retained installation and fresh proofs naming the new policy, then the same
 three CLI accounts/history without reset. Provider availability, first-attempt
 delivery and latency are measured, never inferred from the source list alone.
+
+## Same-source expiry renewal and Build-only historical validation — 2026-10-28
+
+The same retained ceremony may renew the exact existing signed DTS1 source set
+when no source-file parameter is supplied. All tuples, quorum, age and interval
+limits remain unchanged. Explicit empty, missing or malformed source input
+rejects; omission is not a fallback after invalid input. Additive source changes
+retain DR-0160's requirements. Existing genesis, signing keys, native history
+and pending outcomes stay intact through either form of operational succession.
+
+Matching binaries must be buildable after the installed authority expires.
+Build therefore authenticates sealed installed custody, original genesis and
+the complete signed closure at its original artifact intervals, using shared
+Protocol signature, lineage and projection checks. The public void historical
+verifier returns no time, freshness, network or operation capability. The exact
+sealed candidate and current closure both require verification. This is not
+current admission, does not create installation state and does not contact NTS.
+Installation, publication, issuance, Up and Verify retain actual trusted time,
+current authority, protected floors and all ordinary security checks.

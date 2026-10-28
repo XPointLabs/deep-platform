@@ -22,6 +22,22 @@ retirement. Полный scan уже измеренно превышает warm 
 и bounded XPS support остаются availability blockers для sustained/long-offline
 claims. Не обходить их cap increase, reset или стиранием replay/fork evidence.
 
+Проверка замечаний по запросу владельца: cleanup исправлен в ограниченном
+проверенном storage-срезе; ordinary full-archive scans и sustained recovery
+ещё открыты. Точное runtime/adoption дополнение DR-0177 принято после Astra
+review; изолированный pure index builder реализуется параллельно. Активация
+индекса остаётся после retained round60 и полного пакета consumers/enrollment.
+Matched dev Build обнаружил истечение XNA/DTS/PMA. Исправляется Build-only
+historical validation и штатное same-source renewal с прежними signing keys,
+genesis, volumes и историей; live admission/currentness не меняются.
+
+Этот DevOps/Protocol срез теперь прошёл focused:176 Protocol cases,9 Node
+script cases и45 managed assertions; сборки без warnings/errors, inputs
+unchanged. Pure archive builder отдельно прошёл24 cases. Это подтверждает
+соответствующие изменения кода, но ещё не renewal стенда, runtime индекса или
+три CLI. Следующий operational шаг — свежий matched CLI runtime, Build,
+same-source Prepare/Apply и Up/Verify с RAM custody witness, затем round60.
+
 ### Возобновление сохранённой WIP — 2026-10-28
 
 Владелец возобновил работу с той же WIP-ветки: закрыть дефекты очистки и
@@ -105,7 +121,8 @@ P1.2 runtime включать после retained recovery и следующег
 По запросу владельца исправить замечания аудита изолированный codec готовится
 параллельно отдельным Sol/High владельцем по
 [DR-0177](survival-program/decisions/DR-0177-authenticated-native-archive-index.md).
-Schema/catalog/enrollment/adoption ещё не выделены; unused codec не закрывает
+Schema/catalog/enrollment/adoption теперь выделены точным дополнением DR-0177;
+реализация и активация ещё не закончены. Unused codec/builder не закрывает
 замечание о полных обходах. Ничего не опубликовано и не запушено.
 
 ### Корректировка архитектуры доставки — 2026-10-26
