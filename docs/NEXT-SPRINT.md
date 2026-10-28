@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-27**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-10-28**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -14,7 +14,45 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-### Пауза по запросу владельца — 2026-10-27
+### Возобновление сохранённой WIP — 2026-10-28
+
+Владелец возобновил работу с той же WIP-ветки: закрыть дефекты очистки и
+регрессию скорости, затем проверить те же три CLI без сбросов. Windows и
+Android исключены. Реализация и тесты — Sol6.1/High с раздельным владением;
+координатор принимает diff и измерения. До нового gate прежние FAIL и
+неподтверждённые claims остаются в силе. Исключительный recovery→mutation
+переход уточнён в DR-0176: подготовленные manifests до финальной очистки,
+без принудительного recovery-completed retry и без расширения wire bounds.
+
+Текущий проверенный срез: Shared focused05 **207PASS**, CLI **29PASS**, сборки
+без предупреждений. Дефекты cleanup/recovery закрыты этим ограниченным пакетом;
+contact-threshold fixture исправлена с явного разрешения владельца, все19
+contact-проверок прошли. Benchmark candidate04 ускорил manifest относительно
+предыдущего кандидата, но всё ещё медленнее aggregate в девяти микрозамерах.
+Performance/full/release acceptance не установлены. По текущему запросу владельца
+разрешён ограниченный локальный diagnostic на тех же трёх CLI с проверкой
+сохранности состояния; основание и ограничения — раздел retained qualification
+в DR-0176. Это следующий шаг, а не разрешение на production/device rollout.
+
+Retained diagnostic выполнен до нового подтверждённого блокера: все три профиля
+преобразованы с побайтным совпадением всех logical slots и native-файлов; preflight
+подтвердил прежние180 событий/60 команд, revision11/epoch2. Первая роль обновила
+публикацию; вторая сохранила исходный phase1 и остановилась: committed contact
+связан с XPS5, independently maintained tip — XPS7, между ними есть signed XPS6.
+XPS6 и исходный pending XRA уже истекли. В Registry найден exact original
+route-generation6 request и сохранённый threshold response с issuance ADH1;
+наличие записи не подменяет проверку подписей или currentness. Новый раунд не
+авторился: **0/3**, cursor остаётся60. Аккаунты/ключи/группа не сбрасывались.
+
+Следующий законченный срез S05 — recovery прерванной contact publication:
+bounded signed XPS lineage с проверкой каждого соседнего перехода и отдельное
+fresh-authorized получение сохранённого expired threshold как historical evidence.
+Нельзя ослаблять immediate-hop verifier, публиковать expired service, переиспользовать
+generation reservation или выдумывать промежуточную completed publication.
+Точные producer/consumer contracts должны быть зафиксированы до следующего кода;
+источник фактов и времена maintenance — CLI checkpoint, не warm delivery evidence.
+
+### Сохранённая точка паузы — 2026-10-27
 
 Работы и субагенты остановлены из-за лимита. Сетевые/device/retained действия
 не выполнялись. Рабочие ветки возвращены на локально закоммиченные checkpoints:

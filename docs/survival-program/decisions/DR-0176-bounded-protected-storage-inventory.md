@@ -206,6 +206,11 @@ or full-set replay. Keep existing sharing backoff. Bound immediate test-hook
 invalidations separately (maximum eight); do not shorten ordinary sharing attempts
 to that count. Normal ordered Protect/Unprotect phases are not restarts. This does
 not promise that a blocked filesystem syscall finishes within two seconds.
+Budget exhaustion reports `IOException("Protected storage operation retry budget
+exhausted.")`, including persistent native sharing contention. This replaces the
+old per-file terminal `Win32Exception`; other native errors retain their existing
+handling. Failure still preserves committed/incomplete obligations and never
+becomes CAS=false or cleanup success.
 
 Test hooks select an explicit point before invoking code and consume one-shot
 callbacks before invocation. Even no-op callbacks invalidate admission. Final
@@ -218,7 +223,64 @@ all read return paths and failed-audit-marker preservation. Test no-retry admiss
 counts at different batch sizes, then remeasure all operations with unchanged
 helpers. Neither a lower count nor focused PASS proves latency/release acceptance.
 
+### Recovery followed by mutation — 2026-10-28
+
+An outer call may recover an abandoned pending descriptor or existing cleanup
+and then perform its requested mutation. It must not first discard retirement
+obligations and subsequently invoke another protector callback. Returning a new
+"recovery completed; retry the mutation" error is not the chosen contract.
+
+For an ordinary cleanup-bearing predecessor, carry its old cleanup IDs into the
+new successor together with newly retired IDs when their union fits1,024. The
+final closed segment retires the whole set. For an overflowing union, prepare
+three exact manifests before retirement: a metadata-only cleanup-free successor
+of the actual predecessor, the ordinary business successor of that intermediate,
+and its cleanup-free successor. Each retains the existing1,024-ID limit and exact
+revision/hash joins. The in-memory old/new retirement sets together are bounded
+by2,048. Do not widen `ValidatePendingSuccessor` to accept omitted obligations.
+
+For abandoned pending/backup recovery, authenticate and retain the original
+descriptor until all provider phases needed by the outer call are complete.
+Prepare/authenticate the required candidates, then freshly join actual CURRENT,
+guard and the exact existing file family. The final segment retires authorized
+abandoned objects before clearing their descriptor, then stages/adopts any new
+mutation and completes its cleanup. Current is never recovered from pending.
+Prepared candidates cannot keep an extra live plaintext/key-bearing inventory
+across callbacks; retain exact protected bytes and key-free facts, and freshly
+admit the actual source after external edges.
+
+Before the first descriptor-clearing or intermediate-adoption cutpoint, a retry
+may freshly admit the unchanged source and repeat the whole authorized set.
+After that cutpoint the exceptional suffix permits no provider, arbitrary hook,
+wait or retry until the outer return; only a fixed internal crash injection may
+interrupt it. Exact path/source/guard/object checks and durability remain in
+force. A genuine I/O failure propagates the existing exception with the durable
+current/pending state for the next independent call. It is never a synthetic
+retry request, CAS=false after business adoption, or early cleanup success.
+This rare path sacrifices in-call sharing retries after the cutpoint, not any
+authentication or retirement check. Test intermediate/primary crash outcomes,
+pending recovery with a new mutation, and callback restoration explicitly.
+
 ## Retained enrollment and qualification
+
+### Bounded local diagnostic authorization — 2026-10-28
+
+The owner explicitly requested testing the same three retained CLI profiles
+without resets after the WIP fixes. Focused05 passed207 cases (188 storage,
+19 contact), including actual access revocation, cleanup restoration and crash
+recovery. CLI29 and matched baseline07/candidate04 each passed their declared
+correctness rows with unchanged inputs. These receipts permit one controlled
+local retained enrollment and diagnostic run under that request. Preserve every
+logical slot, account/key/instance, native file and original operation; capture
+before/after invariants and stop on any mismatch. No production/device action.
+
+This is a diagnostic exception to the earlier blanket conversion hold, not
+performance or release acceptance. Candidate04 materially improves the regressing
+manifest candidate, but remains slower than the aggregate in the matched nine
+microbenchmarks (one single-read median is nearly equal). Keep that failure
+visible. The retained run measures complete delivery and remaining work; it must
+not be presented as proof of subsecond latency, full qualification, or permission
+to publish/deploy. Subsequent changes require their own relevant checks.
 
 Explicit enrollment fully authenticates/decodes the actual DSS1 source under
 host/process leases, preserving EVERY logical slot, identity, instance, original
@@ -241,6 +303,9 @@ canonical full-gate reference union:
 - `Deep.Client.Shared.Production.Tests.SecureStorageCompareExchangeTests.SelectedDecodeAvoidsUnrequestedValueBuffersWhileFullMutationDecodeRetainsThem`
   is replaced by
   `Deep.Client.Shared.Production.Tests.SecureStorageCompareExchangeTests.SelectedReadLoadsBoundedManifestWithoutUnrequestedObjectPayloads`.
+
+Exact gate binding:
+`Deep.Client.Shared.Production.Tests.SecureStorageCompareExchangeTests.SelectedDecodeAvoidsUnrequestedValueBuffersWhileFullMutationDecodeRetainsThem -> Deep.Client.Shared.Production.Tests.SecureStorageCompareExchangeTests.SelectedReadLoadsBoundedManifestWithoutUnrequestedObjectPayloads`
 
 The former measured the retired aggregate decoder's allocation strategy. The
 replacement exercises actual manifest/object storage with a large unselected
