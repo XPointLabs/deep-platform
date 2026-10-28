@@ -14,6 +14,18 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
+**Пауза по запросу владельца,2026-10-28.** Точный checkpoint, коммиты,
+evidence и условия продолжения сохранены в
+[handoff](architecture/HANDOFF-2026-10-28-PAUSED.md). Три CLI сохранены без
+сбросов; cursor60, новый раунд не авторился. Retained publication recovery
+завершён, но private native route3→current6 блокируется истёкшими completed4/5.
+Для исторического catch-up требуется закрыть три вопроса promotion/replay из
+handoff до принятия контракта. P1 runtime сохранён отдельно в
+`wip/p1-archive-runtime-20261028`, не собран и не активирован. Прежний порядок
+«сначала retained round60» сейчас зависит от этого catch-up; успешный раунд
+или закрытие всех замечаний аудита не заявляются. Работы возобновить только
+после команды владельца.
+
 Отдельный [аудит требований Astra Ultra от2026-10-28](architecture/REQUIREMENTS-AUDIT-2026-10-28.md)
 подтвердил порядок: закончить current recovery и retained round60 → P1.2 с
 явным timing contract для неиспользуемого архива → completed-lineage checkpoint/
