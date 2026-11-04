@@ -45,7 +45,7 @@ enrollment, catch-up/round60, warm delivery/ACK замеры. После дос�
 и стабилизации изменений — обязательный полный Shared gate. Диагностический
 CLI-прогон не означает полной source/release qualification; runtime-проверки
 подлинности, currentness, replay и сохранности состояния остаются обязательными.
-Матрица полного gate содержит2278 фактических identities после34 утверждённых
+Матрица полного gate содержит2285 фактических identities после34 утверждённых
 replacement bindings; наличие identity не означает PASS. Warm p95≤1s не доказан.
 Отдельно остаётся длительная работа owner/Registry/XPS history: native archive
 не разрешает удалять publications до законного retirement. Capacity refusal
@@ -131,6 +131,31 @@ Build40 без warnings/errors; после q22 уточнён только XML r
 Новые бизнес-сообщения ещё не авторились, warm latency не измерена. Следующий
 шаг — совпадающий CLI, завершение catch-up на тех же
 профилях и короткий delivery round; полный Shared — после цели.
+
+CLI runtime06 на Shared`f84a206` прошёл все6 направлений catch-up без reset:
+15.129/97.642/134.051/111.160/124.871/132.411s. Первый receive/ACK завершён
+за66.547s; второй через4.340s остановился локально в
+`RequireRetainedPermanentIntent` (CryptographicException), после2HTTP200.
+Все runtime/helper inputs unchanged; бизнес-раунд ещё не начат. Выявлено
+расхождение producer/consumer: promotion записывает predecessor под resolved
+intent из защищённой recorded-winner цепочки, retained reader проверяет только
+base intent. Следующий пакет — ограниченное доказательство этой цепочки при
+чтении, сохранение всех custody/currentness checks, focused regression и
+продолжение на тех же профилях. Конкретная цепочка в retained аккаунте ещё
+проверяется; отсутствие/подмена доказательств не обходятся.
+Source review ограниченного reader исправления принят: direct intent либо
+не более3 подлинных closed links, точный account/instance/permanent/base hash,
+adjacent request hashes и final archive key; route root и все использованные
+closures повторно проверяются атомарно после callbacks. Build41 прошёл:
+0warnings/errors,2191 unchanged inputs, compiler31.65s. q23 прошёл7/0/0
+за42.776s: cold-read, two-link, malformed/missing/foreign и callback mutation,
+2333 inputs unchanged. Multi-link negative подтверждает именно отказ adjacency.
+Это не расширяет право удаления: destructive retirement остаётся direct-only
+и fail-closed для recorded archives. Для их последующего удаления отдельно
+нужно связать эти зависимости с сохранённым retirement plan и recovery.
+Следующий CLI catch-up начинает с обычного fresh receive/ACK на всех трёх
+аккаунтах, затем использует прежние фактические progress/health/final joins;
+прежний успешный HTTP ответ не считается текущим authority.
 
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;
