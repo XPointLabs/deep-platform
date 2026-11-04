@@ -45,7 +45,7 @@ enrollment, catch-up/round60, warm delivery/ACK замеры. После дос�
 и стабилизации изменений — обязательный полный Shared gate. Диагностический
 CLI-прогон не означает полной source/release qualification; runtime-проверки
 подлинности, currentness, replay и сохранности состояния остаются обязательными.
-Матрица полного gate содержит2256 фактических identities после34 утверждённых
+Матрица полного gate содержит2272 фактических identities после34 утверждённых
 replacement bindings; наличие identity не означает PASS. Warm p95≤1s не доказан.
 Отдельно остаётся длительная работа owner/Registry/XPS history: native archive
 не разрешает удалять publications до законного retirement. Capacity refusal
@@ -73,6 +73,16 @@ authority обновлена штатным оператором с сохран
 сообщений пока не авторился. Build35 и18 focused portability/schema cases прошли
 без ошибок/skip с неизменными входами; следующие действия — совпадающая CLI-сборка,
 retained enrollment/catch-up и короткие замеры.
+
+Следующий фактический запуск прошёл проверки исходных данных всех трёх
+профилей, но остановился на пустой истории архива первого: producer пропускал
+обязательный переход SchemaStaged→Building. Минимальное исправление сохраняет
+все source/phase/replay guards. Build36 и24 focused cases прошли без FAIL/skip,
+2330 inputs unchanged; два случая проверяют cold resume и новое сообщение.
+Частичное состояние сохранено. Восстановление выполняется существующим owner
+после проверки защищённых frozen source guards; затем снимается новый baseline.
+Первый внешний RAM baseline утрачен, его реконструкция не заявляется.
+Следующий шаг — recovery/catch-up и короткий замер на тех же трёх CLI без сброса.
 
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;
