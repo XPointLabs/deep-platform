@@ -1,0 +1,675 @@
+{
+  "$schema": "contact-route-history-v1.registry.schema.json",
+  "package": "CONTACT-ROUTE-HISTORY-01",
+  "decision": "DR-0178",
+  "runtimeActivation": false,
+  "nativePersistenceAllocated": true,
+  "record": {
+    "magic": "DMC2",
+    "kind": 14,
+    "discriminator": 8,
+    "version": 1,
+    "integerEncoding": "unsigned big-endian",
+    "flags": 0,
+    "replyBytes": 0,
+    "retainedCounts": [
+      6,
+      7
+    ]
+  },
+  "bounds": {
+    "headerBytes": 1024,
+    "cursorBytes": 112,
+    "maximumAtoms": 3,
+    "maximumPayloadBytes": 32768,
+    "maximumRouteControlRecordBytes": 33050,
+    "atomPrefixBytes": 1132,
+    "minimumProposalAtomBytes": 3716,
+    "maximumProposalAtomBytes": 16311,
+    "maximumCompletedAtomBytes": 28635,
+    "maximumSingleCompletedPageBytes": 29663
+  },
+  "header": [
+    {
+      "offset": 0,
+      "bytes": 32,
+      "field": "relationship"
+    },
+    {
+      "offset": 32,
+      "bytes": 8,
+      "field": "rightCompletedGeneration"
+    },
+    {
+      "offset": 40,
+      "bytes": 32,
+      "field": "originalNativeAnchorDmcSha256"
+    },
+    {
+      "offset": 72,
+      "bytes": 1,
+      "field": "discriminator",
+      "value": 8
+    },
+    {
+      "offset": 73,
+      "bytes": 1,
+      "field": "version",
+      "value": 1
+    },
+    {
+      "offset": 74,
+      "bytes": 1,
+      "field": "mode"
+    },
+    {
+      "offset": 75,
+      "bytes": 1,
+      "field": "atomCount"
+    },
+    {
+      "offset": 76,
+      "bytes": 4,
+      "field": "reservedZero"
+    },
+    {
+      "offset": 80,
+      "bytes": 112,
+      "field": "leftCursor"
+    },
+    {
+      "offset": 192,
+      "bytes": 112,
+      "field": "rightCursor"
+    },
+    {
+      "offset": 304,
+      "bytes": 611,
+      "field": "exactLeftCompletedXir1V2"
+    },
+    {
+      "offset": 915,
+      "bytes": 32,
+      "field": "requestDmcSha256OrZero"
+    },
+    {
+      "offset": 947,
+      "bytes": 77,
+      "field": "reservedZero"
+    }
+  ],
+  "cursor": [
+    {
+      "offset": 0,
+      "bytes": 8,
+      "field": "completedGeneration"
+    },
+    {
+      "offset": 8,
+      "bytes": 32,
+      "field": "xrrCoreHash"
+    },
+    {
+      "offset": 40,
+      "bytes": 8,
+      "field": "proposalGeneration"
+    },
+    {
+      "offset": 48,
+      "bytes": 32,
+      "field": "xraCoreHash"
+    },
+    {
+      "offset": 80,
+      "bytes": 32,
+      "field": "xrcCoreHash"
+    }
+  ],
+  "modes": [
+    {
+      "id": 1,
+      "name": "Evidence",
+      "minimumAtoms": 1,
+      "maximumAtoms": 3
+    },
+    {
+      "id": 2,
+      "name": "Announcement",
+      "minimumAtoms": 0,
+      "maximumAtoms": 0,
+      "equalCursors": true
+    },
+    {
+      "id": 3,
+      "name": "EvidenceAndAnnouncement",
+      "minimumAtoms": 1,
+      "maximumAtoms": 3
+    },
+    {
+      "id": 4,
+      "name": "HistoryRequest",
+      "minimumAtoms": 0,
+      "maximumAtoms": 0,
+      "equalCursors": true,
+      "zeroCorrelation": true
+    }
+  ],
+  "atom": {
+    "framing": "LP-u32 exact atom; no trailing bytes",
+    "kinds": {
+      "proposal": 1,
+      "completed": 2
+    },
+    "fields": [
+      {
+        "offset": 0,
+        "bytes": 1,
+        "field": "kind"
+      },
+      {
+        "offset": 1,
+        "bytes": 32,
+        "field": "originalNonce"
+      },
+      {
+        "offset": 33,
+        "bytes": 8,
+        "field": "originalMinimumAdhGeneration"
+      },
+      {
+        "offset": 41,
+        "bytes": 32,
+        "field": "originalMinimumAdhCoreHash"
+      },
+      {
+        "offset": 73,
+        "bytes": 473,
+        "field": "originalDca1V2"
+      },
+      {
+        "offset": 546,
+        "bytes": 32,
+        "field": "originalDirectoryLookupKey"
+      },
+      {
+        "offset": 578,
+        "bytes": 550,
+        "field": "originalXra1"
+      },
+      {
+        "offset": 1128,
+        "bytes": 4,
+        "field": "responseLength"
+      },
+      {
+        "offset": 1132,
+        "field": "exactOrdinaryRouteV3Response"
+      }
+    ],
+    "completedTail": [
+      {
+        "relativeTo": "responseEnd",
+        "offset": 0,
+        "bytes": 611,
+        "field": "exactXir1V2"
+      },
+      {
+        "relativeTo": "responseEnd",
+        "offset": 611,
+        "bytes": 643,
+        "field": "exactXrr1"
+      },
+      {
+        "relativeTo": "responseEnd",
+        "offset": 1254,
+        "bytes": 4,
+        "field": "pmtLength"
+      },
+      {
+        "relativeTo": "responseEnd",
+        "offset": 1258,
+        "minimumBytes": 842,
+        "maximumBytes": 11066,
+        "field": "exactPmt2"
+      }
+    ],
+    "ordinaryRequestVersion": 3,
+    "ordinaryResponseVersion": 3,
+    "minimumResponseBytes": 2584,
+    "maximumResponseBytes": 15179
+  },
+  "verification": {
+    "bootstrap": "exact original native Hello/Accept XIR and six-record closure at actual generation; never later count6 head",
+    "left": "byte-exact independently authenticated C XIR and C/P cursor",
+    "proposal": "all existing adjacent XRA/XRC/XSS/PMS predicates, original request/response DCA/nonce/lookup/ADH and issuance authority; no expiry requirement for historical facts",
+    "overlap": "completed atom may equal exact authenticated P original request/response; no repeated proposal advance",
+    "completed": "XRR generation+1 and prior core; XIR generation+1 and SHA256(exact prior XIR); same original scope and all XIR/XRA/PMT/capability/sealing/window bindings",
+    "privatePredecessorRequired": false,
+    "historicalResultGrantsCurrentRoute": false,
+    "currentPromotion": "separate fresh current account/device/revocation/network/protected-time/signed-route/event qualification; native owner enforces consent/monotonic L/custody",
+    "request": "hint only; independently match exact authenticated originals, never adopt cursor or select highest/fallback genesis",
+    "correlation": "SHA256 exact retained native request DMC; late historical verification independent of fresh current promotion",
+    "aggregate": "at most3 LP atoms and32768 payload bytes; pack fewer; no lifetime recovery cap",
+    "native": "accepted native allocation below; implementation, signed integration and runtime activation remain unqualified"
+  },
+  "publicTypes": [
+    "DeepIdV2ContactRouteHistoryMode",
+    "ParsedDeepIdV2ContactRouteHistoryAtom",
+    "ContactRouteHistoryDmc2Payload",
+    "DeepIdV2ContactRouteHistoryCodec",
+    "VerifiedDeepIdV2ContactRouteHistory",
+    "VerifiedDeepIdV2ContactRouteHistoryStep",
+    "AuthoredVerifiedContactRouteHistoryControl"
+  ],
+  "publicMethods": [
+    "DeepIdV2ContactRouteHistoryCodec.Decode",
+    "DeepIdV2ContactRouteUpdateVerifier.VerifyHistoryAnchorAsync",
+    "DeepIdV2ContactRouteUpdateVerifier.VerifyOriginalHistoryStepAsync",
+    "DeepIdV2ContactRouteUpdateVerifier.VerifyHistoryPageAsync",
+    "DeepIdV2ContactRouteUpdateVerifier.RequireHistoryRequestMatch",
+    "DeepIdV2ContactRouteUpdateVerifier.RequireCurrentHistoryRequestAsync",
+    "DeepIdV2ContactRouteUpdateVerifier.RequireHistoryResponseCorrelation",
+    "DeepIdV2ContactRouteUpdateVerifier.VerifyCurrentHistoryAnnouncementAsync",
+    "ApplicationCoreCodec.AuthorVerifiedContactRouteHistoryPageAsync",
+    "ApplicationCoreCodec.AuthorVerifiedContactRouteHistoryRequestAsync",
+    "DeepIdV2ContactRouteUpdateVerifier.VerifyRetainedHistoryCheckpointFactsAsync",
+    "DeepIdV2ContactRouteUpdateVerifier.VerifyHistoryAtomAsync",
+    "DeepIdV2ContactRouteHistoryCodec.ReconstructOriginalPair"
+  ],
+  "vectors": "contact-route-history-v1.vectors.json",
+  "nativeAllocation": {
+    "decisionOwner": "DR-0178",
+    "archiveOwner": "DR-0177",
+    "runtimeActivation": false,
+    "metadata": {
+      "magic": "MSP2",
+      "version": 2,
+      "bytes": 672,
+      "kind": 6,
+      "requiresActiveStablePredecessor": true,
+      "direction": 0,
+      "status": 1,
+      "ordinalAdvance": 1,
+      "predecessor": {
+        "offset": 8,
+        "bytes": 188
+      },
+      "unchangedRatchetOffsets": [
+        196,
+        204,
+        236
+      ],
+      "operationOffset": 268,
+      "bodySha256Offset": 300,
+      "reservedZeroRanges": [
+        {
+          "offset": 332,
+          "bytes": 256
+        },
+        {
+          "offset": 608,
+          "bytes": 64
+        }
+      ],
+      "bodyLengths": [
+        0,
+        0,
+        1024,
+        0,
+        0
+      ],
+      "ratchetAndTrsUnchanged": true,
+      "validateMetadataAndCompleteBodies": true
+    },
+    "operation": {
+      "hash": "SHA256",
+      "domain": "Deep/STORE-V2/route-history-decision",
+      "encoding": "UTF8 domain ||00||scope32||exact predecessor188||SHA256(exact body1024)",
+      "recovery": "exact original operation, interval and bodies; never regenerated"
+    },
+    "body": {
+      "bytes": 1024,
+      "version": 1,
+      "actions": {
+        "bootstrap": 1,
+        "evidenceAdvance": 2,
+        "currentPromotion": 3,
+        "provenConflict": 4
+      },
+      "subjects": {
+        "own": 1,
+        "peer": 2
+      },
+      "fields": [
+        {
+          "offset": 0,
+          "bytes": 1,
+          "field": "version"
+        },
+        {
+          "offset": 1,
+          "bytes": 1,
+          "field": "action"
+        },
+        {
+          "offset": 2,
+          "bytes": 1,
+          "field": "subject"
+        },
+        {
+          "offset": 3,
+          "bytes": 1,
+          "field": "reservedZero"
+        },
+        {
+          "offset": 4,
+          "bytes": 32,
+          "field": "scope"
+        },
+        {
+          "offset": 36,
+          "bytes": 88,
+          "field": "previousSubjectDecisionRef"
+        },
+        {
+          "offset": 124,
+          "bytes": 88,
+          "field": "selectedOriginalRef"
+        },
+        {
+          "offset": 212,
+          "bytes": 1,
+          "field": "selectedAtomIndex"
+        },
+        {
+          "offset": 213,
+          "bytes": 7,
+          "field": "reservedZero"
+        },
+        {
+          "offset": 220,
+          "bytes": 96,
+          "field": "resultCSource"
+        },
+        {
+          "offset": 316,
+          "bytes": 96,
+          "field": "resultPSource"
+        },
+        {
+          "offset": 412,
+          "bytes": 88,
+          "field": "resultLOriginalRef"
+        },
+        {
+          "offset": 500,
+          "bytes": 88,
+          "field": "retainedFirstConflictRef"
+        },
+        {
+          "offset": 588,
+          "bytes": 88,
+          "field": "actualConsentRef"
+        },
+        {
+          "offset": 676,
+          "bytes": 64,
+          "field": "qualificationInterval"
+        },
+        {
+          "offset": 740,
+          "bytes": 32,
+          "field": "selectedEndpointClosureSha256"
+        },
+        {
+          "offset": 772,
+          "bytes": 96,
+          "field": "relatedConflictingOriginalSource"
+        },
+        {
+          "offset": 868,
+          "bytes": 156,
+          "field": "reservedZero"
+        }
+      ]
+    },
+    "reference": {
+      "bytes": 88,
+      "absent": "all-zero only",
+      "fields": [
+        {
+          "offset": 0,
+          "bytes": 1,
+          "field": "kind"
+        },
+        {
+          "offset": 1,
+          "bytes": 1,
+          "field": "direction"
+        },
+        {
+          "offset": 2,
+          "bytes": 6,
+          "field": "reservedZero"
+        },
+        {
+          "offset": 8,
+          "bytes": 8,
+          "field": "ordinal"
+        },
+        {
+          "offset": 16,
+          "bytes": 8,
+          "field": "rowid"
+        },
+        {
+          "offset": 24,
+          "bytes": 32,
+          "field": "operation"
+        },
+        {
+          "offset": 56,
+          "bytes": 32,
+          "field": "metadataHash"
+        }
+      ],
+      "decisionKind": 3,
+      "decisionDirection": 0,
+      "decisionOrdinalAndRowid": "positive, at most Int64.MaxValue",
+      "decisionOperationAndMetadataHash": "nonzero; actual immutable table row"
+    },
+    "source": {
+      "bytes": 96,
+      "originalReferenceBytes": 88,
+      "atomIndexOffset": 88,
+      "zeroOffset": 89,
+      "zeroBytes": 7,
+      "originalHelloAcceptIndex": 0,
+      "minimumAtomIndex": 1,
+      "maximumAtomIndex": 3,
+      "cpMayReferenceDecisions": false,
+      "wholeControlSelectedIndex": 0
+    },
+    "interval": {
+      "bytes": 64,
+      "actionFlags": {
+        "bootstrap": 3,
+        "evidenceAdvance": 3,
+        "currentPromotion": 1,
+        "provenConflict": 3
+      },
+      "fields": [
+        {
+          "offset": 0,
+          "bytes": 1,
+          "field": "flag"
+        },
+        {
+          "offset": 1,
+          "bytes": 7,
+          "field": "reservedZero"
+        },
+        {
+          "offset": 8,
+          "bytes": 8,
+          "field": "nonzeroLowerUnixMilliseconds"
+        },
+        {
+          "offset": 16,
+          "bytes": 8,
+          "field": "upperUnixMillisecondsAtLeastLower"
+        },
+        {
+          "offset": 24,
+          "bytes": 8,
+          "field": "protectedMonotonicSampleSeconds"
+        },
+        {
+          "offset": 32,
+          "bytes": 32,
+          "field": "nonzeroActualBootIdSha256"
+        }
+      ],
+      "receiveOutcome2Allowed": false,
+      "count8IncomingOutcome3": "staged only, never per-atom qualification"
+    },
+    "transitions": {
+      "bootstrap": "per-subject absent decision and no prior kind6 proved by authenticated reducer plus complete bounded working suffix; missing or inconsistent custody rejects without reseeding; preserve consent, sticky fault and old L; exact closure at old L generation",
+      "evidenceAdvance": "exactly one independently verified adjacent public atom; C/P change only as transition permits; L/consent/fault exact",
+      "currentPromotion": "C/P exact; proved endpoint at or beyond L; fresh current qualification; same-endpoint announcement allowed without extending signed route expiry",
+      "provenConflict": "C/P/L exact; fully verified incompatible sources and exact atom indices; no gap, expiry, malformed or staged conflict; field500 retains prior fault, otherwise actual inserted decision ref becomes first fault without predicted self-rowid",
+      "rehydration": "actual independently authenticated native decision/source refs; caller cursor and remote checkpoint never establish adopted-state authority"
+    },
+    "storage": {
+      "schemaVersion": 6,
+      "originalSchema5Unchanged": true,
+      "immutableTable": "route_decisions",
+      "ddl": "CREATE TABLE route_decisions (operation BLOB PRIMARY KEY NOT NULL CHECK(typeof(operation)='blob' AND length(operation)=32), ordinal INTEGER NOT NULL UNIQUE CHECK(typeof(ordinal)='integer' AND ordinal BETWEEN 1 AND 9223372036854775807), decision BLOB NOT NULL CHECK(typeof(decision)='blob' AND length(decision)=1024), metadata BLOB NOT NULL CHECK(typeof(metadata)='blob' AND length(metadata)=672));",
+      "enrollmentSourceFraming": "original tables plus route_decisions in ordinal name order; absent schema5 table contributes canonical schema frame and table-end0/u64zero row count; actual staged table remains empty",
+      "sourceAuditFields": [
+        "rowid",
+        "operation",
+        "ordinal",
+        "decision",
+        "metadata"
+      ],
+      "removeWithPrefix": false,
+      "mergeByNativeOrdinal": true,
+      "rejectDuplicateOperationOrOrdinalAcrossEventsAndDecisions": true,
+      "countOriginalKinds": [
+        2,
+        5,
+        6
+      ],
+      "excludeImportActivationLatch": true,
+      "genericEventReadersRejectKind6": true
+    },
+    "reducer": {
+      "bytes": 1136,
+      "preservedPrefixBytes": 904,
+      "ownDecisionRefOffset": 904,
+      "peerDecisionRefOffset": 992,
+      "zeroOffset": 1080,
+      "zeroBytes": 56,
+      "rootReducerHashOffset": 576,
+      "allow960ByteFallback": false,
+      "rootBytes": 608
+    },
+    "archiveFamilies": {
+      "F1": "operation admits actual kind3 decision refs",
+      "F2": "original event semantics unchanged",
+      "F3": "ordinal admits actual kind3 decision refs",
+      "F4": "original authored-position conflict semantics unchanged",
+      "F5": "only qualified peer action3 decision resolving actual immutable row and L original",
+      "F6": "original attachment selector semantics unchanged"
+    },
+    "F7": {
+      "keyBytes": 10,
+      "key": "direction:u8||class:u8||generation:u64be",
+      "classes": {
+        "C": 1,
+        "P": 2
+      },
+      "valueBytes": 224,
+      "valueFields": [
+        {
+          "offset": 0,
+          "bytes": 88,
+          "field": "firstVerifiedDecisionRef"
+        },
+        {
+          "offset": 88,
+          "bytes": 32,
+          "field": "verifiedIdentity"
+        },
+        {
+          "offset": 120,
+          "bytes": 96,
+          "field": "latestCandidateSource"
+        },
+        {
+          "offset": 216,
+          "bytes": 8,
+          "field": "senderSequence"
+        }
+      ],
+      "firstVerifiedInstallActions": [
+        1,
+        2
+      ],
+      "rawOutcome3": "updates greatest authenticated sender-sequence candidate only; exact-event duplicates earliest native ordinal/atom index; cannot create fork or overwrite verified history",
+      "absentHalf": "all-zero; at least one half present",
+      "differentVerifiedIdentity": "action4 against first verified decision; retain it for bounded before-state resolution",
+      "CIdentity": {
+        "hash": "SHA256",
+        "domain": "Deep/STORE-V2/route-history-C",
+        "encoding": "UTF8 domain||00||scope32||direction1||XIR.ObjectHash32||XRR.CoreHash32"
+      },
+      "PIdentity": {
+        "hash": "SHA256",
+        "domain": "Deep/STORE-V2/route-history-P",
+        "encoding": "UTF8 domain||00||scope32||direction1||XRA.CoreHash32||XRC.CoreHash32||XSS.CoreHash32"
+      },
+      "overlap": "identity never substitutes for exact original request/response equality; failed overlap alone is not proof of fork"
+    },
+    "F8": {
+      "variants": [
+        {
+          "tag": 1,
+          "selectorBytes": 42,
+          "selector": "tag:u8||direction:u8||completedGeneration:u64be||xrrCoreHash32",
+          "valueBytes": 96,
+          "value": "announcement Ref88||authenticatedSenderSequence:u64be",
+          "merge": "greatest sequence; exact duplicate earliest ordinal"
+        },
+        {
+          "tag": 2,
+          "selectorBytes": 33,
+          "selector": "tag:u8||exactOutgoingMode4DmcSha25632",
+          "valueBytes": 88,
+          "value": "outgoing request Ref88",
+          "merge": "unique/idempotent exact original"
+        },
+        {
+          "tag": 3,
+          "selectorBytes": 33,
+          "selector": "tag:u8||exactReceivedMode4DmcSha25632",
+          "valueBytes": 88,
+          "value": "outgoing response Ref88",
+          "merge": "unique/idempotent exact original"
+        }
+      ],
+      "grantsQueueOrAuthoringAuthority": false,
+      "originalCustody": "existing application authenticated_dmc2_inbox; F8 to native outgoing original to metadata EventHash to ReadArchiveAuthoredOriginal; verify exact DMC/hash/scope/author/sequence and protected/application counters; preserve before retirement; no separate payload table"
+    },
+    "bounds": {
+      "maximumFactsPerOriginal": 12,
+      "maximumOriginalsPerBatch": 32,
+      "maximumNodesPerPatriciaProof": 257,
+      "maximumNodesPerIndependentPass": 98688,
+      "beforeAndAfterPassesSeparate": true,
+      "providerCallbacksInsidePureBuilder": false,
+      "fullReplay": "reconstruct staged originals, candidates and kind6 decisions independently in ordinal order; match incremental roots/reducers and retain source dependencies"
+    }
+  }
+}

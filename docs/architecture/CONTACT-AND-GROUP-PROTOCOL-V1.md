@@ -1051,7 +1051,18 @@ XSS1/PMT2 and PMS2 hash; XRC1 and XSS1 must bind the same XRA1/PMT2/PMS2
 components, and PMS2 must bind the embedded PMT2. Every closure record's network
 ID must equal DMC2 tag 1.
 
-For the DID2 owned relationship, the original native-committed peer Hello/Accept
+The new count8 paged path is allocated by
+[DR-0178](../survival-program/decisions/DR-0178-paged-route-history-and-current-promotion.md).
+It intentionally removes prior PRIVATE announcement delivery as a prerequisite,
+while verifying all original signed PUBLIC completed/proposal transitions from
+the actual native relationship anchor. Historical progress and current promotion
+are distinct; missing prefix/current expiry stages, whereas proven signed forks
+and native authored-position conflicts remain sticky. Its exact grammar, bounded
+request lifecycle and qualification gates belong to DR-0178. The count6/7 framing
+and predecessor clauses below describe retained originals, not a second new
+business path or permission to revive stopped work.
+
+For the retained DID2 owned relationship, the original native-committed peer Hello/Accept
 is the initial route head. The first successor names SHA256 of that exact DMC2;
 later successors name SHA256 of the exact preceding native-committed DMC2/14.
 Each advances the retained XRR generation exactly once. A generation0 announcement
@@ -1064,7 +1075,8 @@ For mutual XRA1/XUR1 expiry, explicit same-peer re-introduction under
 [DR-0159](../survival-program/decisions/DR-0159-established-contact-route-reintroduction.md)
 may use a separately current owned ContactResolve publication solely as carriage
 for an existing relationship's exact native DMC2/14 maintenance control. It does
-not replace the private head, skip predecessors, renew expired authority or start
+not replace the private head through discovery, skip signed public predecessors,
+renew expired authority or start
 a new relationship. Original pending business ciphertext remains unchanged.
 
 Under [DR-0022](../survival-program/decisions/DR-0022-did2-contact-control-events.md),

@@ -4,6 +4,14 @@ Status: accepted; implementation and connected qualification separate
 Date: 2026-10-21
 Owner: Mr. X (delegated authority)
 
+Amendment2026-11-04: [DR-0178](DR-0178-paged-route-history-and-current-promotion.md)
+extends this same native DMC2/14 carriage to its typed count8 proof, request and
+announcement modes. Complete signed PUBLIC predecessor verification remains
+mandatory; delivery of each prior private announcement is not required by that
+new path. Missing public prerequisites stage without promotion; proven conflicts
+still fence. The current endpoint, consent, original-operation and fresh effect
+checks below remain mandatory. Discovery or a request cursor grants no authority.
+
 Mutually expired XRA1/XUR1 cannot bootstrap ordinary reverse-route maintenance.
 An expired descriptor is historical identity/consent evidence, never permission
 to fetch, write or dispatch. No account, relationship, ratchet, ciphertext,

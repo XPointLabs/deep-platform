@@ -4,6 +4,13 @@ Date: 2026-10-28. Owner: Mr. X (delegated architecture authority).
 Status: accepted codec and exact runtime/adoption allocation. Runtime activation
 requires the qualification below. No connected or latency qualification.
 
+The2026-11-04 native-decision amendment in
+[DR-0178](DR-0178-paged-route-history-and-current-promotion.md#closed-native-decision)
+extends this inactive allocation to immutable kind6 sources, reducer1136 and
+F7/F8. Apply that amendment as one current schema6 cutover before enrollment;
+the earlier six-family/reducer960 descriptions below are its predecessor basis,
+not an additional ordinary profile or compatibility reader.
+
 This is the P1.2 corrective direction from the
 [requirements audit](../../architecture/REQUIREMENTS-AUDIT-2026-10-28.md).
 The codec is private local state using existing SHA-256/SQLCipher/protected roots,
@@ -150,8 +157,32 @@ The allocation below resolves the catalog barrier, exact rowid fingerprints,
 progress fencing, two-boundary adoption/cleanup, fresh physical SQL segments
 and every replay-retention consumer. This is a private local-state clean break;
 no public wire, signer, trust source or cryptographic dependency is added.
-The existing three retained CLI recovery round precedes activation. Pure index
-implementation may proceed independently while that round is prepared.
+The2026-11-04 sequencing clarification below replaces the former requirement
+that the retained round precede every form of activation. Source implementation
+and isolated qualification may proceed while route catch-up is completed.
+
+### Retained maintenance-only activation — 2026-11-04
+
+The retained private completed-route gap prevents round60, while independently
+checkpointed historical catch-up depends on this archive. Requiring round60
+before even guarded enrollment would therefore create a circular prerequisite.
+Under Mr. X's delegated authority, permit this explicit sequence:
+
+1. Finish and qualify the combined runtime, all consumers and the exact
+   enrollment/prefix/callback/crash boundaries below. Independently audit all
+   original source facts against the candidate index and reducer.
+2. Enroll the same three retained profiles losslessly through the explicit
+   guarded owner and re-audit their source, keys, counters, original operations
+   and protected state. This grants maintenance-only activation, not ordinary
+   delivery, sustained-availability, performance or release acceptance.
+3. Complete independently qualified historical route catch-up, then run the
+   retained round60 on those same profiles without resets or re-authoring old
+   uncertain commands. Measure warm delivery/ACK separately from this cold work.
+
+No failed source audit, missing adopted root, unresolved cutpoint or incomplete
+consumer permits step2. The distinct catch-up contract still requires its own
+accepted allocation and tests; this sequencing decision does not allocate new
+wire records or turn a historical endpoint into current delivery authority.
 ## 1. Ownership and invariant boundary
 
 Keep one account/process lease throughout each owned operation. Preserve every
@@ -307,9 +338,41 @@ scope32,schema5Hash32,schema6Hash32,application_id:u32, canonical FIVE original
 table frames). Deliberately omit the mutable actual user_version from this source
 fingerprint; validate actual5/6 separately against recorded phase and BOTH bound
 schema descriptors. No physical file hash: staging changes encrypted SQL pages.
-Authored-source fingerprint uses the same cell framing under its separate
+Authored-source fingerprint uses the existing application cell stream under its separate
 `Deep/STORE-V2/archive-enrollment-authored` domain and binds actual registered
 account/scope, exact protected authored root and full relevant authored originals.
+
+Exact authored-root framing (clarified2026-11-04): domain UTF8 followed by00,
+actual account32, scope32, then the three protected slot names in ordinal order:
+`deep.store.v2.contact-accept-journal`, `deep.store.v2.direct-text-journal`,
+`deep.store.v2.groups`. Each name is length:u16 plus UTF8; its actual value is
+typed NULL=0 or blob=2||length:u64||exact protected bytes. Follow these frames
+with the existing complete canonical application schema/table/row/cell stream.
+Specifically reuse `AppendApplicationCompactionCells` with no omitted rows,
+retained-path omission or synthetic audits: actual validated schema objects in
+their canonical order as LP-u64 UTF8, user tables in ordinal name order, columns
+in declared order, rows ordered by all columns, row marker1 followed by the
+schema-determined cells, and table end0||rowCount:u64. Its cell tags are NULL0,
+integer1||i64, blob2||LP-u64 bytes, text3||LP-u64 UTF8 bytes. The existing
+`stopped_work_audit` canonical projector is retained. Unlike the native-five-table
+stream above, this established APPLICATION stream has no per-row cellCount.
+The strictly validated schema fixes that arity. Do not change unrelated existing
+application compaction receipts or substitute a partial table projection here.
+Progress field668 binds this complete authored-source fingerprint; field700 is
+SHA256 of the actual protected DirectText root bytes. Account SQL registration
+already atomically inserts the empty DirectText root before session creation;
+its absence therefore rejects, including new or receiver-only sessions.
+ContactAccept and Group are also atomically initialized in that same account
+registration batch and are mandatory. All three therefore use the blob frame;
+NULL remains part of the canonical cell grammar, not an allowed substitute for
+these roots. SQL contents cannot establish protected-root absence or replace
+its authority. This includes an account with no accepted contacts or groups.
+
+Read these actual roots in one owned atomic batch, parse their existing scope
+grammars and discard owned private copies before acquiring the application key.
+Only hash state and digests may survive that provider edge. After application
+source capture, re-read the exact same protected frames and require equality
+before accepting the fingerprint. No private root bytes enter SQL or evidence.
 
 ## 5. Enrollment crash graph and final adoption
 
@@ -338,7 +401,10 @@ account/scope, exact protected authored root and full relevant authored original
 7. FinalReady progress remains a mandatory account-wide ordinary-work fence.
    A crash after step6 recognizes only the EXACT adopted catalog successor and
    already-present expected root, repeats fresh full SQL/source/root readback,
-   then clears progress by guarded CompareAndDeleteAsync. Re-read actual catalog,
+   then clears progress by guarded CompareAndDeleteAsync, comparing that exact
+   progress slot and deleting the same slot atomically. A stale/missing guard
+   returns false; the provider must not substitute an unrelated root as guard.
+   Re-read actual catalog,
    root and progress absence and physically fresh SQL before returning/selecting
    the next state0 scope. Do not infer success from phase4 or an SQL mirror.
    To recognize that catalog successor without storing a second catalog, make a
@@ -352,7 +418,14 @@ account/scope, exact protected authored root and full relevant authored original
 **Accepted storage primitive boundary:** existing secure
 storage cannot atomically replace catalog, insert root AND delete progress in
 one call. Steps6/7 are two explicit boundaries with a mandatory progress fence;
-root+catalog adoption is atomic, cleanup is guarded/idempotent. This is the
+root+catalog adoption is atomic, cleanup is guarded/idempotent. The existing
+guarded-delete primitive permits its guard once among deletion targets; it still
+compares the exact predecessor before commit and preserves all unrelated slots.
+Duplicate targets, invalid bounds and cancellation continue to reject. A repeated
+primitive call after deletion returns false; the owner recognizes completion only
+from the full adopted-state readback above, not from that return value. Native
+recovery authenticates the successor and never requires the deleted guard to
+remain present after commit. This introduces no new record, API or journal. This is the
 accepted existing-primitive contract. If literal three-key physical atomicity
 is required, allocate a separately reviewed storage primitive extension first;
 do not emulate it with unguarded writes. After adoption, state1/missing root NEVER

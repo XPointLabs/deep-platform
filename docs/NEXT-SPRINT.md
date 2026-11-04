@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-10-28**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-11-04**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -14,22 +14,57 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-**Пауза по запросу владельца,2026-10-28.** Точный checkpoint, коммиты,
-evidence и условия продолжения сохранены в
+**Возобновлено владельцем2026-11-04** с checkpoint`354b3b2` и изолированного
+P1 WIP`8a399e8`. Точные прежние факты и receipts — в
 [handoff](architecture/HANDOFF-2026-10-28-PAUSED.md). Три CLI сохранены без
-сбросов; cursor60, новый раунд не авторился. Retained publication recovery
-завершён, но private native route3→current6 блокируется истёкшими completed4/5.
-Для исторического catch-up требуется закрыть три вопроса promotion/replay из
-handoff до принятия контракта. P1 runtime сохранён отдельно в
-`wip/p1-archive-runtime-20261028`, не собран и не активирован. Прежний порядок
-«сначала retained round60» сейчас зависит от этого catch-up; успешный раунд
-или закрытие всех замечаний аудита не заявляются. Работы возобновить только
-после команды владельца.
+сбросов; cursor60, новый раунд ещё не авторился. Retained publication recovery
+завершён. Следующий блокер — private native route3→current6 с истёкшими
+completed4/5; спустя паузу currentness проверяется заново, старое наблюдение
+не является действующим разрешением.
+
+Astra Ultra уточнила catch-up; принят
+[DR-0178](survival-program/decisions/DR-0178-paged-route-history-and-current-promotion.md).
+Новый count8 путь требует полную подписанную публичную цепочку, но не доставку
+всех прежних private announcements. Истёкшее недоставленное объявление больше
+не должно быть обязательным предшественником нового. Recipient начинает с
+подлинного original XIR, сохраняет C/P progress и L отдельно; bounded native
+request выбирает следующую страницу без доверия удалённому checkpoint.
+Точная native decision/archive allocation принята после Astra review2026-11-04:
+kind6 в существующем native lifecycle, first-verified/latest-candidate index,
+точное сохранение request/response для поздней корреляции. Реализация и
+квалификация этого дополнения ещё открыты. Protocol-срез реализует отдельный
+Sol6.1/High. Два Sol6.1/High завершают изолированный P1 runtime и prefix/recovery
+с раздельным владением. Затем согласованная сборка, focused
+отрицательные/crash проверки и обязательная квалификация; только после этого
+guarded maintenance-only enrollment сохранённых профилей, catch-up и round60.
+Уточнение порядка принято в DR-0177: прежняя зависимость round60 перед любым
+enrollment образовывала цикл с catch-up. Windows/Android исключены. Все замечания
+аудита и warm p95≤1s пока не закрыты.
+
+P1 build08 и core02 завершились:0warnings/errors, **31PASS**, inputs unchanged.
+Проверены29 guarded-deletion cases и два настоящих enrollment-сценария; exact
+self-delete сохраняет проверку удаляемой записи, callback/cold recovery и
+незатронутые slots. Исправлены admission и передача SQL-транзакции. Checkpoint
+`ca3f00f` (отдельный storage fix`cdc1773`) запушен в
+`wip/p1-archive-runtime-20261028`; подробности и исходные FAIL — в
+[Shared checkpoint](https://github.com/XPointLabs/deep-client-shared/blob/ca3f00f6dcc41b5dfbc1ee933c7fa0b434010f14/docs/testing/s05-archive-runtime-2026-11-04.md).
+Это ограниченный development checkpoint, не runtime/full PASS. Protocol build04
+и focused02 завершились:0warnings/errors, **123PASS**, inputs unchanged; прежние
+fixture FAIL сохранены. Count8, bounded restore/per-atom API и parse-only bridges
+сохранены и запушены в `713eb64` на `wip/route-history-20261104`; изолированный
+P1 consumer переключён на этот точный commit. Это framing/structural/ownership
+проверки, не signed/native/connected qualification. Fresh6/7 authoring removal и
+reviewed public API/package repin выполняются вместе с consumer cutover.
+Два Sol-владельца реализуют полный native kind6/source/index и route-owner пакет,
+не активируя промежуточный schema6/reducer960 профиль на сохранённых CLI.
+Отдельно до общей приёмки проверить/закрыть существующие DeviceV1/PreKeyV2
+initial-source SQL handles через provider boundaries; новые DMS2 paired segments
+сами по себе не квалифицируют эти прежние источники. Профили и cursor60 неизменны.
 
 Отдельный [аудит требований Astra Ultra от2026-10-28](architecture/REQUIREMENTS-AUDIT-2026-10-28.md)
-подтвердил порядок: закончить current recovery и retained round60 → P1.2 с
-явным timing contract для неиспользуемого архива → completed-lineage checkpoint/
-retirement. Полный scan уже измеренно превышает warm бюджет; дополнительные
+выявил необходимость P1.2 с явным timing contract для неиспользуемого архива
+и completed-lineage checkpoint/retirement. Порядок активации уточнён выше по
+результатам реального route gap. Полный scan уже измеренно превышает warm бюджет; дополнительные
 криптографические стеки это не устранят. Ограничения трёх recorded recoveries
 и bounded XPS support остаются availability blockers для sustained/long-offline
 claims. Не обходить их cap increase, reset или стиранием replay/fork evidence.
@@ -37,18 +72,19 @@ claims. Не обходить их cap increase, reset или стиранием
 Проверка замечаний по запросу владельца: cleanup исправлен в ограниченном
 проверенном storage-срезе; ordinary full-archive scans и sustained recovery
 ещё открыты. Точное runtime/adoption дополнение DR-0177 принято после Astra
-review; изолированный pure index builder реализуется параллельно. Активация
-индекса остаётся после retained round60 и полного пакета consumers/enrollment.
-Matched dev Build обнаружил истечение XNA/DTS/PMA. Исправляется Build-only
-historical validation и штатное same-source renewal с прежними signing keys,
-genesis, volumes и историей; live admission/currentness не меняются.
+review; pure index builder прошёл focused, runtime остаётся незавершённым. Активация
+индекса ограничена maintenance-only после полного пакета consumers/enrollment;
+обычная доставка и performance acceptance требуют catch-up и retained round60.
+Build-only historical validation и штатное same-source renewal с прежними
+signing keys, genesis, volumes и историей реализованы и проверены в сохранённом
+контуре; live admission/currentness не менялись.
 
 Этот DevOps/Protocol срез теперь прошёл focused:176 Protocol cases,9 Node
 script cases и45 managed assertions; сборки без warnings/errors, inputs
 unchanged. Pure archive builder отдельно прошёл24 cases. Это подтверждает
-соответствующие изменения кода, но ещё не renewal стенда, runtime индекса или
-три CLI. Следующий operational шаг — свежий matched CLI runtime, Build,
-same-source Prepare/Apply и Up/Verify с RAM custody witness, затем round60.
+соответствующие изменения кода. Последующее renewal стенда и maintenance трёх
+CLI зафиксированы в handoff; они выявили private completed-route gap.
+Runtime индекса, новый round60 и subsecond delivery ещё не квалифицированы.
 
 ### Возобновление сохранённой WIP — 2026-10-28
 

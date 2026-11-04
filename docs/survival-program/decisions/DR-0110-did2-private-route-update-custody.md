@@ -4,6 +4,13 @@ Status: accepted bounded S04 contract; connected source/API/package gates open
 Date: 2026-10-11
 Decision owner: Mr. X (delegated architecture authority)
 
+Amendment2026-11-04: [DR-0178](DR-0178-paged-route-history-and-current-promotion.md)
+defines the new count8 paged path and explicitly replaces its private-event
+predecessor requirement with independently verified complete public lineage.
+Retained count6/7 originals and old native outcomes keep their exact interpretation.
+New semantic/source allocation and activation gates are owned by that decision;
+the original clauses below remain historical framing for the retained path.
+
 ## Sole owners and unchanged bytes
 
 CONTACT-AND-GROUP owns authenticated ContactRouteUpdate semantics;

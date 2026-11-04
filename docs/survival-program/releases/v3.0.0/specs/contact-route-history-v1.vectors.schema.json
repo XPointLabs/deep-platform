@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "contact-route-history-v1.vectors.schema.json",
+  "title": "contact-route-history-v1.vectors",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "package",
+    "decision",
+    "scope",
+    "headerFields",
+    "positiveModes",
+    "bounds",
+    "malformed",
+    "lineageNegatives",
+    "testOwner",
+    "nativeAllocationConstants"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "contact-route-history-v1.vectors.schema.json"
+    },
+    "package": {
+      "const": "CONTACT-ROUTE-HISTORY-01"
+    },
+    "decision": {
+      "const": "DR-0178"
+    },
+    "scope": {
+      "const": "untrusted codec grammar and exact adjacent-lineage predicates; no signed authority/native/runtime/E2E claim"
+    },
+    "headerFields": {
+      "const": [
+        {
+          "offset": 0,
+          "hex": "5151515151515151515151515151515151515151515151515151515151515151"
+        },
+        {
+          "offset": 40,
+          "hex": "5252525252525252525252525252525252525252525252525252525252525252"
+        },
+        {
+          "offset": 72,
+          "hex": "0801"
+        },
+        {
+          "offset": 76,
+          "hex": "00000000"
+        },
+        {
+          "offset": 947,
+          "hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ]
+    },
+    "positiveModes": {
+      "const": [
+        {
+          "mode": 1,
+          "atoms": 1
+        },
+        {
+          "mode": 1,
+          "atoms": 3
+        },
+        {
+          "mode": 2,
+          "atoms": 0
+        },
+        {
+          "mode": 3,
+          "atoms": 1
+        },
+        {
+          "mode": 4,
+          "atoms": 0
+        }
+      ]
+    },
+    "bounds": {
+      "const": {
+        "maximumProposalAtomBytes": 16311,
+        "maximumCompletedAtomBytes": 28635,
+        "maximumSingleCompletedPageBytes": 29663,
+        "rejectAggregateBytes": 32769
+      }
+    },
+    "malformed": {
+      "const": [
+        "mode",
+        "version",
+        "reserved4",
+        "reserved77",
+        "atom-kind",
+        "four-atoms",
+        "zero-evidence",
+        "request-atoms",
+        "request-correlation",
+        "unequal-request-cursors",
+        "right-generation",
+        "zero-cursor-hash",
+        "left-xir-generation",
+        "outer-length",
+        "response-length",
+        "pmt-length",
+        "nonce",
+        "original-dca-network",
+        "original-lookup-zero",
+        "truncated",
+        "trailing",
+        "aggregate",
+        "xir-xra-reference",
+        "xir-dca-reference",
+        "xir-xrr-generation"
+      ]
+    },
+    "lineageNegatives": {
+      "const": [
+        "xir-identifier",
+        "xir-predecessor",
+        "xrr-predecessor",
+        "generation-skip",
+        "policy",
+        "reader",
+        "publisher"
+      ]
+    },
+    "testOwner": {
+      "const": "Deep.Protocol.Tests.ContactV2.DeepIdV2ContactRouteHistoryTests"
+    },
+    "nativeAllocationConstants": {
+      "const": {
+        "metadataBytes": 672,
+        "kind": 6,
+        "bodyBytes": 1024,
+        "referenceBytes": 88,
+        "sourceBytes": 96,
+        "reducerBytes": 1136,
+        "F7KeyBytes": 10,
+        "F7ValueBytes": 224,
+        "F8SelectorBytes": [
+          42,
+          33,
+          33
+        ],
+        "F8ValueBytes": [
+          96,
+          88,
+          88
+        ],
+        "runtimeActivation": false
+      }
+    }
+  }
+}

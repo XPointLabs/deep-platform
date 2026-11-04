@@ -4,6 +4,12 @@ Status: **canonical implementation-planning registry for the clean-break V1**
 Date: 2026-10-03
 Owner: `deep-protocol`
 
+[DR-0178](../survival-program/decisions/DR-0178-paged-route-history-and-current-promotion.md)
+allocates count8 DMC2/14 paged public route history, bounded native requests and
+independent current promotion. Private announcement delivery is not a dependency
+of that path; all signed public predecessors remain required. Exact native
+decision/archive allocation and runtime activation remain separately gated.
+
 [DR-0129's 2026-10-28 amendment](../survival-program/decisions/DR-0129-owned-prekey-service-succession.md#2026-10-28--bounded-service-lineage-across-interrupted-publication)
 allocates bounded intermediate XPS1 V2 support in DCR1 V2. The current DID2
 machine owner is [CONTACT-PREKEY-LINEAGE-02](../survival-program/releases/v3.0.0/specs/contact-prekey-lineage-v2.registry.json),
