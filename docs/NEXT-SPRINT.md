@@ -1,6 +1,6 @@
 # Текущая очередь Deep / XPoint
 
-Обновлено: **2026-11-04**. Branch: release-candidate/prod-20260909.
+Обновлено: **2026-11-05**. Branch: release-candidate/prod-20260909.
 Владелец, если не указан иной: **Mr. X**.
 
 Единственный порядок, зависимости и критерии приёмки —
@@ -45,7 +45,7 @@ enrollment, catch-up/round60, warm delivery/ACK замеры. После дос�
 и стабилизации изменений — обязательный полный Shared gate. Диагностический
 CLI-прогон не означает полной source/release qualification; runtime-проверки
 подлинности, currentness, replay и сохранности состояния остаются обязательными.
-Матрица полного gate содержит2272 фактических identities после34 утверждённых
+Матрица полного gate содержит2274 фактических identities после34 утверждённых
 replacement bindings; наличие identity не означает PASS. Warm p95≤1s не доказан.
 Отдельно остаётся длительная работа owner/Registry/XPS history: native archive
 не разрешает удалять publications до законного retirement. Capacity refusal
@@ -83,6 +83,39 @@ retained enrollment/catch-up и короткие замеры.
 после проверки защищённых frozen source guards; затем снимается новый baseline.
 Первый внешний RAM baseline утрачен, его реконструкция не заявляется.
 Следующий шаг — recovery/catch-up и короткий замер на тех же трёх CLI без сброса.
+
+Retained enrollment теперь фактически завершён на всех трёх CLI:11 scopes,
+874 исходные native-записи, authored counters и группы сохранены; полный
+owner audit и повторный вход прошли. Общий30-minute watchdog завершил первый
+запуск уже на catch-up. Повторный отдельный catch-up подтвердил V2/all-indexed/
+no-progress и свежие source/business snapshots, не вызывая enrollment повторно.
+Следующий запуск завершил одно направление, затем получил504/unknown.
+Фактические deployed DLL/PDB и source checksum локализовали отказ в
+`ReadNetworkAsync`: publisher обновил public closure во время операции,
+сработал обязательный observation fence. Поздний отказ сохраняет unknown,
+поскольку durable effects уже могли произойти; повторное authoring запрещено.
+Клиентская доставка уже подготовленного reintroduction исправлена через
+существующий exact-operation recovery, с прежними deadline/currentness guards.
+Build38 и30 focused cases прошли:0FAIL/skip,2331 unchanged inputs. Два новых
+случая проверяют exact prepared retry без нового native send и отказ истёкшего
+original до нового recipient lookup/dispatch. Matching CLI ещё не проверен.
+
+В актуальных серверных samples92–116 lease checks заняли3.95–5.25s;
+вложенные source-file timings —2.3–3.0s, их нельзя складывать с внешними.
+Public bundle4,700,974bytes превышает прежний4MiB grammar memo cap. Приняты
+same-call exact-byte final readback и фиксированный8MiB resource cap для одного
+публичного bundle memo; более крупные valid bundles остаются uncached. Это не
+cache разрешений: оба физических чтения, точное сравнение байтов и все fences
+сохраняются, при полном равенстве не повторяется framing/copy первого пакета.
+Отдельная private digest проверка сохраняет отказ при изменении in-memory grammar,
+включая callback измерения. Изменение observation внутри effect запрещено.
+Source review Astra принят. Node build и26 focused cases прошли:0warnings/errors,
+0FAIL/skip,1714 source и2388 frozen inputs unchanged. Первый build был остановлен
+из-за отсутствующего source-mode параметра команды; исходный FAIL сохранён.
+Runtime-эффект увеличения resource cap ещё не измерен.
+Новые бизнес-сообщения ещё не авторились, warm latency не измерена. Следующий
+шаг — focused проверки этих двух изменений, совпадающие клиент/узлы, завершение
+catch-up на тех же профилях и короткий delivery round; полный Shared — после цели.
 
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;
