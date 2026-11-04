@@ -14,6 +14,24 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
+Protocol`25e6510` прошёл полный canonical source/package gate: **2640PASS,
+7 заранее объявленных platform/operator skips,0FAIL**; exact matrix2647,
+1743 inputs unchanged, build/preflight/native/qualification exits0. P1 consumer
+переключён на этот commit. Это приёмка данного Protocol-среза, не runtime/release.
+Shared supplemental01:6PASS/5FAIL. Три retained-legacy сценария, signed-history
+bound, mixed unfinished Initial и unselected archive corruption прошли. Четыре
+wrong-anchor fixture сравнивали состояние через законную подготовку Retrieve;
+baseline исправлен без ослабления no-effect/no-ACK. Пятый FAIL выявил отсутствующий
+archive-root join в native-absence проверке отмены; исправление ещё не перепроверено.
+Следующий единый пакет — закрыть source SQL/ключи до provider boundaries при
+отмене и убрать ограничение dependency inventory через внутреннее atomic guarded
+read по [DR-0176](survival-program/decisions/DR-0176-bounded-protected-storage-inventory.md#atomic-guarded-reads--2026-11-04)
+и [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md).
+Astra проверила контракт; два Sol6.1/High реализуют storage и cancellation,
+третий — фактические provider-edge/capacity проверки. После фиксации пакета:
+одна сборка, affected/недостающие focused cases, полный Shared gate; затем
+сохранённые три CLI без сбросов, catch-up/round60 и замеры. Warm p95≤1s не доказан.
+
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;
 сохранены фактическая retirement/native provenance, обязательный автоматический

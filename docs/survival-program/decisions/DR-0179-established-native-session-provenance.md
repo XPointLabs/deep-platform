@@ -113,10 +113,47 @@ initial cutpoints still verify full sources; corruption/resurrection rejects on
 source use and explicit audit; pending native recovery cannot reconstruct Initial;
 source history length does not increase established source-admission work.
 
-The explicit source audit/recovery inventory may still exceed32 returned slots.
-Its capacity correction remains separate: no head-only or sequential public-batch
-substitute. Any guarded-read extension needs an exact bounded contract and actual
-object verification. It is unnecessary for ordinary messaging admission.
+### Initial cancellation source segments — 2026-11-04
+
+Source review found that DeviceV1 cancellation held a source SQL transaction and
+restored private Initial across protected-provider calls; owner cancellation and
+recovery also retained keyed stores across those boundaries. Correct this using
+purpose-specific synchronous source segments under the existing account lease.
+Only detached hashes, public scope metadata and comparison facts cross provider
+boundaries. Raw registration bytes contain the SQL key; decoded catalogs contain
+native keys. Copies of either are still secret loans, not harmless metadata.
+
+Use the internal [DR-0176 guarded-read contract](DR-0176-bounded-protected-storage-inventory.md#atomic-guarded-reads--2026-11-04)
+for complete owner joins. Return only the small registration/marker/checkpoint,
+retirement/draft/catalog/preclaim/enrollment and selected native group; guard every
+detached source owner, including other cancelled scopes' floor/history. Catalog
+uniqueness permits at most one own matching Initial basis, not omission of other
+scopes. Existing source-audit/recovery consumers use the same mechanism where
+their dependency-only roots previously exceeded32 returned slots.
+
+Preserve this exact lifecycle: phase1 retirement -> preclaim tombstone -> freshly
+admitted native absence and exact source-key deletion -> fresh complete physical
+no-key readback -> phase2 retirement -> final fresh no-key/native-absence proof.
+The native-absence proof and source deletion share one callback-free synchronous
+segment after the final provider edge. Validate actual registration/account,
+checkpoint, draft/preclaim/retirement ownership and enrollment absence; open
+existing native SQL with actual catalog keys and floor/history/archive; reopen
+the original source with its freshly derived key and verify complete custody,
+selected public commitments and generation before deleting exactly those keys.
+Close all source/native connections and wipe keys/TRS before another provider,
+hook, await or retry. An intervening edge requires complete fresh admission.
+
+This is not a cross-database atomic transaction. Preserve all four crash cuts
+and cold recovery. After committed deletion, bounded completion must not abandon
+custody merely because the caller cancelled; an injected crash still resumes
+from exact durable evidence. Never regenerate or reimport deleted keys. Stable
+phase2/idempotent cancellation freshly proves source-key absence and rejects
+resurrection; it must not delete resurrected keys as repair.
+
+Required evidence: physical exclusive-open probes at actual provider edges,
+source/registration substitution after preclaim CAS rejecting before deletion,
+cold exact recovery without key resurrection, all existing crash cuts, and valid
+large dependency inventories. No new durable format or cryptographic dependency.
 
 Retain the same three CLI profiles and original work. Combined qualification
 precedes maintenance-only enrollment, catch-up, retained round60 and persistent

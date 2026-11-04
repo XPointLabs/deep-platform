@@ -163,6 +163,55 @@ admission clears all private buffers and must not consume the cold-audit marker.
 This does not remove the immediate source joins used by other recovery/mutation
 paths through a generic boolean or delegate.
 
+### Atomic guarded reads — 2026-11-04
+
+Accepted after Astra Ultra source review. Source retirement/cancellation can have
+more than32 dependency owners while needing only a small set of secret values.
+Keep the public `ReadOwnedBatchAsync` limit. Add a Shared-internal capability,
+implemented by both existing engines, that returns `OwnedDeepSecretBatch`:
+`ReadOwnedGuardedBatchAsync(returnedSlots, guards, cancellationToken)`.
+
+- Return0–32 distinct ordered canonical slot names, preserving missing values as
+  null. Zero returned slots permits a guard-only proof.
+- Require1–1,024 distinct canonical guards. Null requires authenticated absence;
+  otherwise the expected value is exactly32 bytes, SHA256 of the COMPLETE exact
+  plaintext slot value, never the object-file or manifest-descriptor hash.
+- Reject duplicates within either list, including equal duplicates. Cross-list
+  overlap is allowed and reads the object once. The bounds are independent:
+  at most1,056 selector names, with the existing1,024 present-object limit intact.
+- Capture caller counts once and copy validated selectors/hash bytes before the
+  first await/provider call. Malformed/empty hashes reject; zero bytes do not mean
+  absence. Guard mismatch throws `CryptographicException`; no partial batch escapes.
+
+The internal helper fails closed for unsupported providers. No sequential public
+batch fallback or concrete-provider unwrapping may bypass a decorator. Journaled
+storage uses its existing gate/process lease and admitted inventory. Every actual
+guarded/returned object still passes bounded file/path/identity/EOF, descriptor,
+ciphertext-hash and AEAD checks. Guard-only plaintext is hashed and immediately
+zeroed; it is not retained as an aggregate. Overlapping returned values receive
+the same guard check. In-memory storage performs equivalent checks and ownership
+copying under its existing gate.
+
+Preserve recovery and cold-audit obligations. Final actual protected-source byte
+and path rejoin plus cancellation precede EVERY success, including guard-only and
+all-absent results. Failed admission preserves the audit-required marker. This
+adds no logical mutation, cached authority or caller callback. Existing read
+recovery behavior is unchanged.
+
+Required consumers: retirement snapshot final owner proof; pending source recovery
+returning registration/checkpoint; explicit source-audited messaging segments; and
+cancellation under [DR-0179](DR-0179-established-native-session-provenance.md).
+All other cancelled scopes' actual floor/history dependencies remain guards.
+Do not replace them with the retirement head hash. Empty retirement retains its
+existing optional missing draft/catalog owner semantics.
+
+Qualification includes valid11-other-cancelled-scope capacity, mutation of any
+other scope's guarded roots, malformed/duplicate/oversized inputs before provider
+access, caller mutation during await, overlap, zero-return/all-absent final
+fencing, failed-audit-marker preservation, and actual missing/corrupt guarded
+objects under an unchanged manifest. Capability forwarding in test decorators
+must retain actual provider-edge observations.
+
 **Staging/publication.** Prepare exact new objects and candidate bytes from actual
 current state. Protect and candidate verification are external edges; dispose
 admitted loans and freshly Unprotect/rejoin the actual predecessor, guard and file
