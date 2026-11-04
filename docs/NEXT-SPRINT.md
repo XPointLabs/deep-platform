@@ -14,16 +14,22 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
-Следующее исправление — [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
-убрать повторное открытие исходных Device/PreKey SQL из каждого established native
-segment, сохранив фактическую retirement/native provenance и полные проверки при
-импорте, восстановлении и аудите. Build17:0warnings/errors; остановленный route02:
-43PASS/2FAIL,18 из63 без завершённого результата,2311 inputs unchanged. Профиль30s показывает около
-97% активного send stack в source open/validation; это не замер доставки.
-Один FAIL — трёхминутный timeout receive, второй — повторное использование уже
-потраченного last-resort ключа в новом тесте. Исходные receipts сохранены.
-Границу проверок уточнила Astra Ultra; реализацию выполняют Sol6.1/High. Три CLI
-не изменялись, round60 и warm p95 остаются открытыми.
+Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
+повторное открытие исходных Device/PreKey SQL убрано из established native segments;
+сохранены фактическая retirement/native provenance, обязательный автоматический
+native audit и полные source-проверки при импорте, source recovery/use и явном аудите.
+Shared checkpoint [`a612062`](https://github.com/XPointLabs/deep-client-shared/blob/a6120624a90b895b4f649a00a41bf6f50845d7f4/docs/testing/s05-archive-runtime-2026-11-04.md):
+build20 —0warnings/errors; established01 —14PASS/1fixtureFAIL; retirement01 —6PASS,
+inputs unchanged. Исправлен ровно неверный объект порчи в тесте retirement;
+production DLL между этими прогонами не менялись. Исходные FAIL сохранены.
+Реальный signed-page/public-fork сценарий теперь PASS за102.107s вместо timeout
+за416.160s. Это целый fixture с созданием аккаунтов, не задержка доставки.
+Предыдущий профиль30s показал около97% активного send stack в source validation.
+Следующий конечный пакет: порядок never-native retained6/7 перед свежим count8,
+выбор только нужных history dependencies, wrong-anchor/full-incremental проверки,
+смешанные Initial/established scopes и обнаружение unselected native corruption.
+Затем общий required gate и сохранённые CLI. Границу проверок уточнила Astra Ultra;
+код выполняют Sol6.1/High. Три CLI не изменялись, round60 и warm p95 открыты.
 Для полного Shared gate используются [точные замены тестовых случаев](architecture/SHARED-QUALIFICATION-BINDINGS-2026-11-04.md);
 это отображение прежних требований на текущие проверки, а не разрешение пропускать FAIL.
 
