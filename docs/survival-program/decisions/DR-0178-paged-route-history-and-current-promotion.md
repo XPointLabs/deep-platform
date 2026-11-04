@@ -312,6 +312,16 @@ audit and tests together, without a960-byte fallback. Root608 still binds the
 reducer hash. F1(operation)/F3(ordinal) admit kind3; F2/F4/F6 retain original event
 semantics. F5 may reference only a qualified peer action3 decision and must resolve
 its actual immutable row and L original. Generic event readers reject kind6.
+Kind6 does not rewrite legacy route-head/private-previous fields inside0..903:
+their original ordinal ordering continues to describe retained count6/7 work.
+Effective current L comes from the actual latest subject decision once present;
+only absence of any decision permits the legacy head. Missing referenced
+decisions reject instead of falling back. This allows an earlier-arrived final
+announcement to become current after later prefix delivery, without falsifying
+original arrival order. F5's predecessor binding then uses the prior decision's
+actual L, including the bootstrap-preserved legacy L.
+That decision L may name an actual retained count6/7 original; qualify those
+exact bytes and their original predecessor without substituting a reducer head.
 
 F7 key = direction1||class1(C)/2(P)||generation:u64be. Value224 = first verified
 decision Ref88||verified identity32||latest candidate Source96||sender sequence8.
@@ -380,6 +390,13 @@ original; C/F8 facts need at most one, and raw F7 candidates are incoming.
 This is a conservative dependency bound, not permission to expand every read
 or recursively follow earlier decisions. Test both the maximum-role closure
 and rejection before effects when a selection exceeds its purpose's bound.
+Signed-conflict selection verifies one C or P conflict class per attempt. It
+may select at most8 facts, resolving each first-verified original plus that
+decision's immediate before-C and before-P:71+8*3=95 remains the ceiling.
+At most three bounded source-capture stages may derive the before-P selector
+from its actual qualified payload and obtain its exact request anchor. They
+do not recursively traverse predecessor history or accept caller-supplied refs.
+Ordinary and generic catch-up limits remain unchanged.
 
 `VerifyHistoryAtomAsync` returns one verified step for an exact count8 native
 original and a1-based atom index1..3 matching Source96. It validates bounded page
@@ -427,6 +444,20 @@ matching incremental roots/reducers and retaining all original source dependenci
 No verifier/provider callback executes inside the pure builder.
 
 ## Qualification and activation
+
+Two previous private-chain tests are replaced because their old expectations
+contradict this accepted public-history contract. A missing intermediate page
+stages until its prefix arrives; a fresh announcement of the same public endpoint
+is not a fork merely because another private announcement was withheld. Exact
+test-name bindings for the canonical gate are:
+
+- Deep.Client.Shared.Production.Tests.DeepIdV2ContactPathAuthoritySourceTests.Did2RouteProcessing_ActualAuthenticatedGapStaysRejectedAfterLatePredecessorAndColdPrefix -> Deep.Client.Shared.Production.Tests.DeepIdV2ContactPathAuthoritySourceTests.Did2RouteHistoryPaged_ActualGapStagesThenLatePredecessorAndRetainedContinuationPromote
+- Deep.Client.Shared.Production.Tests.DeepIdV2ContactPathAuthoritySourceTests.Did2RouteProcessing_ActualAuthenticatedSameGenerationForkPreservesLiveTrsAndColdFence -> Deep.Client.Shared.Production.Tests.DeepIdV2ContactPathAuthoritySourceTests.Did2RouteHistoryPaged_FreshAnnouncementOfSamePublicEndpointDoesNotCreatePrivateChainFault
+- Deep.Client.Shared.Production.Tests.DeepIdV2ContactPathAuthoritySourceTests.Did2RouteProcessing_ActualAuthenticatedSameGenerationForkPreservesLiveTrsAndColdFence -> Deep.Client.Shared.Production.Tests.DeepIdV2ContactPathAuthoritySourceTests.Did2RouteHistoryPaged_ActualAuthoredPositionForkCommitsExactWholeControlFaultAndColdFence
+
+Original receipts remain unchanged. Replacements must actually pass; real
+authored-position and incompatible signed public-history conflicts still fence
+the peer while preserving TRS. Renaming cannot waive those checks.
 
 Required cases include original0→3 bootstrap preserving L3; expired4/5 then
 current6; stopped undelivered private6 followed by current7 without reading or

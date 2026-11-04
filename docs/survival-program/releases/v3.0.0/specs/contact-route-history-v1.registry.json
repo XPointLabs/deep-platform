@@ -678,6 +678,8 @@
       "beforeAndAfterPassesSeparate": true,
       "maximumCurrentAuthoredSources": 71,
       "maximumCatchupAuthoredSources": 95,
+      "maximumConflictSelectedFacts": 8,
+      "maximumConflictSourceCaptureStages": 3,
       "providerCallbacksInsidePureBuilder": false,
       "fullReplay": "reconstruct staged originals, candidates and kind6 decisions independently in ordinal order; match incremental roots/reducers and retain source dependencies"
     }

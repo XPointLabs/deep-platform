@@ -53,14 +53,19 @@ self-delete сохраняет проверку удаляемой записи,
 fixture FAIL сохранены. Count8, bounded restore/per-atom API и parse-only bridges
 сохранены и запушены в `713eb64` на `wip/route-history-20261104`; изолированный
 P1 consumer переключён на этот точный commit. Это framing/structural/ownership
-проверки, не signed/native/connected qualification. Fresh6/7 authoring removal и
-reviewed public API/package repin выполняются вместе с consumer cutover.
+проверки, не signed/native/connected qualification.
 Дополнение Protocol`c1ae048` добавляет только defensive parsed XRC/XSS getters:
 build05 и focused03 снова дали0warnings/errors и123PASS, inputs unchanged;
 commit запушен, P1 consumer переключён на него. DR-0178 уточнён для фактического
 current-L endpoint, bounds71 ordinary/95 catch-up и F8 latest-request selector:
 Store не разрешает повторный запрос неизменной истории, ожидание ответа не
 блокирует весь prefix очистки. Код общего native/owner пакета ещё не квалифицирован.
+Protocol`1e8de96` удаляет fresh6/7 author, сохраняя точное завершение уже принятой
+работы. Build06:0warnings/errors, focused04:123PASS; metadata02 подтвердил только
+измеренный нормальный Debug/Release граф. Commit запушен, P1 переключён на него.
+Полные source/package gates ещё впереди. Shared build12 компилируется без
+warnings/errors; первый route01 дал34PASS/11FAIL. Причины разобраны, исправления
+и новые проверки recovery/source boundaries готовятся одним пакетом до повтора.
 Два Sol-владельца реализуют полный native kind6/source/index и route-owner пакет,
 не активируя промежуточный schema6/reducer960 профиль на сохранённых CLI.
 Отдельно до общей приёмки проверить/закрыть существующие DeviceV1/PreKeyV2
