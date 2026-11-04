@@ -45,7 +45,7 @@ enrollment, catch-up/round60, warm delivery/ACK замеры. После дос�
 и стабилизации изменений — обязательный полный Shared gate. Диагностический
 CLI-прогон не означает полной source/release qualification; runtime-проверки
 подлинности, currentness, replay и сохранности состояния остаются обязательными.
-Матрица полного gate содержит2274 фактических identities после34 утверждённых
+Матрица полного gate содержит2278 фактических identities после34 утверждённых
 replacement bindings; наличие identity не означает PASS. Warm p95≤1s не доказан.
 Отдельно остаётся длительная работа owner/Registry/XPS history: native archive
 не разрешает удалять publications до законного retirement. Capacity refusal
@@ -112,10 +112,25 @@ cache разрешений: оба физических чтения, точно
 Source review Astra принят. Node build и26 focused cases прошли:0warnings/errors,
 0FAIL/skip,1714 source и2388 frozen inputs unchanged. Первый build был остановлен
 из-за отсутствующего source-mode параметра команды; исходный FAIL сохранён.
-Runtime-эффект увеличения resource cap ещё не измерен.
+Совпадающий локальный Docker-кандидат обновлён:9 healthy services, те же ключи,
+TLS, volumes и три CLI-профиля, без authority renewal. В одном новом mailbox
+sample при прежних116 checks source-file time снизился3018→772ms, lease time
+5255→3094ms. Это несопоставленные по запросу диагностические samples, не delivery SLO.
+CLI runtime05 подтвердил baseline всех трёх профилей без enrollment. Одно
+направление catch-up завершилось за95.750s; второе через34.238s корректно закрыло
+истёкший original и остановило весь maintenance. Все16 наблюдённых HTTP ответов200.
+Исправлено продолжение maintenance после подтверждённого owner stop;
+обычный delivery guard остаётся throwing, неизвестный исход не обходится.
+Учитываются как retired terminal audit, так и подлинный stopped payload,
+сохранённый из-за pending dependencies; удаление ими не разрешается.
+q21:16PASS/1fixtureFAIL; q22 после исправления фактической мутации теста и
+добавления pending-retention случая:4PASS/0FAIL/skip,2331 inputs unchanged.
+Build40 без warnings/errors; после q22 уточнён только XML returns comment.
+Пятисекундный CPU sample относится к cold/control proof/network acquisition,
+не warm send. Его нельзя выдавать за задержку обычного сообщения.
 Новые бизнес-сообщения ещё не авторились, warm latency не измерена. Следующий
-шаг — focused проверки этих двух изменений, совпадающие клиент/узлы, завершение
-catch-up на тех же профилях и короткий delivery round; полный Shared — после цели.
+шаг — совпадающий CLI, завершение catch-up на тех же
+профилях и короткий delivery round; полный Shared — после цели.
 
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;
