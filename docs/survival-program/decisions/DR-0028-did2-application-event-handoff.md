@@ -34,6 +34,17 @@ position durably forks that position, never materializes both events. Exact
 replay retains one row. SQL and in-memory behavior must agree. Unknown schema
 objects or changed DDL reject; secure-delete must apply on every reopen.
 
+For DMB1 application-schema comparison, CRLF and LF are equivalent only outside
+single-, double-, backtick- and bracket-quoted SQL text. Quoted contents and
+escaped delimiters remain exact; quote characters inside SQL comments do not
+open a quoted value. Every other character, including bare CR, remains exact,
+as do object type/name/order/count and all reader bounds. This comparison does
+not rewrite stored DDL or data and does not normalize source, authored or
+compaction fingerprints: those continue to bind the actual original bytes.
+No whitespace collapse, case folding, migration or repair is authorized by
+this portability rule. It prevents source checkout line endings from making
+the same application schema appear incompatible across builds.
+
 ## Closed DID2 handoffs
 
 The initial batch comes only from the account-owned, retired, active DR-0027

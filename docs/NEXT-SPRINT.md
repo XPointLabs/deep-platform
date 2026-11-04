@@ -64,6 +64,16 @@ request по подлинным operation/hash и точное число ratche
 после compaction/cold reopen не изменяет исходный результат или checkpoint.
 Следующий шаг — совпадающая CLI-сборка и диагностический retained E2E.
 
+Совпадающий CLI-кандидат собран:29 focused PASS, publish accepted; локальная
+authority обновлена штатным оператором с сохранением ключей/volumes и9 healthy
+сервисами. Перед enrollment сохранённого аккаунта выявлен реальный DMB1 blocker:
+все32 объекта на месте, их DDL различается только CRLF/LF. Исправлено только
+каноническое сравнение вне quoted SQL по [DR-0028](survival-program/decisions/DR-0028-did2-application-event-handoff.md);
+данные и raw source fingerprints не меняются, сброс не требуется. Новый раунд
+сообщений пока не авторился. Build35 и18 focused portability/schema cases прошли
+без ошибок/skip с неизменными входами; следующие действия — совпадающая CLI-сборка,
+retained enrollment/catch-up и короткие замеры.
+
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;
 сохранены фактическая retirement/native provenance, обязательный автоматический
