@@ -4,6 +4,10 @@ Date: 2026-10-28. Owner: Mr. X (delegated architecture authority).
 Status: accepted codec and exact runtime/adoption allocation. Runtime activation
 requires the qualification below. No connected or latency qualification.
 
+[DR-0179](DR-0179-established-native-session-provenance.md) distinguishes fresh
+established native admission from full original-source audit. It preserves this
+decision's actual native/application fences and does not grant cached authority.
+
 The2026-11-04 native-decision amendment in
 [DR-0178](DR-0178-paged-route-history-and-current-promotion.md#closed-native-decision)
 extends this inactive allocation to immutable kind6 sources, reducer1136 and

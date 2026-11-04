@@ -4,6 +4,11 @@ Status: **accepted ownership/lifetime contract; runtime activation gated**
 Date: 2026-10-01
 Decision owner: **Mr. X** (delegated architecture authority)
 
+Established native operations and explicit source audits are distinguished by
+[DR-0179](DR-0179-established-native-session-provenance.md). Its detection-timing
+amendment supersedes interpreting source-ledger reopen as mandatory for every
+active native SQL segment; Initial transfer/retirement checks remain required.
+
 ## One DID2 path
 
 Mutable message sessions consume only the closed stable sender/receiver

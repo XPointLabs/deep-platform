@@ -14,6 +14,17 @@
 
 ## Первый приоритет: CLI-first вертикальный сценарий внутри S05
 
+Следующее исправление — [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
+убрать повторное открытие исходных Device/PreKey SQL из каждого established native
+segment, сохранив фактическую retirement/native provenance и полные проверки при
+импорте, восстановлении и аудите. Build17:0warnings/errors; остановленный route02:
+43PASS/2FAIL,18 из63 без завершённого результата,2311 inputs unchanged. Профиль30s показывает около
+97% активного send stack в source open/validation; это не замер доставки.
+Один FAIL — трёхминутный timeout receive, второй — повторное использование уже
+потраченного last-resort ключа в новом тесте. Исходные receipts сохранены.
+Границу проверок уточнила Astra Ultra; реализацию выполняют Sol6.1/High. Три CLI
+не изменялись, round60 и warm p95 остаются открытыми.
+
 **Возобновлено владельцем2026-11-04** с checkpoint`354b3b2` и изолированного
 P1 WIP`8a399e8`. Точные прежние факты и receipts — в
 [handoff](architecture/HANDOFF-2026-10-28-PAUSED.md). Три CLI сохранены без
