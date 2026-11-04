@@ -68,6 +68,15 @@ An older endpoint cannot replace L. A fresh announcement of the identical
 endpoint may refresh announcement evidence after the same current checks;
 it cannot extend any signed route lifetime.
 
+For a byte-identical completed endpoint, that refresh additionally requires a
+strictly greater authenticated DMC `SenderClientSequence` than the actual L
+original. Compare the qualified paired-snapshot originals, not native arrival
+ordinals or an unqualified latest-candidate index. An older/equal announcement
+still receives the final freshness and snapshot recheck, but cannot replace L
+or append another promotion. This is not a general duplicate-receive shortcut:
+a staged higher public endpoint may still become eligible after its prefix
+arrives, and a newer announcement of the same endpoint remains eligible.
+
 Expired or out-of-order evidence can advance historical facts once its original
 signatures/containment and adjacent lineage are proved, but gives no current
 permission. A missing prefix, current expiry, future start or local authority

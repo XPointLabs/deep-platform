@@ -18,19 +18,51 @@ Protocol`25e6510` прошёл полный canonical source/package gate: **264
 7 заранее объявленных platform/operator skips,0FAIL**; exact matrix2647,
 1743 inputs unchanged, build/preflight/native/qualification exits0. P1 consumer
 переключён на этот commit. Это приёмка данного Protocol-среза, не runtime/release.
-Shared supplemental01:6PASS/5FAIL. Три retained-legacy сценария, signed-history
-bound, mixed unfinished Initial и unselected archive corruption прошли. Четыре
-wrong-anchor fixture сравнивали состояние через законную подготовку Retrieve;
-baseline исправлен без ослабления no-effect/no-ACK. Пятый FAIL выявил отсутствующий
-archive-root join в native-absence проверке отмены; исправление ещё не перепроверено.
-Следующий единый пакет — закрыть source SQL/ключи до provider boundaries при
-отмене и убрать ограничение dependency inventory через внутреннее atomic guarded
-read по [DR-0176](survival-program/decisions/DR-0176-bounded-protected-storage-inventory.md#atomic-guarded-reads--2026-11-04)
-и [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md).
-Astra проверила контракт; два Sol6.1/High реализуют storage и cancellation,
-третий — фактические provider-edge/capacity проверки. После фиксации пакета:
-одна сборка, affected/недостающие focused cases, полный Shared gate; затем
-сохранённые три CLI без сбросов, catch-up/round60 и замеры. Warm p95≤1s не доказан.
+Shared: guarded-read16 PASS; cancellation/source-boundary q04 — **23 PASS**;
+capacity/cold-reopen q08 — **3 PASS**; publication renewal q09 — **1 PASS**.
+Все соответствующие inputs unchanged. q06 завершился4PASS/4FAIL, q07 —12PASS/6FAIL;
+исходные FAIL сохранены. Wrong-anchor4 и mixed Initial/established2 в q07 прошли.
+Build32 прошёл без warnings/errors. q10 —3PASS/1FAIL, q11 —4PASS/2FAIL,
+q12 —1PASS/13FAIL, q13 —9PASS/2FAIL; все2328 inputs unchanged, исходные FAIL
+сохранены. Braid maintenance/retry, pending receiver recovery и same-endpoint
+warm/cold replay прошли. Последующие исправления тестовой подготовки и результаты
+приведены ниже; полный gate ещё не запущен.
+
+Реализованы atomic guarded read и закрытие source SQL/ключей перед provider
+boundaries по [DR-0176](survival-program/decisions/DR-0176-bounded-protected-storage-inventory.md#atomic-guarded-reads--2026-11-04)
+и [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md),
+фактический archive-root join в mailbox custody и maintenance перед fresh Braid
+при63 записях. Новая правка устраняет повторную promotion старого announcement
+того же endpoint: L не регрессирует по authenticated SenderClientSequence.
+Astra приняла границу по исходникам; q11 подтвердил warm/cold replay без новой
+записи и однократное продвижение более нового announcement. Лимиты, currentness и replay-проверки
+сохранены. Исправления тестовой подготовки не являются дополнительным runtime PASS.
+
+По прямому указанию Mr. X сначала проверяется достижение цели, затем полный
+Shared gate. Порядок: сборка и необходимые focused cases, commit/push WIP,
+совпадающая CLI-сборка и те же три профиля без сбросов: maintenance-only
+enrollment, catch-up/round60, warm delivery/ACK замеры. После достижения цели
+и стабилизации изменений — обязательный полный Shared gate. Диагностический
+CLI-прогон не означает полной source/release qualification; runtime-проверки
+подлинности, currentness, replay и сохранности состояния остаются обязательными.
+Матрица полного gate содержит2256 фактических identities после34 утверждённых
+replacement bindings; наличие identity не означает PASS. Warm p95≤1s не доказан.
+Отдельно остаётся длительная работа owner/Registry/XPS history: native archive
+не разрешает удалять publications до законного retirement. Capacity refusal
+по DR-0078/0091 сохраняется; bounded endpoint tests не закрывают этот blocker.
+
+Build33 —0warnings/errors,2186 source inputs unchanged. q14 —2PASS/1FAIL:
+warm endpoint и final history prefix прошли; точная проверка generation должна
+учесть фактический автоматический native mode4 request. q15 —11PASS/0FAIL.
+q16 (12 route-read variants) остановлен штатным20-minute watchdog без TRX;
+последующее canonical сравнение подтвердило2328 unchanged inputs, но не PASS.
+Расширенные12 route-read и6 snapshot variants остаются в обязательном полном
+наборе; для диагностических замеров они не запускаются повторно отдельной группой.
+Build34 —0warnings/errors,2186 source inputs unchanged; q17 —1PASS/0FAIL,
+2328 unchanged inputs. ActualGap теперь проверяет существующий native mode4
+request по подлинным operation/hash и точное число ratchet-переходов; повтор
+после compaction/cold reopen не изменяет исходный результат или checkpoint.
+Следующий шаг — совпадающая CLI-сборка и диагностический retained E2E.
 
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;

@@ -172,9 +172,10 @@ checkpointed historical catch-up depends on this archive. Requiring round60
 before even guarded enrollment would therefore create a circular prerequisite.
 Under Mr. X's delegated authority, permit this explicit sequence:
 
-1. Finish and qualify the combined runtime, all consumers and the exact
-   enrollment/prefix/callback/crash boundaries below. Independently audit all
-   original source facts against the candidate index and reducer.
+1. Build the combined runtime and pass the focused consumer and exact
+   enrollment/prefix/callback/crash boundary checks needed for this diagnostic
+   activation. Independently audit all original source facts against the
+   candidate index and reducer; these runtime audits are not deferred.
 2. Enroll the same three retained profiles losslessly through the explicit
    guarded owner and re-audit their source, keys, counters, original operations
    and protected state. This grants maintenance-only activation, not ordinary
@@ -182,6 +183,11 @@ Under Mr. X's delegated authority, permit this explicit sequence:
 3. Complete independently qualified historical route catch-up, then run the
    retained round60 on those same profiles without resets or re-authoring old
    uncertain commands. Measure warm delivery/ACK separately from this cold work.
+4. Under Mr. X's explicit instruction to measure the goal before the full Shared
+   suite, perform the required full source gate after the goal is demonstrated
+   and the changes stabilize. Focused checks and diagnostic CLI measurements do
+   not replace that gate or grant source/release qualification. Preserve every
+   required test identity and all original failed/interrupted receipts.
 
 No failed source audit, missing adopted root, unresolved cutpoint or incomplete
 consumer permits step2. The distinct catch-up contract still requires its own
