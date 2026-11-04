@@ -178,6 +178,27 @@ Late responses check correlation against retained original request custody;
 their signed evidence may still advance history, while promotion independently
 checks currentness. Store/transport ACK does not advance C/P or prove semantic
 admission. Requests use current authority/time expiry, not the old route's expiry.
+Mode4 names the requester's adopted peer history: its original-anchor hash is
+opposite the request author's route subject. Responses and modes1/2/3 name the
+author's own history. Native message direction remains unchanged in both cases.
+
+Store alone does not authorize another request from unchanged C/P. First resume
+or settle any existing unresolved authored request through its existing owner;
+then use F8's latest outgoing request fact below, including after working-row
+retirement. Resolve its exact payload and compare with actual adopted peer C/P.
+While C/P is unchanged and the protected lower time bound precedes its expiry,
+suppress a new request. Verified progress or proven expiry permits replacement
+only after prior dispatch uncertainty is closed. This wait is derived from
+existing authenticated originals, not a new queue or protected flag, and must
+not pin an entire ordinary compaction prefix while waiting for a response.
+
+If a response draft was completely stopped before any native commit, a fresh
+response to the still-current exact request is permitted after actual F8 tag3
+nonmembership and completion of that draft's uncertainty/stop obligations.
+It receives a new operation, logical ID and counter; the stopped operation is
+never revived. This rule is identical before and after working-row retirement.
+Once a response was native-committed, F8 tag3 retains its unique exact original:
+stored, stopped or expired committed responses do not authorize replacement.
 
 ## Native durable decision and archive integration boundary
 
@@ -330,6 +351,35 @@ decision/source/root/floor before this call, compare derived facts to those exac
 sources and rejoin after callbacks. Staged candidates never enter this path.
 Every new adjacent step retains its full original predicate; current promotion
 retains separate fresh qualification. No new public constructor or skip flag.
+The parsed atom's defensive `ExactXrc1`/`ExactXss1` getters expose only its
+already parsed original response records, so F7 identity derivation needs no
+duplicate wire offsets or invented request data. They grant no authority.
+
+Ordinary current-L requalification resolves the endpoint named by that actual
+announcement, not automatically the latest C/P, which may already be ahead.
+For count8 mode2 this requires its exact C and P first-verified F7 witnesses,
+their selected original sources and the original completed anchor needed to
+reconstruct P's request. Resolve only those fixed dependencies; do not traverse
+decision predecessors recursively or load staged candidates/history pages for
+ordinary delivery. Keep the existing closed current-announcement verifier and
+the final paired source checks. A source-count bound must include the actual
+working-suffix authored joins as well as selected archived originals; omitting
+either set to fit a former bound is not permitted. Catch-up selection and its
+candidate sources remain a separate bounded purpose.
+
+The authored-source ceiling remains71 for ordinary current/custody reads:
+at most64 working event/decision originals plus two archived-basis C/P
+sources, two endpoint C/P sources, one P-request completed anchor, one L and
+one actual local Accept/consent source. A working evidence decision introduces
+at most one distinct outgoing original for its C/P transition. Deduplicate
+exact references; peer history sources are incoming. Explicit catch-up alone
+may select up to95 outgoing originals:64 working +2 basis C/P +24 dependencies
+for at most12 selected facts +1 L +1 anchor/consent +1 selected control +2 fault
+witnesses. A first-verified P fact needs at most its P original and before-C
+original; C/F8 facts need at most one, and raw F7 candidates are incoming.
+This is a conservative dependency bound, not permission to expand every read
+or recursively follow earlier decisions. Test both the maximum-role closure
+and rejection before effects when a selection exceeds its purpose's bound.
 
 `VerifyHistoryAtomAsync` returns one verified step for an exact count8 native
 original and a1-based atom index1..3 matching Source96. It validates bounded page
@@ -344,19 +394,23 @@ binds the selected original/index and before/after native fences. This enables
 restart after atom1 without replaying lifetime history and never declares an
 unverified entire page adopted.
 
-F8 has three closed selector/value forms in the same archive:
+F8 has four closed selector/value forms in the same archive:
 
 | Selector | Value and merge |
 | --- | --- |
 |tag1, direction1, completed generation8, XRR core32|announcement Ref88 plus authenticated sender sequence8; greatest sequence, exact duplicates earliest ordinal|
 |tag2, exact outgoing mode4 DMC hash32|outgoing request Ref88; unique/idempotent exact original|
 |tag3, exact received mode4 DMC hash32|outgoing response Ref88; unique/idempotent exact original|
+|tag4, direction1; exact selector bytes `04 01`|latest outgoing mode4 request Ref88 plus authenticated sender sequence8; greatest sequence, exact duplicates earliest ordinal|
 
 Selector fields concatenate in the listed order; tags are single bytes. Endpoint
 candidates grant no current permission. Preserve
 the existing one-active authored request/response and exact uncertainty/stop
 obligations; F8 is not a queue or authoring authority. Late correlation resolves
 actual original custody even after that command has stopped.
+Tag4 rejects every other direction or selector length and requires the actual
+outgoing mode4 payload, scope, native metadata and authored-sequence join. It
+adds one fact only to an outgoing request; the12-fact bound remains unchanged.
 
 Retain count8 outgoing request/response payload and exact columns in existing
 application authenticated_dmc2_inbox. Resolve F8→native outgoing original→metadata
@@ -389,6 +443,9 @@ rowid/body/metadata substitution at recovery cuts, conflict atom-index changes,
 kind6 preserving TRS and counters, unusable candidate replaced by a later valid
 page without losing first verified facts, and late response correlation after
 working request retirement with retained permanent authored original.
+Also qualify unchanged-C/P request suppression after Store and retirement,
+verified-progress/proven-expiry replacement, unresolved-dispatch refusal, and
+tag4 direction, payload, sequence and candidate-order substitution.
 
 Use DR-0177's corrected sequence: combined qualification and independent source
 audit, same-three-profile guarded maintenance-only enrollment, catch-up, retained

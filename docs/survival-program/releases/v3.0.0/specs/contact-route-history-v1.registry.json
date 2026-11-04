@@ -657,6 +657,14 @@
           "valueBytes": 88,
           "value": "outgoing response Ref88",
           "merge": "unique/idempotent exact original"
+        },
+        {
+          "tag": 4,
+          "selectorBytes": 2,
+          "selector": "04 01; latest outgoing mode4 request only",
+          "valueBytes": 96,
+          "value": "outgoing request Ref88||authenticatedSenderSequence:u64be",
+          "merge": "greatest sequence; exact duplicate earliest ordinal"
         }
       ],
       "grantsQueueOrAuthoringAuthority": false,
@@ -668,6 +676,8 @@
       "maximumNodesPerPatriciaProof": 257,
       "maximumNodesPerIndependentPass": 98688,
       "beforeAndAfterPassesSeparate": true,
+      "maximumCurrentAuthoredSources": 71,
+      "maximumCatchupAuthoredSources": 95,
       "providerCallbacksInsidePureBuilder": false,
       "fullReplay": "reconstruct staged originals, candidates and kind6 decisions independently in ordinal order; match incremental roots/reducers and retain source dependencies"
     }

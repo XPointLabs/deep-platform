@@ -142,12 +142,14 @@
         "F8SelectorBytes": [
           42,
           33,
-          33
+          33,
+          2
         ],
         "F8ValueBytes": [
           96,
           88,
-          88
+          88,
+          96
         ],
         "runtimeActivation": false
       }

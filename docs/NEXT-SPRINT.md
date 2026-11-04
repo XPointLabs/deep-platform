@@ -55,6 +55,12 @@ fixture FAIL сохранены. Count8, bounded restore/per-atom API и parse-o
 P1 consumer переключён на этот точный commit. Это framing/structural/ownership
 проверки, не signed/native/connected qualification. Fresh6/7 authoring removal и
 reviewed public API/package repin выполняются вместе с consumer cutover.
+Дополнение Protocol`c1ae048` добавляет только defensive parsed XRC/XSS getters:
+build05 и focused03 снова дали0warnings/errors и123PASS, inputs unchanged;
+commit запушен, P1 consumer переключён на него. DR-0178 уточнён для фактического
+current-L endpoint, bounds71 ordinary/95 catch-up и F8 latest-request selector:
+Store не разрешает повторный запрос неизменной истории, ожидание ответа не
+блокирует весь prefix очистки. Код общего native/owner пакета ещё не квалифицирован.
 Два Sol-владельца реализуют полный native kind6/source/index и route-owner пакет,
 не активируя промежуточный schema6/reducer960 профиль на сохранённых CLI.
 Отдельно до общей приёмки проверить/закрыть существующие DeviceV1/PreKeyV2
