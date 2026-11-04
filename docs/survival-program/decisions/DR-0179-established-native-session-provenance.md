@@ -59,6 +59,35 @@ verification, paired application state, preclaim tombstones at their owning
 boundary, and the callback-free final application-to-native SQL sequence.
 No key or SQL handle survives provider calls.
 
+### Automatic native audit remains
+
+Account-owner admission still fully audits established native histories, including
+terminal latches and established pending kinds2/4/5/6. Keep exact floor/tip and full
+archive-semantic verification, catalog/instance readback and the existing scheduling
+marker; that marker never replaces fresh per-segment provenance. A new managed
+owner repeats this native audit, not original-source auditing.
+
+Every initialized catalog entry must have authenticated floor/history/archive
+joins and an existing registered SQL file/path. Defer only positively canonical
+Initial-owned shapes, with DR-0177's canonical empty archive basis/count:
+
+| Actual protected floor | Deferred owner |
+| --- | --- |
+| Canonical empty ordinal0/status0 | Initial initialization |
+| Ordinal1/status0, stable or import pending/cleanup | Initial transfer |
+| Ordinal2/status1, pending/cleanup | Initial activation |
+| Ordinal2/status2, stable or pending/cleanup | Initial cancellation |
+
+Pending metadata must have its exact kind/predecessor (import1, activation3,
+Initial cancellation4). Inconsistent combinations or missing/malformed required
+state reject. A failed established provenance check never classifies a scope as
+inactive. Deferral grants no repair, recovery or Initial-use permission; its
+explicit owner/full audit detects corruption inside inactive SQL. Automatic audit
+does not recover unrelated Initial work or reopen its original sources.
+Test mixed established/unfinished/cancelled catalogs, unselected established archive
+corruption, missing protected/native state and pending activation versus established
+recovery. The account-wide V2/all-indexed/no-enrollment barrier remains mandatory.
+
 Status0 or pending Initial activation cannot enter the established path.
 Established pending kinds2/4/5/6 retain exact recovery. Missing native state
 rejects; it never reconstructs itself from original Initial.
