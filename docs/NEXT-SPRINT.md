@@ -157,6 +157,45 @@ closures повторно проверяются атомарно после cal
 аккаунтах, затем использует прежние фактические progress/health/final joins;
 прежний успешный HTTP ответ не считается текущим authority.
 
+Runtime07 на Shared`86b3a84` подтвердил baseline и receive/ACK всех трёх
+сохранённых профилей:44.487/65.509/64.737s. Первый вызов включал504 со штатным
+owner recovery; прежний archive-intent отказ устранён. Затем запрос истории
+первого профиля отказал на текущем XRA interval (23.347s,9HTTP200), inputs unchanged.
+Новые бизнес-сообщения и engineering round ещё не запускались.
+Текущий цельный пакет: строгая read-only проверка фактически принятого L для
+CLI, pre-author check только нового немедленно отправляемого запроса истории,
+native-committed expiry-stop без транспортной попытки по уточнённому
+[DR-0063](survival-program/decisions/DR-0063-did2-contact-reply-route-embedding.md),
+fresh uncorrelated announcement после завершённого/остановленного старого,
+и receive между направлениями. Original-XUR health остаётся информационным:
+это не current-L permission по [DR-0174](survival-program/decisions/DR-0174-connection-contact-maintenance.md).
+Полный Shared остаётся после цели; сначала единый focused пакет и сохранённые CLI.
+
+Дополнительный архитектурный blocker подтверждён исходниками: в прежнем runtime count8 DMC
+ограничивался120s и сроком verified sender capability, а deadline самого события
+проверяется для L и при дальнейшей отправке. Окно выдачи nonce-ответа DTT около30s
+не является сроком этой capability. Последовательные6 направления
+заняли615s до первого receive; такой порядок может не дать L сойтись.
+Принято разделение авторизационной актуальности отдельной операции и конечного
+срока нового announcement по [DR-0178](survival-program/decisions/DR-0178-paged-route-history-and-current-promotion.md#new-control-lifetime-and-per-operation-freshness-2026-11-05),
+с независимыми свежими receiver/effect проверками и неизменным сроком уже
+созданных событий. Реализация и focused проверка входят в текущий пакет;
+interleaving и новая политика не доказывают warm p95≤1s.
+
+Пакет собран без предупреждений/ошибок (build45). В focused qualification24
+прошли8 из11; три отказа сохранены в исходном TRX. Исправлены сравнение created-at
+с trusted upper в планировщике и неверные тестовые ожидания signed scope/freshness.
+Qualification25 подтвердил два исправленных сценария, qualification26 — последний;
+у всех11 выбранных identities теперь есть PASS, полного прогона это не заменяет.
+Чистые проверки CLI engineering harness:42PASS, без профилей/сети.
+Дальше — fresh runtime08 и фактический goal-check на прежних трёх профилях,
+без сброса (business cursor60). Отдельные Protocol67 и CLI parser3, затем full
+Shared выполняются после проверки цели; они пока не квалифицированы на этом срезе.
+Срез запушен: Shared`87a6a10`, Protocol`5509d0d`, CLI`cfdaada`.
+Локальный publish08 принят: native0,2250 inputs unchanged; это подготовка runtime,
+не публикация релиза. PostQ26 union:76TRX/2292 required identities, прежние FAIL
+сохранены с точными последующими PASS; waiver отсутствует.
+
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;
 сохранены фактическая retirement/native provenance, обязательный автоматический

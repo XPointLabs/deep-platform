@@ -125,7 +125,38 @@ profile and complete SQL/root guards; no new slot, table, wire or public API.
 Audit rows contain no consent/history hash, scope, event or key. The retained
 consent/history commitments remain independent and are not recreated by retry.
 
-Native stop mode is0 for active work,1 for a native-committed stop and2 for a
+For an ordinary native-committed route-maintenance control that expired before
+transport-attempt enrollment, the owner may produce the same RetryExpired stop.
+It must join the exact stable active authored command to its independently
+verified outgoing native event and identical retained DMC, including account,
+instance, scope, operation, sequence, kind, logical ID, event hash and unchanged
+NextSequence. Authenticated lower time must reach the ceiling-second boundary
+of the actual DMC expiry (`Did2ControlWorkStop.ProvenExpirySecond`); zero expiry
+and upper-time overlap do not authorize stopping.
+
+This path requires absence of the operation throughout the authenticated send
+journal, absence of Store-evidence candidates for its exact scope/operation,
+and absence of its deterministic original mailbox operation from transport
+outbox rows in every account scope and state, including Prepared and Unknown.
+Actual authored/send/grant/native roots and SQL absence are rejoined after
+callbacks under the account lease. Only the exact authored predecessor is
+compare-exchanged; the stopped successor and all dependencies are independently
+read back before reporting completed stop or entering ordinary cleanup.
+Existing storage provides atomic guarded reads and a single-root conditional
+write, not a cross-root conditional write. A post-write conflict fails closed,
+retains the stop and forbids cleanup or a completed-stop result from that call.
+
+An absent send attempt does not prove no grant was acquired: acquisition may
+precede attempt enrollment, and grants are reusable. All grant, native/history,
+counter, replay and uncertainty custody remains retained and guarded. This is
+denial-only work termination, not evidence of non-delivery, successful Store or
+remote recall. No synthetic attempt is created. Payload/audit retirement still
+requires the existing qualified joint transition and actual native/semantic
+readback, including its supported zero-attempt stopped-work case.
+The ordinary direct-text journal keeps its existing stop framing; no
+NativeStopMode field is added to it.
+
+For the existing Initial/Accept owners, native stop mode is0 for active work,1 for a native-committed stop and2 for a
 stop proven before first encryption. Modes1/2 remain pinned after working-payload
 and audit retirement. They are not native authority: actual tip, original event,
 semantic history, send custody and audit completeness still require independent

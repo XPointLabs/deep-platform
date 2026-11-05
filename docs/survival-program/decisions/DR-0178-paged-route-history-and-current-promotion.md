@@ -85,6 +85,49 @@ incompatible signed artifacts at one scope/generation remain sticky, as do
 the existing distinct native DMCs at one authored position. Existing native
 F4 remains the only authored-position conflict index.
 
+## New control lifetime and per-operation freshness (2026-11-05)
+
+For newly authored count8 controls, separate the finite event lifetime from
+the sender's nonce-bound directory-proof deadline. Announcement-bearing modes2
+and3 have a maximum lifetime of3600 seconds; evidence-only mode1 and history
+request mode4 retain a maximum of120 seconds. Compute the candidate deadline
+from the actual authenticated lower time, retaining the existing created-at
+upper-time rule and every signed authority, DCA/device, network, view, ADH and
+applicable announcement-route ceiling. A shorter signed ceiling still wins.
+Keep the existing network MaximumRecordExpiry/HardUpper contract unchanged.
+The generic DMC wire bound and count8 payload format do not change.
+
+The sender's original nonce-proof deadline is no longer a transferable event
+ceiling. That proof must nevertheless remain independently current throughout
+the authoring operation and its final checks; this allocation does not let an
+operation outlive its admission proof. Every receiver promotion and subsequent
+use of L still requires its own fresh account/device/DCA/revocation/network,
+protected-time and exact route qualification, plus the announcement's actual
+event interval. Cached or historical qualification is not permission.
+
+The signed DTT nonce-response issuance window is distinct from the verified
+capability's freshness deadline. The latter remains bounded by the actual
+revocation-freshness policy and signed ADH validity; it is not a 30-second
+capability. The demonstrated availability constraint was the explicit120-second
+event ceiling. Removing a presumed30-second capability cap is not a measured
+benefit of this change.
+
+Responses may be modes1,2 or3. Correlation, the original request's exact
+currentness, one-response/F8 uniqueness and every effect/replay guard remain
+unchanged; a longer response-announcement does not authorize a new response
+after its original request expired. Already-authored controls retain their
+exact original expiry and cannot be revived or extended. An independently
+authored higher-sequence announcement of the same endpoint continues to use
+the ordinary pending-work, uncertainty and stop rules above.
+
+This is a finite announcement-availability policy. It does not extend any
+signed route, revocation allowance, transport grant, retry count, payload bound
+or journal capacity. An unresolved never-attempted announcement can retain its
+one existing command for up to its longer actual event lifetime; this does not
+permit replacement, extra pending entries or premature cleanup. The actual
+signed minima must support convergence, and the separate warm delivery target
+still requires measurement.
+
 ## Closed count8 DMC2/14 payload
 
 Keep the existing DMC type14, empty reply field, native encryption, record and
