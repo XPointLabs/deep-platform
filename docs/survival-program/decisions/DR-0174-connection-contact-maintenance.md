@@ -56,6 +56,15 @@ resolved publication as an ordinary private peer route. DR-0159 re-introduction
 still requires its actual supplied address/capability and native control joins.
 Old failed commands and retained custody remain intact.
 
+For the same endpoint, explicit maintenance may renew a settled, still-current
+announcement during the final 20% of its authenticated lifetime. The prospective
+expiry uses the author's existing signed time bounds. If those bounds cannot
+extend the current announcement, maintenance does no work. Before reserving an
+elective replacement, the author independently rechecks the actual settled head,
+native floor and new expiry; the new expiry must be strictly later. An unfinished
+original keeps priority. This rule neither extends an original's lifetime nor
+changes how an expired or otherwise inadmissible announcement is verified.
+
 ## Qualification boundaries
 
 Run scheduler unit negatives and unchanged real publication/route-control
