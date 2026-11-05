@@ -956,6 +956,16 @@ than the fixed provider/2 MiB session bounds rejects before ratchet, replay or
 application mutation. These identifiers do not create exportable plaintext
 state: the containing account store remains authenticated and encrypted.
 
+In `TRS1`, the writer, state-commitment calculation and reader order skipped
+entries by increasing unsigned `(EcN, SckaEpoch, SckaN)`. The EC chain ID
+remains part of each key's identity. A change of EC chain does not reset the
+receive PQ frontier: two retained entries with the same numeric triple are
+invalid, even if their chain IDs differ. The reader rejects a non-increasing
+triple, a zero chain ID, or a skipped key at or beyond its active-chain receive
+frontier before allocating key material. On reopen, the account's independently
+protected exact-state hash and generation must still match. Import does not
+sort, repair or rewrite stored bytes.
+
 Skipped keys are deleted immediately after successful use and after the
 session's deterministic retirement boundary. Message-key and old chain-key
 deletion is part of the same durable transaction as ciphertext acceptance.
