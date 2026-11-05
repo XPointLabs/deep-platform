@@ -1729,6 +1729,14 @@ The original assignment snapshot is not a replacement current lease. Store,
 Retrieve and both peer proofs must bind that same exact assignment and grant;
 no expired grant or historical issuer/profile is promoted to permission.
 
+For a newly issued successful XMC2, the issuer sets tag 4 to the lower bound
+of its final authenticated time interval after signing the grant. The full
+interval must still fit the original acquisition window. If the issuer and
+client intervals overlap, this bound is at or before the client's upper bound.
+The client independently rejects a tag 4 later than its own verified upper
+bound. Each exact replay returns the original XMC2 bytes, including tag 4.
+This rule applies to current Deposit, current Retrieve and retained Retrieve.
+
 The issuer chooses the grant's NotBefore as the greater of the original signed
 XMG2 tag9 and the current role issuer's signed ValidFrom. The original request
 must still pass the complete current interval and 120-second acquisition bound;
