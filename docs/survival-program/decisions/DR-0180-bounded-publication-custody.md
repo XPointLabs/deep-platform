@@ -59,12 +59,20 @@ publication is hydrated before selection and every stored-plan recovery check.
 The joint plan adopts SQL and the original ordered grant/read/publication roots.
 The publication successor replaces its archive reference with an erasure-pending
 tombstone (reference flag3; ordinary retained references use flag0). The tombstone
-keeps the exact original locator, route hash, byte length and commitment. It is
+keeps the exact original locator, route hash, byte length and commitment, plus
+a mandatory 32-byte exact read-scope trailer in the working root. Retained
+flag0 references keep their existing 104-byte representation; every flag3
+reference requires its scope trailer in the same sorted reference order. It is
 not a retained-read or route-history candidate and still consumes archive quota.
 
 After the complete plan is independently adopted, staging disposed and the plan
 is idle, the held owner rechecks remaining path dependencies and atomically
-deletes the exact archive slot guarded by the complete tombstone root. It then
+deletes the exact archive slot guarded by the complete tombstone root. An atomic
+guarded join also checks the exact grant/read/send/ordinary/attachment roots,
+sealed original dependencies and selected archive. After deletion the owner
+rejoins those same dependencies and the archive's absence before cleanup. The
+recorded read scope must remain absent even when a crash already erased the
+original, so recreating a traversal cannot discard its erasure witness. It then
 independently verifies absence and CAS-removes the tombstone, with exact root
 readback. The operation reports retirement only after this erasure completes.
 A changed guard refuses deletion. Missing original custody is accepted only for
