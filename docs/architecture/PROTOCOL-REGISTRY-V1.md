@@ -204,7 +204,7 @@ The current source baseline implements `DID2`/`DAB2` and root suite `0x0301`;
 allocation below and in the machine registry, not inferred from compilation.
 Historical sizes are not releasable values or permission for a legacy reader.
 The connected consumer/package/physical closure remains unqualified; see the
-[current audit](ARCHITECTURE-AUDIT-2026-10-03.md).
+[current sprint](../NEXT-SPRINT.md).
 
 [DR-0135](../survival-program/decisions/DR-0135-owned-initial-retry-expiry-entry.md)
 allocates the informative Shared business exception

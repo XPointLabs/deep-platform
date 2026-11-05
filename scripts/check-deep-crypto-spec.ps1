@@ -125,7 +125,7 @@ $expectedPackages = @(
     @{ Id='APPLICATION-CORE-CODEC-01'; Status='FROZEN_CLEAN_BREAK'; Records=@('DID1','DAB1','DMD1','DCA1','DAO1','DMC2'); Kinds=@() },
     @{ Id='ATTACHMENT-CODEC-01'; Status='FROZEN_CLEAN_BREAK'; Records=@('DAM1'); Kinds=@(18,19) },
     @{ Id='CONTACT-CODEC-01'; Status='FROZEN_TARGET_NOT_ACTIVE'; Records=@('DCB1','DCR1','DIA1','XIR1','XUR1','XRA1','XRC1','XRR1','XSS1','PMA2','PMT2','PMS2','XMG1','XMC1'); Kinds=@(2,3,4,14) },
-    @{ Id='GROUP-CODEC-01'; Status='FROZEN_TARGET_NOT_ACTIVE'; Records=@('GIV1','GIA1','DGP1','DGC1','DGM1','DGT1','GCP1','GCF1','GSR1','GSW1','GSQ1','GSS1'); Kinds=@(15,16,17,26,27,28,29) },
+    @{ Id='GROUP-CODEC-01'; Status='FROZEN_TARGET_NOT_ACTIVE'; Records=@('GIV1','GIA1','DGP1','DGC1','DGM1','DGT1','GCP1','GCF1','GSR1','GSW1','GSQ1','GSS1'); Kinds=@(15,16,17,26,27,28,29,30) },
     @{ Id='CALL-CODEC-01'; Status='TARGET_UNFROZEN'; Records=@(); Kinds=@(20,21,22,23,24) },
     @{ Id='HISTORY-CODEC-01'; Status='TARGET_UNFROZEN'; Records=@(); Kinds=@(25) }
 )

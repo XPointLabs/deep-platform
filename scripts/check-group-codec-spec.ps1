@@ -12,7 +12,7 @@ $protocolRegistryPath = Join-Path $PSScriptRoot '..\deep-protocol\registry\deep-
 $generatedRegistryPath = Join-Path $PSScriptRoot '..\deep-protocol\src\Deep.Protocol\Generated\DeepProtocolRegistry.Generated.cs'
 $vectorTool = Join-Path $PSScriptRoot '..\deep-protocol\eng\GroupCodecVectors\GroupCodecVectors.csproj'
 $testProject = Join-Path $PSScriptRoot '..\deep-protocol\tests\Deep.Protocol.Tests\Deep.Protocol.Tests.csproj'
-$expectedDigest = 'dca069d80c506c2fe5da5b1c14073d784a875666484f83f7deb13662dd60147e'
+$expectedDigest = '9da93be856b9d6b547548839f3aef390c9d3dbfc92b12b9aa2a71e5366289d14'
 
 foreach ($path in @($vectorPath, $anchorPath, $schemaPath, $codecPath, $transitionVerifierPath, $protocolRegistryPath, $generatedRegistryPath, $vectorTool, $testProject)) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing GROUP-CODEC-01 input: $path" }

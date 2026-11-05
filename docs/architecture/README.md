@@ -1,121 +1,64 @@
-# Deep / XPoint: актуальная архитектура
+# Deep / XPoint
 
-Актуализировано: **2026-10-03**. Статус: нормативный индекс; реализация и выпуск
-проверяются отдельно. Исходная точка — зафиксированный
-[stabilization handoff](../RELEASE-STABILIZATION-HANDOFF-2026-10-03.md), а не
-план создания системы с нуля.
+Текущая спецификация на 5 ноября 2026 года. Исходный срез задают Git-пины в `deep-platform`, ветка `release-candidate/prod-20260909`. За эксплуатацию и выпуск отвечает Mr. X.
 
-## Как читать и продолжать работу
+<a id="scope"></a>
+## Продукт и граница выпуска
 
-1. [Аудит архитектуры и сравнение конкурентов](ARCHITECTURE-AUDIT-2026-10-03.md):
-   выводы, исходный код, ограничения доказательств.
-2. [Текущая очередь](../NEXT-SPRINT.md): только незавершённые этапы и blockers.
-3. [Единый план Codex](IMPLEMENTATION-PLAN-V1.md): зависимости, владельцы,
-   результаты и проверки каждого этапа.
-4. Тематическая спецификация из таблицы ниже и её принятые decision records.
-5. `AGENTS.md`, реальный composition root, код и тесты соответствующего repo.
+Deep — мессенджер с постоянным адресом пользователя и сквозным шифрованием. Для создания аккаунта пользователь вводит имя и нажимает одну кнопку. Приложение сохраняет защищённую копию фразы восстановления. В настройках её можно показать, сохранить отдельно или удалить с устройства. Удаление этой копии сохраняет действующий локальный аккаунт. [Реализация в MAUI](../../deep-client-maui/src/Deep.Client.Maui/AppShell.Did2.cs)
 
-[DR-0082](../survival-program/decisions/DR-0082-integration-first-delivery-baseline.md)
-закрепляет интеграционный порядок этого аудита. Старые WP0–WP9, CB0/DEV0 и
-NET-STAB execution overlays больше не являются параллельными очередями.
-Предыдущие редакции доступны в Git до этой консолидации (baseline `3a3afbd`).
-[SPRINT-HISTORY](../SPRINT-HISTORY.md) и датированные checkpoints — журнал
-прошлых наблюдений; команды и разрешения из него не переносятся в новый запуск.
+Первый выпуск ориентирован на Android arm64 и Windows x64/arm64. Транспортный профиль OfficialXPoint3 использует три узла. Для обычного отправителя требуются доступные три перехода, для хранения конверта — две независимые реплики. Отказ обязательного перехода приостанавливает доставку до восстановления маршрута. Расширение сети до шести узлов запланировано перед приглашением пользователей.
 
-## Архитектурная база
+<a id="modules"></a>
+## Модули
 
-Сохраняются transport-neutral application/E2EE, durable outbox/inbox,
-идемпотентная обработка, onion transport и replicated mailbox. Сеть имеет
-at-least-once delivery и неопределённый исход после обрыва. Единственный эффект
-в локальной истории достигается durable dedup; успешная запись на сервере ещё
-не означает, что получатель принял сообщение.
-
-Текущая цель — связать уже созданные компоненты одним работающим путём:
-
-```text
-Account + verified current network/time
-  -> contact publication / resolve / consent / session
-  -> durable ciphertext + exact retry intent
-  -> selected three-hop path -> authorized mailbox replica pair
-  -> recipient durable receive + materialization
-  -> transport tombstone and separate authenticated application receipt
-```
-
-Первый поддерживаемый профиль — `OfficialXPoint3`, Android и Windows. Три
-обязательных routing nodes дают восстановление после возврата узла, но не
-доступность маршрута во время его отсутствия. Storage replication не создаёт
-дополнительные маршрутизаторы. Полные guarantees принадлежат
-[DEPLOYMENT-PROFILES](DEPLOYMENT-PROFILES.md).
-
-Root/custody, криптографические suite, privacy policy, retention и финальный
-product scope этим аудитом не упрощаются. Groups, files, calls и второй carrier
-остаются release requirements, но выполняются после проверенного text/recovery
-пути. P2P/on-prem/Apple и six-node profile этим планом не активируются.
-
-## Какое поколение реализовывать
-
-| Граница | Текущий target и обязательный источник |
+| Репозиторий | Чем владеет |
 | --- | --- |
-| Identity/account | DID2/DAB2 с PQ-root; DR-0006–0008, DR-0069 и текущие Protocol registry/codecs |
-| Directory / network | DID2 freshness, protected history/time и signed NETCODEC; DR-0010–0013, DR-0070 |
-| Contact / route | DID2-only owned contact/session и exact successor custody; DR-0016–0079 по затронутой операции |
-| Mailbox | PMA2 profile 2, PMT2/PMS2, MCG3/MCP3/MAU3 и XMC2; **DR-0080/0081**. Signed serial revocation/floor: [DR-0083](../survival-program/decisions/DR-0083-current-mailbox-grant-revocation.md), без изменения client wire; node activation ещё закрыта |
-| Peer replication | Neutral persistence framing с DID2 grant-bound proof; контракт DR-0081. Source/composition и release activation различаются; актуальный статус — [NEXT-SPRINT](../NEXT-SPRINT.md) |
-| Local state | Текущие account/database/journal generations producer; clean break без compatibility reader |
+| [deep-protocol](../../deep-protocol/README.md) | Форматы записей, криптографические проверки, идентичность, правила членства и маршрутизации. |
+| [deep-client-shared](../../deep-client-shared/src/Deep.Client.Shared/Services/DeepIdV2AccountService.cs) | Общая логика аккаунта, согласия контактов, сессий, отправки, приёма, групп, вложений и восстановления. |
+| [deep-cli](../../deep-cli/src/Deep.Cli/Program.cs) | Команды для того же ядра Shared и отдельный профиль каждого клиента. Первая поверхность для E2E. |
+| [deep-client-maui](../../deep-client-maui/src/Deep.Client.Maui/MauiProgram.cs) | Экраны, жизненный цикл приложения, платформенное хранилище и состав установочного пакета. |
+| [xnode](../../xnode/src/XNode/Program.cs) | Вход, ретрансляция по выбранному клиентом пути, репликация, почтовые ящики, ключи первого контакта, управляющие записи групп и объекты вложений. |
+| [deep-registry-api](../../deep-registry-api/src/Deep.Registry.Api/Program.cs) | Раздача подписанных данных сети и каталога, доказательства DID2, координация публикаций, выдача разрешений почтового ящика узлам по аутентифицированному запросу. |
+| [deep-push-notification-server](../../deep-push-notification-server/src/Deep.Push.Server/Program.cs) | Подписки и доставка зашифрованных уведомлений через FCM и WNS. |
+| [deep-devops](../../deep-devops/README.md) | Локальный Docker-контур, развёртывание, ключи инфраструктуры, проверка готовности и восстановление. |
+| [deep-tests-e2e](../../deep-tests-e2e/package.json) | Проверки на границах сервисов через внешние интерфейсы. |
+| [xpoint-node-installer](../../xpoint-node-installer/README.md) | Установка, обновление и эксплуатация узла оператором. |
+| [xpoint-staking-contracts](../../xpoint-staking-contracts/README.md) | Правила регистрации, стейкинга и вознаграждений в смарт-контрактах. |
+| [xpoint-staking-backend](../../xpoint-staking-backend/README.md) | Индексация событий контрактов и представление состояния для клиентов. |
+| [xpoint-staking-portal](../../xpoint-staking-portal/README.md) | Интерфейс кошелька и стейкинга. |
+| [xpoint-docs](../../xpoint-docs/README.md) | Публичные инструкции пользователям и операторам. |
 
-Это карта версий, не второй wire specification. Точные widths, domains,
-signatures и identifiers берутся из [PROTOCOL-REGISTRY](PROTOCOL-REGISTRY-V1.md)
-и machine sources. Frozen target, скомпилированный consumer, активный runtime и
-квалифицированный release — разные состояния; первое не доказывает следующее.
+<a id="authority"></a>
+## Идентичность и доверие
 
-## Приоритет и единственный владелец требований
+Корень DID2 закрепляет классический ключ Ed25519 и постквантовый ML-DSA-65. По фразе из 24 слов восстанавливается тот же публичный идентификатор. Для продолжения исходной цепочки привязки нужен точный исходный документ DAB2. Постоянный адрес также содержит отдельное разрешение чтения для поиска контакта. Право устройства, согласие контакта и текущая сессия проверяются отдельно. [Корень DID2](../../deep-protocol/src/Deep.Protocol/Identity/DeepIdV2Root.cs)
 
-При конфликте: принятый decision record → frozen machine registry/schema/vectors
-→ тематическая спецификация → implementation plan → repo runbook → public docs.
-Если accepted decision и machine input расходятся, affected lane останавливается
-для согласованного исправления producer/consumer; нельзя выбирать удобный
-вариант в runtime. Код доказывает реализацию, но не меняет требования.
+Клиент начинает с закреплённой исходной записи сети, проверяет подписанные версии сети и каталога и сопоставляет их с защищённой локальной границей версий и доверенным интервалом времени. Расхождение подписанных ветвей, откат, просроченное разрешение или неверная подпись останавливают действие. Клиент выбирает onion-маршрут. Узел проверяет следующий переход и собственные полномочия. Закрытые ключи выдачи разрешений остаются у соответствующих подписантов. [Сетевая сессия](../../deep-client-shared/src/Deep.Client.Shared/Services/DeepIdV2ClientNetworkSession.cs) · [Транспорт почтового ящика](../../deep-client-shared/src/Deep.Client.Shared/Services/ContactV2/DeepIdV2MailboxOnionTransport.cs)
 
-| Предмет | Единственный normative owner |
+<a id="messaging"></a>
+## От контакта до сообщения
+
+1. **Контакт.** Владелец публикует данные для установления связи. Отправитель находит контакт по разрешению в постоянном адресе и использует предварительные ключи для начального обмена. После явного согласия стороны ведут парную сессию. При смене маршрута клиент сверяет обновление с уже принятым контактом. [Обслуживание контактов](../../deep-client-shared/src/Deep.Client.Shared/Services/DeepIdV2AccountService.ContactMaintenance.cs)
+2. **Отправка.** Shared до сетевого вызова сохраняет исходную операцию, состояние шифрования сессии и точный конверт. Через три onion-перехода конверт попадает в почтовый ящик. Успешный Store подтверждает сохранение на двух репликах. [Исходящие сообщения](../../deep-client-shared/src/Deep.Client.Shared/Services/DeepIdV2AccountService.TextOutbox.cs)
+3. **Приём.** Получатель через Retrieve получает записи, проверяет их подлинность, исключает повторы и записывает результат в локальную историю. Отдельный ACK разрешает репликам зафиксировать удаление. Для статуса прикладной доставки или прочтения нужна соответствующая квитанция от клиента.
+4. **Группы.** Владелец упорядочивает изменения состава по эпохам. Приглашение, принятие и переход эпохи проходят через управляющие записи. Отправитель рассылает одно логическое групповое сообщение по парным зашифрованным сессиям участников. Если сохранилась только часть копий, `group resume` завершает исходную рассылку. [Операции групп](../../deep-client-shared/src/Deep.Client.Shared/Services/DeepIdV2AccountService.Groups.cs)
+5. **Вложения.** Клиент шифрует объект частями, загружает их через Blob и отправляет описание по принятой сессии. Получатель сверяет состав, размеры и криптографические привязки, проверяет и расшифровывает части перед выдачей файла. [Передача вложений](../../deep-client-shared/src/Deep.Client.Shared/Services/DeepIdV2AccountService.RemoteAttachments.cs)
+
+<a id="storage-recovery"></a>
+## Хранение и восстановление
+
+Shared связывает историю SQLCipher и состояние сессий с отдельно защищёнными журналами. Перед изменением состояния он сверяет версии, исходную операцию и подлинность записей. После сбоя сохраняются номер операции и исходный шифротекст. При неизвестном исходе отправки клиент продолжает эту же операцию под действующим разрешением. Клиентская история, подтверждение реплик и прикладная квитанция восстанавливаются независимо. [Хранилище Shared](../../deep-client-shared/src/Deep.Client.Shared/Persistence/JournaledDeepSecureStorage.cs) · [Профиль CLI](../../deep-cli/src/Deep.Cli/WindowsProfile.cs)
+
+XNode хранит состояние реплик, защиту от повторов и сведения об удалении. При ожидании ответа второй реплики отзыв разрешения может вступить в силу. Перед следующим локальным изменением или выдачей ACK узел заново сверяет защищённое состояние. Registry сохраняет исходный результат выдачи разрешения и при точном повторе возвращает те же байты. [Правила хранения на узле](../../xnode/docs/mailbox-operation-custody.md)
+
+<a id="acceptance"></a>
+## Границы подтверждённой работы
+
+На трёх сохранённых CLI-профилях подтверждена групповая доставка с восстановлением. Целевая задержка, непрерывная работа при обновлении каталога и полный физический сценарий Windows/Android остаются открытыми. Документы, изображения, самостоятельное фоновое получение, несколько устройств, push и звонки требуют своей сквозной приёмки. В частности, наличие обработчиков call signal/inbox/ICE в Registry само по себе не подтверждает работу целевых звонков через ретранслятор.
+
+| Для чего читать дальше | Владелец |
 | --- | --- |
-| Threat model, privacy/security claims | [THREAT-MODEL](THREAT-MODEL.md) |
-| Recovery, identity, AKE, ratchet, primitives | [DEEP-CRYPTO](../survival-program/releases/v3.0.0/specs/DEEP-CRYPTO-V1-DRAFT.md) и frozen registry/vectors |
-| Имена magic/suite/profile/API и lifecycle | [PROTOCOL-REGISTRY](PROTOCOL-REGISTRY-V1.md) |
-| Contact/message/device/group semantics | [CONTACT-AND-GROUP](CONTACT-AND-GROUP-PROTOCOL-V1.md) |
-| Publication/resolve/prekey operations | [CONTACT-RESOLVER](CONTACT-RESOLVER-V1.md) |
-| Freshness/transparency/trusted time | [ACCOUNT-DIRECTORY](ACCOUNT-DIRECTORY-TRANSPARENCY-V1.md) |
-| Retention/recovery guarantees | [RETENTION-AND-RECOVERY](RETENTION-AND-RECOVERY-V1.md) |
-| Outbox/inbox/dedup и adapters | [TRANSPORT-NEUTRAL-MESSAGING](TRANSPORT-NEUTRAL-MESSAGING.md) |
-| Membership/roles/onion/mailbox/placement | [XPOINT-NETWORK](XPOINT-NETWORK-V1.md) |
-| Carriers/bootstrap/bridges | [CIRCUMVENTION-CARRIERS](CIRCUMVENTION-CARRIERS-V1.md) |
-| Call signaling/allocation/media | [CALL-SESSION](CALL-SESSION-V1.md) |
-| Deployment guarantees | [DEPLOYMENT-PROFILES](DEPLOYMENT-PROFILES.md) |
-| Product/release requirements | [V1-RELEASE-SCOPE](V1-RELEASE-SCOPE.md) |
-| Exact evidence IDs/SLO predicates | [release-scope.v1.json](release-scope.v1.json), [schema](release-scope.v1.schema.json) |
-| Competitor baseline / upstream policy | [SESSION-PARITY-AND-SOURCES](SESSION-PARITY-AND-SOURCES.md) |
-| Текущий статус незавершённой работы | [NEXT-SPRINT](../NEXT-SPRINT.md) |
-| Исполняемый DAG и package ownership | [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN-V1.md) |
-
-Нижестоящие документы ссылаются на владельца, описывая лишь своё API mapping,
-композицию, команды и наблюдаемое поведение. Они не копируют field tables,
-retention numbers, SLO или release status. `xpoint-docs` — пользовательская и
-операторская документация, не альтернативная protocol specification.
-
-## Владельцы и правила проверки
-
-Protocol владеет проверкой bytes/crypto и закрытой authority; Shared — durable
-состоянием и orchestration; MAUI — UI/platform/composition; XNode — forwarding,
-mailbox и replication; Registry — signed distribution/issuance в разрешённых
-границах; DevOps — lifecycle/recovery/topology; E2E — независимыми сценариями.
-Операционное custody до отдельного решения владельца остаётся у Mr. X.
-
-Каждый slice приносит точные producer/consumer commits, наблюдаемый сценарий,
-отрицательные и crash/restart проверки, sanitized evidence и residual blockers.
-Local test, source-cutover build и физическая передача маркируются отдельно.
-Падения тестов классифицируют и исправляют, а не удаляют ради зелёного отчёта.
-
-Documentation CI проверяет UTF-8, ссылки, public render, отсутствие секретов и
-registry/schema/vector consistency. Prose snapshots и требования сохранять
-исторические фразы запрещены; старый RC-6 documentation gate относится только
-к своему drill. Изменения hash-bound normative docs требуют reviewed
-source/anchor repin, не изменения wire или автоматической активации.
+| Последний фактический результат, блокер и условия продолжения | [Текущий спринт](../NEXT-SPRINT.md) |
+| Обязательные функции V1 и критерии выпуска | [Каталог выпуска](release-scope.v1.json) и [этапы приёмки](IMPLEMENTATION-PLAN-V1.md) |
+| Имена, поля, размеры, криптографические наборы и тестовые векторы | [Реестр протокола](PROTOCOL-REGISTRY-V1.md) и [криптографический контракт](../survival-program/releases/v3.0.0/specs/DEEP-CRYPTO-V1-DRAFT.md) |

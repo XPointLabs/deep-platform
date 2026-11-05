@@ -9,43 +9,12 @@
 
 ## Read order
 
-1. This file.
-2. The nearest repository `AGENTS.md`.
-3. `docs/architecture/README.md`, `PROTOCOL-REGISTRY-V1.md` and the relevant
-   S00–S13 stage in `IMPLEMENTATION-PLAN-V1.md`. The 2026-10-03 source audit is
-   baseline evidence; the implementation plan is the only execution sequence.
-4. `docs/NEXT-SPRINT.md` for current unfinished work.
-5. The relevant code, tests, and repo-native architecture/runbook docs.
-6. Frozen protocol inputs under `docs/survival-program/releases/v3.0.0/` only when protocol bytes, crypto, identity, reset, or evidence ownership are in scope.
+1. [Current system specification](docs/architecture/README.md). Its module table links the actual implementation.
+2. [Current sprint](docs/NEXT-SPRINT.md) for acceptance state and priority on the release-candidate branch.
+3. The nearest repository `AGENTS.md`, the code and the tests for the affected path.
+4. For protocol changes, consult the applicable field contract and executable vectors via the [protocol registry](docs/architecture/PROTOCOL-REGISTRY-V1.md). Consult the [stage plan](docs/architecture/IMPLEMENTATION-PLAN-V1.md) for stage acceptance criteria.
 
-Do not load historical plans. Old WP/CB/NET-STAB ordering is superseded by the
-unified plan; dated checkpoints and SPRINT-HISTORY are evidence, not a second
-backlog or authorization for new production/reset actions. If code, tests, and
-docs disagree, stop the affected claim, verify the implementation, and update
-the stale source in the same change.
-The documentation ownership matrix in `docs/architecture/README.md` is
-mandatory: edit the single normative owner and replace downstream duplicated
-requirements with links plus repository-specific consequences. `xpoint-docs`
-contains public user/operator behavior, not a second protocol specification.
-
-## Repository map
-
-- `deep-protocol`: normative codecs, cryptography boundaries, exact packages and evidence gates.
-- `deep-client-shared`: portable domain, SQLCipher persistence, E2EE/message/attachment/call orchestration and transport interfaces.
-- `deep-cli`: headless adapters and isolated profiles; first business-E2E surface.
-  Reuse Shared/Protocol, never a second transport/business stack.
-- `deep-client-maui`: MAUI UI, platform adapters, UAT/device automation and release composition.
-- `xnode`: Entry/Relay/Mailbox/InviteStore/Blob/CallRelay runtime, epoch keys,
-  forwarding, replication, quotas and heartbeat; never client path selection.
-- `deep-registry-api`: byte-identical signed network/directory/catalog
-  distribution, membership projection and witness coordination; no steady-state
-  contact resolver, call signaling/ICE inbox or call-allocation authority.
-- `deep-push-notification-server`: encrypted provider delivery and push ingress.
-- `deep-devops`: Docker/UAT topology, TLS/PKI, release gates, chaos and operational evidence.
-- `deep-tests-e2e`: black-box cross-service fixtures and tests.
-- `xpoint-docs`: user and administrator documentation.
-- `xpoint-node-installer`: supported node installation and upgrade workflow.
-- staking repos: contracts, indexing/projection and `xpoint-staking-portal` UI only.
+Keep system architecture in the specification and open work in the sprint. Replace the current status on change. Detailed wire contracts, hashed inputs, gate case bindings and operational runbooks each retain their own authority. Git history holds superseded narratives.
 
 ## Working rules
 
@@ -64,7 +33,7 @@ contains public user/operator behavior, not a second protocol specification.
   select `-Interpreter PowerShell7`. The terminal records the actual edition,
   version and SDK10.0.301. Do not guess an interpreter for historical scripts.
 - Protocol's executable witnesses separately require PowerShell7.6.5/.NET10
-  under DR-0117, compatible with the selected SDK architecture:
+  for the selected SDK architecture (see [witness runtime](docs/survival-program/README.md#witness-runtime)):
   resolve `pwsh` or pass `-WitnessPowerShellPath` explicitly. Absence/wrong
   version rejects before full; the gate records the witness version and scopes
   its PATH addition to native children. It does not install interpreters.

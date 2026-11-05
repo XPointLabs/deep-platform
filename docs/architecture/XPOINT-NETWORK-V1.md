@@ -5,7 +5,7 @@ Status: normative implementation target for the first public Deep release.
 Current source state (2026-10-03) includes codecs and DID2 route/host consumers,
 but does not qualify the connected mailbox/message path. XNode still has a
 retired mailbox authority composition; the required current target is DR-0081.
-See the [source audit](ARCHITECTURE-AUDIT-2026-10-03.md) and
+See the [current architecture](README.md) and
 [implementation plan](IMPLEMENTATION-PLAN-V1.md). Neither compilation nor a
 past own-publication proves two-client delivery or release readiness.
 

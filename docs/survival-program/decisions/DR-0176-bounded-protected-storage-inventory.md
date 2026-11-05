@@ -16,8 +16,7 @@ Source review also found incomplete named retirement: later provider callbacks
 can restore an already retired object before the operation finishes, while the
 cleanup-free root loses that obligation. This remains unqualified independently
 of performance; the closed-operation implementation must close every such edge,
-including final post-adoption callbacks. See the
-[Shared checkpoint](../../../deep-client-shared/docs/testing/dr0176-protected-inventory-2026-10-26.md).
+including final post-adoption callbacks.
 
 ## Decision and boundary
 

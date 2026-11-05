@@ -9,7 +9,7 @@ Decision owner: Mr. X (delegated architecture authority)
 The current journal generation and verified Store-completion phase are governed
 by [DR-0067](DR-0067-did2-ordinary-store-completion-and-ui-retry.md), which supersedes
 the original version1/two-phase grammar below. The independent current authored
-floor and local reader are superseded by [DR-0098](DR-0098-owned-authored-counter-floors.md).
+floor and local reader are owned by the [current authored-counter contract](../../../deep-client-shared/docs/architecture/owned-authored-counter-custody.md#one-local-reader-and-bounded-layout).
 Original-event ownership, SQL
 integrity and contiguous sequence requirements remain in force.
 

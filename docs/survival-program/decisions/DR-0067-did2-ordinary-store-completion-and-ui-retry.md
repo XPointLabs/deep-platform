@@ -5,7 +5,7 @@ Date: 2026-10-02
 Decision owner: Mr. X (delegated architecture authority)
 
 Current private reader/counter layout is superseded by
-[DR-0098](DR-0098-owned-authored-counter-floors.md); the prior generation2 and
+[the current authored-counter contract](../../../deep-client-shared/docs/architecture/owned-authored-counter-custody.md#one-local-reader-and-bounded-layout); the prior generation2 and
 count-derived revision below are not another supported reader. Store adoption,
 original retry and no-delivery-claim obligations remain unchanged.
 

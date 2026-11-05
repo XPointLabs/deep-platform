@@ -36,8 +36,8 @@ Assert-Equal $vectors.status 'FROZEN_TARGET_NOT_ACTIVE' 'vectors status'
 if ($vectors.runtimeActivation) { Fail 'runtime activation must remain false' }
 Assert-Equal $vectors.schemaVersion '1.3.0' 'current terminal metadata schema version'
 $terminalOperations = @($vectors.terminalOperations)
-if (($terminalOperations.Count -ne 5) -or
-    ((@($terminalOperations | ForEach-Object { "$($_.id):$($_.name)" }) -join '|') -cne '1:Store|2:Retrieve|3:Acknowledge|4:ContactResolve|5:GroupControl')) {
+if (($terminalOperations.Count -ne 6) -or
+    ((@($terminalOperations | ForEach-Object { "$($_.id):$($_.name)" }) -join '|') -cne '1:Store|2:Retrieve|3:Acknowledge|4:ContactResolve|5:GroupControl|6:Blob')) {
     Fail 'terminal operation enum'
 }
 $groupOperation = $terminalOperations[4]
@@ -47,16 +47,29 @@ if ((@($groupOperation.requestMagic) -join '|') -cne 'GSW1|GSQ1' -or
     [int]$groupOperation.maxSuccessBytes -ne 65535) {
     Fail 'GroupControl exact pairing or bounds'
 }
+$blobOperation = $terminalOperations[5]
+$blobPath = Join-Path $specRoot 'blob-chunk-v1.registry.json'
+if (!(Test-Path -LiteralPath $blobPath -PathType Leaf)) { Fail 'missing DR141 blob contract' }
+$blob = Get-Content -LiteralPath $blobPath -Raw -Encoding UTF8 | ConvertFrom-Json
+if ((@($blobOperation.requestMagic) -join '|') -cne 'XBQ1' -or
+    (@($blobOperation.successMagic) -join '|') -cne 'XBS1' -or
+    [int]$blobOperation.maxRequestBytes -ne 265910 -or
+    [int]$blobOperation.maxSuccessBytes -ne 262208 -or
+    $blob.onionOperation -ne 6 -or $blob.request.magic -cne 'XBQ1' -or
+    $blob.response.magic -cne 'XBS1' -or $blob.request.maximumBytes -ne 265910) {
+    Fail 'Blob exact pairing or bounds'
+}
 $contactOperation = $terminalOperations[3]
 if ((@($contactOperation.requestMagic) -join '|') -cne 'XPU1|XPL1|XIQ1|XPK1|XUW1|XUQ1|XMG2|XPP1|XCA2' -or
     (@($contactOperation.successMagic) -join '|') -cne 'XPO1|XIS1|XPC1|XUS1|XMC2|XIC1|XCS2' -or
-    [int]$contactOperation.maxRequestBytes -ne (12 + 171614) -or
+    [int]$contactOperation.maxRequestBytes -ne (12 + 244 + 171614) -or
     [int]$contactOperation.maxSuccessBytes -ne 131072) {
     Fail 'ContactResolve exact pairing or bounds'
 }
 # DR-0081 adds the signed selector to MCG3/MCP3; current MAU3 wraps
 # header16 + presentation440 + the unchanged typed body. DR-0089 owns
-# the V4 coordination envelope above. Do not infer these from counts.
+# the immutable V4 request, wrapped by DR-0125's current submission. Do not
+# infer these from counts.
 foreach ($name in @('registry','vectors')) {
     $publicationPath = Join-Path $specRoot "contact-publication-v4.$name.json"
     $publicationSchema = Join-Path $specRoot "contact-publication-v4.$name.schema.json"
@@ -66,6 +79,13 @@ foreach ($name in @('registry','vectors')) {
     if (!($publicationRaw | Test-Json -SchemaFile $publicationSchema)) { Fail "DR89 publication $name schema" }
 }
 $publication = Get-Content -LiteralPath (Join-Path $specRoot 'contact-publication-v4.registry.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$currentPublicationPath = Join-Path $specRoot 'contact-publication-current-v1.registry.json'
+$currentPublicationSchema = Join-Path $specRoot 'contact-publication-current-v1.registry.schema.json'
+if (!(Test-Path -LiteralPath $currentPublicationPath -PathType Leaf) -or
+    !(Test-Path -LiteralPath $currentPublicationSchema -PathType Leaf)) { Fail 'missing DR125 publication freeze' }
+$currentPublicationRaw = Get-Content -LiteralPath $currentPublicationPath -Raw -Encoding UTF8
+if (!($currentPublicationRaw | Test-Json -SchemaFile $currentPublicationSchema)) { Fail 'DR125 publication schema' }
+$currentPublication = $currentPublicationRaw | ConvertFrom-Json
 foreach ($name in @('registry','vectors')) {
     $leasePath = Join-Path $specRoot "contact-publication-lease-v1.$name.json"
     $leaseSchema = Join-Path $specRoot "contact-publication-lease-v1.$name.schema.json"
@@ -77,7 +97,12 @@ foreach ($name in @('registry','vectors')) {
 }
 if ($publication.envelopeVersion -ne 4 -or $publication.maximumRequestBytes -ne 171614 -or
     $publication.runtimeActivation -or $publication.clientOneTimeCustodyImplemented -or
-    [int]$contactOperation.maxRequestBytes -ne 12 + [int]$publication.maximumRequestBytes) {
+    $currentPublication.runtimeActivation -or $currentPublication.coordinationTarget -ne 5 -or
+    $currentPublication.originalRequestMaximumBytes -ne $publication.maximumRequestBytes -or
+    $currentPublication.requestFixedOverheadBytes -ne 244 -or
+    $currentPublication.requestMaximumBytes -ne 244 + [int]$publication.maximumRequestBytes -or
+    $currentPublication.coordinationMaximumRequestBytes -ne 12 + [int]$currentPublication.requestMaximumBytes -or
+    [int]$contactOperation.maxRequestBytes -ne [int]$currentPublication.coordinationMaximumRequestBytes) {
     Fail 'DR89 publication and outer ContactResolve bounds/activation pairing'
 }
 foreach ($entry in @(

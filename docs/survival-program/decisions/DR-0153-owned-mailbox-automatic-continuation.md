@@ -46,8 +46,8 @@ deadline. Another unknown or denied authority remains pending/unknown. Cancellat
 stops without resetting custody. Driver-attempt1 is reported separately from owned
 automatic resumes and waits, never advertised as wire-attempt1.
 
-Focused evidence includes real encrypted account/SQLCipher/native lost-Store and
+Qualification includes real encrypted account/SQLCipher/native lost-Store and
 lost-ACK recovery: original exact request/counter, one native semantic event,
 single durable tombstone and cold retained-state checks. Scheduling unit tests
-are not socket/device evidence. Three-CLI receipts and retained first-attempt
-failures are recorded in the [current checkpoint](../../../deep-cli/docs/testing/cli-dtt-send-2026-10-19.md).
+are not socket/device evidence. Three-CLI qualification retains original
+first-attempt failures and distinguishes them from owned resumes.

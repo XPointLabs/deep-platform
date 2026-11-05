@@ -140,5 +140,7 @@ The first integrated CLI engineering run follows source/security acceptance;
 do not launch another latency round merely because this decision exists.
 
 Normative owners: TRANSPORT-NEUTRAL for execution/selection and
-RETENTION-AND-RECOVERY for archive integrity timing. Implementation mapping:
-[Shared proposal](../../../deep-client-shared/docs/architecture/semantic-operation-storage-owner-proposal.md).
+RETENTION-AND-RECOVERY for archive integrity timing. The current authenticated
+archive/index and adoption contract is
+[DR-0177](DR-0177-authenticated-native-archive-index.md); established-source
+admission is amended by [DR-0179](DR-0179-established-native-session-provenance.md).

@@ -55,20 +55,3 @@ so no compatibility obligation justifies preserving this candidate.
 
 Until these gates pass, the current DID2 candidate remains non-production
 even if its cryptographic tests are green.
-
-## Implementation checkpoint (2026-09-24)
-
-The 2052-byte DID2 commitment codec, independent transcript vectors, strict
-machine-registry anchors, DGA1/DPQ2 lengths, re-authored public Registry
-fixture, and protected capability slot are implemented. Protocol, Registry
-focused and shared-client tests verify the replacement, including restart
-after recovery-phrase deletion with the same compact address. This is not
-release activation: UAT reset, physical Windows/Android admission/proof and
-contact/message/media/group device E2E remain mandatory.
-
-The isolated Android DID2 probe subsequently passed physical account
-continuity on 2026-09-24: the retired local account failed closed, was reset
-only through the probe's confirmation UI, and a new address remained identical
-after restart and after retained-phrase deletion plus restart. Evidence and
-hashed address are recorded in `deep-client-maui/docs/DID2-ANDROID-ACCOUNT-GATE-2026-09-24.md`.
-This does not close Windows, live directory or messaging E2E gates.

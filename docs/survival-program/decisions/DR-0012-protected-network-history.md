@@ -131,37 +131,3 @@ Signed DID2 proof/network closure, idempotence and restart; monotonic successor
 with expired historical traffic keys; omitted/forked policy/view/head/PMT,
 cross-network, hostile capsule and forged signature negatives; anchor/state crash
 and rollback; live TLS publication to both replicas and physical device E2E.
-
-## Current evidence and non-claims
-
-Protocol: Debug/Release builds without warnings, actual exact-three assembly/
-resource/public-API graphs, 1,856 Protocol tests (11 explicit native-harness skips),
-131 MembershipRoutes and 105 ProfileCarrier tests; DNP1 evidence mapping covers
-219 package vectors with no missing mapping, and manifest integrity passes.
-The current API snapshot replaces the previous snapshot; there is no dual acceptance.
-
-XNode: signed DID2 file source, floor and independent-anchor restart/CAS/crash/
-corruption/installed-key/proof-expiry gates, signed multi-role three-host receive
-for all six permutations, encrypted key slots and real durable replay/entropy.
-Replay after restart rejects before forwarding. Readiness also checks the actual
-live capability rather than a retained boolean. The host test deliberately seals
-unavailable for a canonical V2 commit carriage; it does not claim staged inventory,
-two final receipts, a live claim, a message or a device run.
-The full solution passed 431 Integration / 107 ProfileGenerator / 262 Core tests;
-the final readiness change passed the complete 432-test Integration assembly,
-and the final full-predecessor binding passed all 38 affected host/source gates.
-Release solution builds without warnings. The unaffected suites are not presented
-as an additional physical run.
-
-Installer syntax/behavior tests pass; fixed-role CLI/config inputs are removed.
-DevOps first-release configuration tests pass 9/9 and production-ingress contracts
-pass 32 checks. The isolated multi-node rehearsal confirms three real non-mocked
-Xray processes and Registry membership, while privacy authority deliberately
-remains unavailable. It is process/build/fail-closed evidence, not DID2 TLS delivery.
-Release contract fixtures pass; actual production-readiness remains blocked on
-missing release/device/ops/security/GA evidence. Fixture reports are not activation.
-
-Pending: supported DID2 proof/observer/complete-history rollout, exact final
-publication to both selected replicas, live TLS and physical Android/Windows
-contact/DPH2/message/attachment/group evidence. No production node or registered
-identity was changed by this local batch.

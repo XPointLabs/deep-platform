@@ -15,8 +15,8 @@ F7/F8. Apply that amendment as one current schema6 cutover before enrollment;
 the earlier six-family/reducer960 descriptions below are its predecessor basis,
 not an additional ordinary profile or compatibility reader.
 
-This is the P1.2 corrective direction from the
-[requirements audit](../../architecture/REQUIREMENTS-AUDIT-2026-10-28.md).
+The [current architecture](../../architecture/README.md) indexes this local
+contract and its owning implementation boundaries.
 The codec is private local state using existing SHA-256/SQLCipher/protected roots,
 not a new public protocol, service, crypto suite or trusted remote certificate.
 A source-only unused codec does not change ordinary runtime behavior.
