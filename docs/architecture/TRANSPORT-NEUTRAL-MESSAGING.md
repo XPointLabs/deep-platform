@@ -687,6 +687,18 @@ continuation. Для captured final page локальное завершение
 non-final pagination этим не открывается. Allocation и evidence:
 [DR-0133](../survival-program/decisions/DR-0133-expired-owned-retrieve-attempt-closure.md).
 
+DR-0133 also permits denial-only phase2 closure when the exact owned XCT1 expiry
+is no later than its exact signed MAU grant's NotBefore, and current protected
+lower time reaches that token expiry. The intervals never overlap; ordinary
+token expiry alone is insufficient. Original request/MAU, Unknown custody,
+grant, counters and dependencies remain retained; no remote outcome is inferred.
+An independently qualified idle pagination restart may advance only the exact
+expired traversal to `(0, empty, generation+1)`, preserving inbox/outbox/ACK,
+native and replay state. SQL-first cold recovery requires re-proving the old
+protected predecessor and exact derived successor; it cannot trust SQL as
+authority. A Closed grant cannot serve new work. The detailed guards and unchanged
+closed-record allocation are in DR-0133; captured page/ACK work remains excluded.
+
 **Authenticated expired Initial.**
 [DR-0138](../survival-program/decisions/DR-0138-expired-authenticated-initial-disposal.md)
 defines terminal native disposal of the exact authenticated expired first

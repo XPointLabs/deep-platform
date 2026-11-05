@@ -200,12 +200,31 @@ Runtime08 catchup01 завершился отказом при Retrieve трет
 `ClientMailboxDispatchOutcomeUnknownException`; исходная операция сохранена.
 До отказа прошли все3 baseline,4 refresh/reintroduce (17.070/98.716/129.998/98.655s)
 и3 receive/ACK (65.245/62.547/47.427s). Новых business rounds нет, cursor60.
-Точный deployed DLL/PDB связывает отказ с проверкой XCT1 continuation в Retrieve;
-expiry/binding/signature/page-limit пока не различены. Это не доказанный NTS отказ.
+Точный deployed DLL/PDB связывает отказ с проверкой XCT1 continuation в Retrieve.
+Owned diagnostic02 подтвердил phase2 и exact grant: expiry токена не позже signed
+grant.NotBefore; интервалы никогда не пересекались. Framing/context/cursor/page-limit
+согласованы, signature не наблюдалась; транспорт не повторялся. Это не NTS отказ.
+Исправление по уточнённому [DR-0133](survival-program/decisions/DR-0133-expired-owned-retrieve-attempt-closure.md)
+сохраняет original Unknown и counters, допускает только доказанное закрытие этой
+невозможной попытки и guarded restart истёкшей пагинации для нового чтения.
 5s CPU sample клиента показал native SQL/protected-file reads (перекрывающиеся
 категории56.26%/33.26%), Ed25519 —1.62%; увеличение memo не обосновано этим sample.
-Следующий клиентский срез объединяет повторное чтение consent с имеющимся count8
+Клиентский срез объединяет повторное чтение consent с имеющимся count8
 snapshot, сохраняя actual post-callback native/application joins.
+
+Build49 прошёл без ошибок/предупреждений; все15 новых identities имеют PASS
+по q28/q29. q27 остановлен20-minute watchdog без TRX и остаётся unqualified.
+q28:7PASS/1fixtureFAIL; исправлены self-lock тестового callback и некорректная
+empty-journal revision в подготовке подмены winner. q29: native0,10PASS/0FAIL/
+0SKIP,2340 inputs unchanged. Его wrapper остаётся failed: объявлено8 cases,
+но `DisplayName~winner` выбрал все3 строки метода с `Winner` в имени.
+Оба лишних случая прошли; исходные receipts не переписываются, повтор ради
+смены отметки не нужен. Это достаточно для диагностического goal-check,
+не full/release qualification. Дальше: совпадающий runtime09, штатное локальное
+обновление Node, recovery/catch-up и один balanced раунд на тех же3 CLI.
+Три сообщения дают быструю обратную связь, но не квалифицируют p95≤1s.
+Проверенный диагностический срез Shared`e915792` запушен; исходный checkout
+синхронизирован на тот же commit для сборки CLI.
 
 Отдельный Node`f5eeb06` устраняет одну повторную full lease check только в
 committed-only read segment; recovery/cleanup и финальная проверка сохранены.
