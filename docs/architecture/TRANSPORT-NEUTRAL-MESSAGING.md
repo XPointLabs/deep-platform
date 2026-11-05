@@ -849,11 +849,26 @@ permits an atomic local MOVE of complete inactive acquisition custody to sealed
 protected storage, with a bounded exact reference in the same current journal.
 This is not grant/holder disposal or namespace retirement: every byte, replay
 floor, original request, SQL/native dependency and accepted-object path remains.
-Unknown/selected/actively referenced work stays in the working set. Bounds do
-not increase. A sealed reference supplies no new-work or effect authority.
+Pending acquisitions, selected holders, active reads/ACKs and Store dependencies
+stay in the working set. A closed read/ACK may keep its historical dependency
+on a sealed Retrieve acquisition under the conditions below. Its exact attempt
+record and replay counter stay in their original journals. All existing bounds apply.
+A sealed reference supplies no new-work or effect authority.
 Later restoration uses the exact original, solely for the unchanged signed
 epoch-exclusion/dependency-closed retirement producer. Guarded deletion follows
 that actual retirement, never expiry alone or a serialized terminal assertion.
+
+For an idle reader, the owner may seal an expired, superseded, adopted Retrieve
+holder referenced only by a closed historical read/ACK and its counter. It must
+be the oldest eligible acquisition in its scope. The owner must preserve and
+atomically bind the complete original and keep the closed attempt, its independent
+counter floor and every original path needed for historical reconciliation.
+Historical reconciliation checks the original acquisition, grant, holder and
+route from the sealed bytes against the protected reference and the specific
+closed attempt. It rechecks custody across callbacks and before effects.
+Missing or conflicting custody stops recovery. The closed attempt continues
+to pin retirement for as long as it requires the original. Any new Retrieve,
+Store or ACK must obtain its own authorization through the ordinary owners.
 
 Перед освобождением working-set slot owner MUST сохранить отдельные protected
 floors: next authored sequence для `(conversation, author device)` и highest

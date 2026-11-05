@@ -10,7 +10,9 @@ or declaring expiry to be namespace exclusion is not an acceptable correction.
 Under the actual account lease, a known adopted, expired, superseded acquisition
 may move out of the working chain only if it is the structurally oldest adopted
 member of that scope, no acquisition in that chain is pending/unresolved, and no
-protected active/closed-unknown Store or read/ACK references its exact grant.
+protected Store or active read/ACK references its exact grant. An outstanding
+closed read/ACK pins working custody except for the historical Retrieve case
+specified in [§8.4.3](../../architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
 Its actual independent nonzero replay floor must remain present. The selected
 current holder is never moved. This is scheduling/storage tiering, not settlement,
 non-delivery, holder destruction, a current grant or permission to repeat work.
