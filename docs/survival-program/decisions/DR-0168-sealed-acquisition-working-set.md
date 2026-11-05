@@ -10,7 +10,15 @@ or declaring expiry to be namespace exclusion is not an acceptable correction.
 Under the actual account lease, a known adopted, expired, superseded acquisition
 may move out of the working chain only if it is the structurally oldest adopted
 member of that scope, no acquisition in that chain is pending/unresolved, and no
-protected Store or active read/ACK references its exact grant. An outstanding
+active read/ACK references its exact grant. A protected Store normally pins
+the working holder. At the 128-entry limit the owner may seal one superseded
+Deposit holder when every referencing Store has an exact prepared request.
+For each reference it must join the original native envelope and recipient,
+signed MAU, SQL attempt and independent replay floor before the atomic move
+and again on archived readback. Pending acquisitions and unprepared send
+references still pin the holder. Settlement and cleanup must open the exact
+guarded archive. New dispatch still requires independently current authority.
+An outstanding
 closed read/ACK pins working custody except for the historical Retrieve case
 specified in [§8.4.3](../../architecture/TRANSPORT-NEUTRAL-MESSAGING.md#843-compaction-and-boundedness).
 Its actual independent nonzero replay floor must remain present. The selected

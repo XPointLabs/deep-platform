@@ -849,8 +849,13 @@ permits an atomic local MOVE of complete inactive acquisition custody to sealed
 protected storage, with a bounded exact reference in the same current journal.
 This is not grant/holder disposal or namespace retirement: every byte, replay
 floor, original request, SQL/native dependency and accepted-object path remains.
-Pending acquisitions, selected holders, active reads/ACKs and Store dependencies
-stay in the working set. A closed read/ACK may keep its historical dependency
+Pending acquisitions, selected holders and active reads/ACKs stay in the working
+set. At the 128-entry limit an expired, superseded Deposit holder may move
+to the existing archive when every Store that references it is prepared and
+the owner verifies each original request, native recipient and envelope, SQL
+attempt and replay floor both before the move and on archived readback. A Store
+reference remains in its original journal. Historical settlement and cleanup
+recheck the selected archive. A closed read/ACK may keep its historical dependency
 on a sealed Retrieve acquisition under the conditions below. Its exact attempt
 record and replay counter stay in their original journals. All existing bounds apply.
 A sealed reference supplies no new-work or effect authority.
