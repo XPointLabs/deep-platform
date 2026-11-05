@@ -196,6 +196,22 @@ Shared выполняются после проверки цели; они по�
 не публикация релиза. PostQ26 union:76TRX/2292 required identities, прежние FAIL
 сохранены с точными последующими PASS; waiver отсутствует.
 
+Runtime08 catchup01 завершился отказом при Retrieve третьего профиля: дваHTTP504,
+`ClientMailboxDispatchOutcomeUnknownException`; исходная операция сохранена.
+До отказа прошли все3 baseline,4 refresh/reintroduce (17.070/98.716/129.998/98.655s)
+и3 receive/ACK (65.245/62.547/47.427s). Новых business rounds нет, cursor60.
+Точный deployed DLL/PDB связывает отказ с проверкой XCT1 continuation в Retrieve;
+expiry/binding/signature/page-limit пока не различены. Это не доказанный NTS отказ.
+5s CPU sample клиента показал native SQL/protected-file reads (перекрывающиеся
+категории56.26%/33.26%), Ed25519 —1.62%; увеличение memo не обосновано этим sample.
+Следующий клиентский срез объединяет повторное чтение consent с имеющимся count8
+snapshot, сохраняя actual post-callback native/application joins.
+
+Отдельный Node`f5eeb06` устраняет одну повторную full lease check только в
+committed-only read segment; recovery/cleanup и финальная проверка сохранены.
+Focused31:31PASS/0FAIL/0SKIP, source1714/binary2388 unchanged. Код запушен,
+но пока не развёрнут; это не исправление continuation-отказа и не latency PASS.
+
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;
 сохранены фактическая retirement/native provenance, обязательный автоматический
