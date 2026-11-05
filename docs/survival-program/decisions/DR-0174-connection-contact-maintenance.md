@@ -50,6 +50,17 @@ including deferred contacts and ordinary mailbox HasMore, never readiness or
 permission. One contact's health-based deferral does not starve other eligible
 contacts; a real effect-owner failure still stops the cycle with original custody.
 
+A current public route interval does not make the peer's native announcement
+current. For selected outgoing control work, the owner may establish that the
+peer announcement alone has expired after checking its authenticated endpoint,
+creation inside the signed route interval, current authority, fault state and
+trusted time. Only then may connected maintenance select the existing
+known-address reintroduction path. It independently resolves that descriptor
+and verifies the same peer, device, session and consent before dispatch. Missing
+address means deferral; other invalidity still rejects. Keep the original
+operation and ciphertext, including after a partial native send. Neither an
+expired outgoing control nor an unconfirmed Store gains authority by this rule.
+
 This allocates no wire, crypto, journal/schema generation, counter or lifetime.
 It neither infers resolver-read capability from a DID2 hash nor promotes a
 resolved publication as an ordinary private peer route. DR-0159 re-introduction
