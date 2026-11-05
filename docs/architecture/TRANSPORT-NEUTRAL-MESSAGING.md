@@ -549,6 +549,14 @@ state apply + inbox cursor/ACK.
 успешной материализацией. ACK выдаётся лишь после durable semantic dedup и
 доступности event для чтения клиентом.
 
+Наблюдение о коммите projection само по себе не доказывает завершение
+пользовательского чтения. Если последующий ACK удерживает account lease либо
+очередь команд клиента, обычное чтение истории может ждать его завершения.
+Для заявления о задержке доступности пользователю MUST отдельно наблюдаться
+успешное штатное чтение соответствующего authenticated event; время коммита,
+время чтения и ACK MUST оставаться разными измерениями. Нельзя ретроспективно
+переименовывать прежний commit timestamp в результат пользовательского чтения.
+
 Semantic dedup key: `(protocolGeneration, conversationId, semanticMessageId,
 authorDeviceId)`. Одинаковый ключ с другими authenticated plaintext bytes —
 permanent fork/security error, а не duplicate. Tombstone хранится не меньше

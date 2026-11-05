@@ -229,7 +229,25 @@ empty-journal revision в подготовке подмены winner. q29: nativ
 Отдельный Node`f5eeb06` устраняет одну повторную full lease check только в
 committed-only read segment; recovery/cleanup и финальная проверка сохранены.
 Focused31:31PASS/0FAIL/0SKIP, source1714/binary2388 unchanged. Код запушен,
-но пока не развёрнут; это не исправление continuation-отказа и не latency PASS.
+и развёрнут на трёх локальных узлах. В runtime09 все шесть направлений
+восстановились за один проход без сбросов. Первый тест доставки остановился
+на receive/ACK: исходная отправка №61 зафиксирована только у отправителя,
+оба получателя при обычном чтении её ещё не видели. Два других отправителя
+команду №61 не вызывали. Достоверного времени доставки нет.
+
+Registry отказывал конкурентному запросу private grant с HTTP 429 до разбора
+тела. В [исправлении Registry](https://github.com/XPointLabs/deep-registry-api/commit/5eaa580)
+один issuer обслуживает запросы последовательно, до трёх запросов могут ждать.
+Исходный 30-секундный срок включает ожидание. После ожидания снова проверяется
+актуальность полномочий. Пять профильных проверок прошли, включая отказ по
+истёкшей аутентификации до резервирования и подписи. Первый прогон: 4/5;
+исправлено устаревшее ожидание типа отказа при холодном старте.
+В [CLI](https://github.com/XPointLabs/deep-cli/commit/30fc191)
+доставку измеряем по точному сообщению в обычном чтении истории у получателя.
+Событие записи проекции остаётся отдельной диагностикой. 49 профильных тестов
+и 64 проверки измерителя прошли. Далее: локальное обновление Registry,
+восстановление исходной отправки №61 без повторного создания, затем две ещё
+не отправленные команды и свежий раунд. Цель p95≤1s остаётся открытой.
 
 Реализован и запушен WIP-срез [DR-0179](survival-program/decisions/DR-0179-established-native-session-provenance.md):
 повторное открытие исходных Device/PreKey SQL убрано из established native segments;
@@ -674,13 +692,20 @@ message transition и lifecycle/recovery, durable queues и ограниченн
 **Целевая метрика:** warm-online текст до1KiB, установленные контакты/группа
 из3 участников, действующие routes/authority, одновременно работающие клиенты
 на локальном настоящем Docker-контуре. Цель **p95 ≤1000ms** от принятия команды
-отправителя до authenticated durable readable event каждого получателя.
+отправителя до успешного штатного чтения соответствующего authenticated durable
+event каждым получателем. Событие коммита projection измеряется отдельно:
+аудит2026-11-05 обнаружил, что последующий ACK удерживает account lease, а CLI
+сериализует команды до завершения sync. Прежний `RecipientDurableReadable`
+доказывает коммит после освобождения receive lease, но не завершение чтения
+истории во время ACK; старые receipts нельзя переименовывать в user-visible PASS.
 Отдельно: durable outbox, Store quorum, первый/все получатели, tombstone ACK,
 authenticated application receipt. Timestamp берёт общий monotonic controller
 на реальном событии, не по ответу ACK.20 warmups и200 measured сообщений от
 каждой роли в каждом из3 independent runs; nearest-rank по каждой направленной
 паре/роли; ошибки/timeout=+infinity, без удаления выбросов. Сначала короткий
 engineering run из4 полных раундов (12 сообщений, по4 от роли), затем квалификация.
+Для первой диагностической обратной связи разрешён один полный balanced раунд
+из3 сообщений; он не квалифицирует p95 и сохраняет согласованный cursor.
 Равные раунды сохраняют согласованный retained cursor; среднее по всем ролям
 не скрывает более медленного участника.
 Cold start, offline/recovery, expiration и WAN — отдельные профили, их не
@@ -708,7 +733,10 @@ ordering, current signed deadlines, same-boot time и revocation после call
    события и exclusive/inclusive стадии; считать storage opens/full scans,
    native checks, lock wait, fsync, network/authority calls. Closed diagnostics
    без payload/keys/addresses. Уточнить callback/effect map существующих owners.
-   Готово: тесты event ordering и harness; метрики не смешивают Store/ACK/visible.
+   Тесты event ordering и harness пройдены; приёмка P0 остаётся открытой до
+   отдельного correlated normal-read/result-release наблюдения. Commit-event
+   timestamp не заменяет его. Сначала сохранить раздельные фактические замеры,
+   затем устранить блокировку чтения сетевым ACK без ослабления owner guards.
 2. **Клиентское состояние (Shared, P1).** Один ограниченный transaction/owner
    scope для согласованной ревизии; повторные внутренние consumers используют
    общий проверенный набор. Убрать повторные SQL opens/full integrity/history
@@ -718,6 +746,18 @@ ordering, current signed deadlines, same-boot time и revocation после call
    внешней подмены и смены floor после каждого допускающего их callback.
    Сначала доказать scope и подключить к реальному send/receive, затем tests;
    не создавать неиспользуемый новый storage framework.
+   Кандидат после фактического message-замера: в `MailboxAck.Guard` заменить
+   три повторных полных materialization на свежую read-only проверку уже
+   committed projections, оставив первую materialization/recovery и все
+   pre-network/post-network/post-SQL границы. Группировать existing
+   `ReadVerifiedOperations` и count8 source snapshot по native scope.
+   Сохранить actual roots/floor, direction/envelope, replay/fork, application
+   receipt obligations и count8 consent/anchor/first-fault witness. Нельзя
+   вызывать mutating `CheckAuthoredPosition` как read-only verifier или
+   заменять проверки cached-флагом; неподдержанные semantic kinds сохраняют
+   существующий проверенный путь. Проверить exact replay и callback-подмены
+   native/projection/receipt/fork до следующего effect. Это пока предложение
+   по maintenance CPU sample, не реализованное ускорение или измеренный SLO.
 3. **Состояние нод (XNode, P2).** Отделить startup/recovery от обычного RPC:
    не запускать InitializeCurrent/полный mutation+blob inventory из каждого
    вложенного EnsureCurrent. Один owned admission context с точными roots,
