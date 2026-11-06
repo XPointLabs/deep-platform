@@ -80,15 +80,15 @@ changes how an expired or otherwise inadmissible announcement is verified.
 
 Run scheduler unit negatives and unchanged real publication/route-control
 owner tests, then the real cycle on the SAME three retained CLI accounts and
-new group58; no manual per-contact repair may substitute for that consumer.
+existing group; no manual per-contact repair may substitute for that consumer.
 Test the actual persisted/native owners in connected runs; scheduling delegates
 in unit tests are explicitly not proofs or E2E evidence.
 
 The connected test may explicitly read the SAME three owners' public descriptors
 through `account address`, keeping them in RAM/private session input only.
-`network publish` performs publish-only bootstrap before convergence; it does
-not receive, advertise or accept known-contact metadata. The maintenance consumer
-visits ALL retained accepted scopes, not just the three running accounts. Older
+`network connect` seeds the protected book without foreground publication or
+per-contact repair. The maintenance consumer visits ALL retained accepted
+scopes, with three known-address turns followed by one unknown-address turn. Older
 offline contacts remain explicit deferrals; qualification requires actual native
 route health for all six running-cohort directions, not zero global deferrals.
 No per-contact refresh/re-introduction command in the driver may replace this
@@ -102,6 +102,13 @@ account and instance binding and are checked against the existing relationship
 before use. The session can seed these descriptors through its private command
 stream. An interrupted control retains its original intent. The enclosing
 scheduler budget preserves each signed deadline and each transport deadline.
+
+Actual processed-page, stored-control or reintroduction progress permits the
+next idle opportunity after10s. No progress, cancellation or failure keeps60s.
+Detailed own-chain diagnostics are an explicit diagnostic read, excluded from
+the scheduler's ordinary health call. Ordinary delivery's independently current
+DMC2/14 authority remains distinct from the current-XUR lifecycle criterion;
+measuring one never qualifies the other.
 
 For established delivery, strict Store admission checks the current private
 DMC2/14 route announcement. The independent XUR1 accepted during the native
