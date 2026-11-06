@@ -69,9 +69,24 @@ CAS has no command; after pending CAS retries the same logical/operation/event.
 Stable entries retain only metadata/hash, not another plaintext history copy.
 An exact retry reads and verifies its SQL bytes and compares the requested
 canonical text to the retained command. Reusing an operation with another
-scope/text rejects before new mutation or crypto. DPE2 send independently
-requires the stable protected command and verified SQL mirror, then uses the
-existing DR-0027 exact crypto commit/replay path. Draft custody grants no
+scope/text rejects before new mutation or crypto.
+
+For established text, the local queue now publishes the original command and
+the sealed session transition together in one protected inventory commit.
+The successor records the operation, exact envelope and authenticated session
+checkpoint. A group text commits the original fanout and the sealed transition
+for every target in the same publication. The guards cover the original
+account-owned roots and session predecessors. SQL projections and stable
+checkpoint cleanup can complete after a crash from this durable winner.
+A retry reopens the original bytes. A previously queued original that has
+not yet advanced its session remains eligible for its own exact preparation.
+Store separately verifies current peer, route, grants, replay floor and quorum.
+
+The production test case `Did2Text_QueueBorrowsOneVerifiedEndpointPairForConsentAndAuthoringOnly`
+is replaced by `Did2Text_QueueBorrowsOneVerifiedEndpointPairForAtomicLocalSend`
+in `DeepIdV2ContactPathAuthoritySourceTests`. The replacement checks the fresh
+endpoint pair and the ratchet transition at queue time for each original.
+Draft custody grants no
 route, mailbox ACK, accepted/delivered/read status, expiry or remote deletion.
 Semantic inbox rollback/dedup/receipts, dispatch attempts/reconciliation,
 Active reachability, typed attachment/group custody and physical Windows/Android

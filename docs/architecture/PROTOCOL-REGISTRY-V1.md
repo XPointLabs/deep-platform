@@ -10,6 +10,12 @@ independent current promotion. Private announcement delivery is not a dependency
 of that path; all signed public predecessors remain required. Exact native
 decision/archive allocation and runtime activation remain separately gated.
 
+The established-contact [XUR1 contract](CONTACT-RESOLVER-V1.md#35-established-contact-update-service-xur1--xuw1--xuq1--xus1)
+allocates count9 DMC2/14 private announcements carrying a complete signed
+successor chain anchored to the original native Hello/Accept. It does not
+replace the independent current delivery-route checks. The unchanged 32KiB
+payload bound admits at most59 successors; exhaustion refuses renewal.
+
 [DR-0129's 2026-10-28 amendment](../survival-program/decisions/DR-0129-owned-prekey-service-succession.md#2026-10-28--bounded-service-lineage-across-interrupted-publication)
 allocates bounded intermediate XPS1 V2 support in DCR1 V2. The current DID2
 machine owner is [CONTACT-PREKEY-LINEAGE-02](../survival-program/releases/v3.0.0/specs/contact-prekey-lineage-v2.registry.json),

@@ -95,9 +95,24 @@ No per-contact refresh/re-introduction command in the driver may replace this
 Shared consumer. Test passes are planned convergence opportunities, not retries
 of failed commands or re-authoring pending work.
 
-CLI's composite cycle budget does not extend any individual transport/lease
-or signed deadline. A failed/partial cycle is not connection readiness. Safe
-periodic/background scheduling, durable address-book/descriptor exchange,
-scale, physical clients and release qualification remain required subsequent
-work; this consumer increment does not claim they are complete. DR-0173 idle
-authority checks remain key-free hints and are not replaced by expensive polling.
+The foreground connection cycle visits the accepted contacts in its bounded
+address book. An idle CLI session schedules one accepted contact per turn and
+yields to foreground work. Actual known descriptors are stored under the
+account and instance binding and are checked against the existing relationship
+before use. The session can seed these descriptors through its private command
+stream. An interrupted control retains its original intent. The enclosing
+scheduler budget preserves each signed deadline and each transport deadline.
+
+For established delivery, strict Store admission checks the current private
+DMC2/14 route announcement. The independent XUR1 accepted during the native
+handshake describes the contact's update rendezvous. Its successor is carried
+by the count9 private announcement and verified against the original device
+and accepted direction. Readiness evidence distinguishes a current delivery
+route from a current, durably adopted rendezvous. [XUR1 carriage](../../architecture/CONTACT-RESOLVER-V1.md#35-established-contact-update-service-xur1--xuw1--xuq1--xus1)
+
+An idle cycle may ACK a nonempty page containing only authenticated, durably
+consumed DMC2/14 controls. The ordinary ACK owner independently reconstructs
+the exact page and current authority. Mixed/application pages remain pending;
+classification failure never grants ACK authority. The retained experiment
+uses private `network connect` to seed known addresses and start the scheduler,
+without foreground publication or per-contact repair.

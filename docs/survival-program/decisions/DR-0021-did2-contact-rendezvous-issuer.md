@@ -36,6 +36,11 @@ input before the first await. Cancellation returns no result.
 
 ## Consumer consequences
 
+The first-contact API above continues to require generation zero. Established
+pairs can exchange signed successors inside the private count9 DMC2/14
+announcement. Its receiver verifies lineage against the original and the
+already accepted native head. [Established-contact renewal](../../architecture/CONTACT-RESOLVER-V1.md#35-established-contact-update-service-xur1--xuw1--xuq1--xus1)
+
 Protocol owns this verifier and negative issuer/time/scope tests. Shared will
 use it for DID2 ContactHello/Accept only after their DAB2 payload boundary is
 separately frozen and implemented; no V1 relationship adapter is authorized.

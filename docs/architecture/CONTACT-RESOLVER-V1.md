@@ -1463,6 +1463,27 @@ requires exactly `0x0007`. Tags 11/12 have `issuedAt < expiresAt` and a maximum
 Its hash is `SHA256(exactXUR1)`. Same `(networkId,directionId,generation)` with
 changed bytes, a gap, or a wrong predecessor permanently forks the direction.
 
+For established DID2 contacts, a private DMC2/14 announcement can also carry
+a renewal of the direction's signed XUR1. The count9 encoding retains the
+count8 announcement header and cursors, sets byte 72 to 9, and requires
+announcement mode, zero evidence atoms and zero request correlation. After
+the 1,024-byte header comes a big-endian uint16 count and that many exact
+538-byte XUR1s. The 32,768-byte payload limit admits 1–59 successors.
+The native Hello or Accept supplies generation zero. The carrier contains
+every following generation in order. At capacity authoring fails before
+another generation can be selected.
+
+Renewal preserves the service capability, direction, placement input, metadata
+key, event mask and device binding. The issuer signs the current PMT2 reference,
+the exact predecessor hash, the next generation and a strictly later expiration.
+The receiver verifies the signatures against the independently current device
+certificate, the relationship and the native anchor. Its accepted head must
+lie on that exact chain. Historical verification checks the record's interval
+at event creation. Live rendezvous use also requires the final record to cover
+the entire trusted-time interval. The native event remains the source of the
+adopted record on cold reopening. A rendezvous renewal carries no Store,
+receipt or route authority.
+
 `XRA1` (recipient reachability authorization) has exactly 16 fields:
 
 | Tag | Value | Size / bound |

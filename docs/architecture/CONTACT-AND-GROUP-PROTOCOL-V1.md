@@ -1062,6 +1062,11 @@ request lifecycle and qualification gates belong to DR-0178. The count6/7 framin
 and predecessor clauses below describe retained originals, not a second new
 business path or permission to revive stopped work.
 
+Count9 private announcements additionally carry the original relationship's
+signed XUR1 successor chain. Exact grammar, predecessor/fork checks and the
+bounded chain belong to [CONTACT-RESOLVER §3.5](CONTACT-RESOLVER-V1.md#35-established-contact-update-service-xur1--xuw1--xuq1--xus1).
+Their adoption never supplies authority for an expired DMC2/14 delivery route.
+
 For the retained DID2 owned relationship, the original native-committed peer Hello/Accept
 is the initial route head. The first successor names SHA256 of that exact DMC2;
 later successors name SHA256 of the exact preceding native-committed DMC2/14.
