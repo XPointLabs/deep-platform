@@ -34,6 +34,16 @@ state or long-lived verification cache. Each effect rechecks the actual protecte
 floors, endpoint pair, native control, current publication and clock. Exact Store
 attempt/counter/ciphertext rules and independently current grants remain unchanged.
 
+This typed publication must also reach denial-only capacity preflight before
+route-control authoring and encryption. When the bounded grant or replay journal
+is full, selecting reusable custody for this control uses its independently
+revalidated resolved destination, not the expired established announcement that
+the control is intended to repair. The actual native relationship, consent,
+fault and current-publication checks remain prerequisites under each owner
+lease. This neither grants effect authority nor authorizes old-grant retirement.
+Ordinary application work keeps its current private-route requirement; a new
+destination with genuinely full, pinned custody still refuses before effects.
+
 The existing MAC-bound Store evidence columns retain the exact original public
 DCR, ADP and route for this narrowly classified control. Presence of publication
 evidence does not classify an operation as an Initial: native payload kind and

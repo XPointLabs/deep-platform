@@ -23,6 +23,17 @@ device scope; advertise the adopted own publication through the existing exact
 route-control author/native/Store owners. Pending requests are not consent.
 Do not deduplicate distinct device scopes merely by logical conversation ID.
 
+Explicit foreground maintenance keeps that receive-before-advertise order.
+After the same own-publication prerequisite, background turns alternate
+receive-first and advertise-first. Advance this scheduling choice before either
+callback, including when the chosen phase later fails or is cancelled. A token
+already cancelled before phase admission invokes neither callback and does not
+consume a turn. Every phase still uses its unchanged effect owner; an exception
+stops the current turn without suppressing or reclassifying the refusal. The
+next turn therefore gives the opposite phase an opportunity without making a
+failed receive/ACK a permanent prerequisite for all outgoing maintenance, or
+letting repeated outgoing failure suppress all receiving.
+
 Network bootstrap's publish-only API remains publish-only: it may precede
 installation of the messaging evidence owner. The connected host explicitly
 uses `VerifyAndMaintainContactsAsync` AFTER installing that owner, reusing the
